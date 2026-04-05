@@ -1,0 +1,16 @@
+{
+  "name": "convertfily",
+  "short_name": "convertfily",
+  "description": "Fastest and 100% private file converter.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/cover-image.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    }
+  ]
+}
