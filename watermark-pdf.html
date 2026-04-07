@@ -515,7 +515,7 @@
 
         try {
             const arrayBuffer = await selectedFile.arrayBuffer();
-            const { PDFDocument, rgb, degrees } = PDFLib;
+            const { PDFDocument, rgb, degrees, StandardFonts } = PDFLib;
             
             const pdfDoc = await PDFDocument.load(arrayBuffer);
             const pages = pdfDoc.getPages();
@@ -524,7 +524,7 @@
             const op = parseFloat(opacity.value) || 0.3;
             const pos = position.value;
 
-            constHelvetica = pdfDoc.embedFont(PDFDocument.Font.Helvetica);
+            const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
             for (const page of pages) {
                 const { width, height } = page.getSize();
@@ -555,7 +555,7 @@
                     color: rgb(op, op, op),
                     opacity: op,
                     rotate: rotate,
-                    font: pdfDoc.embedFont(PDFDocument.Font.Helvetica),
+                    font: helveticaFont,
                 });
             }
 

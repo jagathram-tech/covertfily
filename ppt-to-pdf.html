@@ -454,13 +454,13 @@
         loading.classList.add('show');
 
         try {
-            const { PDFDocument, rgb } = PDFLib;
+            const { PDFDocument, rgb, StandardFonts } = PDFLib;
             const pdfDoc = await PDFDocument.create();
             
             const page = pdfDoc.addPage();
             const { width, height } = page.getSize();
             
-            const font = await pdfDoc.embedFont(PDFDocument.Font.Helvetica);
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
             page.drawRectangle({
                 x: 0,
@@ -474,7 +474,7 @@
                 x: 50,
                 y: height - 60,
                 size: 24,
-                color: rgb(37, 99, 235),
+                color: rgb(37/255, 99/255, 235/255),
                 font,
             });
 
@@ -490,7 +490,7 @@
                 x: 50,
                 y: height - 140,
                 size: 12,
-                color: rgb(100, 116, 139),
+                color: rgb(100/255, 116/255, 139/255),
                 font,
             });
 
@@ -498,7 +498,7 @@
                 x: 50,
                 y: height - 170,
                 size: 10,
-                color: rgb(148, 163, 184),
+                color: rgb(148/255, 163/255, 184/255),
                 font,
             });
 
@@ -506,7 +506,7 @@
                 x: 50,
                 y: height - 185,
                 size: 10,
-                color: rgb(148, 163, 184),
+                color: rgb(148/255, 163/255, 184/255),
                 font,
             });
 
@@ -514,7 +514,7 @@
                 x: 50,
                 y: 50,
                 size: 10,
-                color: rgb(148, 163, 184),
+                color: rgb(148/255, 163/255, 184/255),
                 font,
             });
 

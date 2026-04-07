@@ -784,7 +784,7 @@
     });
 
     async function processPdfWatermark() {
-        const { PDFDocument, rgb, degrees } = PDFLib;
+        const { PDFDocument, rgb, degrees, StandardFonts } = PDFLib;
         const text = document.getElementById('watermarkText').value;
         const fontSize = parseInt(document.getElementById('fontSize').value);
         const opacity = parseFloat(document.getElementById('opacity').value);
@@ -798,6 +798,7 @@
             const arrayBuffer = await file.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
             const pages = pdfDoc.getPages();
+            const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
             for (const page of pages) {
                 const { width, height } = page.getSize();
@@ -828,7 +829,7 @@
                         color: rgb(r, g, b),
                         opacity: opacity,
                         rotate: rotate,
-                        font: await pdfDoc.embedFont(PDFDocument.Font.Helvetica),
+                        font: helveticaFont,
                     });
                 } else if (watermarkImageData) {
                     const img = await pdfDoc.embedPng(watermarkImageData);

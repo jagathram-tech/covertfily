@@ -7,24 +7,27 @@
     <meta name="description" content="Convert PDF files to editable Word documents instantly. Free, fast, and accurate conversion.">
     <link rel="canonical" href="https://covertfily.com/pdf-to-word.html">
     <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #dbeafe;
-            --bg: #ffffff;
-            --surface: #fafbfc;
-            --text: #1e293b;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #eef2ff;
+            --primary-glow: rgba(99, 102, 241, 0.15);
+            --bg: #fafbff;
+            --surface: #ffffff;
+            --text: #1e1b4b;
             --text-secondary: #64748b;
             --text-muted: #94a3b8;
-            --success: #059669;
-            --success-bg: #d1fae5;
+            --success: #10b981;
+            --success-bg: #ecfdf5;
             --error: #ef4444;
-            --error-bg: #fee2e2;
-            --border: #f1f5f9;
-            --shadow: 0 1px 3px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --error-bg: #fef2f2;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 40px rgba(99, 102, 241, 0.08);
             --radius: 16px;
             --radius-sm: 10px;
             --radius-xs: 6px;
@@ -33,7 +36,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
@@ -44,13 +47,15 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(12px);
+            background: rgba(250, 251, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 0 24px;
             height: 68px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
         }
 
         .logo {
@@ -58,15 +63,16 @@
             align-items: center;
             gap: 10px;
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text);
             text-decoration: none;
+            letter-spacing: -0.3px;
         }
 
         .logo-icon {
             width: 36px;
             height: 36px;
-            border-radius: 9px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -78,20 +84,23 @@
 
         .nav-links {
             display: flex;
-            gap: 4px;
+            gap: 2px;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            background: rgba(241, 245, 249, 0.7);
+            padding: 4px;
+            border-radius: 12px;
         }
 
         .nav-link {
-            padding: 8px 14px;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 600;
             color: var(--text-secondary);
             text-decoration: none;
-            border-radius: var(--radius-xs);
-            transition: all 0.15s ease;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
 
         .nav-link:hover { color: var(--primary); background: var(--primary-light); }
@@ -107,37 +116,78 @@
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
+            transition: all 0.2s;
         }
 
-        .github-btn:hover { background: var(--text-secondary); }
+        .github-btn:hover { background: #334155; transform: translateY(-1px); }
         .github-btn svg { width: 18px; height: 18px; fill: white; }
 
         .hero {
-            background: linear-gradient(180deg, #fafbfc 0%, #f8fafc 100%);
-            padding: 48px 24px 32px;
+            background: linear-gradient(180deg, var(--bg) 0%, #f1f0ff 100%);
+            padding: 56px 24px 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--primary-light);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .hero-badge svg { width: 14px; height: 14px; }
+
         .hero h1 {
-            font-size: clamp(28px, 4vw, 36px);
+            font-size: clamp(30px, 5vw, 42px);
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             letter-spacing: -0.5px;
+            position: relative;
         }
 
         .hero h1 span { 
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            background: linear-gradient(135deg, var(--primary), #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .hero p { font-size: 16px; color: var(--text-secondary); max-width: 480px; margin: 0 auto; }
+        .hero p { font-size: 16px; color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.7; position: relative; }
 
         .converter-section {
             max-width: 640px;
-            margin: 0 auto;
-            padding: 32px 24px 64px;
+            margin: -20px auto 0;
+            padding: 0 24px 64px;
+            position: relative;
+        }
+
+        .converter-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(226, 232, 240, 0.5);
         }
 
         .drop-zone {
@@ -146,74 +196,109 @@
             padding: 48px 24px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            background: var(--surface);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #fafbff 0%, #f8f7ff 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        .drop-zone:hover { border-color: var(--primary); background: var(--primary-light); }
-        .drop-zone.has-file { border-color: var(--success); background: var(--success-bg); }
+        .drop-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .drop-zone:hover { border-color: var(--primary); }
+        .drop-zone:hover::before { opacity: 1; }
+        .drop-zone.has-file { border-color: var(--success); border-style: solid; background: var(--success-bg); }
 
         .drop-zone-icon {
-            width: 56px;
-            height: 56px;
-            margin: 0 auto 12px;
-            background: var(--bg);
-            border-radius: 14px;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 14px;
+            background: var(--surface);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
+            position: relative;
         }
 
         .drop-zone-icon svg { width: 28px; height: 28px; stroke: var(--primary); fill: none; stroke-width: 1.8; }
-        .drop-zone h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-        .drop-zone p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
-        .drop-zone .btn { display: inline-block; background: var(--primary); color: white; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 600; }
+        .drop-zone h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; position: relative; }
+        .drop-zone p { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; position: relative; }
+        .drop-zone .btn { display: inline-block; background: var(--primary); color: white; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600; font-size: 13px; position: relative; transition: all 0.2s; }
+        .drop-zone .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
         .drop-zone input { display: none; }
 
         .notice {
             background: var(--primary-light);
+            border: 1px solid rgba(99, 102, 241, 0.1);
             border-radius: var(--radius-sm);
             padding: 12px 16px;
             font-size: 13px;
             color: var(--text-secondary);
             margin-top: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
         }
+
+        .notice svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; flex-shrink: 0; margin-top: 2px; }
 
         .file-info {
             display: none;
             align-items: center;
             gap: 12px;
-            padding: 16px;
+            padding: 14px 16px;
             background: var(--bg);
             border-radius: var(--radius-sm);
             margin-top: 16px;
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
         }
 
-        .file-info.show { display: flex; }
-        .file-info .icon { width: 48px; height: 48px; background: var(--error-bg); border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; }
-        .file-info .icon svg { width: 24px; height: 24px; stroke: var(--error); fill: none; }
+        .file-info.show { display: flex; animation: slideIn 0.3s ease; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-info .icon { width: 44px; height: 44px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; }
+        .file-info .icon svg { width: 22px; height: 22px; stroke: var(--error); fill: none; }
         .file-info .details { flex: 1; text-align: left; }
-        .file-info .name { font-weight: 600; font-size: 14px; }
+        .file-info .name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
         .file-info .size { font-size: 12px; color: var(--text-muted); }
-        .file-info .remove { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--error-bg); color: var(--error); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .file-info .remove { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--error-bg); color: var(--error); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .file-info .remove:hover { background: var(--error); color: white; }
 
         .convert-btn {
             width: 100%;
             padding: 14px 24px;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
             color: white;
             border: none;
             border-radius: var(--radius-sm);
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .convert-btn:hover { background: var(--primary-dark); }
+        .convert-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35); }
         .convert-btn:disabled { background: var(--text-muted); cursor: not-allowed; }
+        .convert-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .loading {
             display: none;
@@ -221,7 +306,9 @@
             padding: 32px;
         }
 
-        .loading.show { display: block; }
+        .loading.show { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .spinner {
             width: 40px;
@@ -229,27 +316,50 @@
             border: 3px solid var(--border);
             border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
+        .loading p { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
 
         .result {
             display: none;
             margin-top: 24px;
             padding: 24px;
-            background: var(--success-bg);
+            background: linear-gradient(135deg, var(--success-bg), #d1fae5);
             border-radius: var(--radius);
             text-align: center;
+            border: 1px solid rgba(16, 185, 129, 0.15);
         }
 
-        .result.show { display: block; }
-        .result h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--success); }
+        .result.show { display: block; animation: slideIn 0.4s ease; }
+        .result h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--success); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .result h3 svg { width: 20px; height: 20px; stroke: var(--success); fill: none; stroke-width: 2.5; }
         .result p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
 
+        .result .stats {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .result .stat {
+            background: white;
+            border-radius: var(--radius-xs);
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .result .stat span { color: var(--success); }
+
         .download-btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: var(--success);
             color: white;
             padding: 12px 32px;
@@ -257,9 +367,11 @@
             font-size: 14px;
             font-weight: 700;
             text-decoration: none;
+            transition: all 0.3s;
         }
 
-        .download-btn:hover { background: #047857; }
+        .download-btn:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
+        .download-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
         .mobile-menu-btn svg { width: 22px; height: 22px; stroke: var(--text); }
@@ -270,19 +382,20 @@
             top: 68px;
             left: 12px;
             right: 12px;
-            background: white;
+            background: var(--surface);
             border-radius: var(--radius-sm);
             padding: 12px;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-lg);
             z-index: 99;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
+            border: 1px solid var(--border);
         }
 
         .mobile-nav.open { display: flex; }
         .mobile-nav .nav-link {
             padding: 12px 16px;
-            background: var(--surface);
+            background: var(--bg);
             border-radius: var(--radius-xs);
             font-size: 14px;
             color: var(--text);
@@ -292,11 +405,22 @@
             min-width: calc(50% - 4px);
         }
 
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        footer a { color: var(--primary); text-decoration: none; }
+
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .github-btn span { display: none; }
             .mobile-menu-btn { display: block; }
-            .converter-section { padding: 24px 16px 48px; }
+            .converter-section { padding: 0 16px 48px; }
+            .converter-card { padding: 20px; }
+            .drop-zone { padding: 32px 16px; }
         }
     </style>
 </head>
@@ -334,53 +458,79 @@
 </nav>
 
 <section class="hero">
+    <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        100% Browser-Based
+    </div>
     <h1>PDF to <span>Word</span></h1>
-    <p>Convert PDF files to editable Word documents instantly. Free, fast, and accurate.</p>
+    <p>Extract text from your PDFs and convert them into editable Word documents instantly — all processing happens locally.</p>
 </section>
 
 <main class="converter-section">
-    <div class="drop-zone" id="dropZone">
-        <div class="drop-zone-icon">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <div class="converter-card">
+        <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <h3>Drop your PDF file here</h3>
+            <p>or click to browse your files</p>
+            <span class="btn">Select PDF</span>
+            <input type="file" id="fileInput" accept=".pdf">
         </div>
-        <h3>Drop your PDF file here</h3>
-        <p>or click to browse</p>
-        <span class="btn">Select File</span>
-        <input type="file" id="fileInput" accept=".pdf">
-    </div>
 
-    <div class="file-info" id="fileInfo">
-        <div class="icon">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <div class="file-info" id="fileInfo">
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="details">
+                <div class="name" id="fileName"></div>
+                <div class="size" id="fileSize"></div>
+            </div>
+            <button class="remove" id="removeFile">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
-        <div class="details">
-            <div class="name" id="fileName"></div>
-            <div class="size" id="fileSize"></div>
+
+        <div class="notice">
+            <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Text is extracted from PDF pages. Complex formatting, images, and tables won't carry over — this works best for text-heavy documents.
         </div>
-        <button class="remove" id="removeFile">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+
+        <button class="convert-btn" id="convertBtn" disabled>
+            <svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            Convert to Word
         </button>
-    </div>
 
-    <div class="notice">
-        Note: For best results, use PDFs with text content. Complex layouts and images may not convert perfectly.
-    </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loadingText">Extracting text from PDF...</p>
+        </div>
 
-    <button class="convert-btn" id="convertBtn" disabled>Convert to Word</button>
-
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Converting...</p>
-    </div>
-
-    <div class="result" id="result">
-        <h3>Conversion Complete!</h3>
-        <p>Your Word document is ready.</p>
-        <a href="#" class="download-btn" id="downloadBtn">Download Word</a>
+        <div class="result" id="result">
+            <h3>
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                Conversion Complete!
+            </h3>
+            <div class="stats">
+                <div class="stat">Pages: <span id="pageCountStat">0</span></div>
+                <div class="stat">Words: <span id="wordCountStat">0</span></div>
+            </div>
+            <p>Your Word document is ready to download.</p>
+            <a href="#" class="download-btn" id="downloadBtn">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Word
+            </a>
+        </div>
     </div>
 </main>
 
+<footer>
+    <p>covertfily — <a href="https://github.com/jagathram-tech/covertfily">Open Source</a> · All conversions happen locally in your browser</p>
+</footer>
+
 <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const fileInfo = document.getElementById('fileInfo');
@@ -389,6 +539,7 @@
     const removeFile = document.getElementById('removeFile');
     const convertBtn = document.getElementById('convertBtn');
     const loading = document.getElementById('loading');
+    const loadingText = document.getElementById('loadingText');
     const result = document.getElementById('result');
     const downloadBtn = document.getElementById('downloadBtn');
 
@@ -398,16 +549,16 @@
     
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        dropZone.classList.add('dragover');
+        dropZone.style.borderColor = 'var(--primary)';
     });
 
     dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
+        dropZone.style.borderColor = '';
     });
 
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
-        dropZone.classList.remove('dragover');
+        dropZone.style.borderColor = '';
         const files = e.dataTransfer.files;
         if (files.length) handleFile(files[0]);
     });
@@ -455,48 +606,88 @@
 
         try {
             const arrayBuffer = await selectedFile.arrayBuffer();
-            const { PDFDocument, rgb } = PDFLib;
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const totalPages = pdf.numPages;
             
-            const pdfDoc = await PDFDocument.load(arrayBuffer);
-            const pages = pdfDoc.getPages();
-            
-            let textContent = '';
-            
-            for (let i = 0; i < pages.length; i++) {
-                textContent += `--- Page ${i + 1} ---\n\n`;
+            let allTextContent = [];
+            let totalWords = 0;
+
+            for (let i = 1; i <= totalPages; i++) {
+                loadingText.textContent = `Extracting text from page ${i} of ${totalPages}...`;
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                
+                let pageText = '';
+                let lastY = null;
+                
+                for (const item of textContent.items) {
+                    if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                        pageText += '\n';
+                    }
+                    pageText += item.str;
+                    if (item.hasEOL) pageText += '\n';
+                    lastY = item.transform[5];
+                }
+                
+                allTextContent.push(pageText.trim());
+                totalWords += pageText.trim().split(/\s+/).filter(w => w.length > 0).length;
             }
 
-            const htmlContent = `
+            // Build a proper .doc file (HTML-based Word format)
+            const docContent = `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
 <head>
+<meta charset="utf-8">
 <title>${selectedFile.name.replace('.pdf', '')}</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+</w:WordDocument>
+</xml>
+<![endif]-->
 <style>
-body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-h1 { color: #2563eb; }
-.page-break { page-break-after: always; }
+    @page { size: A4; margin: 2.54cm; }
+    body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; color: #333; }
+    .page { page-break-after: always; margin-bottom: 2em; }
+    .page:last-child { page-break-after: auto; }
+    .page-header { font-size: 9pt; color: #999; border-bottom: 1px solid #eee; padding-bottom: 6px; margin-bottom: 16px; }
+    p { margin: 0 0 8pt 0; text-align: justify; }
+    h1 { font-size: 18pt; color: #1e1b4b; margin-bottom: 16pt; }
 </style>
 </head>
 <body>
 <h1>${selectedFile.name.replace('.pdf', '')}</h1>
-<p>${textContent || 'PDF content converted. Note: Full text extraction requires additional processing.'}</p>
-<p style="color: #64748b; font-size: 12px;">Converted from PDF using covertfily</p>
+${allTextContent.map((text, i) => {
+    const paragraphs = text.split('\n').filter(p => p.trim()).map(p => `<p>${p.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('\n');
+    return `<div class="page">
+<div class="page-header">Page ${i + 1} of ${totalPages}</div>
+${paragraphs || '<p><em>(No text content on this page)</em></p>'}
+</div>`;
+}).join('\n')}
 </body>
 </html>`;
 
-            const blob = new Blob([htmlContent], { type: 'application/msword' });
+            const blob = new Blob(['\ufeff' + docContent], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
             
             downloadBtn.href = url;
             downloadBtn.download = selectedFile.name.replace('.pdf', '.doc');
 
+            document.getElementById('pageCountStat').textContent = totalPages;
+            document.getElementById('wordCountStat').textContent = totalWords.toLocaleString();
+
             loading.classList.remove('show');
             result.classList.add('show');
-            convertBtn.style.display = 'block';
+            convertBtn.style.display = 'flex';
         } catch (error) {
             alert('Error converting PDF: ' + error.message);
             loading.classList.remove('show');
-            convertBtn.style.display = 'block';
+            convertBtn.style.display = 'flex';
         }
     });
 

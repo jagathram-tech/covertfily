@@ -456,7 +456,7 @@
         try {
             const text = await selectedFile.text();
             
-            const { PDFDocument, rgb } = PDFLib;
+            const { PDFDocument, rgb, StandardFonts } = PDFLib;
             const pdfDoc = await PDFDocument.create();
             
             const rows = text.split('\n').filter(row => row.trim());
@@ -469,7 +469,7 @@
             let y = height - 40;
             const colWidth = (width - margin * 2) / Math.min(rows[0]?.split(',')?.length || 1, 6);
 
-            const font = await pdfDoc.embedFont(PDFDocument.Font.Helvetica);
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
             for (const row of rows) {
                 const cells = row.split(',');

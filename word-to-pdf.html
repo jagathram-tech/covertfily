@@ -456,7 +456,7 @@
         try {
             const text = await selectedFile.text();
             
-            const { PDFDocument, rgb } = PDFLib;
+            const { PDFDocument, rgb, StandardFonts } = PDFLib;
             const pdfDoc = await PDFDocument.create();
             
             const lines = text.split('\n');
@@ -468,7 +468,7 @@
             let y = height - 40;
             const margin = 40;
             
-            const font = await pdfDoc.embedFont(PDFDocument.Font.Helvetica);
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
             for (const line of lines) {
                 if (y < margin + lineHeight) {
