@@ -299,7 +299,7 @@
             .converter-section { padding: 24px 16px 48px; }
         }
     </style>
-</head>
+    </head>
 <body>
 
 <header>
@@ -526,5 +526,66 @@
     }
 </script>
 
+<script>
+(function(){
+  // Mirror right ad to left after it loads
+  var t = setInterval(function(){
+    var r = document.getElementById('container-4dc3593bb92cbf7f6ad80e7d0905abe4');
+    var l = document.getElementById('container-4dc3593bb92cbf7f6ad80e7d0905abe4-l');
+    if(r && l && r.innerHTML.trim()){
+      l.innerHTML = r.innerHTML;
+      clearInterval(t);
+    }
+  }, 800);
+})();
+</script>
+
+  <div id="container-4dc3593bb92cbf7f6ad80e7d0905abe4"></div>
+</div>
+<div id="ad-side-l">
+  <div id="container-4dc3593bb92cbf7f6ad80e7d0905abe4-copy"></div>
+</div>
+<script>
+(function(){
+  var t=setInterval(function(){
+    var r=document.getElementById('container-4dc3593bb92cbf7f6ad80e7d0905abe4');
+    var l=document.getElementById('container-4dc3593bb92cbf7f6ad80e7d0905abe4-copy');
+    if(r&&l&&r.children.length>0){l.innerHTML=r.innerHTML;clearInterval(t);}
+  },500);
+})();
+</script>
+
+<!-- Adsterra Side Banners -->
+<style>
+  #ad-side-r,#ad-side-l{position:fixed;top:50%;transform:translateY(-50%);width:160px;z-index:99999;overflow:visible;}
+  #ad-side-r{right:0;}
+  #ad-side-l{left:0;}
+  #ad-side-r *,#ad-side-l *{all:revert;}
+  @media(max-width:1300px){.ad-side-r,.ad-side-l{display:none;}}
+</style>
+<script>
+  atOptions = {
+    'key' : '3c6b7149f636d00e1bd554925cf7c901',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<div id="ad-side-r">
+<script src="https://www.highperformanceformat.com/3c6b7149f636d00e1bd554925cf7c901/invoke.js"></script>
+</div>
+<div id="ad-side-l">
+<script>
+  atOptions = {
+    'key' : '3c6b7149f636d00e1bd554925cf7c901',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/3c6b7149f636d00e1bd554925cf7c901/invoke.js"></script>
+</div>
 </body>
 </html>

@@ -1,16 +1,21 @@
 {
-  "name": "covertfily",
+  "name": "covertfily — Private File Converter",
   "short_name": "covertfily",
-  "description": "Fastest and 100% private file converter.",
+  "description": "Convert files instantly — 100% private, 100% free. PDF to Word, compress PDF, images, video & audio. No uploads.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "background_color": "#fafbff",
+  "theme_color": "#6366f1",
   "icons": [
     {
-      "src": "/logo.png",
-      "type": "image/png",
-      "sizes": "1024x1024"
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
