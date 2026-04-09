@@ -1,4 +1,6 @@
+# Robots.txt for Covertfily
 User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: https://covertfily.com/sitemap.xml

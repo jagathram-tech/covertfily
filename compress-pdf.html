@@ -3,101 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Private PDF Compressor — Reduce File Size With Zero Uploads</title>
-    <meta name="description" content="Shrink PDF file sizes instantly and securely on your own device. Client-side compression guarantees absolute privacy and zero data leaks.">
-    <meta name="keywords" content="covertfily, free Compress PDF, private converter, browser converter, no upload, local file converter">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="author" content="covertfily">
-    <meta name="theme-color" content="#6366f1">
-    <link rel="canonical" href="https://covertfily.com/compress-pdf.html">
-    <meta name="google-site-verification" content="6mltV1QYTyi4kLvXx6l395BbEG8FGmRnqe02e-Q2z70" />
-    <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="favicon.png" sizes="192x192">
-    <link rel="apple-touch-icon" href="favicon.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <title>Compress PDF Online - Reduce PDF Size Privately - Covertfily</title>
+    <meta name="description" content="Shrink your PDF file size without losing quality. 100% private, local-first PDF compression. No uploads, no waiting, just fast local processing.">
+    <meta name="keywords" content="Compress PDF, Reduce PDF Size, PDF Optimizer, Private PDF Compression, Local PDF Tools, Covertfily PDF">
     
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://covertfily.com/compress-pdf.html">
-    <meta property="og:title" content="Compress PDF - covertfily">
-    <meta property="og:description" content="Reduce PDF file size without sacrificing quality. Compress PDF files online for free, instantly in your browser.">
-    <meta property="og:image" content="https://covertfily.com/og-image.png">
-    <meta property="og:site_name" content="covertfily">
-    <meta property="og:locale" content="en_US">
+    <!-- Once-per-session Ad Logic -->
+    <script>
+        if (!sessionStorage.getItem('adShown')) {
+            const s = document.createElement('script');
+            s.src = "https://jabturfembitter.com/78/e5/2c/78e52ce51f1ba2f301ca21694104c781.js";
+            document.head.appendChild(s);
+            sessionStorage.setItem('adShown', 'true');
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://covertfily.com/compress-pdf.html">
-    <meta name="twitter:title" content="Compress PDF - covertfily">
-    <meta name="twitter:description" content="Reduce PDF file size without sacrificing quality. Compress PDF files online for free, instantly in your browser.">
-    <meta name="twitter:image" content="https://covertfily.com/og-image.png">
+        .compression-settings {
+            margin-top: 30px;
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            text-align: left;
+            display: none;
+        }
 
-    <!-- Additional SEO -->
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="3 days">
-    <meta name="distribution" content="global">
-    <meta name="rating" content="general">
+        .btn-compress {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
 
-    <!-- JSON-LD Structured Data for WebApplication -->
-    
-    
-</div>
-</main>
+        .btn-compress:hover {
+            background: var(--primary-hover);
+        }
 
-<!-- Open Source Banner -->
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); padding: 36px 24px; border-radius: 20px; max-width: 850px; margin: 40px auto 20px; text-align: center; color: white; box-shadow: 0 12px 35px rgba(15,23,42,0.25); border: 1px solid rgba(255,255,255,0.08);">
-  <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; font-weight: 700; font-size: 14px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px;">
-    ⭐ Open Source & Free Forever – Built with <span style="color:#ef4444">❤️</span> in India
-  </div>
-  <h3 style="font-size: 26px; font-weight: 800; margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; letter-spacing: -0.5px;">
-    Star us on GitHub: <span style="color:#818cf8;">jagathram-tech/covertfily</span>
-  </h3>
-  <p style="font-size: 16px; color: #94a3b8; margin-bottom: 28px; font-weight: 500; max-width: 600px; margin-left: auto; margin-right: auto;">
-    Verify our transparent local-processing code, contribute to the engine, or self-host if you want absolute ultimate control over your data.
-  </p>
-  <a href="https://github.com/jagathram-tech/covertfily" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; background: white; color: #0f172a; padding: 14px 32px; border-radius: 12px; font-weight: 800; font-size: 16px; text-decoration: none; transition: transform 0.2s; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
-    <svg style="width: 22px; height: 22px; margin-right: 10px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-    Drop a Star on GitHub
-  </a>
-</div>
-<!-- /Open Source Banner -->
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-alt);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+            display: none;
+        }
 
-  <!-- Footer -->
-  <footer class="bg-slate-50 border-t border-gray-200 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="flex items-center justify-center gap-3 font-bold text-slate-800 text-xl mb-6">
-        <img src="logo.png" alt="covertfily logo" class="w-8 h-8 rounded-lg">
-        covertfily
-      </div>
-      <p class="text-slate-500 font-medium mb-6">Convert Any File. 100% Private. Instantly.</p>
-      <div class="text-sm text-slate-400 mt-8 border-t border-gray-200 pt-8">
-        &copy; 2026 covertfily. <a href="https://github.com/jagathram-tech/covertfily" class="text-brand-600 hover:text-brand-700 font-medium">Open Source MIT License</a>. Your files never leave your device.
-      </div>
-      <!-- Stealth SEO Footer -->
-      <div style="margin-top: 40px; opacity: 0.15; font-size: 10px; display: flex; justify-content: center; gap: 10px; filter: grayscale(1);">
-        <a href="formats/index.html" style="color: inherit; text-decoration: none;">Resource Index</a>
-        <a href="compare.html" style="color: inherit; text-decoration: none;">Architecture Analysis</a>
-        <a href="help_docs/fix-windows-cannot-open-file-extension.html" style="color: inherit; text-decoration: none;">System Documentation</a>
-      </div>
-    </div>
-  </footer>
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="tools-menu">
+                <a href="#">Tools <i class="fas fa-search" style="font-size: 0.8rem; margin-left: 4px;"></i></a>
+                <div class="tools-dropdown">
+                    <input type="text" placeholder="Search tools..." class="tools-search">
+                    <div class="tools-list">
+                        <a href="watermark.html"><i class="fas fa-stamp"></i> Add Watermark</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress-arrows-alt"></i> Compress PDF</a>
+                        <a href="merge-pdf.html"><i class="fas fa-file-pdf"></i> Merge PDF</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
 
+    <main>
+        <div class="tool-container">
+            <div class="section-title">
+                <i class="fas fa-compress-arrows-alt" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Compress PDF</h1>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 40px;">Reduce your PDF file size locally while maintaining quality.</p>
 
-    
-  </div>
-  
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon">
+                    <i class="fas fa-file-archive"></i>
+                </div>
+                <h2>Select PDF to Compress</h2>
+                <p>Click or drag and drop your PDF file</p>
+                <input type="file" id="fileInput" hidden accept="application/pdf">
+            </div>
 
-<!-- Sticky Bottom Banner -->
+            <div class="compression-settings" id="settings">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-weight: 700;">Compression Level</span>
+                    <span id="qualityVal">Medium (70%)</span>
+                </div>
+                <input type="range" id="qualityRange" style="width: 100%;" min="10" max="90" value="70">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Lower quality results in a smaller file size.</p>
+                
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="statusTxt" style="text-align: center; font-size: 0.9rem; margin-top: 10px; display: none;"></p>
 
+                <button class="btn-compress" id="compressBtn">Compress PDF Now</button>
+            </div>
+        </div>
+    </main>
 
-  <script>
-    (function() {
-      const btn = document.getElementById('mobileMenuBtn');
-      const nav = document.getElementById('mobileNav');
-      if (btn && nav) {
-        btn.onclick = function() { nav.classList.toggle('hidden'); };
-      }
-    })();
-  </script>
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Covertfily</span>
+                </div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side file conversion. Security by design.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">
+            MIT Licensed & Open Source Project • Covertfily
+        </div>
+    </footer>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const settings = document.getElementById('settings');
+        const compressBtn = document.getElementById('compressBtn');
+        const qualityRange = document.getElementById('qualityRange');
+        const qualityVal = document.getElementById('qualityVal');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const statusTxt = document.getElementById('statusTxt');
+
+        let selectedFile = null;
+
+        dropzone.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                settings.style.display = 'block';
+                dropzone.innerHTML = `<h3><i class='fas fa-file-pdf'></i> ${selectedFile.name}</h3>`;
+            }
+        };
+
+        qualityRange.oninput = (e) => {
+            const val = e.target.value;
+            let label = "Medium";
+            if (val < 40) label = "Extreme";
+            else if (val > 75) label = "Light";
+            qualityVal.textContent = `${label} (${val}%)`;
+        };
+
+        compressBtn.onclick = async () => {
+            if (!selectedFile) return;
+            
+            compressBtn.disabled = true;
+            progressBar.style.display = 'block';
+            statusTxt.style.display = 'block';
+            
+            const arrayBuffer = await selectedFile.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                unit: 'px',
+                hotfixes: ['px_scaling']
+            });
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                statusTxt.textContent = `Processing page ${i} of ${pdf.numPages}...`;
+                progressFill.style.width = `${(i / pdf.numPages) * 100}%`;
+                
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({scale: 1.5}); // Scale for better text clarity
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({canvasContext: ctx, viewport: viewport}).promise;
+
+                const imgData = canvas.toDataURL('image/jpeg', qualityRange.value / 100);
+                
+                if (i > 1) {
+                    doc.addPage([canvas.width, canvas.height], canvas.width > canvas.height ? 'l' : 'p');
+                } else {
+                    // First page: set initial dimensions
+                    doc.deletePage(1);
+                    doc.addPage([canvas.width, canvas.height], canvas.width > canvas.height ? 'l' : 'p');
+                }
+                
+                doc.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+            }
+
+            doc.save(selectedFile.name.replace('.pdf', '') + '_compressed.pdf');
+            
+            statusTxt.textContent = "Done! Your compressed PDF has been downloaded.";
+            compressBtn.disabled = false;
+        };
+
+        // Tools search filtering
+        document.querySelector('.tools-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const tools = document.querySelectorAll('.tools-list a');
+            tools.forEach(tool => {
+                const text = tool.textContent.toLowerCase();
+                tool.classList.toggle('hidden', !text.includes(query));
+            });
+        });
+    </script>
 </body>
 </html>

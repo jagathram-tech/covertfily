@@ -3,35 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>covertfily — 100% Private, Zero Upload File Converter</title>
-    <meta name="description" content="Convert files instantly. Client-side processing means zero uploads and zero data leaks. The secure offline file converter for PDF, images, video & audio.">
-    <meta name="keywords" content="covertfily, free file converter, PDF to Word converter, compress PDF online, merge PDF free, image converter, video converter, audio converter, private file converter, no upload converter, browser converter, offline converter, PDF to DOCX, JPG to PDF, PNG to WebP, MP4 to WebM, MP3 converter, watermark PDF, unlock PDF, Excel to PDF, PPT to PDF, Word to PDF, convert files online free">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="author" content="covertfily">
-    <meta name="theme-color" content="#4f46e5">
-    <link rel="canonical" href="https://covertfily.com/">
-    <meta name="google-site-verification" content="6mltV1QYTyi4kLvXx6l395BbEG8FGmRnqe02e-Q2z70" />
-    <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="favicon.png" sizes="192x192">
-    <link rel="apple-touch-icon" href="favicon.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Covertfily - Professional Client-Side File Converter & PDF Tools</title>
+    <meta name="description" content="100% private, browser-based file conversion. Convert PDF, Images, Video, and Audio locally with MIT-licensed power. Secure merged PDF, compression, and watermarking tools.">
+    <meta name="keywords" content="PDF Tools, Merge PDF, Compress PDF, Add Watermark, Video Converter, Image Converter, Private File Conversion, Open Source Converter, MIT Licensed, Covertfily Blog">
     
+    <!-- Open Graph / SEO -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://covertfily.com/">
+    <meta property="og:title" content="Covertfily - Safe & Fast Local File Conversion">
+    <meta property="og:description" content="Stop uploading your data. Convert and process files 100% locally in your browser.">
+    <meta property="og:image" content="https://covertfily.com/og-image.png">
+
+    <!-- Once-per-session Ad Logic -->
+    <script>
+        if (!sessionStorage.getItem('adShown')) {
+            const s = document.createElement('script');
+            s.src = "https://jabturfembitter.com/78/e5/2c/78e52ce51f1ba2f301ca21694104c781.js";
+            document.head.appendChild(s);
+            sessionStorage.setItem('adShown', 'true');
+        }
+    </script>
     
-  </div>
-  
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries for Client-Side Conversion -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-<!-- Sticky Bottom Banner -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="tools-menu">
+                <a href="#">Tools <i class="fas fa-search" style="font-size: 0.8rem; margin-left: 4px;"></i></a>
+                <div class="tools-dropdown">
+                    <input type="text" placeholder="Search tools..." class="tools-search">
+                    <div class="tools-list">
+                        <a href="watermark.html" id="toolWatermark"><i class="fas fa-stamp"></i> Add Watermark</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress-arrows-alt"></i> Compress PDF</a>
+                        <a href="merge-pdf.html"><i class="fas fa-file-pdf"></i> Merge PDF</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
 
+    <main>
+        <section class="hero">
+            <h1>100% Private, Client-Side File Conversion</h1>
+            <p>MIT Licensed & Open Source. No external APIs, no servers, and no tracking. Your files never leave your computer—everything happens locally in your browser.</p>
+            
+            <div class="format-selectors">
+                <div class="custom-dropdown format-select" id="formatFromContainer" data-value="">
+                    <button class="dropdown-trigger" type="button">
+                        <span class="dropdown-value">Convert from...</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <input type="text" class="dropdown-search" placeholder="Search formats...">
+                        <div class="dropdown-items" id="fromItems">
+                            <div class="dropdown-item" data-value="">Auto-detect</div>
+                            <div class="dropdown-group-label">Images</div>
+                            <div class="dropdown-item" data-value="jpg">JPG/JPEG</div>
+                            <div class="dropdown-item" data-value="png">PNG</div>
+                            <div class="dropdown-item" data-value="webp">WebP</div>
+                            <div class="dropdown-item" data-value="gif">GIF</div>
+                            <div class="dropdown-item" data-value="bmp">BMP</div>
+                            <div class="dropdown-item" data-value="svg">SVG</div>
+                            <div class="dropdown-item" data-value="avif">AVIF</div>
+                            <div class="dropdown-item" data-value="tiff">TIFF</div>
+                            <div class="dropdown-item" data-value="heic">HEIC/HEIF</div>
+                            <div class="dropdown-group-label">Video</div>
+                            <div class="dropdown-item" data-value="mp4">MP4</div>
+                            <div class="dropdown-item" data-value="webm">WebM</div>
+                            <div class="dropdown-item" data-value="mov">MOV</div>
+                            <div class="dropdown-item" data-value="avi">AVI</div>
+                            <div class="dropdown-item" data-value="mkv">MKV</div>
+                            <div class="dropdown-item" data-value="flv">FLV</div>
+                            <div class="dropdown-item" data-value="wmv">WMV</div>
+                            <div class="dropdown-group-label">Audio</div>
+                            <div class="dropdown-item" data-value="mp3">MP3</div>
+                            <div class="dropdown-item" data-value="wav">WAV</div>
+                            <div class="dropdown-item" data-value="ogg">OGG</div>
+                            <div class="dropdown-item" data-value="aac">AAC</div>
+                            <div class="dropdown-item" data-value="m4a">M4A</div>
+                            <div class="dropdown-item" data-value="flac">FLAC</div>
+                            <div class="dropdown-group-label">PDF & Documents</div>
+                            <div class="dropdown-item" data-value="pdf">PDF</div>
+                            <div class="dropdown-item" data-value="html">HTML</div>
+                            <div class="dropdown-item" data-value="md">Markdown (MD)</div>
+                            <div class="dropdown-item" data-value="txt">Plain Text (TXT)</div>
+                            <div class="dropdown-item" data-value="xml">XML</div>
+                            <div class="dropdown-group-label">Spreadsheets & Data</div>
+                            <div class="dropdown-item" data-value="xlsx">XLSX/XLSM/XLSB</div>
+                            <div class="dropdown-item" data-value="xls">XLS</div>
+                            <div class="dropdown-item" data-value="csv">CSV</div>
+                            <div class="dropdown-item" data-value="ods">ODS</div>
+                            <div class="dropdown-item" data-value="json">JSON</div>
+                            <div class="dropdown-group-label">Archives</div>
+                            <div class="dropdown-item" data-value="zip">ZIP</div>
+                        </div>
+                        <div class="no-results">No matching formats</div>
+                    </div>
+                </div>
+                
+                <div class="format-connector">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="custom-dropdown format-select" id="formatToContainer" data-value="">
+                    <button class="dropdown-trigger" type="button" disabled>
+                        <span class="dropdown-value">Select input first...</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <input type="text" class="dropdown-search" placeholder="Search formats...">
+                        <div class="dropdown-items" id="toItems">
+                            <!-- Dynamically populated -->
+                            <div class="dropdown-placeholder" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                                Please select an input format first
+                            </div>
+                        </div>
+                        <div class="no-results">No matching formats</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h2>Drop files here</h2>
+                <p>Or click to select files from your computer</p>
+                <input type="file" id="fileInput" hidden multiple>
+            </div>
+        </section>
 
-  <script>
-    (function() {
-      const btn = document.getElementById('mobileMenuBtn');
-      const nav = document.getElementById('mobileNav');
-      if (btn && nav) {
-        btn.onclick = function() { nav.classList.toggle('hidden'); };
-      }
-    })();
-  </script>
+        <section class="converters">
+            <div class="section-title">
+                <h2>Popular Converters</h2>
+            </div>
+            
+            <div class="grid">
+                <!-- Image Converter -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-image"></i></div>
+                    <h3>Image Converter</h3>
+                    <p>Convert JPG, PNG, WebP, SVG, and more than 100+ image formats.</p>
+                </div>
+
+                <!-- Video Converter -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-video"></i></div>
+                    <h3>Video Converter</h3>
+                    <p>Change MP4, AVI, MKV, MOV and other video formats easily.</p>
+                </div>
+
+                <!-- Audio Converter -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-music"></i></div>
+                    <h3>Audio Converter</h3>
+                    <p>Convert MP3, WAV, FLAC, OGG and 50+ audio formats instantly.</p>
+                </div>
+
+                <!-- Document Converter -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Document Converter</h3>
+                    <p>PDF to Word, Excel to PDF, and other office document transformations.</p>
+                </div>
+
+                <!-- Ebook Converter -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-book"></i></div>
+                    <h3>Ebook Converter</h3>
+                    <p>Convert to EPUB, MOBI, AZW3, and PDF for your e-reader.</p>
+                </div>
+
+                <!-- Archive Converter -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-file-archive"></i></div>
+                    <h3>Archive Converter</h3>
+                    <p>Create or extract ZIP, RAR, 7Z, and GZ archives online.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" style="padding: 80px 5%; background: var(--bg-alt);">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Why choose Covertfily?</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Experience the best file conversion service with features designed for you.</p>
+            </div>
+            
+            <div class="grid">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <h4>100% Client-Side</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Privacy redefined. Your files are processed locally in your browser. Nothing is ever uploaded to a server.</p>
+                </div>
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-code" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <h4>Open Source</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Totally free and transparent. Audit our code on GitHub and see how we handle your data.</p>
+                </div>
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-bolt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <h4>High Speed</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Leverages your computer's own processing power for instant conversions without upload delays.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Covertfily</span>
+                </div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side file conversion. Security by design.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">
+            MIT Licensed & Open Source Project • Covertfily
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
 </body>
 </html>

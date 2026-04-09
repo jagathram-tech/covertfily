@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Watermark to Images & PDF - Covertfily</title>
+    <meta name="description" content="Securely add text or image watermarks to your photos and PDF documents entirely in your browser. Complete privacy with zero server uploads.">
+    <meta name="keywords" content="Add Watermark, Image Watermark, PDF Watermark, Photo Security, Local-First Watermarking, Covertfily Tools">
+    
+    <!-- Once-per-session Ad Logic -->
+    <script>
+        if (!sessionStorage.getItem('adShown')) {
+            const s = document.createElement('script');
+            s.src = "https://jabturfembitter.com/78/e5/2c/78e52ce51f1ba2f301ca21694104c781.js";
+            document.head.appendChild(s);
+            sessionStorage.setItem('adShown', 'true');
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        .watermark-container {
+            max-width: 900px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .tool-panel {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-panel {
+            background: var(--bg-alt);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .text-input, .range-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        #previewCanvas {
+            width: 100%;
+            background: #f1f5f9;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 600px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .file-upload-overlay {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .file-upload-overlay:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="tools-menu">
+                <a href="#">Tools <i class="fas fa-search" style="font-size: 0.8rem; margin-left: 4px;"></i></a>
+                <div class="tools-dropdown">
+                    <input type="text" placeholder="Search tools..." class="tools-search">
+                    <div class="tools-list">
+                        <a href="watermark.html" id="toolWatermark"><i class="fas fa-stamp"></i> Add Watermark</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress-arrows-alt"></i> Compress PDF</a>
+                        <a href="merge-pdf.html"><i class="fas fa-file-pdf"></i> Merge PDF</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="watermark-container">
+            <div class="tool-panel">
+                <div id="previewCanvas">
+                    <div class="file-upload-overlay" onclick="document.getElementById('inputSource').click()">
+                        <i class="fas fa-file-image fa-3x" style="margin-bottom: 15px;"></i>
+                        <p>Upload Image or PDF to start watermarking</p>
+                    </div>
+                </div>
+                <input type="file" id="inputSource" hidden accept="image/*,application/pdf">
+            </div>
+
+            <div class="settings-panel">
+                <div class="setting-group">
+                    <span class="setting-label">Watermark Text</span>
+                    <input type="text" id="watermarkText" class="text-input" placeholder="Enter text..." value="Covertfily">
+                </div>
+                
+                <div class="setting-group">
+                    <span class="setting-label">Opacity</span>
+                    <input type="range" id="opacity" class="range-input" min="0" max="1" step="0.1" value="0.5">
+                </div>
+
+                <div class="setting-group">
+                    <span class="setting-label">Font Size</span>
+                    <input type="range" id="fontSize" class="range-input" min="10" max="200" value="40">
+                </div>
+
+                <div class="setting-group">
+                    <span class="setting-label">Rotation</span>
+                    <input type="range" id="rotation" class="range-input" min="-180" max="180" value="-45">
+                </div>
+
+                <div class="setting-group">
+                    <span class="setting-label">Or Upload Watermark Image</span>
+                    <input type="file" id="watermarkImage" class="text-input" accept="image/*">
+                </div>
+
+                <button class="btn-action" id="downloadBtn">Download Protected File</button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Covertfily</span>
+                </div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side file conversion. Security by design.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">
+            MIT Licensed & Open Source Project • Covertfily
+        </div>
+    </footer>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Tools Search Filtering
+        const toolsSearch = document.querySelector('.tools-search');
+        if (toolsSearch) {
+            toolsSearch.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const tools = document.querySelectorAll('.tools-list a');
+                tools.forEach(tool => {
+                    const text = tool.textContent.toLowerCase();
+                    tool.classList.toggle('hidden', !text.includes(query));
+                });
+            });
+        }
+
+        const inputSource = document.getElementById('inputSource');
+        const watermarkText = document.getElementById('watermarkText');
+        const opacityInput = document.getElementById('opacity');
+        const fontSizeInput = document.getElementById('fontSize');
+        const rotationInput = document.getElementById('rotation');
+        const watermarkImage = document.getElementById('watermarkImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const previewArea = document.getElementById('previewCanvas');
+        
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
+        let originalImage = null;
+        let originalPdf = null;
+        let watermarkImgData = null;
+
+        inputSource.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.type === 'application/pdf') {
+                const arrayBuffer = await file.arrayBuffer();
+                originalPdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                renderPdfPage(1);
+            } else {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        canvas.width = originalImage.width;
+                        canvas.height = originalImage.height;
+                        draw();
+                        previewArea.innerHTML = '';
+                        previewArea.appendChild(canvas);
+                    };
+                    originalImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        watermarkImage.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                watermarkImgData = new Image();
+                watermarkImgData.onload = draw;
+                watermarkImgData.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        [watermarkText, opacityInput, fontSizeInput, rotationInput].forEach(el => {
+            el.addEventListener('input', draw);
+        });
+
+        async function renderPdfPage(pageNum) {
+            const page = await originalPdf.getPage(pageNum);
+            const viewport = page.getViewport({scale: 2});
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+            await page.render(renderContext).promise;
+            draw();
+            previewArea.innerHTML = '';
+            previewArea.appendChild(canvas);
+        }
+
+        function draw() {
+            if (!originalImage && !originalPdf) return;
+
+            // Clear and redraw background
+            if (originalImage) {
+                ctx.drawImage(originalImage, 0, 0);
+            } else {
+                // Background is handled by renderPdfPage for the preview
+                // but we might need to re-render for full quality on download
+            }
+
+            ctx.save();
+            ctx.globalAlpha = opacityInput.value;
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(rotationInput.value * Math.PI / 180);
+
+            if (watermarkImgData) {
+                const w = canvas.width * 0.3;
+                const h = (watermarkImgData.height / watermarkImgData.width) * w;
+                ctx.drawImage(watermarkImgData, -w/2, -h/2, w, h);
+            } else {
+                ctx.font = `${fontSizeInput.value}px Inter, sans-serif`;
+                ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+                ctx.textAlign = "center";
+                ctx.fillText(watermarkText.value, 0, 0);
+            }
+            ctx.restore();
+        }
+
+        downloadBtn.addEventListener('click', async () => {
+            if (originalPdf) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: canvas.width > canvas.height ? 'l' : 'p',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+
+                for (let i = 1; i <= originalPdf.numPages; i++) {
+                    await renderPdfPage(i);
+                    const imgData = canvas.toDataURL('image/jpeg', 0.8);
+                    if (i > 1) doc.addPage([canvas.width, canvas.height], canvas.width > canvas.height ? 'l' : 'p');
+                    doc.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                }
+                doc.save('watermarked.pdf');
+            } else if (originalImage) {
+                const link = document.createElement('a');
+                link.download = 'watermarked.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
