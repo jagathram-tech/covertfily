@@ -1,3 +1,0 @@
-# Adsterra ads.txt
-# Replace YOUR_PUBLISHER_ID with your actual Adsterra publisher ID
-adsterra.com, YOUR_PUBLISHER_ID, DIRECT
