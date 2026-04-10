@@ -1,61 +1,94 @@
 document.addEventListener('DOMContentLoaded', () => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    console.log('Covertfily initialized');
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
     const formatFromContainer = document.getElementById('formatFromContainer');
     const formatToContainer = document.getElementById('formatToContainer');
 
-    // Setup Custom Searchable Dropdowns
-    document.querySelectorAll('.custom-dropdown').forEach(dropdown => {
-        const trigger = dropdown.querySelector('.dropdown-trigger');
-        const searchInput = dropdown.querySelector('.dropdown-search');
-        const itemsContainer = dropdown.querySelector('.dropdown-items');
-        const noResults = dropdown.querySelector('.no-results');
-
-        trigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.querySelectorAll('.custom-dropdown.open').forEach(d => { if (d !== dropdown) d.classList.remove('open'); });
-            dropdown.classList.toggle('open');
-            if (dropdown.classList.contains('open') && searchInput) {
-                searchInput.value = '';
-                searchInput.focus();
-                itemsContainer.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('hidden'));
-                noResults.style.display = 'none';
-            }
+     window.toggleDropdown = function(trigger, event) {
+        if (event) event.stopPropagation();
+        if (trigger.disabled) return;
+        const dropdown = trigger.closest('.custom-dropdown');
+        if (!dropdown) return;
+        
+        const wasOpen = dropdown.classList.contains('open');
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-dropdown.open').forEach(d => {
+            if (d !== dropdown) d.classList.remove('open');
         });
-
-        if (searchInput) {
-            searchInput.addEventListener('click', (e) => e.stopPropagation());
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                const items = itemsContainer.querySelectorAll('.dropdown-item');
-                let visibleCount = 0;
-                items.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    const matches = text.includes(query);
-                    item.classList.toggle('hidden', !matches);
-                    if (matches) visibleCount++;
-                });
-                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-            });
+        
+        dropdown.classList.toggle('open');
+        
+        if (!wasOpen) {
+            const searchInput = dropdown.querySelector('.dropdown-search');
+            if (searchInput) {
+                searchInput.value = '';
+                setTimeout(() => searchInput.focus(), 50);
+                // Reset visibility of all items
+                dropdown.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('hidden'));
+                const noResults = dropdown.querySelector('.no-results');
+                if (noResults) noResults.style.display = 'none';
+            }
         }
+    };
 
-        dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', () => {
-                if (item.classList.contains('hidden')) return;
+    // Global Dropdown Handler
+    // Global Click Handler for selection and closing
+    document.addEventListener('click', (e) => {
+        // Handle item selection
+        const item = e.target.closest('.dropdown-item');
+        if (item) {
+            const dropdown = item.closest('.custom-dropdown');
+            if (dropdown) {
+                // Don't close if search was clicked
+                if (e.target.closest('.dropdown-search')) return;
+
                 dropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
                 item.classList.add('selected');
-                dropdown.querySelector('.dropdown-value').textContent = item.textContent;
+                
+                const valueSpan = dropdown.querySelector('.dropdown-value');
+                if (valueSpan) valueSpan.textContent = item.textContent;
+                
                 dropdown.dataset.value = item.dataset.value;
                 dropdown.classList.remove('open');
-                if (searchInput) searchInput.value = '';
 
-                // If this is the "From" dropdown, update the "To" dropdown
                 if (dropdown.id === 'formatFromContainer') {
                     updateTargetDropdown(item.dataset.value);
                 }
+                return;
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        if (!e.target.closest('.custom-dropdown')) {
+            document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
+                dropdown.classList.remove('open');
             });
-        });
+        }
+    });
+
+    // Setup Search Logic for existing and future searchable dropdowns
+    document.addEventListener('input', (e) => {
+        if (e.target.classList.contains('dropdown-search')) {
+            const query = e.target.value.toLowerCase();
+            const container = e.target.closest('.custom-dropdown');
+            const items = container.querySelectorAll('.dropdown-item');
+            const noResults = container.querySelector('.no-results');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const matches = text.includes(query);
+                item.classList.toggle('hidden', !matches);
+                if (matches) visibleCount++;
+            });
+            
+            if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
     });
 
     const formatMapping = {
@@ -65,26 +98,46 @@ document.addEventListener('DOMContentLoaded', () => {
         'bmp': ['jpg', 'png', 'webp', 'pdf'],
         'gif': ['jpg', 'png', 'webp', 'pdf'],
         'svg': ['png', 'jpg', 'pdf'],
-        'pdf': ['jpg', 'png', 'webp', 'txt', 'md'],
+        'avif': ['jpg', 'png', 'webp'],
+        'tiff': ['jpg', 'png', 'pdf'],
+        'heic': ['jpg', 'png', 'pdf'],
+        'pdf': ['jpg', 'png', 'webp', 'txt', 'md', 'docx'],
         'mp4': ['webm', 'mov', 'avi', 'mkv', 'mp3'],
         'webm': ['mp4', 'mov', 'avi', 'mkv', 'mp3'],
         'mov': ['mp4', 'webm', 'avi', 'mkv', 'mp3'],
+        'avi': ['mp4', 'webm', 'mov', 'mp3'],
+        'mkv': ['mp4', 'webm', 'mov', 'mp3'],
+        'flv': ['mp4', 'mp3'],
+        'wmv': ['mp4', 'mp3'],
         'mp3': ['wav', 'ogg', 'aac', 'm4a', 'flac'],
         'wav': ['mp3', 'ogg', 'aac', 'm4a', 'flac'],
+        'ogg': ['mp3', 'wav', 'aac'],
+        'aac': ['mp3', 'wav'],
+        'm4a': ['mp3', 'wav'],
+        'flac': ['mp3', 'wav'],
         'xlsx': ['csv', 'json', 'ods', 'pdf'],
+        'xls': ['xlsx', 'csv', 'json', 'pdf'],
         'csv': ['xlsx', 'json', 'ods', 'pdf'],
-        'md': ['html', 'pdf', 'txt'],
-        'html': ['md', 'pdf', 'txt'],
-        'txt': ['pdf', 'md', 'html'],
+        'ods': ['xlsx', 'csv', 'json', 'pdf'],
+        'json': ['xlsx', 'csv', 'pdf'],
+        'md': ['html', 'pdf', 'txt', 'docx'],
+        'html': ['md', 'pdf', 'txt', 'docx'],
+        'txt': ['pdf', 'md', 'html', 'docx'],
+        'docx': ['pdf', 'txt', 'md'],
+        'xml': ['json', 'txt'],
         'zip': ['zip']
     };
 
     const formatLabels = {
         'jpg': 'JPG/JPEG', 'png': 'PNG', 'webp': 'WebP', 'bmp': 'BMP', 'gif': 'GIF', 'svg': 'SVG',
+        'avif': 'AVIF', 'tiff': 'TIFF', 'heic': 'HEIC/HEIF',
         'pdf': 'PDF Document', 'mp4': 'MP4 Video', 'webm': 'WebM Video', 'mov': 'MOV Video',
-        'avi': 'AVI Video', 'mkv': 'MKV Video', 'mp3': 'MP3 Audio', 'wav': 'WAV Audio',
-        'xlsx': 'Excel (XLSX)', 'csv': 'CSV Data', 'json': 'JSON Data', 'ods': 'ODS Calc',
-        'md': 'Markdown (MD)', 'html': 'HTML Page', 'txt': 'Plain Text (TXT)', 'zip': 'Archive (ZIP)'
+        'avi': 'AVI Video', 'mkv': 'MKV Video', 'flv': 'FLV Video', 'wmv': 'WMV Video',
+        'mp3': 'MP3 Audio', 'wav': 'WAV Audio', 'ogg': 'OGG Audio', 'aac': 'AAC Audio',
+        'm4a': 'M4A Audio', 'flac': 'FLAC Audio',
+        'xlsx': 'Excel (XLSX)', 'xls': 'Excel (XLS)', 'csv': 'CSV Data', 'json': 'JSON Data', 
+        'ods': 'ODS Calc', 'md': 'Markdown (MD)', 'html': 'HTML Page', 'txt': 'Plain Text (TXT)', 
+        'xml': 'XML Data', 'zip': 'Archive (ZIP)', 'docx': 'Word Document (DOCX)'
     };
 
     function updateTargetDropdown(sourceFormat) {
@@ -97,7 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
         toValueSpan.textContent = "Convert to...";
         toTrigger.removeAttribute('disabled');
 
-        const targets = formatMapping[sourceFormat] || [];
+        let targets = sourceFormat ? (formatMapping[sourceFormat] || []) : [];
+        
+        // If Auto-detect, show all possible unique output formats
+        if (!sourceFormat) {
+            const allTargets = new Set();
+            Object.values(formatMapping).forEach(list => list.forEach(t => allTargets.add(t)));
+            targets = Array.from(allTargets).sort();
+        }
         
         if (targets.length === 0) {
             toItemsContainer.innerHTML = '<div class="dropdown-placeholder" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">No supported output formats found</div>';
@@ -123,14 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.addEventListener('click', () => { document.querySelectorAll('.custom-dropdown.open').forEach(d => d.classList.remove('open')); });
+
 
     // Tools Search Filtering
-    const toolsSearch = document.querySelector('.tools-search');
+    const toolsSearch = document.querySelector('.tool-search');
     if (toolsSearch) {
         toolsSearch.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const tools = document.querySelectorAll('.tools-list a');
+            const tools = document.querySelectorAll('.tool-list a');
             tools.forEach(tool => {
                 const text = tool.textContent.toLowerCase();
                 tool.classList.toggle('hidden', !text.includes(query));
@@ -176,20 +236,40 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        dropzone.innerHTML = `<i class="fas fa-spinner fa-spin dropzone-icon"></i><h2>Processing ${files.length} file(s)...</h2><p>Working locally in your browser...</p>`;
-
-        // If converting multiple files to PDF, merge them into a single document
-        if (formatTo === 'pdf' && files.length > 1) {
-            await mergeToPDF(files, formatFrom);
-        } else {
-            for (let i = 0; i < files.length; i++) {
-                await processFile(files[i], formatFrom, formatTo);
-            }
+        // Show loading state instead of removing dropzone
+        const loading = document.getElementById('loading');
+        const loadingText = document.getElementById('loadingText');
+        const dropzoneTitle = document.getElementById('dropzoneTitle');
+        const dropzoneSubtitle = document.getElementById('dropzoneSubtitle');
+        
+        if (loading && loadingText) {
+            loading.style.display = 'block';
+            dropzone.style.display = 'none';
+            loadingText.textContent = `Converting ${files.length} file(s) locally...`;
         }
 
-        setTimeout(() => {
-            resetDropzone();
-        }, 3000);
+        try {
+            // If converting multiple files to PDF, merge them into a single document
+            if (formatTo === 'pdf' && files.length > 1) {
+                await mergeToPDF(files, formatFrom);
+            } else {
+                for (let i = 0; i < files.length; i++) {
+                    if (loadingText) loadingText.textContent = `Converting file ${i+1} of ${files.length}...`;
+                    await processFile(files[i], formatFrom, formatTo);
+                }
+            }
+        } finally {
+            if (loading) loading.style.display = 'none';
+            if (dropzone) {
+                dropzone.style.display = 'block';
+                if (dropzoneTitle) dropzoneTitle.textContent = 'Conversion Complete!';
+                if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Drop more files to convert again';
+            }
+            setTimeout(() => {
+                if (dropzoneTitle) dropzoneTitle.textContent = 'Drop files here';
+                if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Or click to select files from your computer';
+            }, 3000);
+        }
     }
 
     async function processFile(file, from, to) {
@@ -210,6 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // 3. Media Conversions (MP4, WebM, MP3, etc.)
+            if (['mp4', 'webm', 'mov', 'avi', 'mkv', 'mp3', 'wav', 'ogg', 'aac', 'm4a', 'flac'].includes(to)) {
+                await convertMedia(file, to);
+                return;
+            }
+
             // 6. PDF Conversions
             if (to === 'pdf' && (file.type.startsWith('image/') || ['md', 'html', 'txt'].includes(sourceFormat))) {
                 await mergeToPDF([file], sourceFormat);
@@ -217,6 +303,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (sourceFormat === 'pdf' && ['jpg', 'png', 'webp'].includes(to)) {
                 await convertPDFToImages(file, to);
+                return;
+            }
+            if (sourceFormat === 'pdf' && to === 'docx') {
+                await convertPDFToDocxViaText(file);
+                return;
+            }
+            if (sourceFormat === 'docx' && (to === 'pdf' || to === 'txt' || to === 'md')) {
+                await convertDocx(file, to);
                 return;
             }
 
@@ -387,7 +481,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Convert Video & Audio via lightweight Native blob wrapping (as requested)
     async function convertMedia(file, targetFormat) {
-        dropzone.innerHTML = `<i class="fas fa-cog fa-spin dropzone-icon"></i><h2>Converting Media...</h2><p>Processing local payload</p>`;
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = `Processing ${targetFormat.toUpperCase()} package...`;
         
         await new Promise(r => setTimeout(r, 600)); // Simulating processing time
         
@@ -408,6 +503,355 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     }
 
+    async function convertDocx(file, targetFormat) {
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (ext === 'doc') {
+            alert("Legacy .doc files are not supported. Please save your file as .docx (Word 2007+) to convert.");
+            resetDropzone();
+            return;
+        }
+
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = "Reading Word Document...";
+        
+        try {
+            if (typeof mammoth === 'undefined') {
+                alert("Word reading library not loaded. Please refresh and try again.");
+                return;
+            }
+            
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+            const textContent = result.value.trim();
+            
+            if (!textContent) {
+                throw new Error("No text content found");
+            }
+            
+            if (targetFormat === 'txt') {
+                const blob = new Blob([textContent], { type: 'text/plain' });
+                downloadFile(URL.createObjectURL(blob), file.name.replace(/\.[^/.]+$/, "") + ".txt");
+            } else if (targetFormat === 'md') {
+                const blob = new Blob([textContent], { type: 'text/markdown' });
+                downloadFile(URL.createObjectURL(blob), file.name.replace(/\.[^/.]+$/, "") + ".md");
+            } else if (targetFormat === 'pdf') {
+                dropzone.innerHTML = `<i class="fas fa-cog fa-spin dropzone-icon"></i><h2>Converting...</h2><p id="exportProgress">Converting Word to PDF...</p>`;
+                
+                await convertTextToPdf(textContent, file.name);
+                return;
+        } catch (error) {
+            console.error(error);
+            alert("Error: " + (error.message || "Could not read Word file"));
+        }
+    }
+
+    async function convertTextToPdf(textContent, originalFileName) {
+        for (let i = 0; i < 20; i++) {
+            if (typeof window.jspdf !== 'undefined') break;
+            await new Promise(r => setTimeout(r, 100));
+        }
+        
+        if (typeof window.jspdf === 'undefined') {
+            alert("PDF library not loaded");
+            return;
+        }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 20;
+        const maxWidth = pageWidth - margin * 2;
+        const lineHeight = 7;
+        let y = margin;
+        
+        const lines = textContent.split('\n');
+        
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) {
+                y += lineHeight;
+                continue;
+            }
+            
+            const words = line.split(' ');
+            let currentLine = '';
+            
+            for (let word of words) {
+                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                const testWidth = doc.getTextWidth(testLine);
+                
+                if (testWidth > maxWidth) {
+                    doc.text(currentLine, margin, y);
+                    y += lineHeight;
+                    currentLine = word;
+                    
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin;
+                    }
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            
+            if (currentLine) {
+                doc.text(currentLine, margin, y);
+                y += lineHeight;
+                
+                if (y > pageHeight - margin) {
+                    doc.addPage();
+                    y = margin;
+                }
+            }
+        }
+        
+        doc.save(originalFileName.replace(/\.[^/.]+$/, "") + ".pdf");
+        resetDropzone();
+    }
+
+    function cleanXmlString(str) {
+        if (!str) return "";
+        // Remove illegal XML characters
+        let cleaned = str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g, "");
+        // Manual escaping for maximum safety in docx.js v7
+        return cleaned.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Helper to split long strings into manageable paragraph chunks for Word
+    function chunkText(text, size = 5000) {
+        const chunks = [];
+        for (let i = 0; i < text.length; i += size) {
+            chunks.push(text.substring(i, i + size));
+        }
+        return chunks;
+    }
+
+    async function convertPDFToDocxViaText(file) {
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = "Extracting text from PDF...";
+        
+        const arrayBuffer = await file.arrayBuffer();
+        
+        // Simple inline worker to extract text
+        const workerCode = `
+            self.window = self;
+            self.document = { createElement: () => ({ style: {} }), getElementsByTagName: () => [], documentElement: { style: {} } };
+            importScripts('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+            self.onmessage = async function(e) {
+                try {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    const pdf = await pdfjsLib.getDocument({data: new Uint8Array(e.data), disableWorker: true}).promise;
+                    let fullText = "";
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        fullText += textContent.items.map(item => item.str).join(" ") + "\\n\\n";
+                    }
+                    self.postMessage({ type: 'success', text: fullText });
+                } catch (err) {
+                    self.postMessage({ type: 'error', message: err.message });
+                }
+            };
+        `;
+        
+        const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+        const workerUrl = URL.createObjectURL(workerBlob);
+        const worker = new Worker(workerUrl);
+        
+        // Transfer the arrayBuffer to avoid copying
+        worker.postMessage(arrayBuffer, [arrayBuffer]);
+        
+        return new Promise((resolve, reject) => {
+            worker.onmessage = async function(e) {
+                if (e.data.type === 'success') {
+                    worker.terminate();
+                    URL.revokeObjectURL(workerUrl);
+                    
+                    if (loadingText) loadingText.textContent = "Creating Word document...";
+                    
+                    // Create DOCX manually using JSZip
+                    await createDocxFromText(e.data.text, file.name);
+                    resolve();
+                } else if (e.data.type === 'error') {
+                    worker.terminate();
+                    alert("Error: " + e.data.message);
+                    reject(e.data.message);
+                }
+            };
+        });
+    }
+    
+    async function createDocxFromText(text, originalName) {
+        // Wait for JSZip
+        for (let i = 0; i < 20; i++) {
+            if (typeof JSZip !== 'undefined') break;
+            await new Promise(r => setTimeout(r, 100));
+        }
+        
+        if (typeof JSZip === 'undefined') {
+            alert("ZIP library not loaded");
+            return;
+        }
+        
+        const zip = new JSZip();
+        
+        const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`;
+        
+        const rels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+        
+        const paragraphs = parseTextWithFormatting(text).map(block => {
+            if (block.isHeading) {
+                return `<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="28"/></w:rPr><w:t>${escapeXml(block.text)}</w:t></w:r></w:p>`;
+            }
+            return `<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:r><w:t>${escapeXml(block.text)}</w:t></w:r></w:p>`;
+        }).join('\n');
+        
+        const document = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<w:body>
+<w:sectPr>
+<w:pgSz w:w="12240" w:h="15840"/>
+<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>
+</w:sectPr>
+${paragraphs}
+</w:body>
+</w:document>`;
+        
+        zip.file("[Content_Types].xml", contentTypes);
+        zip.file("_rels/.rels", rels);
+        zip.file("word/document.xml", document);
+        
+        const docxBlob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(docxBlob);
+        downloadFile(url, originalName.replace(/\.[^/.]+$/, "") + ".docx");
+    }
+    
+    function escapeXml(text) {
+        return text
+            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+    
+    function parseTextWithFormatting(text) {
+        const lines = text.split('\n');
+        const blocks = [];
+        let i = 0;
+        
+        while (i < lines.length) {
+            const line = lines[i].trim();
+            if (!line) { i++; continue; }
+            
+            if (line.length > 0 && (line === line.toUpperCase() || /^[A-Z][\s\d]+:?$/.test(line)) && line.length < 80) {
+                blocks.push({ text: line.replace(/:$/, ''), isHeading: true });
+            } else if (line.match(/^(chapter|section|part|article|appendix)\s+\d+/i)) {
+                blocks.push({ text: line, isHeading: true });
+            } else if (line.match(/^\d+\.\s+[A-Z]/) && line.length < 100) {
+                blocks.push({ text: line, isHeading: true });
+            } else {
+                const words = line.split(/\s+/);
+                let paragraph = line;
+                while (i + 1 < lines.length && lines[i + 1].trim() && !lines[i + 1].trim().match(/^(chapter|section|part|article|appendix|\d+\.|[A-Z][\s\d]+:?$)/i)) {
+                    i++;
+                    paragraph += ' ' + lines[i].trim();
+                }
+                if (paragraph.length > 200) {
+                    const sentences = paragraph.match(/[^.!?]+[.!?]+\s*/g) || [paragraph];
+                    blocks.push(...sentences.map(s => ({ text: s.trim(), isHeading: false })));
+                } else {
+                    blocks.push({ text: paragraph, isHeading: false });
+                }
+            }
+            i++;
+        }
+        
+        return blocks;
+    }
+
+    async function convertPDFToDocx(file) {
+        dropzone.innerHTML = `<i class="fas fa-cog fa-spin dropzone-icon"></i><h2>Analyzing PDF...</h2><p id="exportProgress">Starting background worker...</p>`;
+        const arrayBuffer = await file.arrayBuffer();
+        
+        // Inline Worker Script with DOM Mocking for Environment Checks
+        const workerCode = `
+            // Mock minimum environment for libs that check for it
+            self.window = self;
+            self.document = { 
+                createElement: () => ({ style: {} }),
+                getElementsByTagName: () => [],
+                documentElement: { style: {} }
+            };
+
+            importScripts('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+            importScripts('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js');
+
+            self.onmessage = async function(e) {
+                const { data } = e.data;
+                try {
+                    // Critical for worker environment: point to the worker bundle
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+                    const loadingTask = pdfjsLib.getDocument({ 
+                        data: data,
+                        disableWorker: true, // we ARE the worker, don't spawn another
+                        useWorkerFetch: false
+                    });
+                    
+                    const pdf = await loadingTask.promise;
+                    
+                    let fullText = "";
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        fullText += textContent.items.map(item => item.str).join(" ") + "\\n\\n";
+                        self.postMessage({ type: 'progress', percent: Math.round((i / pdf.numPages) * 100) });
+                    }
+                    self.postMessage({ type: 'success', text: fullText });
+                } catch (err) {
+                    self.postMessage({ type: 'error', message: err.message });
+                }
+            };
+        `;
+
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const workerUrl = URL.createObjectURL(blob);
+        const worker = new Worker(workerUrl);
+        const progressText = document.getElementById('exportProgress');
+
+        worker.postMessage({ data: arrayBuffer });
+
+        worker.onmessage = async function(e) {
+            const msg = e.data;
+            
+            if (msg.type === 'progress') {
+                progressText.innerText = `Extracting text: ${msg.percent}%`;
+            } else if (msg.type === 'success') {
+                const fullText = msg.text;
+                worker.terminate();
+                URL.revokeObjectURL(workerUrl);
+                
+                await createDocxFromText(fullText, file.name);
+            } else if (msg.type === 'error') {
+                worker.terminate();
+                URL.revokeObjectURL(workerUrl);
+                alert("Worker Error: " + msg.message);
+                resetDropzone();
+            }
+        };
+    }
+
     function downloadFile(url, filename) {
         const a = document.createElement('a');
         a.href = url;
@@ -418,15 +862,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetDropzone() {
-        dropzone.innerHTML = `
-            <div class="dropzone-icon">
-                <i class="fas fa-cloud-upload-alt"></i>
-            </div>
-            <h2>Drop files here</h2>
-            <p>Or click to select files from your computer</p>
-            <input type="file" id="fileInput" hidden multiple>
-        `;
-        // Re-attach listener to newly created input
-        document.getElementById('fileInput').addEventListener('change', (e) => handleFiles(e.target.files));
+        const loading = document.getElementById('loading');
+        const dropzone = document.getElementById('dropzone');
+        const dropzoneTitle = document.getElementById('dropzoneTitle');
+        const dropzoneSubtitle = document.getElementById('dropzoneSubtitle');
+        
+        if (loading) loading.style.display = 'none';
+        if (dropzone) {
+            dropzone.style.display = 'block';
+            if (dropzoneTitle) dropzoneTitle.textContent = 'Drop files here';
+            if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Or click to select files from your computer';
+        }
     }
 });

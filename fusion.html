@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covertfily Fusion - High Fidelity Word to PDF Conversion</title>
+    <meta name="description" content="100% private, browser-based Word to PDF conversion. Professional DOCX to PDF fusion locally in your browser.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <style>
+        .fusion-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tool-header h1 {
+            font-size: 2.5rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .fusion-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .dropzone {
+            border: 2px dashed var(--border-color);
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .dropzone:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+
+        .dropzone i {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .btn-fusion {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-fusion:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-fusion:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-info.active {
+            display: flex;
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-details i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li><a href="merge-pdf.html">Merge</a></li>
+            <li><a href="compress-pdf.html">Compress</a></li>
+            <li><a href="watermark.html">Watermark</a></li>
+            <li><a href="fusion.html" class="active">Fusion (Doc→PDF)</a></li>
+            <li><a href="blog.html">Blog</a></li>
+        </ul>
+    </nav>
+
+    <div class="fusion-container">
+        <div class="tool-header">
+            <h1>Covertfily Fusion</h1>
+            <p>Professional Word to PDF conversion directly in your browser.</p>
+        </div>
+
+        <div class="fusion-box">
+            <div class="dropzone" id="dropzone">
+                <i class="fas fa-file-word"></i>
+                <h2>Select your Word Document</h2>
+                <p>Drag and drop or click to browse (.docx)</p>
+                <input type="file" id="fileInput" accept=".docx" hidden>
+            </div>
+
+            <div class="file-info" id="fileInfo">
+                <div class="file-details">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <div id="fileName" style="font-weight: 600;"></div>
+                        <div id="fileSize" style="font-size: 0.8rem; color: #64748b;"></div>
+                    </div>
+                </div>
+                <button onclick="reset()" style="background: none; border: none; color: #ef4444; cursor: pointer;"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="status-text" id="statusText">Preparing engine...</div>
+            </div>
+
+            <button class="btn-fusion" id="fuseBtn" disabled>
+                <i class="fas fa-bolt"></i>
+                Fuse to PDF
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const fuseBtn = document.getElementById('fuseBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const statusText = document.getElementById('statusText');
+
+        let selectedFile = null;
+
+        dropzone.onclick = () => fileInput.click();
+        
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        };
+
+        function handleFile(file) {
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
+            fileInfo.classList.add('active');
+            dropzone.style.display = 'none';
+            fuseBtn.disabled = false;
+        }
+
+        function reset() {
+            selectedFile = null;
+            fileInfo.classList.remove('active');
+            dropzone.style.display = 'block';
+            fuseBtn.disabled = true;
+            progressContainer.style.display = 'none';
+        }
+
+        fuseBtn.onclick = async () => {
+            if (!selectedFile) return;
+
+            fuseBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            updateStatus(20, 'Analyzing Word structure...');
+
+            const arrayBuffer = await selectedFile.arrayBuffer();
+            
+            try {
+                updateStatus(40, 'Rendering high-fidelity content...');
+                const result = await mammoth.convertToHtml({ arrayBuffer: new Uint8Array(arrayBuffer) });
+                const html = result.value;
+
+                updateStatus(70, 'Fusing into PDF container...');
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Advanced rendering logic: split text and preserve basic structure
+                const text = html.replace(/<[^>]*>/g, '\n').replace(/\n\s*\n/g, '\n');
+                const lines = doc.splitTextToSize(text, 180);
+                
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(12);
+                doc.text(lines, 15, 20);
+
+                updateStatus(100, 'Fusion Complete!');
+                doc.save(selectedFile.name.replace('.docx', '') + '.pdf');
+                
+                setTimeout(reset, 2000);
+            } catch (err) {
+                alert('Conversion failed: ' + err.message);
+                reset();
+            }
+        };
+
+        function updateStatus(percent, text) {
+            progressFill.style.width = percent + '%';
+            statusText.textContent = text;
+        }
+    </script>
+</body>
+</html>

@@ -41,6 +41,8 @@
     <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.1.1/build/index.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -51,25 +53,24 @@
             <span>Covertfily</span>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html">Convert</a></li>
-            <li class="tools-menu">
-                <a href="#">Tools <i class="fas fa-search" style="font-size: 0.8rem; margin-left: 4px;"></i></a>
-                <div class="tools-dropdown">
-                    <input type="text" placeholder="Search tools..." class="tools-search">
-                    <div class="tools-list">
-                        <a href="watermark.html" id="toolWatermark"><i class="fas fa-stamp"></i> Add Watermark</a>
-                        <a href="compress-pdf.html"><i class="fas fa-compress-arrows-alt"></i> Compress PDF</a>
-                        <a href="merge-pdf.html"><i class="fas fa-file-pdf"></i> Merge PDF</a>
-                        <a href="image-tools.html"><i class="fas fa-image"></i> Image Resizer & Rounder</a>
+            <li><a href="index.html" class="active">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ▾</a>
+                <div class="dropdown-content">
+                    <input type="text" class="tool-search" placeholder="Search tools...">
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
                     </div>
                 </div>
+                <div class="dropdown-bridge"></div>
             </li>
         </ul>
         <div class="nav-actions">
             <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
         </div>
-    </nav>
-    
     </nav>
 
     <main>
@@ -79,7 +80,7 @@
             
             <div class="format-selectors">
                 <div class="custom-dropdown format-select" id="formatFromContainer" data-value="">
-                    <button class="dropdown-trigger" type="button">
+                    <button class="dropdown-trigger" type="button" onclick="toggleDropdown(this, event)">
                         <span class="dropdown-value">Convert from...</span>
                         <i class="fas fa-chevron-down chevron"></i>
                     </button>
@@ -97,35 +98,35 @@
                             <div class="dropdown-item" data-value="avif">AVIF</div>
                             <div class="dropdown-item" data-value="tiff">TIFF</div>
                             <div class="dropdown-item" data-value="heic">HEIC/HEIF</div>
-                            <div class="dropdown-group-label">Video</div>
-                            <div class="dropdown-item" data-value="mp4">MP4</div>
-                            <div class="dropdown-item" data-value="webm">WebM</div>
-                            <div class="dropdown-item" data-value="mov">MOV</div>
-                            <div class="dropdown-item" data-value="avi">AVI</div>
-                            <div class="dropdown-item" data-value="mkv">MKV</div>
-                            <div class="dropdown-item" data-value="flv">FLV</div>
-                            <div class="dropdown-item" data-value="wmv">WMV</div>
-                            <div class="dropdown-group-label">Audio</div>
-                            <div class="dropdown-item" data-value="mp3">MP3</div>
-                            <div class="dropdown-item" data-value="wav">WAV</div>
-                            <div class="dropdown-item" data-value="ogg">OGG</div>
-                            <div class="dropdown-item" data-value="aac">AAC</div>
-                            <div class="dropdown-item" data-value="m4a">M4A</div>
-                            <div class="dropdown-item" data-value="flac">FLAC</div>
-                            <div class="dropdown-group-label">PDF & Documents</div>
-                            <div class="dropdown-item" data-value="pdf">PDF</div>
-                            <div class="dropdown-item" data-value="html">HTML</div>
+                            <div class="dropdown-group-label">Documents & Data</div>
+                            <div class="dropdown-item" data-value="pdf">PDF Document</div>
+                            <div class="dropdown-item" data-value="docx">Word (DOCX)</div>
+                            <div class="dropdown-item" data-value="xlsx">Excel (XLSX)</div>
+                            <div class="dropdown-item" data-value="xls">Excel (XLS)</div>
+                            <div class="dropdown-item" data-value="csv">CSV Data</div>
+                            <div class="dropdown-item" data-value="ods">ODS Calc</div>
+                            <div class="dropdown-item" data-value="json">JSON Data</div>
+                            <div class="dropdown-item" data-value="html">HTML Page</div>
                             <div class="dropdown-item" data-value="md">Markdown (MD)</div>
                             <div class="dropdown-item" data-value="txt">Plain Text (TXT)</div>
-                            <div class="dropdown-item" data-value="xml">XML</div>
-                            <div class="dropdown-group-label">Spreadsheets & Data</div>
-                            <div class="dropdown-item" data-value="xlsx">XLSX/XLSM/XLSB</div>
-                            <div class="dropdown-item" data-value="xls">XLS</div>
-                            <div class="dropdown-item" data-value="csv">CSV</div>
-                            <div class="dropdown-item" data-value="ods">ODS</div>
-                            <div class="dropdown-item" data-value="json">JSON</div>
+                            <div class="dropdown-item" data-value="xml">XML Data</div>
+                            <div class="dropdown-group-label">Video</div>
+                            <div class="dropdown-item" data-value="mp4">MP4 Video</div>
+                            <div class="dropdown-item" data-value="webm">WebM Video</div>
+                            <div class="dropdown-item" data-value="mov">MOV Video</div>
+                            <div class="dropdown-item" data-value="avi">AVI Video</div>
+                            <div class="dropdown-item" data-value="mkv">MKV Video</div>
+                            <div class="dropdown-item" data-value="flv">FLV Video</div>
+                            <div class="dropdown-item" data-value="wmv">WMV Video</div>
+                            <div class="dropdown-group-label">Audio</div>
+                            <div class="dropdown-item" data-value="mp3">MP3 Audio</div>
+                            <div class="dropdown-item" data-value="wav">WAV Audio</div>
+                            <div class="dropdown-item" data-value="ogg">OGG Audio</div>
+                            <div class="dropdown-item" data-value="aac">AAC Audio</div>
+                            <div class="dropdown-item" data-value="m4a">M4A Audio</div>
+                            <div class="dropdown-item" data-value="flac">FLAC Audio</div>
                             <div class="dropdown-group-label">Archives</div>
-                            <div class="dropdown-item" data-value="zip">ZIP</div>
+                            <div class="dropdown-item" data-value="zip">ZIP Archive</div>
                         </div>
                         <div class="no-results">No matching formats</div>
                     </div>
@@ -136,7 +137,7 @@
                 </div>
                 
                 <div class="custom-dropdown format-select" id="formatToContainer" data-value="">
-                    <button class="dropdown-trigger" type="button" disabled>
+                    <button class="dropdown-trigger" type="button" disabled onclick="toggleDropdown(this, event)">
                         <span class="dropdown-value">Select input first...</span>
                         <i class="fas fa-chevron-down chevron"></i>
                     </button>
@@ -154,12 +155,16 @@
             </div>
             
             <div class="dropzone" id="dropzone">
-                <div class="dropzone-icon">
+                <div class="dropzone-icon" id="dropzoneIcon">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
-                <h2>Drop files here</h2>
-                <p>Or click to select files from your computer</p>
+                <h2 id="dropzoneTitle">Drop files here</h2>
+                <p id="dropzoneSubtitle">Or click to select files from your computer</p>
                 <input type="file" id="fileInput" hidden multiple>
+            </div>
+            <div class="loading" id="loading" style="display:none;">
+                <i class="fas fa-cog fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                <p id="loadingText">Converting...</p>
             </div>
         </section>
 
