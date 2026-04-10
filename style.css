@@ -355,16 +355,18 @@ footer {
     .nav-links { display: none; }
 }
 
-/* Side Ads Layout */
+/* Side Ads Layout - Fixed to prevent overlaying */
 .side-ad {
-    position: absolute;
-    top: 150px;
+    position: fixed;
+    top: 120px;
     z-index: 5;
     background: white;
     border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
+    width: 160px;
+    height: 600px;
 }
 
 .ad-fallback {
@@ -410,9 +412,9 @@ footer {
 .ad-fallback .btn-fallback:hover {
     background: var(--primary-hover);
 }
-.side-ad-left { left: 20px; }
-.side-ad-right { right: 20px; }
+.side-ad-left { left: 30px; }
+.side-ad-right { right: 30px; }
 
-@media (max-width: 1500px) {
+@media (max-width: 1600px) {
     .side-ad { display: none; }
 }
