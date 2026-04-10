@@ -1,3 +1,136 @@
+// Global format selection state and labels
+const formatMapping = {
+    'jpg': ['png', 'webp', 'bmp', 'pdf'],
+    'png': ['jpg', 'webp', 'bmp', 'pdf'],
+    'webp': ['jpg', 'png', 'bmp', 'pdf'],
+    'bmp': ['jpg', 'png', 'webp', 'pdf'],
+    'gif': ['jpg', 'png', 'webp', 'pdf'],
+    'svg': ['png', 'jpg', 'pdf'],
+    'avif': ['jpg', 'png', 'webp'],
+    'tiff': ['jpg', 'png', 'pdf'],
+    'heic': ['jpg', 'png', 'pdf'],
+    'pdf': ['jpg', 'png', 'webp', 'txt', 'md', 'docx'],
+    'mp4': ['webm', 'mov', 'avi', 'mkv', 'mp3'],
+    'webm': ['mp4', 'mov', 'avi', 'mkv', 'mp3'],
+    'mov': ['mp4', 'webm', 'avi', 'mkv', 'mp3'],
+    'avi': ['mp4', 'webm', 'mov', 'mp3'],
+    'mkv': ['mp4', 'webm', 'mov', 'mp3'],
+    'flv': ['mp4', 'mp3'],
+    'wmv': ['mp4', 'mp3'],
+    'mp3': ['wav', 'ogg', 'aac', 'm4a', 'flac'],
+    'wav': ['mp3', 'ogg', 'aac', 'm4a', 'flac'],
+    'ogg': ['mp3', 'wav', 'aac'],
+    'aac': ['mp3', 'wav'],
+    'm4a': ['mp3', 'wav'],
+    'flac': ['mp3', 'wav'],
+    'xlsx': ['csv', 'json', 'ods', 'pdf'],
+    'xls': ['xlsx', 'csv', 'json', 'pdf'],
+    'csv': ['xlsx', 'json', 'ods', 'pdf'],
+    'ods': ['xlsx', 'csv', 'json', 'pdf'],
+    'json': ['xlsx', 'csv', 'pdf'],
+    'md': ['html', 'pdf', 'txt', 'docx'],
+    'html': ['md', 'pdf', 'txt', 'docx'],
+    'txt': ['pdf', 'md', 'html', 'docx'],
+    'docx': ['pdf', 'txt', 'md'],
+    'xml': ['json', 'txt'],
+    'zip': ['zip']
+};
+
+const formatLabels = {
+    'jpg': 'JPG/JPEG', 'png': 'PNG', 'webp': 'WebP', 'bmp': 'BMP', 'gif': 'GIF', 'svg': 'SVG',
+    'avif': 'AVIF', 'tiff': 'TIFF', 'heic': 'HEIC/HEIF',
+    'pdf': 'PDF Document', 'mp4': 'MP4 Video', 'webm': 'WebM Video', 'mov': 'MOV Video',
+    'avi': 'AVI Video', 'mkv': 'MKV Video', 'flv': 'FLV Video', 'wmv': 'WMV Video',
+    'mp3': 'MP3 Audio', 'wav': 'WAV Audio', 'ogg': 'OGG Audio', 'aac': 'AAC Audio',
+    'm4a': 'M4A Audio', 'flac': 'FLAC Audio',
+    'xlsx': 'Excel (XLSX)', 'xls': 'Excel (XLS)', 'csv': 'CSV Data', 'json': 'JSON Data', 
+    'ods': 'ODS Calc', 'md': 'Markdown (MD)', 'html': 'HTML Page', 'txt': 'Plain Text (TXT)', 
+    'xml': 'XML Data', 'zip': 'Archive (ZIP)', 'docx': 'Word Document (DOCX)'
+};
+
+window.filterFormats = function(input, containerId) {
+    const query = input.value.toLowerCase();
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const items = container.querySelectorAll('.dropdown-item');
+    const labels = container.querySelectorAll('.dropdown-group-label');
+    let visibleCount = 0;
+    
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const matches = text.includes(query);
+        item.style.display = matches ? 'block' : 'none';
+        if (matches) visibleCount++;
+    });
+    
+    const noResults = container.parentElement.querySelector('.no-results');
+    if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+};
+
+window.toggleDropdown = function(trigger, event) {
+    if (event) event.stopPropagation();
+    if (trigger.classList.contains('disabled')) return;
+    const dropdown = trigger.closest('.dropdown');
+    if (!dropdown) return;
+    
+    const wasOpen = dropdown.classList.contains('open');
+    
+    // Close all other dropdowns
+    document.querySelectorAll('.dropdown.open').forEach(d => {
+        if (d !== dropdown) d.classList.remove('open');
+    });
+    
+    dropdown.classList.toggle('open');
+    
+    if (!wasOpen) {
+        const searchInput = dropdown.querySelector('.dropdown-search');
+        if (searchInput) {
+            searchInput.value = '';
+            setTimeout(() => searchInput.focus(), 50);
+            // Reset visibility of all items
+            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+                item.style.display = 'flex';
+            });
+            const noResults = dropdown.querySelector('.no-results');
+            if (noResults) noResults.style.display = 'none';
+        }
+    }
+};
+
+window.selectFromFormat = function(value, label) {
+    console.log('Selecting from:', value, label);
+    const dropdown = document.getElementById('formatFromContainer');
+    if (!dropdown) return;
+    
+    // Update labels and values
+    const valueSpan = dropdown.querySelector('.dropdown-value');
+    if (valueSpan) valueSpan.textContent = label;
+    dropdown.dataset.value = value;
+    
+    // Close and select
+    dropdown.classList.remove('open');
+    dropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.toggle('selected', i.dataset.value === value));
+    
+    // Update the "To" dropdown
+    window.updateTargetDropdown(value);
+};
+
+window.selectToFormat = function(value, label) {
+    console.log('Selecting to:', value, label);
+    const dropdown = document.getElementById('formatToContainer');
+    if (!dropdown) return;
+    
+    const valueSpan = dropdown.querySelector('.dropdown-value');
+    if (valueSpan) valueSpan.textContent = label;
+    dropdown.dataset.value = value;
+    
+    dropdown.classList.remove('open');
+    dropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.toggle('selected', i.dataset.value === value));
+};
+
+// Function updateTargetDropdown removed. Logic consolidated into selectBasic in index.html.
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Covertfily initialized');
     if (typeof pdfjsLib !== 'undefined') {
@@ -8,68 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const formatFromContainer = document.getElementById('formatFromContainer');
     const formatToContainer = document.getElementById('formatToContainer');
 
-     window.toggleDropdown = function(trigger, event) {
-        if (event) event.stopPropagation();
-        if (trigger.disabled) return;
-        const dropdown = trigger.closest('.custom-dropdown');
-        if (!dropdown) return;
-        
-        const wasOpen = dropdown.classList.contains('open');
-        
-        // Close all other dropdowns
-        document.querySelectorAll('.custom-dropdown.open').forEach(d => {
-            if (d !== dropdown) d.classList.remove('open');
-        });
-        
-        dropdown.classList.toggle('open');
-        
-        if (!wasOpen) {
-            const searchInput = dropdown.querySelector('.dropdown-search');
-            if (searchInput) {
-                searchInput.value = '';
-                setTimeout(() => searchInput.focus(), 50);
-                // Reset visibility of all items
-                dropdown.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('hidden'));
-                const noResults = dropdown.querySelector('.no-results');
-                if (noResults) noResults.style.display = 'none';
-            }
-        }
-    };
-
-    // Global Dropdown Handler
-    // Global Click Handler for selection and closing
-    document.addEventListener('click', (e) => {
-        // Handle item selection
-        const item = e.target.closest('.dropdown-item');
-        if (item) {
-            const dropdown = item.closest('.custom-dropdown');
-            if (dropdown) {
-                // Don't close if search was clicked
-                if (e.target.closest('.dropdown-search')) return;
-
-                dropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
-                item.classList.add('selected');
-                
-                const valueSpan = dropdown.querySelector('.dropdown-value');
-                if (valueSpan) valueSpan.textContent = item.textContent;
-                
-                dropdown.dataset.value = item.dataset.value;
-                dropdown.classList.remove('open');
-
-                if (dropdown.id === 'formatFromContainer') {
-                    updateTargetDropdown(item.dataset.value);
-                }
-                return;
-            }
-        }
-
-        // Close dropdowns when clicking outside
-        if (!e.target.closest('.custom-dropdown')) {
-            document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
-                dropdown.classList.remove('open');
-            });
-        }
-    });
+    // Global selection handlers removed to prevent interference with selectBasic
+    // document.addEventListener('click', ...);
 
     // Setup Search Logic for existing and future searchable dropdowns
     document.addEventListener('input', (e) => {
@@ -91,97 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const formatMapping = {
-        'jpg': ['png', 'webp', 'bmp', 'pdf'],
-        'png': ['jpg', 'webp', 'bmp', 'pdf'],
-        'webp': ['jpg', 'png', 'bmp', 'pdf'],
-        'bmp': ['jpg', 'png', 'webp', 'pdf'],
-        'gif': ['jpg', 'png', 'webp', 'pdf'],
-        'svg': ['png', 'jpg', 'pdf'],
-        'avif': ['jpg', 'png', 'webp'],
-        'tiff': ['jpg', 'png', 'pdf'],
-        'heic': ['jpg', 'png', 'pdf'],
-        'pdf': ['jpg', 'png', 'webp', 'txt', 'md', 'docx'],
-        'mp4': ['webm', 'mov', 'avi', 'mkv', 'mp3'],
-        'webm': ['mp4', 'mov', 'avi', 'mkv', 'mp3'],
-        'mov': ['mp4', 'webm', 'avi', 'mkv', 'mp3'],
-        'avi': ['mp4', 'webm', 'mov', 'mp3'],
-        'mkv': ['mp4', 'webm', 'mov', 'mp3'],
-        'flv': ['mp4', 'mp3'],
-        'wmv': ['mp4', 'mp3'],
-        'mp3': ['wav', 'ogg', 'aac', 'm4a', 'flac'],
-        'wav': ['mp3', 'ogg', 'aac', 'm4a', 'flac'],
-        'ogg': ['mp3', 'wav', 'aac'],
-        'aac': ['mp3', 'wav'],
-        'm4a': ['mp3', 'wav'],
-        'flac': ['mp3', 'wav'],
-        'xlsx': ['csv', 'json', 'ods', 'pdf'],
-        'xls': ['xlsx', 'csv', 'json', 'pdf'],
-        'csv': ['xlsx', 'json', 'ods', 'pdf'],
-        'ods': ['xlsx', 'csv', 'json', 'pdf'],
-        'json': ['xlsx', 'csv', 'pdf'],
-        'md': ['html', 'pdf', 'txt', 'docx'],
-        'html': ['md', 'pdf', 'txt', 'docx'],
-        'txt': ['pdf', 'md', 'html', 'docx'],
-        'docx': ['pdf', 'txt', 'md'],
-        'xml': ['json', 'txt'],
-        'zip': ['zip']
-    };
 
-    const formatLabels = {
-        'jpg': 'JPG/JPEG', 'png': 'PNG', 'webp': 'WebP', 'bmp': 'BMP', 'gif': 'GIF', 'svg': 'SVG',
-        'avif': 'AVIF', 'tiff': 'TIFF', 'heic': 'HEIC/HEIF',
-        'pdf': 'PDF Document', 'mp4': 'MP4 Video', 'webm': 'WebM Video', 'mov': 'MOV Video',
-        'avi': 'AVI Video', 'mkv': 'MKV Video', 'flv': 'FLV Video', 'wmv': 'WMV Video',
-        'mp3': 'MP3 Audio', 'wav': 'WAV Audio', 'ogg': 'OGG Audio', 'aac': 'AAC Audio',
-        'm4a': 'M4A Audio', 'flac': 'FLAC Audio',
-        'xlsx': 'Excel (XLSX)', 'xls': 'Excel (XLS)', 'csv': 'CSV Data', 'json': 'JSON Data', 
-        'ods': 'ODS Calc', 'md': 'Markdown (MD)', 'html': 'HTML Page', 'txt': 'Plain Text (TXT)', 
-        'xml': 'XML Data', 'zip': 'Archive (ZIP)', 'docx': 'Word Document (DOCX)'
-    };
-
-    function updateTargetDropdown(sourceFormat) {
-        const toItemsContainer = document.getElementById('toItems');
-        const toTrigger = formatToContainer.querySelector('.dropdown-trigger');
-        const toValueSpan = formatToContainer.querySelector('.dropdown-value');
-        
-        // Reset "To" selection
-        formatToContainer.dataset.value = "";
-        toValueSpan.textContent = "Convert to...";
-        toTrigger.removeAttribute('disabled');
-
-        let targets = sourceFormat ? (formatMapping[sourceFormat] || []) : [];
-        
-        // If Auto-detect, show all possible unique output formats
-        if (!sourceFormat) {
-            const allTargets = new Set();
-            Object.values(formatMapping).forEach(list => list.forEach(t => allTargets.add(t)));
-            targets = Array.from(allTargets).sort();
-        }
-        
-        if (targets.length === 0) {
-            toItemsContainer.innerHTML = '<div class="dropdown-placeholder" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">No supported output formats found</div>';
-            return;
-        }
-
-        let html = '';
-        targets.forEach(target => {
-            html += `<div class="dropdown-item" data-value="${target}">${formatLabels[target] || target.toUpperCase()}</div>`;
-        });
-        
-        toItemsContainer.innerHTML = html;
-
-        // Re-attach click listeners to new items
-        toItemsContainer.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', () => {
-                toItemsContainer.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
-                item.classList.add('selected');
-                toValueSpan.textContent = item.textContent;
-                formatToContainer.dataset.value = item.dataset.value;
-                formatToContainer.classList.remove('open');
-            });
-        });
-    }
 
 
 
@@ -198,10 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle click to trigger file input
-    dropzone.addEventListener('click', () => {
-        fileInput.click();
-    });
+    // Click handler moved to inline in index.html to prevent double-firing
+    // dropzone.addEventListener('click', () => { ... });
 
     // Handle drag and drop
     dropzone.addEventListener('dragover', (e) => {
@@ -219,17 +200,20 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         dropzone.style.borderColor = 'var(--primary)';
         dropzone.style.background = 'white';
-        handleFiles(e.dataTransfer.files);
+        if (window.handleFiles) window.handleFiles(e.dataTransfer.files);
     });
 
-    fileInput.addEventListener('change', (e) => {
-        handleFiles(e.target.files);
-    });
+    // Change handler moved to inline in index.html to prevent double-firing
+    // fileInput.addEventListener('change', (e) => { ... });
 
-    async function handleFiles(files) {
+    window.handleFiles = async function(files) {
+        console.log('handleFiles triggered', files);
         if (files.length === 0) return;
-        const formatFrom = formatFromContainer.dataset.value;
-        const formatTo = formatToContainer.dataset.value;
+        const formatFromContainer = document.getElementById('formatFromContainer');
+        const formatToContainer = document.getElementById('formatToContainer');
+        
+        const formatFrom = formatFromContainer ? formatFromContainer.dataset.value : '';
+        const formatTo = formatToContainer ? formatToContainer.dataset.value : '';
 
         if (!formatTo) {
             alert("Please select a 'Convert to' format first!");
@@ -241,10 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingText = document.getElementById('loadingText');
         const dropzoneTitle = document.getElementById('dropzoneTitle');
         const dropzoneSubtitle = document.getElementById('dropzoneSubtitle');
+        const dropzone = document.getElementById('dropzone');
         
         if (loading && loadingText) {
             loading.style.display = 'block';
-            dropzone.style.display = 'none';
+            if (dropzone) dropzone.style.display = 'none';
             loadingText.textContent = `Converting ${files.length} file(s) locally...`;
         }
 
@@ -255,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 for (let i = 0; i < files.length; i++) {
                     if (loadingText) loadingText.textContent = `Converting file ${i+1} of ${files.length}...`;
-                    await processFile(files[i], formatFrom, formatTo);
+                    await window.processFile(files[i], formatFrom, formatTo);
                 }
             }
         } finally {
@@ -270,16 +255,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Or click to select files from your computer';
             }, 3000);
         }
-    }
+    };
 
-    async function processFile(file, from, to) {
+    window.processFile = async function(file, from, to) {
         try {
             const ext = file.name.split('.').pop().toLowerCase();
-            const sourceFormat = from || ext;
+            const sourceFormat = (from || ext).toLowerCase().trim();
+            const targetFormat = (to || '').toLowerCase().trim();
+            
+            console.log('Processing:', sourceFormat, '->', targetFormat);
             
             // 1. Image Conversions using Canvas API (PNG, JPG, WEBP, BMP)
-            if (['png', 'jpg', 'jpeg', 'webp', 'bmp'].includes(to) && file.type.startsWith('image/')) {
-                await convertImage(file, to);
+            if (['png', 'jpg', 'jpeg', 'webp', 'bmp'].includes(targetFormat) && (file.type.startsWith('image/') || sourceFormat === 'pdf')) {
+                if (sourceFormat === 'pdf') {
+                    await convertPDFToImages(file, targetFormat);
+                } else {
+                    await convertImage(file, targetFormat);
+                }
                 return;
             }
 
@@ -305,12 +297,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 await convertPDFToImages(file, to);
                 return;
             }
-            if (sourceFormat === 'pdf' && to === 'docx') {
+            if (sourceFormat === 'pdf' && targetFormat === 'docx') {
                 await convertPDFToDocxViaText(file);
                 return;
             }
-            if (sourceFormat === 'docx' && (to === 'pdf' || to === 'txt' || to === 'md')) {
-                await convertDocx(file, to);
+            if (sourceFormat === 'pdf' && targetFormat === 'txt') {
+                await convertPDFToText(file);
+                return;
+            }
+            if (sourceFormat === 'docx' && (targetFormat === 'pdf' || targetFormat === 'txt' || targetFormat === 'md')) {
+                await convertDocx(file, targetFormat);
                 return;
             }
 
@@ -539,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 await convertTextToPdf(textContent, file.name);
                 return;
+            }
         } catch (error) {
             console.error(error);
             alert("Error: " + (error.message || "Could not read Word file"));
@@ -627,6 +624,31 @@ document.addEventListener('DOMContentLoaded', () => {
         return chunks;
     }
 
+    async function convertPDFToText(file) {
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = "Extracting text from PDF...";
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = "";
+            
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                fullText += textContent.items.map(item => item.str).join(" ") + "\n\n";
+            }
+            
+            const blob = new Blob([fullText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            downloadFile(url, file.name.replace(/\.[^/.]+$/, "") + ".txt");
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error(err);
+            alert("Error extracting text from PDF: " + err.message);
+        }
+    }
+    
     async function convertPDFToDocxViaText(file) {
         const loadingText = document.getElementById('loadingText');
         if (loadingText) loadingText.textContent = "Extracting text from PDF...";
