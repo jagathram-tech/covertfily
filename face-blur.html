@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Blur & Mosaic - Redact & Privacy Tool | Covertfily</title>
-    <meta name="description" content="Draw boxes to blur or pixelate faces and sensitive areas in any image. 100% private, runs entirely in your browser.">
+    <title>Image Blur & Mosaic - Blur, Pixelate & Redact | Covertfily</title>
+    <meta name="description" content="Blur or pixelate any area of an image using a box or brush tool. Perfect for redacting faces, text, and sensitive info. 100% private, runs in your browser.">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,17 +75,19 @@
         #placeholder h3 { color: var(--text-muted); margin: 0 0 8px; }
         #placeholder p { color: #94a3b8; font-size: 0.9rem; }
 
-        /* Canvas wrapper */
-        #canvasWrap {
-            display: none; position: relative; max-width: 100%; max-height: 600px;
-            cursor: crosshair;
-        }
+        #canvasWrap { display: none; position: relative; max-width: 100%; max-height: 600px; }
+        #canvasWrap.tool-box    { cursor: crosshair; }
+        #canvasWrap.tool-brush  { cursor: none; }  /* hide system cursor, show custom circle */
         #mainCanvas { display: block; max-width: 100%; max-height: 600px; }
-        /* Selection rectangle drawn over canvas */
         #selectionBox {
             position: absolute; border: 2px solid #3b82f6;
-            background: rgba(59,130,246,0.15); pointer-events: none; display: none;
-            border-radius: 2px;
+            background: rgba(59,130,246,0.15); pointer-events: none; display: none; border-radius: 2px;
+        }
+        /* Brush cursor ring */
+        #brushCursor {
+            position: absolute; border: 2px solid #3b82f6; border-radius: 50%;
+            pointer-events: none; display: none; transform: translate(-50%, -50%);
+            background: rgba(59,130,246,0.1);
         }
 
         /* Redaction history pills */
@@ -129,7 +131,7 @@
                         <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
                         <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
                         <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
-                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="face-blur.html"><i class="fas fa-droplet"></i> Image Blur & Mosaic</a>
                     </div>
                 </div>
                 <div class="dropdown-bridge"></div>
@@ -143,9 +145,9 @@
     <main>
         <div class="tool-container">
             <div class="section-title" style="text-align:center;">
-                <i class="fas fa-user-slash" style="color:var(--primary);font-size:2rem;"></i>
-                <h1>Face Blur & Mosaic</h1>
-                <p style="color:var(--text-muted);">Draw boxes over faces or sensitive areas to blur or pixelate them. Perfect for redacting screenshots. 100% private.</p>
+                <i class="fas fa-droplet" style="color:var(--primary);font-size:2rem;"></i>
+                <h1>Image Blur &amp; Mosaic</h1>
+                <p style="color:var(--text-muted);">Blur or pixelate any area with a box or freehand brush. Redact faces, text, and sensitive info instantly. 100% private.</p>
             </div>
 
             <div class="tool-layout">
@@ -168,6 +170,26 @@
                             <div class="mode-btn" id="modeMosaic" onclick="setMode('mosaic')">
                                 <i class="fas fa-th"></i> Mosaic
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-pencil-alt"></i> 3. Draw Tool</span>
+                        <div class="mode-toggle">
+                            <div class="mode-btn active" id="toolBox" onclick="setDrawTool('box')">
+                                <i class="fas fa-vector-square"></i> Box
+                            </div>
+                            <div class="mode-btn" id="toolBrush" onclick="setDrawTool('brush')">
+                                <i class="fas fa-paint-brush"></i> Brush
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group" id="brushSizeGroup" style="display:none;">
+                        <span class="control-label"><i class="fas fa-circle"></i> Brush Size</span>
+                        <div class="slider-row">
+                            <input type="range" id="brushSlider" min="10" max="150" value="40" oninput="updateBrushLabel()">
+                            <span class="slider-val" id="brushLabel">40</span>
                         </div>
                     </div>
 
@@ -209,9 +231,10 @@
                         <h3>Upload a photo to start</h3>
                         <p>Draw boxes over faces or sensitive areas<br>to blur or pixelate them instantly.</p>
                     </div>
-                    <div id="canvasWrap">
+                    <div id="canvasWrap" class="tool-box">
                         <canvas id="mainCanvas"></canvas>
                         <div id="selectionBox"></div>
+                        <div id="brushCursor"></div>
                     </div>
                 </div>
             </div>
@@ -227,12 +250,14 @@
 
     <script>
         // ─── State ───────────────────────────────────────────────────────────
-        let originalImageData = null;  // clean snapshot — never mutated
-        let redactions = [];           // array of { x, y, w, h, mode, intensity }
-        let currentMode = 'blur';
+        let originalImageData = null;
+        let redactions = [];           // array of { x, y, w, h, mode, intensity } for box tool
+        let currentMode = 'blur';      // 'blur' | 'mosaic'
+        let currentDrawTool = 'box';   // 'box' | 'brush'
         let isDrawing = false;
         let startX, startY;
         let imgNaturalW, imgNaturalH;
+        const brushCursor = document.getElementById('brushCursor');
 
         // ─── DOM Refs ─────────────────────────────────────────────────────────
         const fileInput       = document.getElementById('fileInput');
@@ -287,8 +312,25 @@
             document.getElementById('modeBlur').classList.toggle('active', m === 'blur');
             document.getElementById('modeMosaic').classList.toggle('active', m === 'mosaic');
         };
+        window.setDrawTool = (t) => {
+            currentDrawTool = t;
+            document.getElementById('toolBox').classList.toggle('active', t === 'box');
+            document.getElementById('toolBrush').classList.toggle('active', t === 'brush');
+            document.getElementById('brushSizeGroup').style.display = t === 'brush' ? 'flex' : 'none';
+            canvasWrap.className = t === 'brush' ? 'tool-brush' : 'tool-box';
+            brushCursor.style.display = 'none';
+        };
         window.updateIntensityLabel = () => {
             document.getElementById('intensityLabel').textContent = intensitySlider.value;
+        };
+        window.updateBrushLabel = () => {
+            document.getElementById('brushLabel').textContent = document.getElementById('brushSlider').value;
+            // Update cursor ring size
+            const r = mainCanvas.getBoundingClientRect();
+            const scale = r.width / mainCanvas.width;
+            const size = parseInt(document.getElementById('brushSlider').value) * scale * 2;
+            brushCursor.style.width  = size + 'px';
+            brushCursor.style.height = size + 'px';
         };
 
         // ─── Canvas coordinate helpers ────────────────────────────────────────
@@ -325,9 +367,15 @@
             if (!originalImageData) return;
             isDrawing = true;
             const c = getCanvasCoords(e);
-            const css = getCSSCoords(e);
             startX = c.x; startY = c.y;
 
+            if (currentDrawTool === 'brush') {
+                // Apply immediately at click point
+                applyEffectAt(c.x, c.y);
+                return;
+            }
+
+            const css = getCSSCoords(e);
             selectionBox.style.display = 'block';
             selectionBox.style.left   = css.x + 'px';
             selectionBox.style.top    = css.y + 'px';
@@ -336,15 +384,29 @@
         }
 
         function onPointerMove(e) {
+            if (!originalImageData) return;
+
+            // Update brush cursor position always
+            if (currentDrawTool === 'brush') {
+                const css = getCSSCoords(e);
+                const brushR = parseInt(document.getElementById('brushSlider').value);
+                const rect = mainCanvas.getBoundingClientRect();
+                const scale = rect.width / mainCanvas.width;
+                const size = brushR * scale * 2;
+                brushCursor.style.display  = 'block';
+                brushCursor.style.left     = css.x + 'px';
+                brushCursor.style.top      = css.y + 'px';
+                brushCursor.style.width    = size + 'px';
+                brushCursor.style.height   = size + 'px';
+                if (isDrawing) applyEffectAt(getCanvasCoords(e).x, getCanvasCoords(e).y);
+                return;
+            }
+
             if (!isDrawing) return;
             const css = getCSSCoords(e);
             const rect = mainCanvas.getBoundingClientRect();
-
-            const x = Math.min(startX, getCanvasCoords(e).x);
-            const y = Math.min(startY, getCanvasCoords(e).y);
             const cssSx = Math.min(startX * rect.width / mainCanvas.width,  css.x);
             const cssSy = Math.min(startY * rect.height / mainCanvas.height, css.y);
-
             selectionBox.style.left   = cssSx + 'px';
             selectionBox.style.top    = cssSy + 'px';
             selectionBox.style.width  = Math.abs(css.x - (startX * rect.width / mainCanvas.width)) + 'px';
@@ -354,9 +416,17 @@
         function onPointerUp(e) {
             if (!isDrawing) return;
             isDrawing = false;
+
+            if (currentDrawTool === 'brush') {
+                // Snapshot current canvas as new clean state for undo
+                redactions.push({ type: 'brush', snapshot: ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height) });
+                renderRedactionList();
+                updateButtons();
+                return;
+            }
+
             selectionBox.style.display = 'none';
 
-            const c = getCanvasCoords(e.type === 'mouseleave' ? e : e);
             const endX = e.type === 'touchend'
                 ? (e.changedTouches[0].clientX - mainCanvas.getBoundingClientRect().left) * (mainCanvas.width / mainCanvas.getBoundingClientRect().width)
                 : getCanvasCoords(e).x;
@@ -368,28 +438,41 @@
             const ry = Math.round(Math.min(startY, endY));
             const rw = Math.round(Math.abs(endX - startX));
             const rh = Math.round(Math.abs(endY - startY));
-
-            if (rw < 5 || rh < 5) return; // Ignore tiny clicks
+            if (rw < 5 || rh < 5) return;
 
             const intensity = parseInt(intensitySlider.value);
-            redactions.push({ x: rx, y: ry, w: rw, h: rh, mode: currentMode, intensity });
+            redactions.push({ type: 'box', x: rx, y: ry, w: rw, h: rh, mode: currentMode, intensity });
             renderCanvas();
             renderRedactionList();
             updateButtons();
         }
 
+        // Also hide brush cursor on mouseleave
+        mainCanvas.addEventListener('mouseleave', () => { brushCursor.style.display = 'none'; isDrawing = false; selectionBox.style.display = 'none'; });
+
         // ─── Rendering ───────────────────────────────────────────────────────
         function renderCanvas() {
-            // Restore clean image
             ctx.putImageData(originalImageData, 0, 0);
-
             redactions.forEach(r => {
-                if (r.mode === 'blur') {
-                    applyBlur(r);
+                if (r.type === 'brush') {
+                    ctx.putImageData(r.snapshot, 0, 0);
                 } else {
-                    applyMosaic(r);
+                    r.mode === 'blur' ? applyBlur(r) : applyMosaic(r);
                 }
             });
+        }
+
+        // ─── Brush painting ───────────────────────────────────────────────────
+        function applyEffectAt(cx, cy) {
+            const brushR = parseInt(document.getElementById('brushSlider').value);
+            const intensity = parseInt(intensitySlider.value);
+            const x = Math.max(0, Math.round(cx - brushR));
+            const y = Math.max(0, Math.round(cy - brushR));
+            const w = Math.min(mainCanvas.width  - x, brushR * 2);
+            const h = Math.min(mainCanvas.height - y, brushR * 2);
+            if (w < 1 || h < 1) return;
+            const r = { x, y, w, h, mode: currentMode, intensity };
+            currentMode === 'blur' ? applyBlur(r) : applyMosaic(r);
         }
 
         function applyBlur(r) {
@@ -482,15 +565,13 @@
             redactionList.innerHTML = '';
             redactionListGroup.style.display = redactions.length ? 'flex' : 'none';
             redactionCount.textContent = redactions.length;
-
             redactions.forEach((r, i) => {
                 const pill = document.createElement('div');
                 pill.className = 'redaction-pill';
-                pill.innerHTML = `
-                    <span><i class="fas fa-${r.mode === 'blur' ? 'tint' : 'th'}"></i>
-                    ${r.mode === 'blur' ? 'Blur' : 'Mosaic'} — ${r.w}×${r.h}px</span>
-                    <button onclick="removeRedaction(${i})" title="Remove"><i class="fas fa-times"></i></button>
-                `;
+                const label = r.type === 'brush'
+                    ? `<i class="fas fa-paint-brush"></i> Brush stroke`
+                    : `<i class="fas fa-${r.mode === 'blur' ? 'tint' : 'th'}"></i> ${r.mode === 'blur' ? 'Blur' : 'Mosaic'} box — ${r.w}×${r.h}px`;
+                pill.innerHTML = `<span>${label}</span><button onclick="removeRedaction(${i})" title="Remove"><i class="fas fa-times"></i></button>`;
                 redactionList.appendChild(pill);
             });
         }
