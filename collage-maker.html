@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Photo Collage Maker - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Create beautiful photo grids and freeform polaroid collages instantly. 100% free client-side image collage maker.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+        
+        .collage-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 40px; }
+        
+        .controls-pane {
+            background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 20px; align-self: start;
+            max-height: 80vh; overflow-y: auto;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center;
+            cursor: pointer; transition: 0.2s; background: #f8fafc;
+        }
+        .upload-area:hover { border-color: var(--primary); background: #f0fdf4; }
+        
+        .thumbnail-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .thumbnail { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; }
+        
+        .control-group { display: flex; flex-direction: column; gap: 10px; }
+        .control-header { display: flex; justify-content: space-between; align-items: center; }
+        .control-label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .control-val { font-size: 0.85rem; color: white; background: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+        
+        select, input[type="color"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 0.95rem; }
+        input[type="color"] { height: 45px; cursor: pointer; padding: 2px; }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #e2e8f0; outline: none; margin: 10px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--primary); cursor: pointer; transition: transform 0.1s; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3); }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+        .btn-action { padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-action:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); }
+        .btn-secondary:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+        .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px; font-size: 0.85rem; margin-top: 10px; }
+        .btn-danger:hover { background: #ef4444; color: white; transform: translateY(-2px); }
+
+        .preview-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center; min-height: 600px;
+            padding: 20px; text-align: center; flex-direction: column; gap: 20px; overflow: hidden;
+        }
+        #collageCanvas { max-width: 100%; max-height: 75vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; }
+
+        @media (max-width: 900px) {
+            .collage-layout { grid-template-columns: 1fr; }
+            #collageCanvas { max-height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center;">
+                <i class="fas fa-th-large" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Photo Collage Maker</h1>
+                <p style="color: var(--text-muted);">Arrange your photos into beautiful grids or scattered polaroid freeform layouts instantly.</p>
+            </div>
+
+            <div class="collage-layout">
+                <div class="controls-pane">
+                    
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-images"></i> 1. Add Photos</span>
+                        <div class="upload-area" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-plus-circle" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+                            <h4>Click or Drag Photos Here</h4>
+                            <p style="margin:0; font-size: 0.85rem; color: var(--text-muted);">Select multiple images</p>
+                            <input type="file" id="fileInput" hidden accept="image/*" multiple>
+                        </div>
+                        <div class="thumbnail-strip" id="thumbnailStrip"></div>
+                        <button class="btn-action btn-danger" id="btnClear" style="display:none;" onclick="clearPhotos()"><i class="fas fa-trash-alt"></i> Clear All Photos</button>
+                    </div>
+
+                    <hr style="border:0; border-top: 1px solid var(--border); margin: 5px 0;">
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-layer-group"></i> 2. Layout Style</span>
+                        <select id="layoutMode" onchange="toggleModeSettings(); drawCollage();">
+                            <option value="grid">Grid (Square Cells)</option>
+                            <option value="scatter">Polaroid Scatter (Freeform)</option>
+                        </select>
+                    </div>
+
+                    <div id="gridSettings" style="display: flex; flex-direction: column; gap: 15px;">
+                        <div class="control-group">
+                            <div class="control-header"><span class="control-label">Columns</span><span class="control-val" id="valCols">3</span></div>
+                            <input type="range" id="gridCols" min="1" max="8" value="3" oninput="updateVal('gridCols', 'valCols'); drawCollage();">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-header"><span class="control-label">Spacing Gap</span><span class="control-val" id="valGap">20px</span></div>
+                            <input type="range" id="gridGap" min="0" max="100" value="20" oninput="updateVal('gridGap', 'valGap', 'px'); drawCollage();">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-header"><span class="control-label">Corner Radius</span><span class="control-val" id="valRadius">10px</span></div>
+                            <input type="range" id="gridRadius" min="0" max="150" value="10" oninput="updateVal('gridRadius', 'valRadius', 'px'); drawCollage();">
+                        </div>
+                    </div>
+
+                    <div id="scatterSettings" style="display: none; flex-direction: column; gap: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Photos are scattered like polaroids on a desk.</p>
+                        <button class="btn-action btn-secondary" onclick="shuffleScatter()"><i class="fas fa-random"></i> Shuffle Arrangement</button>
+                    </div>
+
+                    <hr style="border:0; border-top: 1px solid var(--border); margin: 5px 0;">
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-fill-drip"></i> 3. Background Color</span>
+                        <input type="color" id="bgColor" value="#ffffff" oninput="drawCollage()">
+                    </div>
+
+                    <button class="btn-action" id="btnDownload" onclick="downloadCollage()" style="display:none; margin-top: 10px;">
+                        <i class="fas fa-download"></i> Download Collage
+                    </button>
+                </div>
+                
+                <div class="preview-pane">
+                    <div id="placeholderText">
+                        <i class="fas fa-th" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                        <h3 style="color: var(--text-muted);">Your collage will appear here</h3>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">Upload some photos to get started.</p>
+                    </div>
+                    <canvas id="collageCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side conversion.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;"><li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li></ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const thumbnailStrip = document.getElementById('thumbnailStrip');
+        const canvas = document.getElementById('collageCanvas');
+        const ctx = canvas.getContext('2d');
+        const placeholderText = document.getElementById('placeholderText');
+        const btnDownload = document.getElementById('btnDownload');
+        const btnClear = document.getElementById('btnClear');
+
+        let loadedImages = [];
+        let scatterSeed = Math.random();
+
+        // UI toggles
+        function updateVal(id, valId, suffix='') {
+            document.getElementById(valId).textContent = document.getElementById(id).value + suffix;
+        }
+
+        function toggleModeSettings() {
+            const mode = document.getElementById('layoutMode').value;
+            document.getElementById('gridSettings').style.display = mode === 'grid' ? 'flex' : 'none';
+            document.getElementById('scatterSettings').style.display = mode === 'scatter' ? 'flex' : 'none';
+        }
+
+        // Drag & drop
+        dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = '#f0fdf4'; };
+        dropzone.ondragleave = (e) => { e.preventDefault(); dropzone.style.borderColor = '#cbd5e1'; dropzone.style.background = '#f8fafc'; };
+        dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#cbd5e1'; dropzone.style.background = '#f8fafc';
+            handleFiles(e.dataTransfer.files);
+        };
+        fileInput.onchange = (e) => handleFiles(e.target.files);
+
+        function handleFiles(files) {
+            if (!files.length) return;
+            
+            let filesLoadedCount = 0;
+            const targetCount = files.length;
+
+            Array.from(files).forEach(file => {
+                if (!file.type.startsWith('image/')) {
+                    filesLoadedCount++;
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedImages.push(img);
+                        
+                        // Add thumbnail
+                        const thumb = document.createElement('img');
+                        thumb.src = img.src;
+                        thumb.className = 'thumbnail';
+                        thumbnailStrip.appendChild(thumb);
+                        
+                        filesLoadedCount++;
+                        if (filesLoadedCount === targetCount) {
+                            onImagesUpdated();
+                        }
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function clearPhotos() {
+            loadedImages = [];
+            thumbnailStrip.innerHTML = '';
+            onImagesUpdated();
+        }
+
+        function onImagesUpdated() {
+            if (loadedImages.length > 0) {
+                placeholderText.style.display = 'none';
+                canvas.style.display = 'block';
+                btnDownload.style.display = 'flex';
+                btnClear.style.display = 'block';
+                drawCollage();
+            } else {
+                placeholderText.style.display = 'block';
+                canvas.style.display = 'none';
+                btnDownload.style.display = 'none';
+                btnClear.style.display = 'none';
+            }
+        }
+
+        function shuffleScatter() {
+            scatterSeed = Math.random();
+            drawCollage();
+        }
+
+        // Pseudo-random generator with seed
+        function seededRandom(max, min = 0) {
+            scatterSeed = (scatterSeed * 9301 + 49297) % 233280;
+            const rnd = scatterSeed / 233280;
+            return min + rnd * (max - min);
+        }
+
+        function drawCollage() {
+            if (loadedImages.length === 0) return;
+            
+            const mode = document.getElementById('layoutMode').value;
+            const bgColor = document.getElementById('bgColor').value;
+
+            if (mode === 'grid') {
+                drawGrid(bgColor);
+            } else {
+                drawScatter(bgColor);
+            }
+        }
+
+        function roundRect(context, x, y, width, height, radius) {
+            if (width < 2 * radius) radius = width / 2;
+            if (height < 2 * radius) radius = height / 2;
+            context.beginPath();
+            context.moveTo(x + radius, y);
+            context.arcTo(x + width, y, x + width, y + height, radius);
+            context.arcTo(x + width, y + height, x, y + height, radius);
+            context.arcTo(x, y + height, x, y, radius);
+            context.arcTo(x, y, x + width, y, radius);
+            context.closePath();
+        }
+
+        function drawGrid(bgColor) {
+            const cols = parseInt(document.getElementById('gridCols').value);
+            const gap = parseInt(document.getElementById('gridGap').value);
+            const radius = parseInt(document.getElementById('gridRadius').value);
+            
+            const numImages = loadedImages.length;
+            const rows = Math.ceil(numImages / cols);
+            
+            // Base resolution per cell
+            const cellW = 600; 
+            const cellH = 600;
+            
+            canvas.width = cols * cellW + (cols + 1) * gap;
+            canvas.height = rows * cellH + (rows + 1) * gap;
+            
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < numImages; i++) {
+                const c = i % cols;
+                const r = Math.floor(i / cols);
+                const x = gap + c * (cellW + gap);
+                const y = gap + r * (cellH + gap);
+                
+                ctx.save();
+                roundRect(ctx, x, y, cellW, cellH, radius);
+                ctx.clip();
+                
+                // Object-fit: cover implementation
+                const img = loadedImages[i];
+                const scale = Math.max(cellW / img.width, cellH / img.height);
+                const dw = img.width * scale;
+                const dh = img.height * scale;
+                const dx = x + (cellW - dw) / 2;
+                const dy = y + (cellH - dh) / 2;
+                
+                ctx.drawImage(img, dx, dy, dw, dh);
+                ctx.restore();
+            }
+        }
+
+        function drawScatter(bgColor) {
+            const numImages = loadedImages.length;
+            
+            // Dynamic canvas size based on number of photos to ensure they fit reasonably
+            // Base size for 1-4 photos, expand for more
+            const baseSize = 1600;
+            canvas.width = baseSize + Math.max(0, (numImages - 4) * 200);
+            canvas.height = (baseSize * 0.75) + Math.max(0, (numImages - 4) * 150);
+            
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Reset seed for consistency on redraw (e.g. when changing background)
+            let tempSeed = scatterSeed; 
+
+            for (let i = 0; i < numImages; i++) {
+                const img = loadedImages[i];
+                const maxDim = 500;
+                const scale = maxDim / Math.max(img.width, img.height);
+                const w = img.width * scale;
+                const h = img.height * scale;
+                
+                const padding = 25;
+                const bottomPadding = 80;
+                
+                const pw = w + padding*2;
+                const ph = h + padding + bottomPadding;
+                
+                // Keep within safe bounds
+                const safeX = pw/2 + 100;
+                const safeY = ph/2 + 100;
+                const spreadX = canvas.width - safeX * 2;
+                const spreadY = canvas.height - safeY * 2;
+
+                const x = safeX + seededRandom(spreadX);
+                const y = safeY + seededRandom(spreadY);
+                const angle = seededRandom(0.4, -0.4); // rad
+                
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(angle);
+                
+                // Shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetX = 8;
+                ctx.shadowOffsetY = 8;
+                
+                // Frame
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(-pw/2, -ph/2, pw, ph);
+                
+                ctx.shadowColor = 'transparent';
+                
+                // Image
+                ctx.drawImage(img, -pw/2 + padding, -ph/2 + padding, w, h);
+                
+                ctx.restore();
+            }
+            
+            scatterSeed = tempSeed; // Restore seed so it doesn't shuffle on every background color change
+        }
+
+        function downloadCollage() {
+            if (loadedImages.length === 0) return;
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            const link = document.createElement('a');
+            link.download = `covertfily-collage.jpg`;
+            link.href = dataUrl;
+            link.click();
+        }
+
+        // Tools search
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

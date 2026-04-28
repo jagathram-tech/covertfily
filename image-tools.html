@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Image Resizer & Rounder - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .image-editor {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin-top: 40px;
+            display: none;
+        }
+        .preview-pane {
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            overflow: hidden;
+            position: relative;
+        }
+        .preview-pane img {
+            max-width: 100%;
+            max-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .preview-pane img.rounded {
+            border-radius: 50%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+        }
+        .settings-pane {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .input-row input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+        }
+        .toggle-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .btn-download {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        .btn-download:hover {
+            background: var(--primary-hover);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .checkbox-group input {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center;">
+                <i class="fas fa-expand-arrows-alt" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Image Resizer & Rounder</h1>
+                <p style="color: var(--text-muted);">Resize and crop your images into perfect circles locally.</p>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon"><i class="fas fa-image"></i></div>
+                <h2>Select Image</h2>
+                <p>Click or drag and drop your image file</p>
+                <input type="file" id="fileInput" hidden accept="image/*">
+            </div>
+
+            <div class="image-editor" id="editor">
+                <div class="preview-pane" id="previewPane">
+                    <img id="previewImg" src="">
+                </div>
+                <div class="settings-pane">
+                    <div class="control-group">
+                        <label>Scale Image (<span id="scaleLabel">100</span>%)</label>
+                        <input type="range" id="scaleSlider" min="1" max="200" value="100" style="width:100%; margin-bottom: 20px;">
+                    </div>
+                    <div class="control-group">
+                        <label>Dimensions (px)</label>
+                        <div class="input-row">
+                            <input type="number" id="imgWidth" placeholder="Width">
+                            <input type="number" id="imgHeight" placeholder="Height">
+                        </div>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="lockAspect" checked>
+                            <span>Lock Aspect Ratio</span>
+                        </label>
+                    </div>
+                    <div class="control-group">
+                        <label>Corner Roundness (<span id="roundLabel">0</span>%)</label>
+                        <input type="range" id="roundSlider" min="0" max="50" value="0" style="width:100%;">
+                    </div>
+                    <button class="btn-download" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download Image
+                    </button>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 20px; text-align: center;">
+                        Processed 100% locally for your privacy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side conversion.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;"><li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li></ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const editor = document.getElementById('editor');
+        const previewImg = document.getElementById('previewImg');
+        const imgWidth = document.getElementById('imgWidth');
+        const imgHeight = document.getElementById('imgHeight');
+        const scaleSlider = document.getElementById('scaleSlider');
+        const scaleLabel = document.getElementById('scaleLabel');
+        const roundSlider = document.getElementById('roundSlider');
+        const roundLabel = document.getElementById('roundLabel');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let originalImg = new Image();
+
+        dropzone.onclick = () => fileInput.click();
+
+        function handleFileSelect(file) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    originalImg.src = event.target.result;
+                    originalImg.onload = () => {
+                        previewImg.src = originalImg.src;
+                        imgWidth.value = originalImg.width;
+                        imgHeight.value = originalImg.height;
+                        aspectRatio = originalImg.width / originalImg.height;
+                        dropzone.style.display = 'none';
+                        editor.style.display = 'grid';
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+        dropzone.ondragover = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary-hover)';
+            dropzone.style.background = 'var(--bg-alt)';
+        };
+        
+        dropzone.ondragleave = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+        };
+        
+        dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            }
+        };
+
+        let aspectRatio = 1;
+        const lockAspect = document.getElementById('lockAspect');
+
+        // Handle manual inputs syncing slider
+        imgWidth.oninput = () => {
+            if (lockAspect.checked) {
+                imgHeight.value = Math.round(imgWidth.value / aspectRatio);
+            }
+            updateScaleSlider();
+            updatePreview();
+        };
+
+        imgHeight.oninput = () => {
+            if (lockAspect.checked) {
+                imgWidth.value = Math.round(imgHeight.value * aspectRatio);
+            }
+            updateScaleSlider();
+            updatePreview();
+        };
+
+        function updateScaleSlider() {
+            if (!originalImg.width) return;
+            const currentw = parseInt(imgWidth.value);
+            const rawScale = Math.round((currentw / originalImg.width) * 100);
+            const displayScale = Math.max(1, Math.min(200, rawScale)); // Clamp 1 to 200
+            scaleSlider.value = displayScale;
+            scaleLabel.textContent = displayScale;
+        }
+
+        // Handle Scale Slider
+        scaleSlider.oninput = (e) => {
+            const scale = parseInt(e.target.value);
+            scaleLabel.textContent = scale;
+            imgWidth.value = Math.round(originalImg.width * (scale / 100));
+            imgHeight.value = Math.round(originalImg.height * (scale / 100));
+            updatePreview();
+        };
+
+        // Handle Round Slider
+        roundSlider.oninput = (e) => {
+            roundLabel.textContent = e.target.value;
+            updatePreview();
+        };
+
+        function updatePreview() {
+            const rounding = parseInt(roundSlider.value);
+            previewImg.style.borderRadius = `${rounding}%`;
+            // Keep object fit styling if it's perfectly circular to ensure it uses the aspect ratio cropping technique logic visually
+            if (rounding > 40) {
+                 previewImg.style.objectFit = 'cover';
+                 previewImg.style.aspectRatio = '1 / 1';
+            } else {
+                 previewImg.style.objectFit = 'contain';
+                 previewImg.style.aspectRatio = 'auto';
+            }
+        }
+
+        downloadBtn.onclick = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const w = parseInt(imgWidth.value) || originalImg.width;
+            const h = parseInt(imgHeight.value) || originalImg.height;
+            const roundPercentage = parseInt(roundSlider.value) || 0;
+
+            if (roundPercentage > 40) {
+                // If it is highly rounded, crop to a perfect center circle/square automatically preserving aspect ratio locally
+                canvas.width = Math.min(w, h);
+                canvas.height = Math.min(w, h);
+                const size = canvas.width;
+                
+                // Add the smooth rounded rect
+                const radius = (roundPercentage / 100) * size;
+                ctx.beginPath();
+                if (ctx.roundRect) {
+                     ctx.roundRect(0, 0, size, size, radius);
+                } else {
+                     ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+                }
+                ctx.closePath();
+                ctx.clip();
+                
+                // Draw image cropped to center square
+                const srcSize = Math.min(originalImg.width, originalImg.height);
+                const srcX = (originalImg.width - srcSize) / 2;
+                const srcY = (originalImg.height - srcSize) / 2;
+                ctx.drawImage(originalImg, srcX, srcY, srcSize, srcSize, 0, 0, size, size);
+            } else if (roundPercentage > 0) {
+                // Slight rounding without severe crop, applying border radius to dimensions
+                canvas.width = w;
+                canvas.height = h;
+                
+                const radius = (roundPercentage / 100) * Math.min(w, h);
+                ctx.beginPath();
+                if (ctx.roundRect) ctx.roundRect(0, 0, w, h, radius);
+                ctx.closePath();
+                ctx.clip();
+                
+                ctx.drawImage(originalImg, 0, 0, w, h);
+            } else {
+                // Completely flat
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(originalImg, 0, 0, w, h);
+            }
+
+            const link = document.createElement('a');
+            link.download = `covertfily-${roundPercentage > 0 ? 'rounded-' : ''}image.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+
+        // Tools search
+        document.querySelector('.tools-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tools-list a').forEach(a => {
+                a.classList.toggle('hidden', !a.textContent.toLowerCase().includes(query));
+            });
+        });
+    </script>
+</body>
+</html>

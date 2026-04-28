@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Image Color Palette Extractor - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Extract dominant colors from any image. Get HEX, RGB, and HSL codes instantly, 100% locally in your browser.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 900px; margin: 60px auto; padding: 0 20px; }
+        .image-editor { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 40px; display: none; }
+        .preview-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center; min-height: 400px; overflow: hidden; position: relative;
+        }
+        .preview-pane img { max-width: 100%; max-height: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; }
+        .palette-pane {
+            background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border); text-align: left;
+        }
+        .colors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .color-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .color-swatch {
+            height: 120px;
+            width: 100%;
+        }
+        .color-info {
+            padding: 15px;
+            background: white;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .color-info div {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .color-info div:last-child { margin-bottom: 0; }
+        .color-label { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; }
+        .color-val { font-family: monospace; font-size: 0.95rem; }
+        .copy-btn {
+            background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); 
+            cursor: pointer; padding: 4px 8px; transition: 0.2s; font-size: 0.8rem;
+        }
+        .copy-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+        .controls-row {
+            display: flex; gap: 20px; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .controls-row select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center;">
+                <i class="fas fa-palette" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Color Palette Extractor</h1>
+                <p style="color: var(--text-muted);">Extract dominant colors from any image locally. Get HEX, RGB, and HSL codes.</p>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon"><i class="fas fa-image"></i></div>
+                <h2>Select Image</h2>
+                <p>Click or drag and drop your image file</p>
+                <input type="file" id="fileInput" hidden accept="image/*">
+            </div>
+
+            <div class="image-editor" id="editor">
+                <div class="preview-pane" id="previewPane">
+                    <img id="previewImg" src="">
+                </div>
+                <div class="palette-pane">
+                    <div class="controls-row">
+                        <h3 style="margin: 0;">Extracted Palette</h3>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="colorCount" style="font-weight: 600;">Colors:</label>
+                            <select id="colorCount">
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10" selected>10</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="colors-grid" id="colorsGrid">
+                        <!-- Color cards will be generated here -->
+                    </div>
+
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 30px; text-align: center;">
+                        Processed 100% locally for your privacy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side conversion.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;"><li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li></ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const editor = document.getElementById('editor');
+        const previewImg = document.getElementById('previewImg');
+        const colorCountSelect = document.getElementById('colorCount');
+        const colorsGrid = document.getElementById('colorsGrid');
+
+        let currentImage = null;
+
+        dropzone.onclick = () => fileInput.click();
+
+        function handleFileSelect(file) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        currentImage = img;
+                        previewImg.src = img.src;
+                        dropzone.style.display = 'none';
+                        editor.style.display = 'grid';
+                        extractColors();
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+        dropzone.ondragover = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary-hover)';
+            dropzone.style.background = 'var(--bg-alt)';
+        };
+        
+        dropzone.ondragleave = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+        };
+        
+        dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            }
+        };
+
+        colorCountSelect.onchange = () => {
+            if (currentImage) extractColors();
+        };
+
+        function rgbToHex(r, g, b) {
+            return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max == min) {
+                h = s = 0; 
+            } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [Math.round(h * 360), Math.round(s * 100) + '%', Math.round(l * 100) + '%'];
+        }
+
+        async function copyToClipboard(text, btn) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalIcon = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.color = 'var(--success)';
+                btn.style.borderColor = 'var(--success)';
+                setTimeout(() => {
+                    btn.innerHTML = originalIcon;
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 1500);
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+        }
+
+        function renderColors(colors) {
+            colorsGrid.innerHTML = '';
+            colors.forEach(c => {
+                const hex = rgbToHex(c.r, c.g, c.b);
+                const rgb = `rgb(${c.r}, ${c.g}, ${c.b})`;
+                const hslArr = rgbToHsl(c.r, c.g, c.b);
+                const hsl = `hsl(${hslArr[0]}, ${hslArr[1]}, ${hslArr[2]})`;
+
+                const card = document.createElement('div');
+                card.className = 'color-card';
+                card.innerHTML = `
+                    <div class="color-swatch" style="background-color: ${hex}"></div>
+                    <div class="color-info">
+                        <div>
+                            <span class="color-label">HEX</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="color-val">${hex}</span>
+                                <button class="copy-btn" onclick="copyToClipboard('${hex}', this)" title="Copy HEX"><i class="far fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="color-label">RGB</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="color-val">${rgb}</span>
+                                <button class="copy-btn" onclick="copyToClipboard('${rgb}', this)" title="Copy RGB"><i class="far fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="color-label">HSL</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="color-val">${hsl}</span>
+                                <button class="copy-btn" onclick="copyToClipboard('${hsl}', this)" title="Copy HSL"><i class="far fa-copy"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                colorsGrid.appendChild(card);
+            });
+        }
+
+        function extractColors() {
+            if (!currentImage) return;
+            const count = parseInt(colorCountSelect.value);
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Downscale for performance
+            const maxDim = 150;
+            let w = currentImage.naturalWidth;
+            let h = currentImage.naturalHeight;
+            if (w > maxDim || h > maxDim) {
+                if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                else { w = Math.round(w * maxDim / h); h = maxDim; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(currentImage, 0, 0, w, h);
+            
+            const imageData = ctx.getImageData(0, 0, w, h).data;
+            const buckets = {};
+            
+            for (let i = 0; i < imageData.length; i += 4) {
+                if (imageData[i+3] < 128) continue; // Skip transparent
+                
+                // Group colors into coarse buckets
+                const r = Math.round(imageData[i] / 24) * 24;
+                const g = Math.round(imageData[i+1] / 24) * 24;
+                const b = Math.round(imageData[i+2] / 24) * 24;
+                const key = `${r},${g},${b}`;
+                
+                if (!buckets[key]) buckets[key] = {r:0, g:0, b:0, count:0};
+                buckets[key].r += imageData[i];
+                buckets[key].g += imageData[i+1];
+                buckets[key].b += imageData[i+2];
+                buckets[key].count++;
+            }
+            
+            const sorted = Object.values(buckets).sort((a,b) => b.count - a.count);
+            const colors = [];
+            
+            // Threshold for colors being "too similar" based on count request
+            const distThreshold = count <= 5 ? 50 : 35;
+            
+            for (const b of sorted) {
+                const avgR = Math.round(b.r / b.count);
+                const avgG = Math.round(b.g / b.count);
+                const avgB = Math.round(b.b / b.count);
+                
+                // Filter out colors too similar to existing
+                let tooSimilar = false;
+                for (const c of colors) {
+                    const dist = Math.sqrt(Math.pow(c.r-avgR,2) + Math.pow(c.g-avgG,2) + Math.pow(c.b-avgB,2));
+                    if (dist < distThreshold) { tooSimilar = true; break; }
+                }
+                
+                if (!tooSimilar) {
+                    colors.push({r: avgR, g: avgG, b: avgB});
+                    if (colors.length >= count) break;
+                }
+            }
+            
+            renderColors(colors);
+        }
+
+        // Tools search
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

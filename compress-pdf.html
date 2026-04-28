@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Compress PDF Online - Reduce PDF Size Privately - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Shrink your PDF file size without losing quality. 100% private, local-first PDF compression. No uploads, no waiting, just fast local processing.">
+    <meta name="keywords" content="Compress PDF, Reduce PDF Size, PDF Optimizer, Private PDF Compression, Local PDF Tools, Covertfily PDF">
+    
+    <!-- Once-per-device Ad Logic -->
+    <script>
+        if (!localStorage.getItem('adShown')) {
+            const s = document.createElement('script');
+            s.src = "https://jabturfembitter.com/78/e5/2c/78e52ce51f1ba2f301ca21694104c781.js";
+            document.head.appendChild(s);
+            localStorage.setItem('adShown', Date.now());
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .compression-settings {
+            margin-top: 30px;
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            text-align: left;
+            display: none;
+        }
+
+        .btn-compress {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .btn-compress:hover {
+            background: var(--primary-hover);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-alt);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="tools-menu">
+                <a href="#">Tools <i class="fas fa-search" style="font-size: 0.8rem; margin-left: 4px;"></i></a>
+                <div class="tools-dropdown">
+                    <input type="text" placeholder="Search tools..." class="tools-search">
+                    <div class="tools-list">
+                        <a href="watermark.html"><i class="fas fa-stamp"></i> Add Watermark</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress-arrows-alt"></i> Compress PDF</a>
+                        <a href="merge-pdf.html"><i class="fas fa-file-pdf"></i> Merge PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-image"></i> Image Resizer & Rounder</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+    
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title">
+                <i class="fas fa-compress-arrows-alt" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Compress PDF</h1>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 40px;">Reduce your PDF file size locally while maintaining quality.</p>
+
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon">
+                    <i class="fas fa-file-archive"></i>
+                </div>
+                <h2>Select PDF to Compress</h2>
+                <p>Click or drag and drop your PDF file</p>
+                <input type="file" id="fileInput" hidden accept="application/pdf">
+            </div>
+
+            <div class="compression-settings" id="settings">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-weight: 700;">Compression Level</span>
+                    <span id="qualityVal">Medium (70%)</span>
+                </div>
+                <input type="range" id="qualityRange" style="width: 100%;" min="10" max="90" value="70">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Lower quality results in a smaller file size.</p>
+                
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="statusTxt" style="text-align: center; font-size: 0.9rem; margin-top: 10px; display: none;"></p>
+
+                <button class="btn-compress" id="compressBtn">Compress PDF Now</button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Covertfily</span>
+                </div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side file conversion. Security by design.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">
+            MIT Licensed & Open Source Project • Covertfily
+        </div>
+    </footer>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const settings = document.getElementById('settings');
+        const compressBtn = document.getElementById('compressBtn');
+        const qualityRange = document.getElementById('qualityRange');
+        const qualityVal = document.getElementById('qualityVal');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const statusTxt = document.getElementById('statusTxt');
+
+        let selectedFile = null;
+
+        dropzone.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                settings.style.display = 'block';
+                dropzone.innerHTML = `<h3><i class='fas fa-file-pdf'></i> ${selectedFile.name}</h3>`;
+            }
+        };
+
+        qualityRange.oninput = (e) => {
+            const val = e.target.value;
+            let label = "Medium";
+            if (val < 40) label = "Extreme";
+            else if (val > 75) label = "Light";
+            qualityVal.textContent = `${label} (${val}%)`;
+        };
+
+        compressBtn.onclick = async () => {
+            if (!selectedFile) return;
+            
+            compressBtn.disabled = true;
+            progressBar.style.display = 'block';
+            statusTxt.style.display = 'block';
+            
+            const arrayBuffer = await selectedFile.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                unit: 'px',
+                hotfixes: ['px_scaling']
+            });
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                statusTxt.textContent = `Processing page ${i} of ${pdf.numPages}...`;
+                progressFill.style.width = `${(i / pdf.numPages) * 100}%`;
+                
+                const page = await pdf.getPage(i);
+                // Reduce scale to 1.0 to prevent upscaling blow-up
+                const viewport = page.getViewport({scale: 1.0}); 
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Use floor to avoid sub-pixel rendering issues
+                canvas.height = Math.floor(viewport.height);
+                canvas.width = Math.floor(viewport.width);
+                
+                // Smoothing for better image quality at low sizes
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                await page.render({canvasContext: ctx, viewport: viewport}).promise;
+
+                // Aggressive JPEG compression
+                const finalQuality = qualityRange.value / 100;
+                const imgData = canvas.toDataURL('image/jpeg', finalQuality);
+                
+                if (i > 1) {
+                    doc.addPage([canvas.width, canvas.height], canvas.width > canvas.height ? 'l' : 'p');
+                } else {
+                    // First page: set initial dimensions
+                    doc.deletePage(1);
+                    doc.addPage([canvas.width, canvas.height], canvas.width > canvas.height ? 'l' : 'p');
+                }
+                
+                doc.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+            }
+
+            doc.save(selectedFile.name.replace('.pdf', '') + '_compressed.pdf');
+            
+            statusTxt.textContent = "Done! Your compressed PDF has been downloaded.";
+            compressBtn.disabled = false;
+        };
+
+        // Tools search filtering
+        document.querySelector('.tools-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const tools = document.querySelectorAll('.tools-list a');
+            tools.forEach(tool => {
+                const text = tool.textContent.toLowerCase();
+                tool.classList.toggle('hidden', !text.includes(query));
+            });
+        });
+    </script>
+</body>
+</html>

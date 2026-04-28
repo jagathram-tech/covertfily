@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Background Remover - Free AI Tool - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Remove backgrounds from photos, product images and portraits instantly in your browser. Free, 100% private, no upload needed. Supports transparent or solid colour background.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
+
+        .bg-layout { display: grid; grid-template-columns: 320px 1fr; gap: 30px; margin-top: 40px; }
+
+        .controls-pane {
+            background: white; padding: 28px; border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 20px; align-self: start; position: sticky; top: 20px;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1; border-radius: 14px; padding: 24px; text-align: center;
+            cursor: pointer; transition: 0.2s; background: #f8fafc;
+        }
+        .upload-area:hover { border-color: var(--primary); background: #eef9f2; }
+        .upload-area img { max-width: 100%; max-height: 160px; border-radius: 8px; margin-top: 12px; object-fit: cover; display: none; }
+
+        .control-group { display: flex; flex-direction: column; gap: 10px; }
+        .control-label { font-weight: 600; color: var(--text-main); font-size: 0.9rem; }
+
+        .bg-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .bg-option {
+            padding: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer;
+            text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .bg-option:hover { border-color: var(--primary); color: var(--primary); }
+        .bg-option.active { border-color: var(--primary); background: #eef9f2; color: var(--primary); }
+        .bg-option .swatch { width: 30px; height: 30px; border-radius: 6px; }
+
+        .checkerboard {
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+                              linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                              linear-gradient(45deg, transparent 75%, #ccc 75%),
+                              linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+        }
+
+        input[type="color"] { width: 100%; height: 44px; border-radius: 10px; border: 1px solid var(--border); padding: 3px; cursor: pointer; }
+
+        .btn-generate {
+            padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 1rem; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-generate:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
+        .btn-generate:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-dl { padding: 12px; background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95rem; width: 100%; display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; }
+        .btn-dl:hover { background: var(--primary); color: white; }
+
+        .preview-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 560px; padding: 30px; gap: 20px; position: relative; overflow: hidden;
+        }
+        .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        .ba-card { display: flex; flex-direction: column; gap: 10px; }
+        .ba-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ba-img-wrap {
+            border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
+            min-height: 200px; display: flex; align-items: center; justify-content: center; background: white;
+        }
+        .ba-img-wrap img, .ba-img-wrap canvas { max-width: 100%; max-height: 400px; display: block; border-radius: 13px; }
+
+        .status-bar {
+            display: none; flex-direction: column; gap: 8px;
+            background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; width: 100%;
+        }
+        .status-bar.error { background: #fef2f2; border-color: #fca5a5; }
+        .status-top { display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+        .status-dot.pulse { animation: pulse 1.2s infinite; background: var(--primary); }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .status-text { font-size: 0.9rem; color: #166534; font-weight: 500; flex: 1; }
+        .status-pct { font-size: 0.85rem; font-weight: 700; color: var(--primary); min-width: 38px; text-align: right; }
+        .status-bar.error .status-text { color: #b91c1c; }
+        .progress-track { width: 100%; height: 6px; background: #bbf7d0; border-radius: 3px; overflow: hidden; display: none; }
+        .progress-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.25s ease; width: 0%; }
+
+        .privacy-badge { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-muted); }
+        .privacy-badge i { color: #22c55e; }
+
+        @media (max-width: 900px) {
+            .bg-layout { grid-template-columns: 1fr; }
+            .before-after { grid-template-columns: 1fr; }
+            .controls-pane { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ▾</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align:center;">
+                <i class="fas fa-eraser" style="color:var(--primary);font-size:2rem;"></i>
+                <h1>AI Background Remover</h1>
+                <p style="color:var(--text-muted);">Remove backgrounds from portraits, products & logos in one click — 100% private, runs in your browser.</p>
+            </div>
+
+            <div class="bg-layout">
+                <!-- Controls -->
+                <div class="controls-pane">
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-image"></i> 1. Upload Photo</span>
+                        <div class="upload-area" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                            <div id="dropzoneContent">
+                                <i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:#94a3b8;margin-bottom:8px;"></i>
+                                <h4 style="margin:0 0 4px;">Click or drag photo here</h4>
+                                <p style="margin:0;font-size:0.8rem;color:var(--text-muted);">JPG, PNG, WEBP · Max 10MB</p>
+                            </div>
+                            <input type="file" id="fileInput" hidden accept="image/jpeg,image/png,image/webp" onclick="event.stopPropagation(); this.value=''">
+                        </div>
+                        <!-- Preview shown BELOW the dropzone, outside of it -->
+                        <div id="uploadPreviewWrap" style="display:none; margin-top:10px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#f1f5f9; position:relative;">
+                            <img id="uploadPreview" src="" alt="Preview" style="width:100%; max-height:180px; object-fit:contain; display:block;">
+                            <button onclick="clearImage()" style="position:absolute;top:6px;right:6px;background:rgba(15,23,42,0.7);border:none;color:white;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:0.8rem;" title="Remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-brain"></i> 2. AI Model</span>
+                        <select id="modelSelect" style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 1rem; color: var(--text-main); outline: none; margin-bottom:10px;">
+                            <option value="small">Fast (good for simple backgrounds)</option>
+                            <option value="medium" selected>Balanced (works for most images)</option>
+                            <option value="large">Best (portraits, hair, complex edges)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-fill-drip"></i> 3. Background</span>
+                        <div class="bg-options">
+                            <div class="bg-option active" id="optTransparent" onclick="setBg('transparent')">
+                                <div class="swatch checkerboard"></div>
+                                Transparent
+                            </div>
+                            <div class="bg-option" id="optWhite" onclick="setBg('white')">
+                                <div class="swatch" style="background:#ffffff;border:1px solid #e2e8f0;"></div>
+                                White
+                            </div>
+                            <div class="bg-option" id="optBlack" onclick="setBg('black')">
+                                <div class="swatch" style="background:#0f172a;"></div>
+                                Black
+                            </div>
+                            <div class="bg-option" id="optColor" onclick="setBg('color')">
+                                <div class="swatch" id="colorSwatch" style="background:#3b82f6;"></div>
+                                Custom
+                            </div>
+                        </div>
+                        <div id="colorPickerWrap" style="display:none;">
+                            <input type="color" id="bgColorPicker" value="#3b82f6" oninput="onColorChange()">
+                        </div>
+                    </div>
+
+                    <button class="btn-generate" id="btnRemove" onclick="removeBackground()" disabled>
+                        <i class="fas fa-magic"></i> Remove Background
+                    </button>
+
+                    <button class="btn-dl" id="btnDownload" onclick="downloadResult()">
+                        <i class="fas fa-download"></i> Download PNG
+                    </button>
+
+                    <div class="privacy-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Your image never leaves your device
+                    </div>
+
+                    <div class="status-bar" id="statusBar">
+                        <div class="status-top">
+                            <div class="status-dot pulse" id="statusDot"></div>
+                            <span class="status-text" id="statusText">Loading AI model…</span>
+                            <span class="status-pct" id="statusPct"></span>
+                        </div>
+                        <div class="progress-track" id="progressTrack">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-pane" id="previewPane">
+                    <div id="placeholderContent" style="text-align:center;">
+                        <i class="fas fa-eraser" style="font-size:3.5rem;color:#cbd5e1;margin-bottom:16px;"></i>
+                        <h3 style="color:var(--text-muted);margin:0 0 8px;">Upload a photo to start</h3>
+                        <p style="color:#94a3b8;font-size:0.9rem;max-width:300px;">The AI model runs entirely in your browser. First run downloads the model (~10 MB) once and caches it.</p>
+                    </div>
+                    <div class="before-after" id="beforeAfter" style="display:none;">
+                        <div class="ba-card">
+                            <span class="ba-label">Original</span>
+                            <div class="ba-img-wrap"><img id="originalImg" src="" alt="Original"></div>
+                        </div>
+                        <div class="ba-card">
+                            <span class="ba-label">Background Removed</span>
+                            <div class="ba-img-wrap checkerboard" id="resultWrap">
+                                <canvas id="resultCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding:60px 20px;background:#0f172a;color:white;margin-top:80px;border-top:1px solid var(--border);">
+        <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;text-align:left;">
+            <div><div class="logo" style="color:white;margin-bottom:20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div><p style="color:#94A3B8;font-size:0.9rem;">100% free, open source, and client-side.</p></div>
+            <div><h4 style="margin-bottom:20px;color:white;">Quick Links</h4><ul style="list-style:none;padding:0;"><li><a href="blog.html" style="color:#94A3B8;text-decoration:none;font-size:0.9rem;">Blog</a></li></ul></div>
+        </div>
+        <div style="border-top:1px solid #334155;margin-top:40px;padding-top:20px;text-align:center;color:#64748B;font-size:0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <!-- No preloaded script needed — @imgly is loaded on-demand via ESM import -->
+    <script>
+        // ─── State ──────────────────────────────────────────────────────────
+        let uploadedImage = null;   // data URL for display
+        let uploadedFile  = null;   // raw File object for processing
+        let currentBg = 'transparent';
+        let resultBlob = null;
+        let resultImageObj = null;
+        let originalFilename = 'image';
+
+        // ─── DOM refs ────────────────────────────────────────────────────────
+        const dropzone           = document.getElementById('dropzone');
+        const fileInput          = document.getElementById('fileInput');
+        const uploadPreview      = document.getElementById('uploadPreview');
+        const uploadPreviewWrap  = document.getElementById('uploadPreviewWrap');
+        const btnRemove          = document.getElementById('btnRemove');
+        const btnDownload        = document.getElementById('btnDownload');
+        const statusBar          = document.getElementById('statusBar');
+        const statusDot          = document.getElementById('statusDot');
+        const statusText         = document.getElementById('statusText');
+        const statusPct          = document.getElementById('statusPct');
+        const progressTrack      = document.getElementById('progressTrack');
+        const progressFill       = document.getElementById('progressFill');
+        const beforeAfter        = document.getElementById('beforeAfter');
+        const placeholderContent = document.getElementById('placeholderContent');
+        const originalImg        = document.getElementById('originalImg');
+        const resultCanvas       = document.getElementById('resultCanvas');
+        const resultWrap         = document.getElementById('resultWrap');
+        const colorPickerWrap    = document.getElementById('colorPickerWrap');
+        const colorSwatch        = document.getElementById('colorSwatch');
+        const dropzoneContent    = document.getElementById('dropzoneContent');
+
+        // ─── BG selector ─────────────────────────────────────────────────────
+        window.setBg = (type) => {
+            currentBg = type;
+            document.querySelectorAll('.bg-option').forEach(el => el.classList.remove('active'));
+            document.getElementById('opt' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+            colorPickerWrap.style.display = type === 'color' ? 'block' : 'none';
+            if (resultImageObj) applyBackground();
+        };
+
+        window.onColorChange = () => {
+            const c = document.getElementById('bgColorPicker').value;
+            colorSwatch.style.background = c;
+            if (resultImageObj) applyBackground();
+        };
+
+        // ─── Status & progress helpers ────────────────────────────────────────
+        function setStatus(msg, isError = false, pct = null) {
+            statusBar.style.display = 'flex';
+            statusBar.classList.toggle('error', isError);
+            statusDot.classList.toggle('pulse', !isError);
+            statusText.textContent = msg;
+
+            if (pct !== null && !isError) {
+                statusPct.textContent = Math.round(pct) + '%';
+                progressTrack.style.display = 'block';
+                progressFill.style.width = pct + '%';
+            } else {
+                statusPct.textContent = '';
+                progressTrack.style.display = 'none';
+                progressFill.style.width = '0%';
+            }
+        }
+        function hideStatus() {
+            statusBar.style.display = 'none';
+            progressFill.style.width = '0%';
+            progressTrack.style.display = 'none';
+            statusPct.textContent = '';
+        }
+
+        // ─── File handling ────────────────────────────────────────────────────
+        dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; };
+        dropzone.ondragleave = () => { dropzone.style.borderColor = '#cbd5e1'; };
+        dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#cbd5e1';
+            if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+        };
+        fileInput.onchange = (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); };
+
+        function loadFile(file) {
+            if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+                alert('Please upload a JPG, PNG, or WEBP image.');
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File is too large! Please upload an image under 10MB.');
+                return;
+            }
+            uploadedFile = file;
+            originalFilename = file.name.replace(/\.[^/.]+$/, '');
+
+            const objectUrl = URL.createObjectURL(file);
+            uploadPreview.src = objectUrl;
+            uploadPreviewWrap.style.display = 'block';
+
+            // Update dropzone to show it has a file
+            dropzoneContent.innerHTML = `<i class="fas fa-check-circle" style="font-size:1.5rem;color:var(--primary);margin-bottom:6px;"></i><p style="margin:0;font-size:0.85rem;color:var(--primary);font-weight:600;">${file.name}</p><p style="margin:0;font-size:0.75rem;color:var(--text-muted);">Click to change</p>`;
+
+            uploadedImage = objectUrl;
+            btnRemove.disabled = false;
+            resultBlob = null;
+            resultImageObj = null;
+            btnDownload.style.display = 'none';
+            beforeAfter.style.display = 'none';
+            placeholderContent.style.display = 'block';
+        }
+
+        window.clearImage = () => {
+            uploadedImage = null;
+            uploadedFile  = null;
+            uploadPreview.src = '';
+            uploadPreviewWrap.style.display = 'none';
+            dropzoneContent.innerHTML = `<i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:#94a3b8;margin-bottom:8px;"></i><h4 style="margin:0 0 4px;">Click or drag photo here</h4><p style="margin:0;font-size:0.8rem;color:var(--text-muted);">JPG, PNG, WEBP · Max 10MB</p>`;
+            btnRemove.disabled = true;
+            btnDownload.style.display = 'none';
+            beforeAfter.style.display = 'none';
+            placeholderContent.style.display = 'block';
+            fileInput.value = '';
+        };
+
+        // ─── Resize logic ─────────────────────────────────────────────────────
+        function resizeImage(file, maxSize = 1500) {
+            return new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => {
+                    const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob(resolve, 'image/png');
+                };
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // ─── Background removal ───────────────────────────────────────────────
+        let activeKeys = {};
+        
+        window.removeBackground = async () => {
+            if (!uploadedImage) return;
+            btnRemove.disabled = true;
+            btnRemove.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
+            activeKeys = {};
+
+            try {
+                setStatus('Preprocessing image…', false, 0);
+
+                // Resize raw file directly — no need for fetch(dataURL)
+                const resizedBlob = await resizeImage(uploadedFile, 1500);
+
+                setStatus('Initializing AI library…', false, 5);
+
+                // Dynamically import the ESM build — avoids all UMD global naming issues
+                const imglyModule = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.mjs');
+                const removeBackground = imglyModule.default || imglyModule.removeBackground;
+
+                const modelChoice = document.getElementById('modelSelect').value;
+                const config = {
+                    publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/',
+                    model: modelChoice,
+                    output: { format: 'image/png', quality: 1.0 },
+                    progress: (key, current, total) => {
+                        if (key.includes('fetch')) {
+                            activeKeys[key] = { current, total };
+                            let totalCurrent = 0, totalMax = 0;
+                            for (let k in activeKeys) {
+                                totalCurrent += activeKeys[k].current;
+                                totalMax += activeKeys[k].total;
+                            }
+                            if (totalMax > 0) {
+                                const pct = (totalCurrent / totalMax) * 100;
+                                const mb = (totalCurrent / 1024 / 1024).toFixed(1);
+                                const totalMb = (totalMax / 1024 / 1024).toFixed(1);
+                                setStatus(`Downloading AI model… ${mb} / ${totalMb} MB`, false, pct);
+                            }
+                        } else if (key === 'compute:inference') {
+                            setStatus('Running AI inference…', false, (current / total) * 100);
+                        } else {
+                            setStatus('Processing image…', false, 100);
+                        }
+                    }
+                };
+
+                resultBlob = await removeBackground(resizedBlob, config);
+
+                setStatus('Compositing result…', false, 100);
+
+                // Convert blob to image for drawing to canvas
+                const url = URL.createObjectURL(resultBlob);
+                resultImageObj = new Image();
+                resultImageObj.onload = () => {
+                    applyBackground();
+                    
+                    setStatus('Done! Background removed successfully.', false, 100);
+                    placeholderContent.style.display = 'none';
+                    beforeAfter.style.display = 'grid';
+                    originalImg.src = uploadedImage;
+                    btnDownload.style.display = 'flex';
+                    setTimeout(hideStatus, 2500);
+                };
+                resultImageObj.src = url;
+
+            } catch (err) {
+                console.error(err);
+                setStatus('Error: ' + err.message, true);
+            } finally {
+                btnRemove.disabled = false;
+                btnRemove.innerHTML = '<i class="fas fa-magic"></i> Remove Background';
+            }
+        };
+
+        // ─── Apply background fill onto canvas ────────────────────────────────
+        function applyBackground() {
+            if (!resultImageObj) return;
+            
+            const W = resultImageObj.width;
+            const H = resultImageObj.height;
+
+            resultCanvas.width  = W;
+            resultCanvas.height = H;
+            const ctx = resultCanvas.getContext('2d');
+
+            // Fill background
+            if (currentBg === 'transparent') {
+                ctx.clearRect(0, 0, W, H);
+            } else if (currentBg === 'white') {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, W, H);
+            } else if (currentBg === 'black') {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, W, H);
+            } else {
+                ctx.fillStyle = document.getElementById('bgColorPicker').value;
+                ctx.fillRect(0, 0, W, H);
+            }
+
+            // Draw subject
+            ctx.drawImage(resultImageObj, 0, 0);
+
+            // Update checker bg on result wrap only when transparent
+            resultWrap.className = 'ba-img-wrap' + (currentBg === 'transparent' ? ' checkerboard' : '');
+            resultWrap.style.background = (currentBg === 'white') ? '#fff'
+                                        : (currentBg === 'black') ? '#0f172a'
+                                        : (currentBg === 'color') ? document.getElementById('bgColorPicker').value
+                                        : '';
+        }
+
+        // ─── Download ─────────────────────────────────────────────────────────
+        window.downloadResult = () => {
+            const link = document.createElement('a');
+            link.download = `${originalFilename}-bg-removed.png`;
+            link.href = resultCanvas.toDataURL('image/png');
+            link.click();
+        };
+
+        // ─── Nav search ───────────────────────────────────────────────────────
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

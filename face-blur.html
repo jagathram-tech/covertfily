@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Blur & Mosaic - Redact & Privacy Tool | Covertfily</title>
+    <meta name="description" content="Draw boxes to blur or pixelate faces and sensitive areas in any image. 100% private, runs entirely in your browser.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
+        .tool-layout { display: grid; grid-template-columns: 280px 1fr; gap: 28px; margin-top: 36px; }
+
+        /* Controls */
+        .controls-pane {
+            background: white; padding: 24px; border-radius: 20px;
+            border: 1px solid var(--border); display: flex; flex-direction: column;
+            gap: 20px; align-self: start; position: sticky; top: 20px;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 10px; }
+        .control-label { font-weight: 600; color: var(--text-main); font-size: 0.88rem; display: flex; align-items: center; gap: 6px; }
+
+        /* Mode toggle */
+        .mode-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .mode-btn {
+            padding: 10px 6px; border: 2px solid #e2e8f0; border-radius: 10px;
+            cursor: pointer; font-size: 0.82rem; font-weight: 600;
+            color: var(--text-muted); text-align: center; transition: 0.2s;
+            background: #f8fafc; display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .mode-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .mode-btn.active { border-color: var(--primary); background: #eef9f2; color: var(--primary); }
+        .mode-btn i { font-size: 1.1rem; }
+
+        /* Slider */
+        .slider-row { display: flex; align-items: center; gap: 10px; }
+        .slider-row input[type=range] { flex: 1; accent-color: var(--primary); }
+        .slider-val { font-size: 0.9rem; font-weight: 700; color: var(--primary); min-width: 30px; text-align: right; }
+
+        /* Buttons */
+        .btn-primary-tool {
+            padding: 13px; background: var(--primary); color: white; border: none;
+            border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 0.95rem;
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
+        }
+        .btn-primary-tool:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.25); }
+        .btn-primary-tool:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-secondary-tool {
+            padding: 11px; background: white; color: var(--primary); border: 1.5px solid var(--primary);
+            border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
+        }
+        .btn-secondary-tool:hover { background: var(--primary); color: white; }
+
+        .privacy-badge { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-muted); }
+        .privacy-badge i { color: #22c55e; }
+
+        /* Canvas Area */
+        .canvas-area {
+            background: #f1f5f9; border: 2px dashed #e2e8f0; border-radius: 20px;
+            min-height: 520px; display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .canvas-area.has-image { border-style: solid; border-color: var(--border); background: #0f172a; }
+        #placeholder {
+            text-align: center; padding: 40px;
+            cursor: pointer; transition: 0.2s;
+        }
+        #placeholder:hover { transform: scale(1.02); }
+        #placeholder i { font-size: 3.5rem; color: #cbd5e1; margin-bottom: 16px; display: block; }
+        #placeholder h3 { color: var(--text-muted); margin: 0 0 8px; }
+        #placeholder p { color: #94a3b8; font-size: 0.9rem; }
+
+        /* Canvas wrapper */
+        #canvasWrap {
+            display: none; position: relative; max-width: 100%; max-height: 600px;
+            cursor: crosshair;
+        }
+        #mainCanvas { display: block; max-width: 100%; max-height: 600px; }
+        /* Selection rectangle drawn over canvas */
+        #selectionBox {
+            position: absolute; border: 2px solid #3b82f6;
+            background: rgba(59,130,246,0.15); pointer-events: none; display: none;
+            border-radius: 2px;
+        }
+
+        /* Redaction history pills */
+        .redaction-list { display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; }
+        .redaction-pill {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 6px 10px; background: #f1f5f9; border-radius: 8px; font-size: 0.8rem;
+        }
+        .redaction-pill span { color: var(--text-muted); }
+        .redaction-pill button {
+            background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.85rem; padding: 0;
+        }
+
+        /* Upload input */
+        #fileInput { display: none; }
+
+        @media (max-width: 860px) {
+            .tool-layout { grid-template-columns: 1fr; }
+            .controls-pane { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i><span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ▾</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align:center;">
+                <i class="fas fa-user-slash" style="color:var(--primary);font-size:2rem;"></i>
+                <h1>Face Blur & Mosaic</h1>
+                <p style="color:var(--text-muted);">Draw boxes over faces or sensitive areas to blur or pixelate them. Perfect for redacting screenshots. 100% private.</p>
+            </div>
+
+            <div class="tool-layout">
+                <!-- Controls -->
+                <div class="controls-pane">
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-image"></i> 1. Upload Image</span>
+                        <button class="btn-secondary-tool" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i> Choose Image
+                        </button>
+                        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
+                    </div>
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-paint-brush"></i> 2. Effect Type</span>
+                        <div class="mode-toggle">
+                            <div class="mode-btn active" id="modeBlur" onclick="setMode('blur')">
+                                <i class="fas fa-tint"></i> Blur
+                            </div>
+                            <div class="mode-btn" id="modeMosaic" onclick="setMode('mosaic')">
+                                <i class="fas fa-th"></i> Mosaic
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <span class="control-label"><i class="fas fa-sliders-h"></i> Intensity</span>
+                        <div class="slider-row">
+                            <input type="range" id="intensitySlider" min="2" max="40" value="15" oninput="updateIntensityLabel()">
+                            <span class="slider-val" id="intensityLabel">15</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group" id="redactionListGroup" style="display:none;">
+                        <span class="control-label"><i class="fas fa-list"></i> Redacted Areas (<span id="redactionCount">0</span>)</span>
+                        <div class="redaction-list" id="redactionList"></div>
+                    </div>
+
+                    <button class="btn-secondary-tool" id="btnUndo" onclick="undoLast()" disabled>
+                        <i class="fas fa-undo"></i> Undo Last
+                    </button>
+
+                    <button class="btn-secondary-tool" id="btnClearAll" onclick="clearAll()" disabled style="color:#ef4444;border-color:#ef4444;">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+
+                    <button class="btn-primary-tool" id="btnDownload" onclick="downloadResult()" disabled>
+                        <i class="fas fa-download"></i> Download PNG
+                    </button>
+
+                    <div class="privacy-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Your image never leaves your device
+                    </div>
+                </div>
+
+                <!-- Canvas Area -->
+                <div class="canvas-area" id="canvasArea">
+                    <div id="placeholder" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-user-slash"></i>
+                        <h3>Upload a photo to start</h3>
+                        <p>Draw boxes over faces or sensitive areas<br>to blur or pixelate them instantly.</p>
+                    </div>
+                    <div id="canvasWrap">
+                        <canvas id="mainCanvas"></canvas>
+                        <div id="selectionBox"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding:60px 20px;background:#0f172a;color:white;margin-top:80px;border-top:1px solid var(--border);">
+        <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;text-align:left;">
+            <div><div class="logo" style="color:white;margin-bottom:20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div><p style="color:#94A3B8;font-size:0.9rem;">100% free, open source, and client-side.</p></div>
+        </div>
+        <div style="border-top:1px solid #334155;margin-top:40px;padding-top:20px;text-align:center;color:#64748B;font-size:0.85rem;">MIT Licensed &amp; Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        // ─── State ───────────────────────────────────────────────────────────
+        let originalImageData = null;  // clean snapshot — never mutated
+        let redactions = [];           // array of { x, y, w, h, mode, intensity }
+        let currentMode = 'blur';
+        let isDrawing = false;
+        let startX, startY;
+        let imgNaturalW, imgNaturalH;
+
+        // ─── DOM Refs ─────────────────────────────────────────────────────────
+        const fileInput       = document.getElementById('fileInput');
+        const canvasArea      = document.getElementById('canvasArea');
+        const canvasWrap      = document.getElementById('canvasWrap');
+        const placeholder     = document.getElementById('placeholder');
+        const mainCanvas      = document.getElementById('mainCanvas');
+        const ctx             = mainCanvas.getContext('2d');
+        const selectionBox    = document.getElementById('selectionBox');
+        const intensitySlider = document.getElementById('intensitySlider');
+        const redactionList   = document.getElementById('redactionList');
+        const redactionCount  = document.getElementById('redactionCount');
+        const redactionListGroup = document.getElementById('redactionListGroup');
+        const btnUndo         = document.getElementById('btnUndo');
+        const btnClearAll     = document.getElementById('btnClearAll');
+        const btnDownload     = document.getElementById('btnDownload');
+
+        // ─── File Loading ─────────────────────────────────────────────────────
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                imgNaturalW = img.naturalWidth;
+                imgNaturalH = img.naturalHeight;
+
+                // Size canvas to image
+                mainCanvas.width  = imgNaturalW;
+                mainCanvas.height = imgNaturalH;
+                ctx.drawImage(img, 0, 0);
+
+                // Snapshot clean state
+                originalImageData = ctx.getImageData(0, 0, imgNaturalW, imgNaturalH);
+
+                // Show canvas
+                placeholder.style.display = 'none';
+                canvasWrap.style.display  = 'block';
+                canvasArea.classList.add('has-image');
+
+                redactions = [];
+                renderRedactionList();
+                updateButtons();
+            };
+            img.src = url;
+            fileInput.value = '';
+        });
+
+        // ─── Mode & Intensity ─────────────────────────────────────────────────
+        window.setMode = (m) => {
+            currentMode = m;
+            document.getElementById('modeBlur').classList.toggle('active', m === 'blur');
+            document.getElementById('modeMosaic').classList.toggle('active', m === 'mosaic');
+        };
+        window.updateIntensityLabel = () => {
+            document.getElementById('intensityLabel').textContent = intensitySlider.value;
+        };
+
+        // ─── Canvas coordinate helpers ────────────────────────────────────────
+        function getCanvasCoords(e) {
+            const rect = mainCanvas.getBoundingClientRect();
+            const scaleX = mainCanvas.width  / rect.width;
+            const scaleY = mainCanvas.height / rect.height;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top)  * scaleY
+            };
+        }
+
+        // CSS pixel coords for the selection overlay
+        function getCSSCoords(e) {
+            const rect = mainCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        // ─── Draw Events ──────────────────────────────────────────────────────
+        mainCanvas.addEventListener('mousedown',  onPointerDown);
+        mainCanvas.addEventListener('mousemove',  onPointerMove);
+        mainCanvas.addEventListener('mouseup',    onPointerUp);
+        mainCanvas.addEventListener('mouseleave', onPointerUp);
+        mainCanvas.addEventListener('touchstart', onPointerDown, { passive: true });
+        mainCanvas.addEventListener('touchmove',  onPointerMove, { passive: true });
+        mainCanvas.addEventListener('touchend',   onPointerUp);
+
+        function onPointerDown(e) {
+            if (!originalImageData) return;
+            isDrawing = true;
+            const c = getCanvasCoords(e);
+            const css = getCSSCoords(e);
+            startX = c.x; startY = c.y;
+
+            selectionBox.style.display = 'block';
+            selectionBox.style.left   = css.x + 'px';
+            selectionBox.style.top    = css.y + 'px';
+            selectionBox.style.width  = '0px';
+            selectionBox.style.height = '0px';
+        }
+
+        function onPointerMove(e) {
+            if (!isDrawing) return;
+            const css = getCSSCoords(e);
+            const rect = mainCanvas.getBoundingClientRect();
+
+            const x = Math.min(startX, getCanvasCoords(e).x);
+            const y = Math.min(startY, getCanvasCoords(e).y);
+            const cssSx = Math.min(startX * rect.width / mainCanvas.width,  css.x);
+            const cssSy = Math.min(startY * rect.height / mainCanvas.height, css.y);
+
+            selectionBox.style.left   = cssSx + 'px';
+            selectionBox.style.top    = cssSy + 'px';
+            selectionBox.style.width  = Math.abs(css.x - (startX * rect.width / mainCanvas.width)) + 'px';
+            selectionBox.style.height = Math.abs(css.y - (startY * rect.height / mainCanvas.height)) + 'px';
+        }
+
+        function onPointerUp(e) {
+            if (!isDrawing) return;
+            isDrawing = false;
+            selectionBox.style.display = 'none';
+
+            const c = getCanvasCoords(e.type === 'mouseleave' ? e : e);
+            const endX = e.type === 'touchend'
+                ? (e.changedTouches[0].clientX - mainCanvas.getBoundingClientRect().left) * (mainCanvas.width / mainCanvas.getBoundingClientRect().width)
+                : getCanvasCoords(e).x;
+            const endY = e.type === 'touchend'
+                ? (e.changedTouches[0].clientY - mainCanvas.getBoundingClientRect().top) * (mainCanvas.height / mainCanvas.getBoundingClientRect().height)
+                : getCanvasCoords(e).y;
+
+            const rx = Math.round(Math.min(startX, endX));
+            const ry = Math.round(Math.min(startY, endY));
+            const rw = Math.round(Math.abs(endX - startX));
+            const rh = Math.round(Math.abs(endY - startY));
+
+            if (rw < 5 || rh < 5) return; // Ignore tiny clicks
+
+            const intensity = parseInt(intensitySlider.value);
+            redactions.push({ x: rx, y: ry, w: rw, h: rh, mode: currentMode, intensity });
+            renderCanvas();
+            renderRedactionList();
+            updateButtons();
+        }
+
+        // ─── Rendering ───────────────────────────────────────────────────────
+        function renderCanvas() {
+            // Restore clean image
+            ctx.putImageData(originalImageData, 0, 0);
+
+            redactions.forEach(r => {
+                if (r.mode === 'blur') {
+                    applyBlur(r);
+                } else {
+                    applyMosaic(r);
+                }
+            });
+        }
+
+        function applyBlur(r) {
+            const { x, y, w, h, intensity } = r;
+            // Stack multiple small-radius box blurs to simulate Gaussian
+            const passes = Math.max(2, Math.round(intensity / 3));
+            const radius = Math.max(2, Math.round(intensity / 2));
+
+            // Extract region to an offscreen canvas
+            const off = document.createElement('canvas');
+            off.width = w; off.height = h;
+            const octx = off.getContext('2d');
+            octx.drawImage(mainCanvas, x, y, w, h, 0, 0, w, h);
+
+            for (let p = 0; p < passes; p++) {
+                boxBlurCanvas(octx, w, h, radius);
+            }
+            ctx.drawImage(off, 0, 0, w, h, x, y, w, h);
+        }
+
+        function boxBlurCanvas(octx, w, h, radius) {
+            const imageData = octx.getImageData(0, 0, w, h);
+            const data = imageData.data;
+            const out = new Uint8ClampedArray(data);
+
+            for (let channel = 0; channel < 3; channel++) {
+                for (let row = 0; row < h; row++) {
+                    let sum = 0, count = 0;
+                    // Init window
+                    for (let k = 0; k <= radius && k < w; k++) {
+                        sum += data[(row * w + k) * 4 + channel];
+                        count++;
+                    }
+                    for (let col = 0; col < w; col++) {
+                        out[(row * w + col) * 4 + channel] = sum / count;
+                        const addCol = col + radius + 1;
+                        const removeCol = col - radius;
+                        if (addCol < w) { sum += data[(row * w + addCol) * 4 + channel]; count++; }
+                        if (removeCol >= 0) { sum -= data[(row * w + removeCol) * 4 + channel]; count--; }
+                    }
+                }
+                for (let col = 0; col < w; col++) {
+                    let sum = 0, count = 0;
+                    for (let k = 0; k <= radius && k < h; k++) {
+                        sum += out[(k * w + col) * 4 + channel];
+                        count++;
+                    }
+                    for (let row = 0; row < h; row++) {
+                        data[(row * w + col) * 4 + channel] = sum / count;
+                        const addRow = row + radius + 1;
+                        const removeRow = row - radius;
+                        if (addRow < h) { sum += out[(addRow * w + col) * 4 + channel]; count++; }
+                        if (removeRow >= 0) { sum -= out[(removeRow * w + col) * 4 + channel]; count--; }
+                    }
+                }
+            }
+            octx.putImageData(imageData, 0, 0);
+        }
+
+        function applyMosaic(r) {
+            const { x, y, w, h, intensity } = r;
+            const blockSize = Math.max(2, intensity);
+            const imageData = ctx.getImageData(x, y, w, h);
+            const data = imageData.data;
+
+            for (let by = 0; by < h; by += blockSize) {
+                for (let bx = 0; bx < w; bx += blockSize) {
+                    // Sample center pixel
+                    const cx = Math.min(bx + Math.floor(blockSize / 2), w - 1);
+                    const cy = Math.min(by + Math.floor(blockSize / 2), h - 1);
+                    const idx = (cy * w + cx) * 4;
+                    const r2 = data[idx], g = data[idx+1], b = data[idx+2];
+
+                    // Fill block with sampled color
+                    for (let dy = 0; dy < blockSize && by + dy < h; dy++) {
+                        for (let dx = 0; dx < blockSize && bx + dx < w; dx++) {
+                            const i = ((by + dy) * w + (bx + dx)) * 4;
+                            data[i]   = r2;
+                            data[i+1] = g;
+                            data[i+2] = b;
+                        }
+                    }
+                }
+            }
+            ctx.putImageData(imageData, x, y);
+        }
+
+        // ─── Redaction List ──────────────────────────────────────────────────
+        function renderRedactionList() {
+            redactionList.innerHTML = '';
+            redactionListGroup.style.display = redactions.length ? 'flex' : 'none';
+            redactionCount.textContent = redactions.length;
+
+            redactions.forEach((r, i) => {
+                const pill = document.createElement('div');
+                pill.className = 'redaction-pill';
+                pill.innerHTML = `
+                    <span><i class="fas fa-${r.mode === 'blur' ? 'tint' : 'th'}"></i>
+                    ${r.mode === 'blur' ? 'Blur' : 'Mosaic'} — ${r.w}×${r.h}px</span>
+                    <button onclick="removeRedaction(${i})" title="Remove"><i class="fas fa-times"></i></button>
+                `;
+                redactionList.appendChild(pill);
+            });
+        }
+
+        window.removeRedaction = (i) => {
+            redactions.splice(i, 1);
+            renderCanvas();
+            renderRedactionList();
+            updateButtons();
+        };
+
+        // ─── Actions ─────────────────────────────────────────────────────────
+        window.undoLast = () => {
+            if (!redactions.length) return;
+            redactions.pop();
+            renderCanvas();
+            renderRedactionList();
+            updateButtons();
+        };
+
+        window.clearAll = () => {
+            if (!originalImageData) return;
+            redactions = [];
+            ctx.putImageData(originalImageData, 0, 0);
+            renderRedactionList();
+            updateButtons();
+        };
+
+        window.downloadResult = () => {
+            const link = document.createElement('a');
+            link.download = 'redacted-image.png';
+            link.href = mainCanvas.toDataURL('image/png');
+            link.click();
+        };
+
+        function updateButtons() {
+            const hasRedactions = redactions.length > 0;
+            btnUndo.disabled     = !hasRedactions;
+            btnClearAll.disabled = !hasRedactions;
+            btnDownload.disabled = !originalImageData;
+        }
+
+        // ─── Nav search ───────────────────────────────────────────────────────
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

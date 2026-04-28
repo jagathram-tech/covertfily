@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Image Steganography - Hide Secret Messages - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Hide secret text messages invisibly inside any image. Free client-side image steganography encoder and decoder.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
+        
+        .tabs { display: flex; justify-content: center; gap: 15px; margin-top: 30px; margin-bottom: 30px; }
+        .tab-btn { padding: 12px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; background: #e2e8f0; color: var(--text-muted); transition: 0.2s; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .app-layout { display: none; grid-template-columns: 1fr; gap: 30px; }
+        .app-layout.active { display: grid; }
+
+        .card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); }
+        
+        .upload-area {
+            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center;
+            cursor: pointer; transition: 0.2s; background: #f8fafc;
+        }
+        .upload-area:hover { border-color: var(--primary); background: #f0fdf4; }
+        .upload-area img { max-width: 100%; max-height: 250px; border-radius: 8px; margin-top: 15px; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .secret-textarea {
+            width: 100%; height: 150px; padding: 15px; border-radius: 12px; border: 1px solid var(--border);
+            font-family: 'Inter', sans-serif; resize: vertical; margin-top: 15px; font-size: 0.95rem;
+            background: #f8fafc;
+        }
+        .secret-textarea:focus { outline: none; border-color: var(--primary); background: white; }
+
+        .btn-action { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1.05rem; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-action:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3); }
+        .btn-action:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; display: block; }
+        .capacity-indicator { text-align: right; font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
+        .capacity-indicator.error { color: #ef4444; }
+
+        #loadingOverlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .app-layout { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center;">
+                <i class="fas fa-user-secret" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Image Steganography</h1>
+                <p style="color: var(--text-muted);">Invisibly hide secret text messages inside any image, completely client-side.</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('encode')" id="btnTabEncode">Hide Message</button>
+                <button class="tab-btn" onclick="switchTab('decode')" id="btnTabDecode">Read Message</button>
+            </div>
+
+            <!-- ENCODE TAB -->
+            <div class="app-layout active" id="encodeLayout">
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;"><i class="fas fa-image" style="color: var(--primary);"></i> 1. Select Cover Image</h3>
+                    <div class="upload-area" id="encodeDropzone" onclick="document.getElementById('encodeInput').click()">
+                        <i class="fas fa-upload" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+                        <h4>Upload Photo</h4>
+                        <p style="margin:0; font-size: 0.85rem; color: var(--text-muted);">JPG or PNG. Will be converted to PNG.</p>
+                        <img id="encodePreview" src="">
+                        <input type="file" id="encodeInput" hidden accept="image/png, image/jpeg, image/webp">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;"><i class="fas fa-key" style="color: var(--primary);"></i> 2. Secret Message</h3>
+                    <textarea class="secret-textarea" id="encodeText" placeholder="Type the secret message you want to hide..."></textarea>
+                    <div class="capacity-indicator" id="capacityIndicator">Max capacity: 0 chars</div>
+                    
+                    <button class="btn-action" id="btnEncode" onclick="encodeMessage()" disabled>
+                        <i class="fas fa-lock"></i> Hide & Download Image
+                    </button>
+                    <span class="hint" style="text-align: center;"><i class="fas fa-shield-alt"></i> 100% Private. Processing happens in your browser.</span>
+                </div>
+            </div>
+
+            <!-- DECODE TAB -->
+            <div class="app-layout" id="decodeLayout">
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;"><i class="fas fa-search" style="color: var(--primary);"></i> 1. Upload Secret Image</h3>
+                    <div class="upload-area" id="decodeDropzone" onclick="document.getElementById('decodeInput').click()">
+                        <i class="fas fa-file-image" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+                        <h4>Upload PNG Image</h4>
+                        <p style="margin:0; font-size: 0.85rem; color: var(--text-muted);">Must be the exact PNG file generated by this tool.</p>
+                        <img id="decodePreview" src="">
+                        <input type="file" id="decodeInput" hidden accept="image/png">
+                    </div>
+                    
+                    <button class="btn-action" id="btnDecode" onclick="decodeMessage()" disabled style="background: #10b981;">
+                        <i class="fas fa-unlock"></i> Reveal Message
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;"><i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> Revealed Message</h3>
+                    <textarea class="secret-textarea" id="decodeText" placeholder="The hidden message will appear here..." readonly style="background: #f1f5f9; cursor: text; height: 200px;"></textarea>
+                    <button class="btn-action" onclick="copyToClipboard()" style="background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); margin-top: 10px; padding: 10px;">
+                        <i class="fas fa-copy"></i> Copy Text
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="loadingOverlay">
+        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h3 style="color: var(--text-main);" id="loadingText">Processing Image...</h3>
+    </div>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side conversion.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;"><li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li></ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        let encodeImageObj = null;
+        let decodeImageObj = null;
+        let originalFilename = "secret-image";
+        let maxBytes = 0;
+
+        const textEncoder = new TextEncoder();
+        const textDecoder = new TextDecoder();
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.app-layout').forEach(layout => layout.classList.remove('active'));
+            
+            if(tab === 'encode') {
+                document.getElementById('btnTabEncode').classList.add('active');
+                document.getElementById('encodeLayout').classList.add('active');
+            } else {
+                document.getElementById('btnTabDecode').classList.add('active');
+                document.getElementById('decodeLayout').classList.add('active');
+            }
+        }
+
+        // Setup Drag & Drop
+        function setupDropzone(dropzoneId, inputId, previewId, callback) {
+            const dz = document.getElementById(dropzoneId);
+            const input = document.getElementById(inputId);
+            
+            dz.ondragover = (e) => { e.preventDefault(); dz.style.borderColor = 'var(--primary)'; dz.style.background = '#f0fdf4'; };
+            dz.ondragleave = (e) => { e.preventDefault(); dz.style.borderColor = '#cbd5e1'; dz.style.background = '#f8fafc'; };
+            dz.ondrop = (e) => {
+                e.preventDefault();
+                dz.style.borderColor = '#cbd5e1'; dz.style.background = '#f8fafc';
+                if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], previewId, callback);
+            };
+            input.onchange = (e) => {
+                if (e.target.files[0]) handleFile(e.target.files[0], previewId, callback);
+            };
+        }
+
+        function handleFile(file, previewId, callback) {
+            if (!file.type.startsWith('image/')) return;
+            
+            if (previewId === 'encodePreview') {
+                originalFilename = file.name.replace(/\.[^/.]+$/, "");
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const preview = document.getElementById(previewId);
+                    preview.src = img.src;
+                    preview.style.display = 'block';
+                    preview.previousElementSibling.style.display = 'none'; // p
+                    preview.previousElementSibling.previousElementSibling.style.display = 'none'; // h4
+                    preview.previousElementSibling.previousElementSibling.previousElementSibling.style.display = 'none'; // icon
+                    callback(img);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        setupDropzone('encodeDropzone', 'encodeInput', 'encodePreview', (img) => {
+            encodeImageObj = img;
+            // Calculate capacity: 3 channels (RGB) per pixel. 1 bit per channel.
+            // 32 bits reserved for length.
+            const totalPixels = img.width * img.height;
+            maxBytes = Math.floor((totalPixels * 3 - 32) / 8);
+            
+            document.getElementById('capacityIndicator').textContent = `Max capacity: ~${maxBytes.toLocaleString()} characters`;
+            checkEncodeReady();
+        });
+
+        setupDropzone('decodeDropzone', 'decodeInput', 'decodePreview', (img) => {
+            decodeImageObj = img;
+            document.getElementById('btnDecode').disabled = false;
+            document.getElementById('decodeText').value = '';
+        });
+
+        document.getElementById('encodeText').addEventListener('input', checkEncodeReady);
+
+        function checkEncodeReady() {
+            const text = document.getElementById('encodeText').value;
+            const btn = document.getElementById('btnEncode');
+            const indicator = document.getElementById('capacityIndicator');
+            
+            if (!encodeImageObj || !text) {
+                btn.disabled = true;
+                return;
+            }
+
+            const byteLength = textEncoder.encode(text).length;
+            if (byteLength > maxBytes) {
+                indicator.classList.add('error');
+                indicator.textContent = `Too long! ${byteLength.toLocaleString()} / ${maxBytes.toLocaleString()} bytes`;
+                btn.disabled = true;
+            } else {
+                indicator.classList.remove('error');
+                indicator.textContent = `${byteLength.toLocaleString()} / ${maxBytes.toLocaleString()} bytes used`;
+                btn.disabled = false;
+            }
+        }
+
+        function showLoading(text) {
+            document.getElementById('loadingText').textContent = text;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function encodeMessage() {
+            if (!encodeImageObj) return;
+            const text = document.getElementById('encodeText').value;
+            if (!text) return;
+
+            showLoading("Hiding Message...");
+
+            setTimeout(() => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = encodeImageObj.width;
+                    canvas.height = encodeImageObj.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(encodeImageObj, 0, 0);
+                    
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const bytes = textEncoder.encode(text);
+                    const length = bytes.length;
+                    
+                    const totalBits = 32 + length * 8;
+                    const bits = new Uint8Array(totalBits);
+                    
+                    // 32-bit length
+                    for (let i = 0; i < 32; i++) {
+                        bits[i] = (length >> (31 - i)) & 1;
+                    }
+                    
+                    // Data bits
+                    let bitIdx = 32;
+                    for (let i = 0; i < length; i++) {
+                        const b = bytes[i];
+                        for (let j = 0; j < 8; j++) {
+                            bits[bitIdx++] = (b >> (7 - j)) & 1;
+                        }
+                    }
+                    
+                    // Embed
+                    let dataIdx = 0;
+                    bitIdx = 0;
+                    const data = imgData.data;
+                    while (bitIdx < totalBits) {
+                        // Skip alpha
+                        if ((dataIdx + 1) % 4 === 0) {
+                            dataIdx++;
+                            continue;
+                        }
+                        
+                        data[dataIdx] = (data[dataIdx] & 0xFE) | bits[bitIdx];
+                        dataIdx++;
+                        bitIdx++;
+                    }
+                    
+                    // Must force alpha to 255 for modified pixels if it was 0, to prevent browser from pre-multiplying and destroying RGB data
+                    // Actually, safest is to set all alpha to 255 if we are modifying RGB, or ensure we only use opaque images.
+                    for (let i = 3; i < data.length; i += 4) {
+                        data[i] = 255; 
+                    }
+
+                    ctx.putImageData(imgData, 0, 0);
+                    
+                    // Export as PNG (Lossless)
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `${originalFilename}-secret.png`;
+                    link.href = dataUrl;
+                    link.click();
+
+                } catch (e) {
+                    console.error(e);
+                    alert("Error encoding message: " + e.message);
+                } finally {
+                    hideLoading();
+                }
+            }, 50);
+        }
+
+        function decodeMessage() {
+            if (!decodeImageObj) return;
+
+            showLoading("Decoding Message...");
+
+            setTimeout(() => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = decodeImageObj.width;
+                    canvas.height = decodeImageObj.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(decodeImageObj, 0, 0);
+                    
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imgData.data;
+                    let dataIdx = 0;
+                    
+                    function readBits(count) {
+                        let val = 0;
+                        for (let i = 0; i < count; i++) {
+                            while ((dataIdx + 1) % 4 === 0) dataIdx++;
+                            if (dataIdx >= data.length) throw new Error("End of image reached.");
+                            val = (val << 1) | (data[dataIdx] & 1);
+                            dataIdx++;
+                        }
+                        return val;
+                    }
+                    
+                    // Read 32-bit length safely (avoid signed negative JS shift issues)
+                    let length = 0;
+                    for (let i = 0; i < 32; i++) {
+                        while ((dataIdx + 1) % 4 === 0) dataIdx++;
+                        if (dataIdx >= data.length) throw new Error("Image too small.");
+                        length = (length * 2) + (data[dataIdx] & 1);
+                        dataIdx++;
+                    }
+                    
+                    const maxPossibleBytes = Math.floor(((data.length / 4) * 3 - 32) / 8);
+                    
+                    if (length <= 0 || length > maxPossibleBytes) {
+                        throw new Error("No secret message found in this image. Make sure you uploaded the original PNG file.");
+                    }
+                    
+                    const bytes = new Uint8Array(length);
+                    for (let i = 0; i < length; i++) {
+                        bytes[i] = readBits(8);
+                    }
+                    
+                    const text = textDecoder.decode(bytes);
+                    document.getElementById('decodeText').value = text;
+                    
+                } catch (e) {
+                    console.error(e);
+                    alert(e.message);
+                } finally {
+                    hideLoading();
+                }
+            }, 50);
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('decodeText');
+            if(!text.value) return;
+            text.select();
+            document.execCommand('copy');
+            
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+        }
+
+        // Tools search
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

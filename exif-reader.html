@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>EXIF Data Reader - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Instantly view hidden metadata from your photos. See camera model, GPS coordinates, shutter speed, and more. 100% free and client-side.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
+        .reader-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 40px; display: none; }
+        
+        .preview-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; text-align: center; flex-direction: column; align-self: start;
+        }
+        .preview-pane img { max-width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn-new { margin-top: 20px; padding: 12px 24px; background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-new:hover { background: var(--primary); color: white; }
+        
+        .data-pane {
+            background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+        }
+        .data-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px solid var(--border);
+        }
+        .data-header h3 { margin: 0; font-size: 1.2rem; color: var(--text-main); }
+        
+        .data-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;
+        }
+        .data-card {
+            background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;
+        }
+        .data-card i { color: var(--primary); font-size: 1.2rem; margin-bottom: 10px; }
+        .data-card .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; font-weight: 600; }
+        .data-card .value { font-size: 1rem; color: var(--text-main); font-weight: 500; word-break: break-word; }
+        
+        .empty-state {
+            text-align: center; padding: 40px 20px; color: var(--text-muted);
+        }
+        .empty-state i { font-size: 3rem; color: #cbd5e1; margin-bottom: 15px; }
+
+        .raw-data { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .raw-data details { cursor: pointer; color: var(--primary); font-weight: 500; }
+        .raw-data pre { background: #0f172a; color: #38bdf8; padding: 15px; border-radius: 8px; font-size: 0.85rem; overflow-x: auto; margin-top: 10px; }
+        
+        @media (max-width: 800px) {
+            .reader-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center;">
+                <i class="fas fa-camera" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>EXIF Data Reader</h1>
+                <p style="color: var(--text-muted);">Instantly view hidden metadata from your photos. Processed 100% locally.</p>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon"><i class="fas fa-image"></i></div>
+                <h2>Select Photo</h2>
+                <p>Click or drag and drop a photo (JPG, PNG, TIFF, HEIC, WEBP)</p>
+                <input type="file" id="fileInput" hidden accept="image/*">
+            </div>
+
+            <div class="reader-layout" id="readerResult">
+                <div class="preview-pane">
+                    <img id="previewImg" src="">
+                    <button class="btn-new" onclick="resetTool()"><i class="fas fa-redo"></i> Load Another Photo</button>
+                </div>
+                <div class="data-pane">
+                    <div class="data-header">
+                        <h3>Image Metadata</h3>
+                        <span style="font-size: 0.8rem; background: var(--bg-alt); color: var(--primary); padding: 5px 10px; border-radius: 20px; font-weight: 600;"><i class="fas fa-lock"></i> Private & Offline</span>
+                    </div>
+                    
+                    <div id="dataContainer" class="data-grid">
+                        <!-- Populated dynamically -->
+                    </div>
+                    
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <i class="fas fa-eye-slash"></i>
+                        <h3>No EXIF Data Found</h3>
+                        <p>This image has been stripped of metadata or it was not saved with any.</p>
+                    </div>
+
+                    <div class="raw-data" id="rawDataSection" style="display: none;">
+                        <details>
+                            <summary><i class="fas fa-code"></i> View Raw JSON Data</summary>
+                            <pre id="rawOutput"></pre>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side conversion.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;"><li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li></ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const readerResult = document.getElementById('readerResult');
+        const previewImg = document.getElementById('previewImg');
+        const dataContainer = document.getElementById('dataContainer');
+        const emptyState = document.getElementById('emptyState');
+        const rawDataSection = document.getElementById('rawDataSection');
+        const rawOutput = document.getElementById('rawOutput');
+
+        dropzone.onclick = () => fileInput.click();
+
+        function createCard(icon, label, value) {
+            return `
+                <div class="data-card">
+                    <i class="fas ${icon}"></i>
+                    <div class="label">${label}</div>
+                    <div class="value">${value}</div>
+                </div>
+            `;
+        }
+
+        function formatFraction(val) {
+            if (val < 1 && val > 0) return `1/${Math.round(1/val)}`;
+            return val;
+        }
+
+        async function handleFileSelect(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                alert('Please upload a valid image file.');
+                return;
+            }
+
+            // Preview
+            previewImg.src = URL.createObjectURL(file);
+            dropzone.style.display = 'none';
+            readerResult.style.display = 'grid';
+
+            // Clear previous
+            dataContainer.innerHTML = '';
+            emptyState.style.display = 'none';
+            rawDataSection.style.display = 'none';
+            rawOutput.textContent = '';
+
+            try {
+                // Read EXIF Data using exifr
+                const data = await exifr.parse(file, {
+                    exif: true,
+                    gps: true,
+                    tiff: true
+                });
+
+                if (data) {
+                    let html = '';
+                    
+                    if (data.Make || data.Model) {
+                        html += createCard('fa-camera', 'Camera', `${data.Make || ''} ${data.Model || ''}`.trim());
+                    }
+                    if (data.LensModel) {
+                        html += createCard('fa-camera-retro', 'Lens', data.LensModel);
+                    }
+                    if (data.DateTimeOriginal || data.CreateDate) {
+                        const date = new Date(data.DateTimeOriginal || data.CreateDate);
+                        html += createCard('fa-calendar-alt', 'Date Taken', date.toLocaleString());
+                    }
+                    if (data.ExposureTime) {
+                        html += createCard('fa-stopwatch', 'Shutter Speed', `${formatFraction(data.ExposureTime)}s`);
+                    }
+                    if (data.FNumber) {
+                        html += createCard('fa-bullseye', 'Aperture', `f/${data.FNumber}`);
+                    }
+                    if (data.ISO || data.ISOSpeedRatings) {
+                        html += createCard('fa-film', 'ISO', data.ISO || data.ISOSpeedRatings);
+                    }
+                    if (data.FocalLength) {
+                        html += createCard('fa-search-plus', 'Focal Length', `${data.FocalLength}mm`);
+                    }
+                    if (data.ImageWidth && data.ImageHeight) {
+                        html += createCard('fa-crop', 'Dimensions', `${data.ImageWidth} x ${data.ImageHeight}`);
+                    }
+                    if (data.latitude && data.longitude) {
+                        const lat = data.latitude.toFixed(6);
+                        const lon = data.longitude.toFixed(6);
+                        const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                        html += createCard('fa-map-marker-alt', 'GPS Location', `<a href="${mapsLink}" target="_blank" style="color:var(--primary);text-decoration:none;">${lat}, ${lon} <i class="fas fa-external-link-alt" style="font-size:0.8rem;margin-left:5px;"></i></a>`);
+                    }
+                    if (data.Software) {
+                        html += createCard('fa-laptop-code', 'Software', data.Software);
+                    }
+
+                    if (html === '') {
+                        emptyState.style.display = 'block';
+                    } else {
+                        dataContainer.innerHTML = html;
+                        rawDataSection.style.display = 'block';
+                        rawOutput.textContent = JSON.stringify(data, null, 2);
+                    }
+                } else {
+                    emptyState.style.display = 'block';
+                }
+            } catch (error) {
+                console.error(error);
+                emptyState.style.display = 'block';
+                emptyState.querySelector('p').textContent = 'Failed to extract EXIF data. The file might be corrupted or lack metadata.';
+            }
+        }
+
+        fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+        dropzone.ondragover = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary-hover)';
+            dropzone.style.background = 'var(--bg-alt)';
+        };
+        
+        dropzone.ondragleave = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+        };
+        
+        dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+            const file = e.dataTransfer.files[0];
+            handleFileSelect(file);
+        };
+
+        function resetTool() {
+            fileInput.value = '';
+            readerResult.style.display = 'none';
+            dropzone.style.display = 'flex';
+        }
+
+        // Tools search
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

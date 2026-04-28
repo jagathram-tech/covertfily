@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Magic Eye Stereogram Generator - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Turn any depth map into a hidden 3D Magic Eye stereogram. Unique client-side autostereogram generator.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
+        .stereo-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 40px; }
+        
+        .controls-pane {
+            background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 20px; align-self: start;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center;
+            cursor: pointer; transition: 0.2s; background: #f8fafc;
+        }
+        .upload-area:hover { border-color: var(--primary); background: #f0fdf4; }
+        .upload-area img { max-width: 100%; max-height: 150px; border-radius: 8px; margin-top: 10px; display: none; }
+        .upload-area h4 { margin: 0 0 5px 0; color: var(--text-main); font-size: 0.95rem; }
+        .upload-area p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+
+        .control-group { display: flex; flex-direction: column; gap: 10px; }
+        .control-header { display: flex; justify-content: space-between; align-items: center; }
+        .control-label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .control-val { font-size: 0.85rem; color: white; background: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+        
+        input[type="range"] {
+            -webkit-appearance: none; width: 100%; background: transparent; height: 6px; border-radius: 3px;
+            background: #e2e8f0; outline: none; margin: 10px 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--primary);
+            cursor: pointer; transition: transform 0.1s; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+        .btn-generate { padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-generate:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-generate:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+        
+        .preview-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center; min-height: 500px;
+            padding: 20px; text-align: center; flex-direction: column; gap: 20px;
+        }
+        #resultCanvas {
+            max-width: 100%; max-height: 800px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; display: none; }
+        .btn-dl { padding: 12px; background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary-hover); border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-dl:hover { background: var(--primary); color: white; }
+
+        #loadingOverlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column;
+        }
+
+        .hint-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 0.9rem; color: #166534; }
+
+
+
+        @media (max-width: 900px) {
+            .stereo-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="bg-remover.html"><i class="fas fa-eraser"></i> BG Remover</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+                <div class="dropdown-bridge"></div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center;">
+                <i class="fas fa-eye" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Magic Eye Stereogram Generator</h1>
+                <p style="color: var(--text-muted);">Turn any depth map into a hidden 3D autostereogram image instantly.</p>
+            </div>
+
+            <div class="stereo-layout">
+                <div class="controls-pane">
+                    <div class="hint-box">
+                        <strong>Tip:</strong> The depth map should be a grayscale image. White areas will appear closer, and black areas will appear further away.
+                    </div>
+
+                    <div class="upload-area" id="depthDropzone" onclick="document.getElementById('depthInput').click()">
+                        <i class="fas fa-layer-group" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+                        <h4>1. Upload Depth Map (Required)</h4>
+                        <p>Grayscale JPG/PNG</p>
+                        <img id="depthPreview" src="">
+                        <input type="file" id="depthInput" hidden accept="image/*">
+                    </div>
+
+                    <div class="upload-area" id="patternDropzone" onclick="document.getElementById('patternInput').click()">
+                        <i class="fas fa-chess-board" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+                        <h4>2. Upload Pattern (Optional)</h4>
+                        <p>We'll generate structured noise if left blank</p>
+                        <img id="patternPreview" src="">
+                        <input type="file" id="patternInput" hidden accept="image/*">
+                    </div>
+
+                    <div class="control-group" style="margin-top: 10px;">
+                        <div class="control-header">
+                            <span class="control-label">3D Intensity</span>
+                            <span class="control-val" id="valIntensity">50%</span>
+                        </div>
+                        <input type="range" id="intensitySlider" min="10" max="100" value="50">
+                    </div>
+
+                    <button class="btn-generate" id="btnGenerate" onclick="generateStereogram()" disabled>
+                        <i class="fas fa-magic"></i> Generate Stereogram
+                    </button>
+                    <button class="btn-dl" style="margin-top: 5px; width: 100%; border:none; background: #f8fafc;" onclick="resetTool()">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="preview-pane">
+                    <div id="placeholderText">
+                        <i class="fas fa-image" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                        <h3 style="color: var(--text-muted);">Your Magic Eye will appear here</h3>
+                    </div>
+                    <canvas id="resultCanvas"></canvas>
+                    <div class="action-btns" id="actionBtns">
+                        <button class="btn-dl" onclick="downloadImage('png')"><i class="fas fa-download"></i> PNG</button>
+                        <button class="btn-dl" onclick="downloadImage('jpg')"><i class="fas fa-download"></i> JPG</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instructions-box" style="margin-top: 40px; background: white; padding: 40px; border-radius: 20px; border: 1px solid var(--border);">
+                <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 1.5rem;"><i class="fas fa-glasses" style="color: var(--primary);"></i> How to see a Magic Eye</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; color: var(--text-muted); line-height: 1.6;">
+                    <div>
+                        <h4 style="color: var(--text-main); margin-bottom: 10px; font-size: 1.1rem;">Method 1: Parallel Viewing (Look Through)</h4>
+                        <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+                            <li>Bring your face very close to the screen, almost touching it.</li>
+                            <li>Try to look <strong>through</strong> the image into the distance behind your screen. Your vision should blur.</li>
+                            <li>Slowly move your head straight back, away from the screen, keeping your eyes relaxed and unfocused.</li>
+                            <li>At a certain distance, the hidden 3D image will suddenly snap into focus!</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--text-main); margin-bottom: 10px; font-size: 1.1rem;">Method 2: Cross-Eyed Viewing</h4>
+                        <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+                            <li>Hold a pen or finger halfway between your eyes and the screen.</li>
+                            <li>Focus your eyes purely on the pen/finger.</li>
+                            <li>While keeping focus on the pen, pay attention to the blurred image in the background.</li>
+                            <li>The repeating patterns will overlap. Once they lock together, move the pen away and enjoy the 3D shape!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="loadingOverlay">
+        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h3 style="color: var(--text-main);">Rendering 3D Illusion...</h3>
+        <p style="color: var(--text-muted); margin-top: 10px;">This requires heavy computation.</p>
+    </div>
+
+    <footer style="padding: 60px 20px; background: #0f172a; color: white; margin-top: 80px; border-top: 1px solid var(--border);">
+        <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div>
+                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side conversion.</p>
+            </div>
+            <div class="footer-col">
+                <h4 style="margin-bottom: 20px; color: white;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;"><li><a href="blog.html" style="color: #94A3B8; text-decoration: none; font-size: 0.9rem;">Blog</a></li></ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">MIT Licensed & Open Source • Covertfily</div>
+    </footer>
+
+    <script>
+        const depthInput = document.getElementById('depthInput');
+        const patternInput = document.getElementById('patternInput');
+        const depthPreview = document.getElementById('depthPreview');
+        const patternPreview = document.getElementById('patternPreview');
+        const btnGenerate = document.getElementById('btnGenerate');
+        const resultCanvas = document.getElementById('resultCanvas');
+        const placeholderText = document.getElementById('placeholderText');
+        const actionBtns = document.getElementById('actionBtns');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const sliderIntensity = document.getElementById('intensitySlider');
+        const valIntensity = document.getElementById('valIntensity');
+
+        let depthImageObj = null;
+        let patternImageObj = null;
+        let originalFilename = "stereogram";
+
+        sliderIntensity.oninput = () => { valIntensity.textContent = sliderIntensity.value + '%'; };
+
+        function setupDropzone(dropzoneId, inputId, previewId, callback) {
+            const dz = document.getElementById(dropzoneId);
+            const input = document.getElementById(inputId);
+            
+            dz.ondragover = (e) => { e.preventDefault(); dz.style.borderColor = 'var(--primary)'; dz.style.background = '#f0fdf4'; };
+            dz.ondragleave = (e) => { e.preventDefault(); dz.style.borderColor = '#cbd5e1'; dz.style.background = '#f8fafc'; };
+            dz.ondrop = (e) => {
+                e.preventDefault();
+                dz.style.borderColor = '#cbd5e1'; dz.style.background = '#f8fafc';
+                if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], previewId, callback);
+            };
+            input.onchange = (e) => {
+                if (e.target.files[0]) handleFile(e.target.files[0], previewId, callback);
+            };
+        }
+
+        function handleFile(file, previewId, callback) {
+            if (!file.type.startsWith('image/')) return;
+            if (previewId === 'depthPreview') {
+                originalFilename = file.name.replace(/\.[^/.]+$/, "");
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const preview = document.getElementById(previewId);
+                    preview.src = img.src;
+                    preview.style.display = 'block';
+                    preview.previousElementSibling.style.display = 'none'; // hide p
+                    preview.previousElementSibling.previousElementSibling.style.display = 'none'; // hide h4
+                    preview.previousElementSibling.previousElementSibling.previousElementSibling.style.display = 'none'; // hide i
+                    callback(img);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        setupDropzone('depthDropzone', 'depthInput', 'depthPreview', (img) => {
+            depthImageObj = img;
+            btnGenerate.disabled = false;
+        });
+
+        setupDropzone('patternDropzone', 'patternInput', 'patternPreview', (img) => {
+            patternImageObj = img;
+        });
+
+        function generateNoisePattern(width, height) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const imgData = ctx.createImageData(width, height);
+            const data = imgData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                // Random bright color noise
+                const r = Math.random() > 0.5 ? 255 : 0;
+                const g = Math.random() > 0.5 ? 255 : 0;
+                const b = Math.random() > 0.5 ? 255 : 0;
+                
+                // fallback if all black
+                if (r===0 && g===0 && b===0) { data[i]=255; data[i+1]=255; data[i+2]=255; }
+                else { data[i] = r; data[i+1] = g; data[i+2] = b; }
+                data[i+3] = 255;
+            }
+            ctx.putImageData(imgData, 0, 0);
+            return ctx;
+        }
+
+        function generateStereogram() {
+            if (!depthImageObj) return;
+
+            loadingOverlay.style.display = 'flex';
+            
+            // Yield thread
+            setTimeout(() => {
+                try {
+                    const width = depthImageObj.width;
+                    const height = depthImageObj.height;
+
+                    resultCanvas.width = width;
+                    resultCanvas.height = height;
+                    const outCtx = resultCanvas.getContext('2d');
+
+                    // Extract depth data
+                    const depthCanvas = document.createElement('canvas');
+                    depthCanvas.width = width;
+                    depthCanvas.height = height;
+                    const depthCtx = depthCanvas.getContext('2d', { willReadFrequently: true });
+                    depthCtx.drawImage(depthImageObj, 0, 0);
+                    const depthData = depthCtx.getImageData(0, 0, width, height).data;
+
+                    // Set up pattern
+                    // DPI determines pattern width. Usually imageWidth / 8
+                    const DPI = Math.floor(width / 8); 
+                    let patData, patWidth, patHeight;
+
+                    if (patternImageObj) {
+                        // User provided pattern. Scale it to match DPI width, keep aspect ratio.
+                        const pRatio = patternImageObj.height / patternImageObj.width;
+                        patWidth = DPI;
+                        patHeight = Math.floor(DPI * pRatio);
+                        
+                        const pCanvas = document.createElement('canvas');
+                        pCanvas.width = patWidth;
+                        pCanvas.height = patHeight;
+                        const pCtx = pCanvas.getContext('2d', { willReadFrequently: true });
+                        pCtx.drawImage(patternImageObj, 0, 0, patWidth, patHeight);
+                        patData = pCtx.getImageData(0, 0, patWidth, patHeight).data;
+                    } else {
+                        // Generate random noise
+                        patWidth = DPI;
+                        patHeight = DPI;
+                        const pCtx = generateNoisePattern(patWidth, patHeight);
+                        patData = pCtx.getImageData(0, 0, patWidth, patHeight).data;
+                    }
+
+                    // Stereogram Algorithm
+                    const intensity = parseInt(sliderIntensity.value) / 100;
+                    // max separation shift (how far things pop out)
+                    const maxDepth = Math.floor(DPI * 0.4 * intensity); 
+                    
+                    const outImgData = outCtx.createImageData(width, height);
+                    const outData = outImgData.data;
+
+                    for (let y = 0; y < height; y++) {
+                        const same = new Int32Array(width);
+                        for (let x = 0; x < width; x++) same[x] = x;
+
+                        // Link pixels
+                        for (let x = 0; x < width; x++) {
+                            const dIdx = (y * width + x) * 4;
+                            // Grayscale luminance (0-255)
+                            const depthVal = (depthData[dIdx] + depthData[dIdx+1] + depthData[dIdx+2]) / 3;
+                            
+                            const separation = DPI - Math.floor((depthVal / 255.0) * maxDepth);
+                            
+                            const left = Math.floor(x - separation / 2);
+                            const right = left + separation;
+                            
+                            if (left >= 0 && right < width) {
+                                let l = left;
+                                while(same[l] !== l) l = same[l];
+                                let r = right;
+                                while(same[r] !== r) r = same[r];
+                                
+                                if (l !== r) {
+                                    if (l < r) same[r] = l;
+                                    else same[l] = r;
+                                }
+                            }
+                        }
+
+                        // Draw row
+                        for (let x = 0; x < width; x++) {
+                            if (same[x] === x) {
+                                // Assign pattern pixel
+                                const px = x % patWidth;
+                                const py = y % patHeight;
+                                const pIdx = (py * patWidth + px) * 4;
+                                const oIdx = (y * width + x) * 4;
+                                outData[oIdx] = patData[pIdx];
+                                outData[oIdx+1] = patData[pIdx+1];
+                                outData[oIdx+2] = patData[pIdx+2];
+                                outData[oIdx+3] = 255;
+                            } else {
+                                // Copy linked pixel
+                                const oIdx = (y * width + x) * 4;
+                                const lIdx = (y * width + same[x]) * 4;
+                                outData[oIdx] = outData[lIdx];
+                                outData[oIdx+1] = outData[lIdx+1];
+                                outData[oIdx+2] = outData[lIdx+2];
+                                outData[oIdx+3] = 255;
+                            }
+                        }
+                    }
+
+                    outCtx.putImageData(outImgData, 0, 0);
+
+                    placeholderText.style.display = 'none';
+                    resultCanvas.style.display = 'block';
+                    actionBtns.style.display = 'grid';
+
+                } catch (e) {
+                    console.error(e);
+                    alert("An error occurred while generating: " + e.message);
+                } finally {
+                    loadingOverlay.style.display = 'none';
+                }
+            }, 100);
+        }
+
+        function downloadImage(format) {
+            const dataUrl = resultCanvas.toDataURL(format === 'jpg' ? 'image/jpeg' : 'image/png', 1.0);
+            const link = document.createElement('a');
+            link.download = `${originalFilename}-magic-eye.${format}`;
+            link.href = dataUrl;
+            link.click();
+        }
+
+        function resetTool() {
+            depthImageObj = null;
+            patternImageObj = null;
+            depthInput.value = '';
+            patternInput.value = '';
+            btnGenerate.disabled = true;
+            
+            ['depthPreview', 'patternPreview'].forEach(id => {
+                const el = document.getElementById(id);
+                el.src = '';
+                el.style.display = 'none';
+                el.previousElementSibling.style.display = 'block';
+                el.previousElementSibling.previousElementSibling.style.display = 'block';
+                el.previousElementSibling.previousElementSibling.previousElementSibling.style.display = 'block';
+            });
+
+            placeholderText.style.display = 'block';
+            resultCanvas.style.display = 'none';
+            actionBtns.style.display = 'none';
+        }
+
+        // Tools search
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
