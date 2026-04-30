@@ -52,47 +52,32 @@
         <ul class="nav-links">
             <li><a href="index.html" class="active">Convert</a></li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
+                <a href="#" class="dropdown-toggle">Solutions <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
                 <div class="dropdown-content">
-                    <div class="tool-search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" class="tool-search" placeholder="Search tools...">
-                    </div>
-                    <div class="tool-list">
-                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
-                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
-                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
-                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
-                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
-                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
-                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
-                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
-                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
-                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
-                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
-                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
-                        <a href="face-blur.html"><i class="fas fa-droplet"></i> Image Blur &amp; Mosaic</a>
-                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
-                    </div>
+                    <a href="ocr.html"><i class="fas fa-file-alt"></i> OCR Text Extraction</a>
+                    <a href="watermark.html"><i class="fas fa-water"></i> Document Protection</a>
+                    <a href="merge-pdf.html"><i class="fas fa-object-group"></i> PDF Management</a>
                 </div>
-                <div class="dropdown-bridge"></div>
             </li>
+            <li><a href="blog.html">Blog</a></li>
         </ul>
         <div class="nav-actions">
-            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> <span>Github Repo</span></a>
         </div>
     </nav>
 
     <main>
-        <section class="hero">
-            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);">Convert Files Privately — 100% In Your Browser</h1>
-            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2rem;">Fast, secure file conversion with zero uploads, zero tracking, and no servers.</p>
+        <section class="hero" style="position: relative; overflow: hidden; padding: 120px 8% 80px;">
+            <div style="position: absolute; top: -50%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%); opacity: 0.5; z-index: -1;"></div>
+            <div style="position: absolute; bottom: -20%; right: -5%; width: 400px; height: 400px; background: radial-gradient(circle, var(--secondary) 0%, transparent 70%); opacity: 0.1; z-index: -1;"></div>
             
-            <div class="trust-badges" style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 3rem; font-size: 0.95rem; font-weight: 500; color: var(--text-main);">
-                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-lock" style="color: var(--primary);"></i> 100% Private</span>
-                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-bolt" style="color: var(--secondary);"></i> Instant Conversion</span>
-                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-globe" style="color: var(--primary);"></i> Open Source</span>
-                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-ban" style="color: #ef4444;"></i> No File Uploads</span>
+            <h1 style="font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.04em;">Universal File Conversion, <span style="color: var(--primary);">100% Private.</span></h1>
+            <p style="font-size: 1.4rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 3rem; line-height: 1.6;">Professional-grade file conversion with zero uploads. Secure, lightning-fast, and entirely browser-based.</p>
+            
+            <div class="trust-bar" style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 4rem; padding: 20px; background: var(--bg-main); border-radius: 100px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); max-width: fit-content; margin-left: auto; margin-right: auto;">
+                <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> Zero Server Uploads</span>
+                <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> SOC2 Compliant Privacy</span>
+                <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> MIT Licensed</span>
             </div>
             
             <div class="format-selectors">
@@ -300,9 +285,36 @@
                 </div>
             </div>
 
-            <div class="loading" id="loading" style="display:none;">
-                <i class="fas fa-cog fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
-                <p id="loadingText">Converting...</p>
+        </section>
+
+        <section class="how-it-works" style="padding: 100px 8%; background: var(--bg-main); border-bottom: 1px solid var(--border);">
+            <div style="text-align: center; margin-bottom: 5rem;">
+                <h2 style="font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem;">Simple. Secure. Professional.</h2>
+                <p style="color: var(--text-muted); font-size: 1.2rem;">Converting files with Covertfily is a seamless 3-step experience.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 50px;">
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 24px; box-shadow: var(--shadow-md);">
+                        <i class="fas fa-file-import"></i>
+                    </div>
+                    <h4 style="font-size: 1.5rem; margin-bottom: 12px;">1. Select Formats</h4>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Choose your source and target formats from our extensive library of 200+ supported extensions.</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 24px; box-shadow: var(--shadow-md);">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h4 style="font-size: 1.5rem; margin-bottom: 12px;">2. Real-time Conversion</h4>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Our client-side engine processes your file instantly. Your data never leaves your browser window.</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 24px; box-shadow: var(--shadow-md);">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h4 style="font-size: 1.5rem; margin-bottom: 12px;">3. Instant Download</h4>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Grab your converted file immediately. No email required, no subscriptions, and completely free.</p>
+                </div>
             </div>
         </section>
 
@@ -356,47 +368,67 @@
             </div>
         </section>
 
-        <section class="features" style="padding: 80px 5%; background: var(--bg-alt);">
-            <div style="text-align: center; margin-bottom: 4rem;">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Why choose Covertfily?</h2>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Experience the best file conversion service with features designed for you.</p>
+        <section class="features" style="padding: 100px 8%; background: var(--bg-alt);">
+            <div style="text-align: center; margin-bottom: 5rem;">
+                <h2 style="font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem;">Enterprise-Grade Privacy</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem;">Built for users who value data sovereignty and professional-grade security.</p>
             </div>
             
-            <div class="grid">
-                <div style="text-align: center; padding: 20px;">
-                    <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;"></i>
-                    <h4>100% Client-Side</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Privacy redefined. Your files are processed locally in your browser. Nothing is ever uploaded to a server.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div style="background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); transition: transform 0.3s ease;" class="feature-card">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 24px;"><i class="fas fa-user-shield"></i></div>
+                    <h4 style="font-size: 1.5rem; margin-bottom: 16px;">Sovereign Processing</h4>
+                    <p style="color: var(--text-muted); line-height: 1.7;">Your files stay on your machine. We use WebAssembly and modern browser APIs to handle heavy processing locally.</p>
                 </div>
-                <div style="text-align: center; padding: 20px;">
-                    <i class="fas fa-code" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;"></i>
-                    <h4>Open Source</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Totally free and transparent. Audit our code on GitHub and see how we handle your data.</p>
+                <div style="background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); transition: transform 0.3s ease;" class="feature-card">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 24px;"><i class="fas fa-balance-scale"></i></div>
+                    <h4 style="font-size: 1.5rem; margin-bottom: 16px;">Transparent & Open</h4>
+                    <p style="color: var(--text-muted); line-height: 1.7;">Open source code means you don't have to take our word for it. Audit our conversion logic on GitHub anytime.</p>
                 </div>
-                <div style="text-align: center; padding: 20px;">
-                    <i class="fas fa-bolt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 20px;"></i>
-                    <h4>High Speed</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Leverages your computer's own processing power for instant conversions without upload delays.</p>
+                <div style="background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); transition: transform 0.3s ease;" class="feature-card">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 24px;"><i class="fas fa-tachometer-alt"></i></div>
+                    <h4 style="font-size: 1.5rem; margin-bottom: 16px;">Unmatched Speed</h4>
+                    <p style="color: var(--text-muted); line-height: 1.7;">Eliminate upload and download wait times. Processing locally is often 5x faster than cloud-based alternatives.</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-col">
-                <div class="logo" style="margin-bottom: 20px;"><img src="logo.png" alt="Covertfily" style="height: 28px; filter: brightness(0) invert(1);"></div>
-                <p style="color: #94A3B8; font-size: 0.9rem;">100% free, open source, and client-side file conversion. Security by design.</p>
+        <footer style="background: var(--text-main); color: white; padding: 80px 8% 40px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px;" class="footer-grid">
+            <div>
+                <div class="logo" style="margin-bottom: 24px;"><img src="logo.png" alt="Covertfily" style="height: 32px; filter: brightness(0) invert(1);"></div>
+                <p style="color: #94A3B8; line-height: 1.7; max-width: 320px;">The world's first professional-grade, 100% client-side file conversion platform. Privacy by default, performance by design.</p>
             </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="blog.html">Blog</a></li>
+            <div>
+                <h4 style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 700;">Platform</h4>
+                <ul style="list-style: none; color: #94A3B8;">
+                    <li style="margin-bottom: 12px;"><a href="index.html" style="color: inherit; transition: color 0.2s;">Converter</a></li>
+                    <li style="margin-bottom: 12px;"><a href="ocr.html" style="color: inherit; transition: color 0.2s;">OCR Engine</a></li>
+                    <li style="margin-bottom: 12px;"><a href="watermark.html" style="color: inherit; transition: color 0.2s;">Watermarking</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 700;">Resources</h4>
+                <ul style="list-style: none; color: #94A3B8;">
+                    <li style="margin-bottom: 12px;"><a href="blog.html" style="color: inherit; transition: color 0.2s;">Company Blog</a></li>
+                    <li style="margin-bottom: 12px;"><a href="sitemap.xml" style="color: inherit; transition: color 0.2s;">Sitemap</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 700;">Legal</h4>
+                <ul style="list-style: none; color: #94A3B8;">
+                    <li style="margin-bottom: 12px;">MIT License</li>
+                    <li style="margin-bottom: 12px;">Privacy Policy</li>
                 </ul>
             </div>
         </div>
-        <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">
-            MIT Licensed & Open Source Project � Covertfily
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; display: flex; justify-content: space-between; align-items: center; color: #94A3B8; font-size: 0.9rem;">
+            <p>&copy; 2026 Covertfily. Built with privacy in mind.</p>
+            <div style="display: flex; gap: 24px;">
+                <a href="https://github.com/jagathram-tech/covertfily" style="color: inherit;"><i class="fab fa-github"></i> Github</a>
+                <a href="#" style="color: inherit;"><i class="fab fa-twitter"></i> Twitter</a>
+            </div>
         </div>
     </footer>
 
