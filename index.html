@@ -92,7 +92,7 @@
     <main>
         <section class="hero">
             <h1>100% Private, Client-Side File Conversion</h1>
-            <p>MIT Licensed & Open Source. No external APIs, no servers, and no tracking. Your files never leave your computer—everything happens locally in your browser.</p>
+            <p>MIT Licensed & Open Source. No external APIs, no servers, and no tracking. Your files never leave your computerï¿½everything happens locally in your browser.</p>
             
             <div class="format-selectors">
             <!-- BASIC FROM DROPDOWN -->
@@ -232,7 +232,7 @@
                     }
                 }
                 
-                function toggleBasic(id) {
+                \n                function goToDedicatedPage() {\n                    const fromVal = document.getElementById('formatFromContainer').dataset.value;\n                    const toVal = document.getElementById('formatToContainer').dataset.value;\n                    if (!fromVal || !toVal) {\n                        alert('Please select both From and To formats first.');\n                        return;\n                    }\n                    window.location.href = fromVal + '-to-' + toVal + '.html';\n                }\n                function toggleBasic(id) {
                     const el = document.getElementById(id);
                     const isVisible = el.style.display === 'block';
                     document.getElementById('fromMenu').style.display = 'none';
@@ -249,13 +249,12 @@
             </script>
             </div>
             
-            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+            <div class="dropzone" id="dropzone" onclick="goToDedicatedPage()">
                 <div class="dropzone-icon" id="dropzoneIcon">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
-                <h2 id="dropzoneTitle">Drop files here</h2>
-                <p id="dropzoneSubtitle">Or click to select files from your computer</p>
-                <input type="file" id="fileInput" hidden multiple onchange="if(window.handleFiles) window.handleFiles(this.files)">
+                <h2 id="dropzoneTitle">Continue to Converter</h2>\n                <p id="dropzoneSubtitle">Click here to go to the dedicated conversion page</p>
+                
             </div>
             <div class="loading" id="loading" style="display:none;">
                 <i class="fas fa-cog fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
@@ -356,7 +355,7 @@
             </div>
         </div>
         <div style="border-top: 1px solid #334155; margin-top: 40px; padding-top: 20px; text-align: center; color: #64748B; font-size: 0.85rem;">
-            MIT Licensed & Open Source Project • Covertfily
+            MIT Licensed & Open Source Project ï¿½ Covertfily
         </div>
     </footer>
 
