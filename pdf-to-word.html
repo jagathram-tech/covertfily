@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Convert PDF to Word Online Free - Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Fast, secure, and 100% private PDF to Word (DOCX) converter. Extract text from your PDF documents and save as editable Word files entirely in your browser.">
+    <meta name="keywords" content="pdf to word, convert pdf to docx, free pdf to word converter, secure pdf conversion, extract text from pdf, browser-based converter, Covertfily">
+    
+    <link rel="canonical" href="https://covertfily.com/pdf-to-word.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Libraries for Client-Side Conversion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.1.1/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--surface);
+        }
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .seo-content {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .seo-content h2, .seo-content h3 {
+            color: var(--primary-dark);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .faq-section {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .faq-item h4 {
+            margin: 0 0 10px 0;
+            color: var(--text);
+        }
+        .faq-item p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        .related-tools {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .related-tool-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .related-tool-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            color: var(--primary);
+        }
+        #resultArea {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        #progressContainer {
+            display: none;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-sync-alt"></i>
+            <span>Covertfily</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Convert</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
+                <div class="dropdown-content">
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-brackets-curly"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="face-blur.html"><i class="fas fa-droplet"></i> Image Blur &amp; Mosaic</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> Open Source</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: var(--primary-dark);"><i class="fas fa-file-word"></i> PDF to Word Converter</h1>
+                <p style="color: var(--text-secondary);">Extract text from PDF and convert it to an editable Word document securely.</p>
+            </div>
+
+            <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-file-pdf" style="font-size: 3rem; color: #ef4444; margin-bottom: 15px;"></i>
+                <h3>Drag & Drop or Click to Upload PDF</h3>
+                <p style="color: var(--text-secondary); margin-top: 10px;">Your PDF is processed entirely inside your browser.</p>
+                <input type="file" id="fileInput" accept="application/pdf">
+            </div>
+
+            <div id="progressContainer">
+                <p id="progressText" style="font-weight: 500; color: var(--text);">Reading PDF (0/0 pages)...</p>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div id="resultArea">
+                <h3 style="margin-bottom: 15px;">Conversion Complete!</h3>
+                <i class="fas fa-file-word" style="font-size: 4rem; color: #2b579a; margin: 20px 0;"></i>
+                <div>
+                    <button id="downloadBtn" class="btn">
+                        <i class="fas fa-download"></i> Download DOCX
+                    </button>
+                    <button onclick="resetTool()" class="btn" style="background: var(--text-secondary); margin-left: 10px;">
+                        <i class="fas fa-undo"></i> Convert Another
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <section class="seo-content">
+            <h2>Secure PDF to Word Conversion in Your Browser</h2>
+            <p>Welcome to the safest way to convert your PDF files to editable Word Documents (.docx). Unlike most free online tools that force you to upload your sensitive files to an unknown cloud server, Covertfily's PDF to Word converter processes everything <strong>100% locally in your web browser</strong>.</p>
+            
+            <p>PDF (Portable Document Format) is the gold standard for sharing documents exactly as they were designed to be seen. However, editing a PDF can be notoriously difficult. By converting your PDF to a Word document, you regain the ability to easily edit the text, change formatting, and update the document's content using Microsoft Word, Google Docs, or LibreOffice.</p>
+
+            <h3>How Our PDF Extractor Works</h3>
+            <p>This tool utilizes a client-side JavaScript engine to read the internal structure of your PDF file. It carefully scans each page, extracts the text layers, and then constructs a brand new DOCX file containing that text using the powerful `docx.js` library. Because this happens entirely on your own device's CPU and memory, the conversion is both blazingly fast and completely private.</p>
+
+            <h3>Key Benefits</h3>
+            <ul style="margin-left: 20px; line-height: 1.6; margin-bottom: 20px;">
+                <li><strong>Absolute Privacy:</strong> Your financial documents, legal contracts, and personal files never leave your computer.</li>
+                <li><strong>No Size Limits Imposed:</strong> We don't restrict file sizes or put you in a queue. It's limited only by your browser's capabilities.</li>
+                <li><strong>Instant Downloads:</strong> As soon as the conversion finishes in your browser, the file is instantly ready to save.</li>
+            </ul>
+
+            <div class="faq-section">
+                <h3>Frequently Asked Questions</h3>
+                
+                <div class="faq-item">
+                    <h4>Are my files uploaded to your servers?</h4>
+                    <p>No. We guarantee absolute privacy. The conversion algorithm runs locally within your browser using JavaScript. No file data is ever transmitted to us or any third party.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>Will it preserve images and complex formatting?</h4>
+                    <p>Our current client-side engine focuses primarily on extracting text and maintaining basic paragraph structures. Highly complex formatting, tables, and images from the PDF may not be perfectly replicated in the resulting Word document.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>What if my PDF is a scanned image?</h4>
+                    <p>This tool extracts embedded text layers from digital PDFs. If your PDF is a scanned document without an invisible text layer, this tool will output a blank document. For scanned documents, please use our dedicated <a href="ocr.html" style="color:var(--primary);text-decoration:none;">OCR (Image to Text) tool</a> instead.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px;">Explore Related Tools</h3>
+            <div class="related-tools">
+                <a href="documents.html" class="related-tool-card"><i class="fas fa-file-alt"></i> Document Converter</a>
+                <a href="merge-pdf.html" class="related-tool-card"><i class="fas fa-object-group"></i> Merge PDF</a>
+                <a href="compress-pdf.html" class="related-tool-card"><i class="fas fa-compress"></i> Compress PDF</a>
+                <a href="png-to-jpg.html" class="related-tool-card"><i class="fas fa-file-image"></i> PNG to JPG</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const resultArea = document.getElementById('resultArea');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressText = document.getElementById('progressText');
+        const progressBar = document.getElementById('progressBar');
+        const downloadBtn = document.getElementById('downloadBtn');
+        let generatedDocxBlob = null;
+        let originalFileName = "";
+
+        // Handle Drag and Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.style.borderColor = 'var(--primary)', false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.style.borderColor = 'var(--border)', false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) handleFile(files[0]);
+        }, false);
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length) handleFile(this.files[0]);
+        });
+
+        async function handleFile(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please select a valid PDF file.');
+                return;
+            }
+
+            originalFileName = file.name.replace(/\.[^/.]+$/, "");
+            dropZone.style.display = 'none';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                const numPages = pdf.numPages;
+                
+                let fullText = "";
+                
+                for (let i = 1; i <= numPages; i++) {
+                    progressText.textContent = `Reading PDF (${i}/${numPages} pages)...`;
+                    progressBar.style.width = `${(i / numPages) * 50}%`;
+                    
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + "\n\n";
+                }
+
+                progressText.textContent = `Generating Word Document...`;
+                progressBar.style.width = `80%`;
+
+                // Generate DOCX
+                const { Document, Packer, Paragraph, TextRun } = docx;
+                
+                // Split text by newlines to create separate paragraphs
+                const paragraphs = fullText.split('\n').filter(t => t.trim() !== '').map(text => {
+                    return new Paragraph({
+                        children: [new TextRun(text)]
+                    });
+                });
+
+                const doc = new Document({
+                    sections: [{
+                        properties: {},
+                        children: paragraphs.length ? paragraphs : [
+                            new Paragraph({
+                                children: [new TextRun("No readable text could be extracted. This PDF might be a scanned image.")]
+                            })
+                        ]
+                    }]
+                });
+
+                generatedDocxBlob = await Packer.toBlob(doc);
+                
+                progressBar.style.width = `100%`;
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    resultArea.style.display = 'block';
+                }, 500);
+
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred during conversion: ' + error.message);
+                resetTool();
+            }
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (generatedDocxBlob) {
+                saveAs(generatedDocxBlob, `${originalFileName}_covertfily.docx`);
+            }
+        });
+
+        function resetTool() {
+            fileInput.value = '';
+            dropZone.style.display = 'block';
+            resultArea.style.display = 'none';
+            progressContainer.style.display = 'none';
+            generatedDocxBlob = null;
+        }
+    </script>
+</body>
+</html>
