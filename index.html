@@ -55,7 +55,7 @@
         <ul class="nav-links">
             <li><a href="index.html" class="active">Convert</a></li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle">Tools ?</a>
+                <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
                 <div class="dropdown-content">
                     <div class="tool-search-wrapper">
                         <i class="fas fa-search"></i>
@@ -70,9 +70,6 @@
                         <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
                         <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
                         <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
-                        
-                        <a href="png-to-jpg.html"><i class="fas fa-file-image"></i> PNG to JPG</a>
-                        <a href="pdf-to-word.html"><i class="fas fa-file-word"></i> PDF to Word</a>
                         <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
                         <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
                         <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
@@ -232,7 +229,17 @@
                     }
                 }
                 
-                \n                function goToDedicatedPage() {\n                    const fromVal = document.getElementById('formatFromContainer').dataset.value;\n                    const toVal = document.getElementById('formatToContainer').dataset.value;\n                    if (!fromVal || !toVal) {\n                        alert('Please select both From and To formats first.');\n                        return;\n                    }\n                    window.location.href = fromVal + '-to-' + toVal + '.html';\n                }\n                function toggleBasic(id) {
+                
+                function goToDedicatedPage() {
+                    const fromVal = document.getElementById('formatFromContainer').dataset.value;
+                    const toVal = document.getElementById('formatToContainer').dataset.value;
+                    if (!fromVal || !toVal) {
+                        alert('Please select both From and To formats first.');
+                        return;
+                    }
+                    window.location.href = fromVal + '-to-' + toVal + '.html';
+                }
+                function toggleBasic(id) {
                     const el = document.getElementById(id);
                     const isVisible = el.style.display === 'block';
                     document.getElementById('fromMenu').style.display = 'none';
@@ -253,7 +260,8 @@
                 <div class="dropzone-icon" id="dropzoneIcon">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
-                <h2 id="dropzoneTitle">Continue to Converter</h2>\n                <p id="dropzoneSubtitle">Click here to go to the dedicated conversion page</p>
+                <h2 id="dropzoneTitle">Continue to Converter</h2>
+                <p id="dropzoneSubtitle">Click here to go to the dedicated conversion page</p>
                 
             </div>
             <div class="loading" id="loading" style="display:none;">
