@@ -31,10 +31,26 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
                     <div class="dropdown-content">
-                        <a href="ocr.html"><i class="fas fa-file-alt"></i> OCR Extraction</a>
-                        <a href="watermark.html"><i class="fas fa-water"></i> Watermarking</a>
-                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> PDF Tools</a>
-                        <a href="image-tools.html"><i class="fas fa-image"></i> Image Tools</a>
+                        <div class="tool-search-wrapper" style="padding: 10px; border-bottom: 1px solid var(--border);">
+                            <i class="fas fa-search" style="margin-right: 8px; color: var(--text-muted);"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools..." oninput="var q=this.value.toLowerCase(); this.parentElement.nextElementSibling.querySelectorAll('a').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="border: none; outline: none; font-size: 0.9rem; width: 80%;">
+                        </div>
+                        <div class="tool-list" style="max-height: 400px; overflow-y: auto; padding: 5px;">
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="image-tools.html"><i class="fas fa-crop-alt"></i> Image Tools</a>
+                            <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                            <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                            <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                            <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                            <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                            <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                            <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                            <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                            <a href="face-blur.html"><i class="fas fa-droplet"></i> Image Blur &amp; Mosaic</a>
+                            <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -47,11 +63,11 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="hero" style="padding: 100px 8% 60px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; position: relative; overflow: hidden;">
+        <section class="hero" style="padding: 60px 8% 40px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; position: relative; overflow: hidden;">
             <div class="hero-content">
                 <span class="badge-tag">100% Private • Open Source</span>
-                <h1 style="font-size: 4.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.04em; color: var(--text-main);">Convert Files Privately — <br><span style="color: #3b82f6;">100% In Your Browser</span></h1>
-                <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.6; max-width: 600px;">Fast, secure file conversion with zero uploads, zero tracking, and no servers. Your files never leave your device.</p>
+                <h1 style="font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; letter-spacing: -0.04em; color: var(--text-main);">Convert Files Privately — <br><span style="color: #3b82f6;">100% In Your Browser</span></h1>
+                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6; max-width: 600px;">Fast, secure file conversion with zero uploads, zero tracking, and no servers.</p>
                 
                 <div class="hero-badges" style="display: flex; gap: 12px; flex-wrap: wrap;">
                     <span class="badge-pill"><i class="fas fa-shield-alt" style="color: #3b82f6;"></i> 100% Private</span>
@@ -81,21 +97,130 @@
             </div>
         </section>
 
-        <!-- Main Upload Section -->
-        <section style="padding: 40px 8% 80px;">
-            <div class="dropzone-professional" id="mainDropzone" style="max-width: 900px; margin: 0 auto 40px;">
-                <div style="font-size: 3rem; color: #3b82f6; margin-bottom: 20px;"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Drag & drop your file here</h3>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">or <span style="color: #3b82f6; font-weight: 600; cursor: pointer;" onclick="document.getElementById('hiddenFileInput').click()">click to browse</span></p>
+        <section style="padding: 20px 8% 60px;">
+            <div class="format-selectors" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                <!-- BASIC FROM DROPDOWN -->
+                <div class="dropdown format-select" id="formatFromContainer" data-value="" style="position:relative; width:260px;">
+                    <button id="fromTrigger" class="dropdown-trigger" onclick="toggleBasic('fromMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500;">
+                        <span id="fromValue" class="dropdown-value">From: Select Input</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div id="fromMenu" style="display:none; position:absolute; top:58px; left:0; width:340px; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
+                        <div style="padding:10px; border-bottom:1px solid #eee;">
+                            <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('fromItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                        </div>
+                        <div id="fromItems" style="max-height:300px; overflow-y:auto; padding:5px;">
+                            <div style="font-size:10px; color:#999; padding:10px 10px 5px; text-transform:uppercase; letter-spacing:1px;">Images</div>
+                            <div class="dropdown-item" onclick="selectBasic('from', 'jpg', 'JPG')">JPG</div>
+                            <div class="dropdown-item" onclick="selectBasic('from', 'png', 'PNG')">PNG</div>
+                            <div class="dropdown-item" onclick="selectBasic('from', 'webp', 'WebP')">WebP</div>
+                            <div class="dropdown-item" onclick="selectBasic('from', 'pdf', 'PDF')">PDF</div>
+                            <div class="dropdown-item" onclick="selectBasic('from', 'mp4', 'MP4')">MP4</div>
+                            <div class="dropdown-item" onclick="selectBasic('from', 'mp3', 'MP3')">MP3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="format-connector" style="color: var(--text-muted); font-size: 1.2rem;">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <!-- BASIC TO DROPDOWN -->
+                <div class="dropdown format-select" id="formatToContainer" data-value="" style="position:relative; width:260px;">
+                    <button id="toTrigger" class="dropdown-trigger" onclick="toggleBasic('toMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500; opacity:0.5; pointer-events:none;">
+                        <span id="toValue" class="dropdown-value">Select input first...</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div id="toMenu" style="display:none; position:absolute; top:58px; left:0; width:340px; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
+                        <div style="padding:10px; border-bottom:1px solid #eee;">
+                            <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('toItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                        </div>
+                        <div id="toItems" style="max-height:300px; overflow-y:auto; padding:5px;">
+                            <div style="padding:20px; text-align:center; color:#999; font-size:14px;">Select from format first</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropzone-professional" id="mainDropzone" style="max-width: 900px; margin: 0 auto 30px;">
+                <div style="font-size: 2.5rem; color: #3b82f6; margin-bottom: 15px;"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Drag & drop your file here</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.95rem;">or <span style="color: #3b82f6; font-weight: 600; cursor: pointer;" onclick="document.getElementById('hiddenFileInput').click()">click to browse</span></p>
                 <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleMainUpload(this)">
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Supports: PDF, PNG, JPG, JPEG, WEBP, SVG, GIF, MP4, MP3, WAV, DOCX and more</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Supports: PDF, PNG, JPG, JPEG, WEBP, SVG, GIF, MP4, MP3, WAV, DOCX and more</p>
             </div>
             
             <div style="display: flex; justify-content: center; gap: 20px;">
-                <button class="btn-primary" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 12px; background: #001767;"><i class="fas fa-rocket"></i> Start Converting Free</button>
-                <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 12px; background: white; color: var(--text-main); border: 1px solid var(--border); box-shadow: none;"><i class="fab fa-github"></i> View Open Source Code</a>
+                <button onclick="goToDedicatedPage()" class="btn-primary" style="padding: 14px 36px; font-size: 1rem; border-radius: 12px; background: #001767; cursor: pointer;"><i class="fas fa-rocket"></i> Start Converting Free</button>
+                <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary" style="padding: 14px 36px; font-size: 1rem; border-radius: 12px; background: white; color: var(--text-main); border: 1px solid var(--border); box-shadow: none;"><i class="fab fa-github"></i> View Open Source Code</a>
             </div>
         </section>
+
+        <script>
+            const BASIC_MAPPING = {
+                'jpg': ['png', 'webp', 'bmp', 'pdf'],
+                'png': ['jpg', 'webp', 'bmp', 'pdf'],
+                'webp': ['jpg', 'png', 'bmp', 'pdf'],
+                'bmp': ['jpg', 'png', 'webp', 'pdf'],
+                'gif': ['jpg', 'png', 'webp', 'pdf'],
+                'pdf': ['jpg', 'png', 'webp', 'txt', 'md', 'docx'],
+                'mp4': ['webm', 'mov', 'avi', 'mp3'],
+                'mp3': ['wav', 'ogg', 'aac', 'm4a', 'flac'],
+                'docx': ['pdf', 'txt', 'md']
+            };
+            const BASIC_LABELS = {
+                'jpg': 'JPG Image', 'png': 'PNG Image', 'webp': 'WebP Image', 'pdf': 'PDF Document', 
+                'mp4': 'MP4 Video', 'mp3': 'MP3 Audio', 'docx': 'Word (DOCX)'
+            };
+
+            function selectBasic(type, val, label) {
+                if (type === 'from') {
+                    document.getElementById('fromValue').textContent = "From: " + label;
+                    document.getElementById('fromMenu').style.display = 'none';
+                    document.getElementById('formatFromContainer').dataset.value = val;
+                    
+                    const toTrig = document.getElementById('toTrigger');
+                    toTrig.style.opacity = '1';
+                    toTrig.style.pointerEvents = 'auto';
+                    document.getElementById('toValue').textContent = "Convert to...";
+                    
+                    const toItems = document.getElementById('toItems');
+                    let targets = BASIC_MAPPING[val] || [];
+                    let html = '';
+                    targets.forEach(t => {
+                        const l = BASIC_LABELS[t] || t.toUpperCase();
+                        html += `<div class="dropdown-item" onclick="selectBasic('to', '${t}', '${l}')" style="padding:10px; cursor:pointer; border-radius:6px;">${l}</div>`;
+                    });
+                    toItems.innerHTML = html || '<div style="padding:10px; color:#999;">No formats available</div>';
+                } else {
+                    document.getElementById('toValue').textContent = "To: " + label;
+                    document.getElementById('toMenu').style.display = 'none';
+                    document.getElementById('formatToContainer').dataset.value = val;
+                }
+            }
+
+            function toggleBasic(id) {
+                const el = document.getElementById(id);
+                const isVisible = el.style.display === 'block';
+                document.getElementById('fromMenu').style.display = 'none';
+                document.getElementById('toMenu').style.display = 'none';
+                if (!isVisible) el.style.display = 'block';
+            }
+
+            function goToDedicatedPage() {
+                const fromVal = document.getElementById('formatFromContainer').dataset.value;
+                const toVal = document.getElementById('formatToContainer').dataset.value;
+                if (!fromVal || !toVal) { alert('Please select formats first.'); return; }
+                window.location.href = fromVal + '-to-' + toVal + '.html';
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.format-select')) {
+                    document.getElementById('fromMenu').style.display = 'none';
+                    document.getElementById('toMenu').style.display = 'none';
+                }
+            });
+        </script>
 
         <!-- Stats Row -->
         <section style="padding: 40px 8%; background: #fcfcfd; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
