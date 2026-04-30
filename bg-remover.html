@@ -428,8 +428,8 @@
 
                 setStatus('Initializing AI library…', false, 5);
 
-                // Dynamically import the ESM build via an ESM-aware CDN (rewrites bare imports like 'lodash')
-                const imglyModule = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/+esm');
+                // Dynamically import the ESM build via esm.sh (best handling for CommonJS to ESM interop like lodash)
+                const imglyModule = await import('https://esm.sh/@imgly/background-removal@1.4.5');
                 const removeBackground = imglyModule.default || imglyModule.removeBackground;
 
                 const modelChoice = document.getElementById('modelSelect').value;
