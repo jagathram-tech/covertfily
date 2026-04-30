@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Blur & Mosaic - Blur, Pixelate & Redact | Covertfily</title>
     <meta name="description" content="Blur or pixelate any area of an image using a box or brush tool. Perfect for redacting faces, text, and sensitive info. 100% private, runs in your browser.">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -81,13 +81,13 @@
         #mainCanvas { display: block; max-width: 100%; max-height: 600px; }
         #selectionBox {
             position: absolute; border: 2px solid #3b82f6;
-            background: rgba(59,130,246,0.15); pointer-events: none; display: none; border-radius: 2px;
+            background: rgba(0, 23, 103,0.15); pointer-events: none; display: none; border-radius: 2px;
         }
         /* Brush cursor ring */
         #brushCursor {
             position: absolute; border: 2px solid #3b82f6; border-radius: 50%;
             pointer-events: none; display: none; transform: translate(-50%, -50%);
-            background: rgba(59,130,246,0.1);
+            background: rgba(0, 23, 103,0.1);
         }
 
         /* Redaction history pills */
@@ -112,9 +112,7 @@
 </head>
 <body>
     <nav>
-        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
-            <i class="fas fa-sync-alt"></i><span>Covertfily</span>
-        </div>
+        <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily" style="height: 32px;"></a></div>
         <ul class="nav-links">
             <li><a href="index.html">Convert</a></li>
             <li class="dropdown">
@@ -242,7 +240,7 @@
 
     <footer style="padding:60px 20px;background:#0f172a;color:white;margin-top:80px;border-top:1px solid var(--border);">
         <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;text-align:left;">
-            <div><div class="logo" style="color:white;margin-bottom:20px;"><i class="fas fa-sync-alt"></i> <span>Covertfily</span></div><p style="color:#94A3B8;font-size:0.9rem;">100% free, open source, and client-side.</p></div>
+            <div><div class="logo" style="margin-bottom:20px;"><img src="logo.png" alt="Covertfily" style="height: 28px; filter: brightness(0) invert(1);"></div><p style="color:#94A3B8;font-size:0.9rem;">100% free, open source, and client-side.</p></div>
         </div>
         <div style="border-top:1px solid #334155;margin-top:40px;padding-top:20px;text-align:center;color:#64748B;font-size:0.85rem;">MIT Licensed &amp; Open Source • Covertfily</div>
     </footer>
