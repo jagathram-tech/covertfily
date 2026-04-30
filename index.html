@@ -85,8 +85,15 @@
 
     <main>
         <section class="hero">
-            <h1>100% Private, Client-Side File Conversion</h1>
-            <p>MIT Licensed & Open Source. No external APIs, no servers, and no tracking. Your files never leave your computer�everything happens locally in your browser.</p>
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);">Convert Files Privately — 100% In Your Browser</h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2rem;">Fast, secure file conversion with zero uploads, zero tracking, and no servers.</p>
+            
+            <div class="trust-badges" style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 3rem; font-size: 0.95rem; font-weight: 500; color: var(--text-main);">
+                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-lock" style="color: var(--primary);"></i> 100% Private</span>
+                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-bolt" style="color: var(--secondary);"></i> Instant Conversion</span>
+                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-globe" style="color: var(--primary);"></i> Open Source</span>
+                <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-ban" style="color: #ef4444;"></i> No File Uploads</span>
+            </div>
             
             <div class="format-selectors">
             <!-- BASIC FROM DROPDOWN -->
@@ -257,6 +264,40 @@
                 <button onclick="goToDedicatedPage()" style="display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; font-size: 1.1rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,23,103,0.4); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,23,103,0.5)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(0,23,103,0.4)';">
                     <i class="fas fa-upload"></i> Upload
                 </button>
+            </div>
+
+            <div style="max-width: 800px; margin: 3rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                <a href="png-to-jpg.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
+                    PNG <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> JPG
+                </a>
+                <a href="jpg-to-webp.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
+                    JPG <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> WEBP
+                </a>
+                <a href="pdf-to-png.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
+                    PDF <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> PNG
+                </a>
+                <a href="ocr.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
+                    OCR <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> Text
+                </a>
+            </div>
+            
+            <div style="margin-top: 4rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; color: var(--text-main); border-top: 1px solid var(--border); padding-top: 2rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">10,000+</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Files Converted</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">100%</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Browser-Based</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">MIT</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Licensed Open Source</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);"><i class="fab fa-github"></i></div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Hosted on GitHub</div>
+                </div>
             </div>
 
             <div class="loading" id="loading" style="display:none;">
