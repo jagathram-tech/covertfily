@@ -142,17 +142,13 @@
                 </div>
             </div>
 
-            <div class="dropzone-professional" id="mainDropzone" style="max-width: 900px; margin: 0 auto 30px;">
-                <div style="font-size: 2.5rem; color: #3b82f6; margin-bottom: 15px;"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Drag & drop your file here</h3>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.95rem;">or <span style="color: #3b82f6; font-weight: 600; cursor: pointer;" onclick="document.getElementById('hiddenFileInput').click()">click to browse</span></p>
-                <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleMainUpload(this)">
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Supports: PDF, PNG, JPG, JPEG, WEBP, SVG, GIF, MP4, MP3, WAV, DOCX and more</p>
-            </div>
-            
-            <div style="display: flex; justify-content: center; gap: 20px;">
-                <button onclick="goToDedicatedPage()" class="btn-primary" style="padding: 14px 36px; font-size: 1rem; border-radius: 12px; background: #001767; cursor: pointer;"><i class="fas fa-rocket"></i> Start Converting Free</button>
-                <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary" style="padding: 14px 36px; font-size: 1rem; border-radius: 12px; background: white; color: var(--text-main); border: 1px solid var(--border); box-shadow: none;"><i class="fab fa-github"></i> View Open Source Code</a>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="goToDedicatedPage()" class="btn-primary" style="padding: 18px 60px; font-size: 1.25rem; border-radius: 16px; background: var(--primary); cursor: pointer; display: inline-flex; align-items: center; gap: 12px; box-shadow: var(--shadow-lg);">
+                    <i class="fas fa-upload"></i> Upload & Convert
+                </button>
+                <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+                    <a href="https://github.com/jagathram-tech/covertfily" style="color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;"><i class="fab fa-github"></i> Open Source on GitHub</a>
+                </div>
             </div>
         </section>
 
