@@ -3,36 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-4Z6LTJ67E2');
-    </script>
-    <title>Covertfily - Professional Client-Side File Converter & PDF Tools</title>
+    <title>Covertfily - 100% Private Browser-Based File Converter</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <meta name="description" content="100% private, browser-based file conversion. Convert PDF, Images, Video, and Audio locally with MIT-licensed power. Secure merged PDF, compression, and watermarking tools.">
-    <meta name="keywords" content="PDF Tools, Merge PDF, Compress PDF, Add Watermark, Video Converter, Image Converter, Private File Conversion, Open Source Converter, MIT Licensed, Covertfily Blog">
-    
-    <!-- Open Graph / SEO -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://covertfily.com/">
-    <meta property="og:title" content="Covertfily - Safe & Fast Local File Conversion">
-    <meta property="og:description" content="Stop uploading your data. Convert and process files 100% locally in your browser.">
-    <meta property="og:image" content="https://covertfily.com/og-image.png">
-
-    <meta property="og:image" content="https://covertfily.com/og-image.png">
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     
     <!-- Libraries for Client-Side Conversion -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -43,395 +21,353 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/docx@7.1.1/build/index.js"></script>
-
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav>
-        <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily" style="height: 32px;"></a></div>
-        <ul class="nav-links">
-            <li><a href="index.html" class="active">Convert</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle">Solutions <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
-                <div class="dropdown-content">
-                    <a href="ocr.html"><i class="fas fa-file-alt"></i> OCR Text Extraction</a>
-                    <a href="watermark.html"><i class="fas fa-water"></i> Document Protection</a>
-                    <a href="merge-pdf.html"><i class="fas fa-object-group"></i> PDF Management</a>
-                </div>
-            </li>
-            <li><a href="blog.html">Blog</a></li>
-        </ul>
-        <div class="nav-actions">
-            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fab fa-github"></i> <span>Github Repo</span></a>
+        <div style="display: flex; align-items: center; gap: 40px;">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily" style="height: 32px;"></a></div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Convert</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> OCR Extraction</a>
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermarking</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> PDF Tools</a>
+                        <a href="image-tools.html"><i class="fas fa-image"></i> Image Tools</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-actions" style="display: flex; align-items: center; gap: 20px;">
+            <a href="https://github.com/jagathram-tech/covertfily" style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main); font-size: 0.95rem;"><i class="fab fa-github" style="font-size: 1.2rem;"></i> GitHub</a>
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary" style="padding: 10px 24px; border-radius: 100px; font-size: 0.95rem;"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
         </div>
     </nav>
 
     <main>
-        <section class="hero" style="position: relative; overflow: hidden; padding: 120px 8% 80px;">
-            <div style="position: absolute; top: -50%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%); opacity: 0.5; z-index: -1;"></div>
-            <div style="position: absolute; bottom: -20%; right: -5%; width: 400px; height: 400px; background: radial-gradient(circle, var(--secondary) 0%, transparent 70%); opacity: 0.1; z-index: -1;"></div>
-            
-            <h1 style="font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.04em;">Universal File Conversion, <span style="color: var(--primary);">100% Private.</span></h1>
-            <p style="font-size: 1.4rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 3rem; line-height: 1.6;">Professional-grade file conversion with zero uploads. Secure, lightning-fast, and entirely browser-based.</p>
-            
-            <div class="trust-bar" style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 4rem; padding: 20px; background: var(--bg-main); border-radius: 100px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); max-width: fit-content; margin-left: auto; margin-right: auto;">
-                <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> Zero Server Uploads</span>
-                <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> SOC2 Compliant Privacy</span>
-                <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> MIT Licensed</span>
+        <!-- Hero Section -->
+        <section class="hero" style="padding: 100px 8% 60px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; position: relative; overflow: hidden;">
+            <div class="hero-content">
+                <span class="badge-tag">100% Private • Open Source</span>
+                <h1 style="font-size: 4.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.04em; color: var(--text-main);">Convert Files Privately — <br><span style="color: #3b82f6;">100% In Your Browser</span></h1>
+                <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.6; max-width: 600px;">Fast, secure file conversion with zero uploads, zero tracking, and no servers. Your files never leave your device.</p>
+                
+                <div class="hero-badges" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <span class="badge-pill"><i class="fas fa-shield-alt" style="color: #3b82f6;"></i> 100% Private</span>
+                    <span class="badge-pill"><i class="fas fa-bolt" style="color: #f59e0b;"></i> Instant Conversion</span>
+                    <span class="badge-pill"><i class="fas fa-globe" style="color: #3b82f6;"></i> Open Source</span>
+                    <span class="badge-pill"><i class="fas fa-ban" style="color: #ef4444;"></i> No File Uploads</span>
+                    <span class="badge-pill"><i class="fas fa-laptop" style="color: #3b82f6;"></i> Works Offline</span>
+                </div>
+            </div>
+            <div class="hero-visual" style="position: relative; z-index: 1;">
+                <div style="background: white; border-radius: 24px; padding: 30px; box-shadow: var(--shadow-xl); border: 1px solid var(--border); position: relative; overflow: hidden;">
+                    <div style="display: flex; gap: 8px; margin-bottom: 30px;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ff5f56;"></div>
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ffbd2e;"></div>
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #27c93f;"></div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 40px; padding: 40px 0;">
+                        <div style="width: 90px; height: 120px; background: #818cf8; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; box-shadow: 0 10px 20px rgba(129, 140, 248, 0.3);"><i class="fas fa-file-pdf"></i></div>
+                        <i class="fas fa-arrow-right" style="color: #cbd5e1; font-size: 2rem;"></i>
+                        <div style="width: 90px; height: 120px; background: #34d399; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; box-shadow: 0 10px 20px rgba(52, 211, 153, 0.3);"><i class="fas fa-file-word"></i></div>
+                    </div>
+                    <div style="width: 100%; height: 10px; background: #f1f5f9; border-radius: 100px; overflow: hidden; margin-top: 30px;">
+                        <div style="width: 70%; height: 100%; background: linear-gradient(90deg, #818cf8, #34d399); border-radius: 100px;"></div>
+                    </div>
+                </div>
+                <div style="position: absolute; right: -20px; bottom: -20px; width: 70px; height: 70px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; border: 5px solid white; box-shadow: var(--shadow-lg); z-index: 2;"><i class="fas fa-check"></i></div>
+            </div>
+        </section>
+
+        <!-- Main Upload Section -->
+        <section style="padding: 40px 8% 80px;">
+            <div class="dropzone-professional" id="mainDropzone" style="max-width: 900px; margin: 0 auto 40px;">
+                <div style="font-size: 3rem; color: #3b82f6; margin-bottom: 20px;"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Drag & drop your file here</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">or <span style="color: #3b82f6; font-weight: 600; cursor: pointer;" onclick="document.getElementById('hiddenFileInput').click()">click to browse</span></p>
+                <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleMainUpload(this)">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Supports: PDF, PNG, JPG, JPEG, WEBP, SVG, GIF, MP4, MP3, WAV, DOCX and more</p>
             </div>
             
-            <div class="format-selectors">
-            <!-- BASIC FROM DROPDOWN -->
-            <div class="dropdown format-select" id="formatFromContainer" data-value="" style="position:relative; width:260px;">
-                    <button id="fromTrigger" class="dropdown-trigger" onclick="toggleBasic('fromMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500;">
-                        <span id="fromValue" class="dropdown-value">From: Select Input</span>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <button class="btn-primary" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 12px; background: #001767;"><i class="fas fa-rocket"></i> Start Converting Free</button>
+                <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 12px; background: white; color: var(--text-main); border: 1px solid var(--border); box-shadow: none;"><i class="fab fa-github"></i> View Open Source Code</a>
+            </div>
+        </section>
+
+        <!-- Stats Row -->
+        <section style="padding: 40px 8%; background: #fcfcfd; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 48px; height: 48px; background: #eff6ff; color: #3b82f6; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-cloud-download-alt"></i></div>
+                    <div>
+                        <div style="font-size: 1.25rem; font-weight: 800;">10,000+</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Files Converted</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 48px; height: 48px; background: #ecfdf5; color: #10b981; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-lock"></i></div>
+                    <div>
+                        <div style="font-size: 1.25rem; font-weight: 800;">100%</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Private & Secure</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 48px; height: 48px; background: #fdf2f8; color: #db2777; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-code"></i></div>
+                    <div>
+                        <div style="font-size: 1.25rem; font-weight: 800;">MIT</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Licensed</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 48px; height: 48px; background: #fffbeb; color: #f59e0b; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-star"></i></div>
+                    <div>
+                        <div style="font-size: 1.25rem; font-weight: 800;">Open Source</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">on GitHub</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Converters -->
+        <section style="padding: 100px 8%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;">
+                <h2 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em;">Popular Converters</h2>
+                <a href="#" style="color: #3b82f6; font-weight: 600; display: flex; align-items: center; gap: 8px;">View all tools <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                <div class="card">
+                    <div class="card-icon" style="background: #eef2ff; color: #6366f1;"><i class="fas fa-image"></i></div>
+                    <h3>PNG to JPG</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Convert PNG to JPG images</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-file-image"></i></div>
+                    <h3>JPG to WEBP</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Convert JPG to WEBP</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-file-pdf"></i></div>
+                    <h3>PDF to PNG</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Convert PDF to images</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fas fa-compress-arrows-alt"></i></div>
+                    <h3>Image Compressor</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Compress images easily</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: #fffbeb; color: #f59e0b;"><i class="fas fa-magic"></i></div>
+                    <h3>Remove Background</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Remove image background</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-search-plus"></i></div>
+                    <h3>OCR (Image to Text)</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Extract text from images</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section style="padding: 100px 8%; background: #fcfcfd;">
+            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 60px;">How It Works</h2>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                <div style="text-align: center; max-width: 250px;">
+                    <div style="width: 80px; height: 80px; background: #eff6ff; color: #3b82f6; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;"><i class="fas fa-upload"></i></div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="width: 24px; height: 24px; background: #3b82f6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800;">1</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700;">Upload File</h4>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Drag & drop or select the file you want to convert.</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #cbd5e1; font-size: 1.5rem; margin-top: -40px;"></i>
+                <div style="text-align: center; max-width: 250px;">
+                    <div style="width: 80px; height: 80px; background: #f5f3ff; color: #8b5cf6; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;"><i class="fas fa-sliders-h"></i></div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="width: 24px; height: 24px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800;">2</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700;">Choose Format</h4>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Select the output format you need.</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #cbd5e1; font-size: 1.5rem; margin-top: -40px;"></i>
+                <div style="text-align: center; max-width: 250px;">
+                    <div style="width: 80px; height: 80px; background: #ecfdf5; color: #10b981; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;"><i class="fas fa-download"></i></div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800;">3</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700;">Download Instantly</h4>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Get your converted file instantly. All local.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose & Comparison -->
+        <section style="padding: 100px 8%; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+            <div>
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 30px;">Why Choose Covertfily?</h2>
+                <ul style="list-style: none;">
+                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
+                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
+                        <span style="font-weight: 500;">Your files never leave your device</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
+                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
+                        <span style="font-weight: 500;">No tracking, no analytics, no data collection</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
+                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
+                        <span style="font-weight: 500;">Open source & community driven</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
+                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
+                        <span style="font-weight: 500;">Works offline - no internet required</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
+                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
+                        <span style="font-weight: 500;">Fast, lightweight & easy to use</span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 25px;">Covertfily vs Other Converters</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Covertfily</th>
+                            <th>Other Converters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Files uploaded to server</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Open source</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Tracking / Analytics</td>
+                            <td><i class="fas fa-times"></i></td>
+                            <td><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Works offline</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Privacy Focused</td>
+                            <td><i class="fas fa-check"></i></td>
+                            <td><i class="fas fa-times"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section style="padding: 100px 8%; background: #fcfcfd;">
+            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto 50px;">
+                <h2 style="font-size: 2.5rem; font-weight: 800;">Frequently Asked Questions</h2>
+                <a href="#" style="color: #3b82f6; font-weight: 600;">View all FAQs <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                        Are my files safe?
                         <i class="fas fa-chevron-down"></i>
-                    </button>
-                <div id="fromMenu" style="display:none; position:absolute; top:58px; left:0; width:340px; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
-                    <div style="padding:10px; border-bottom:1px solid #eee;">
-                        <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('fromItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
                     </div>
-                    <div id="fromItems" style="max-height:300px; overflow-y:auto; padding:5px;">
-                        <div style="font-size:10px; color:#999; padding:10px 10px 5px; text-transform:uppercase; letter-spacing:1px;">Images</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'jpg', 'JPG')">JPG</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'png', 'PNG')">PNG</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'webp', 'WebP')">WebP</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'gif', 'GIF')">GIF</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'bmp', 'BMP')">BMP</div>
-                        
-                        <div style="font-size:10px; color:#999; padding:10px 10px 5px; text-transform:uppercase; letter-spacing:1px;">Documents</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'pdf', 'PDF')">PDF</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'docx', 'DOCX')">DOCX</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'xlsx', 'XLSX')">XLSX</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'csv', 'CSV')">CSV</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'txt', 'TXT')">TXT</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'md', 'MD')">Markdown</div>
-                        
-                        <div style="font-size:10px; color:#999; padding:10px 10px 5px; text-transform:uppercase; letter-spacing:1px;">Media & Archive</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'mp4', 'MP4')">MP4</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'mp3', 'MP3')">MP3</div>
-                        <div class="dropdown-item" onclick="selectBasic('from', 'zip', 'ZIP')">ZIP</div>
+                    <div class="accordion-content">
+                        Yes, absolutely. Unlike other converters, Covertfily processes your files entirely within your web browser. Your data is never uploaded to any server, making it 100% private.
                     </div>
                 </div>
-            </div>
-                
-                <div class="format-connector">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-                
-            <!-- BASIC TO DROPDOWN -->
-            <div class="dropdown format-select" id="formatToContainer" data-value="" style="position:relative; width:260px;">
-                <button id="toTrigger" class="dropdown-trigger" onclick="document.getElementById('toMenu').style.display = document.getElementById('toMenu').style.display==='block'?'none':'block'; document.getElementById('fromMenu').style.display='none';" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500; opacity:0.5; pointer-events:none;">
-                    <span id="toValue" class="dropdown-value">Select input first...</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div id="toMenu" style="display:none; position:absolute; top:58px; left:0; width:340px; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
-                    <div style="padding:10px; border-bottom:1px solid #eee;">
-                        <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('toItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                        Do I need an internet connection?
+                        <i class="fas fa-chevron-down"></i>
                     </div>
-                    <div id="toItems" style="max-height:300px; overflow-y:auto; padding:5px;">
-                        <div style="padding:20px; text-align:center; color:#999; font-size:14px;">Select from format first</div>
+                    <div class="accordion-content">
+                        Only to load the website initially. Once the page is loaded, the conversion logic runs locally on your computer, meaning you could even disconnect from the internet and it would still work.
                     </div>
                 </div>
-            </div>
-
-            <!-- SHARED LOGIC -->
-            <script>
-                const BASIC_MAPPING = {
-                    'jpg': ['png', 'webp', 'bmp', 'pdf'],
-                    'png': ['jpg', 'webp', 'bmp', 'pdf'],
-                    'webp': ['jpg', 'png', 'bmp', 'pdf'],
-                    'bmp': ['jpg', 'png', 'webp', 'pdf'],
-                    'gif': ['jpg', 'png', 'webp', 'pdf'],
-                    'avif': ['jpg', 'png', 'webp'],
-                    'tiff': ['jpg', 'png', 'pdf'],
-                    'heic': ['jpg', 'png', 'pdf'],
-                    'pdf': ['jpg', 'png', 'webp', 'txt', 'md', 'docx'],
-                    'mp4': ['webm', 'mov', 'avi', 'mkv', 'mp3'],
-                    'webm': ['mp4', 'mov', 'avi', 'mkv', 'mp3'],
-                    'mov': ['mp4', 'webm', 'avi', 'mkv', 'mp3'],
-                    'avi': ['mp4', 'webm', 'mov', 'mp3'],
-                    'mkv': ['mp4', 'webm', 'mov', 'mp3'],
-                    'flv': ['mp4', 'mp3'],
-                    'wmv': ['mp4', 'mp3'],
-                    'mp3': ['wav', 'ogg', 'aac', 'm4a', 'flac'],
-                    'wav': ['mp3', 'ogg', 'aac', 'm4a', 'flac'],
-                    'ogg': ['mp3', 'wav', 'aac'],
-                    'aac': ['mp3', 'wav'],
-                    'm4a': ['mp3', 'wav'],
-                    'flac': ['mp3', 'wav'],
-                    'xlsx': ['csv', 'json', 'ods', 'pdf'],
-                    'xls': ['xlsx', 'csv', 'json', 'pdf'],
-                    'csv': ['xlsx', 'json', 'ods', 'pdf'],
-                    'ods': ['xlsx', 'csv', 'json', 'pdf'],
-                    'json': ['xlsx', 'csv', 'pdf'],
-                    'md': ['html', 'pdf', 'txt', 'docx'],
-                    'html': ['md', 'pdf', 'txt', 'docx'],
-                    'txt': ['pdf', 'md', 'html', 'docx'],
-                    'docx': ['pdf', 'txt', 'md'],
-                    'xml': ['json', 'txt'],
-                    'zip': ['zip']
-                };
-                const BASIC_LABELS = {
-                    'jpg': 'JPG Image', 'png': 'PNG Image', 'webp': 'WebP Image', 'bmp': 'BMP Image', 'gif': 'GIF Anim',
-                    'avif': 'AVIF Image', 'tiff': 'TIFF Image', 'heic': 'HEIC/HEIF',
-                    'pdf': 'PDF Document', 'mp4': 'MP4 Video', 'webm': 'WebM Video', 'mov': 'MOV Video',
-                    'avi': 'AVI Video', 'mkv': 'MKV Video', 'flv': 'FLV Video', 'wmv': 'WMV Video',
-                    'mp3': 'MP3 Audio', 'wav': 'WAV Audio', 'ogg': 'OGG Audio', 'aac': 'AAC Audio',
-                    'm4a': 'M4A Audio', 'flac': 'FLAC Audio',
-                    'xlsx': 'Excel (XLSX)', 'xls': 'Excel (XLS)', 'csv': 'CSV Data', 'json': 'JSON Data', 
-                    'ods': 'ODS Calc', 'md': 'Markdown (MD)', 'html': 'HTML Page', 'txt': 'Plain Text (TXT)', 
-                    'xml': 'XML Data', 'zip': 'Archive (ZIP)', 'docx': 'Word (DOCX)'
-                };
-
-                function selectBasic(type, val, label) {
-                    console.log('selectBasic:', type, val, label);
-                    if (type === 'from') {
-                        document.getElementById('fromValue').textContent = "From: " + label;
-                        document.getElementById('fromMenu').style.display = 'none';
-                        document.getElementById('formatFromContainer').dataset.value = val;
-                        
-                        const toTrig = document.getElementById('toTrigger');
-                        if (toTrig) {
-                            toTrig.style.opacity = '1';
-                            toTrig.style.pointerEvents = 'auto';
-                            document.getElementById('toValue').textContent = "Convert to...";
-                        }
-                        
-                        // Populate To items
-                        const toItems = document.getElementById('toItems');
-                        let targets = [];
-                        
-                        targets = BASIC_MAPPING[val] || [];
-                        let html = '';
-                        targets.forEach(t => {
-                            const l = BASIC_LABELS[t] || t.toUpperCase();
-                            html += `<div class="dropdown-item" onclick="selectBasic('to', '${t}', '${l}')" style="padding:10px; cursor:pointer; border-radius:6px;">${l}</div>`;
-                        });
-                        if (html) toItems.innerHTML = html;
-                        else toItems.innerHTML = '<div style="padding:10px; color:#999;">No formats available for this selection</div>';
-                        
-                    } else {
-                        document.getElementById('toValue').textContent = "To: " + label;
-                        document.getElementById('toMenu').style.display = 'none';
-                        document.getElementById('formatToContainer').dataset.value = val;
-                    }
-                }
-                
-                
-                function goToDedicatedPage() {
-                    const fromVal = document.getElementById('formatFromContainer').dataset.value;
-                    const toVal = document.getElementById('formatToContainer').dataset.value;
-                    if (!fromVal || !toVal) {
-                        alert('Please select both From and To formats first.');
-                        return;
-                    }
-                    window.location.href = fromVal + '-to-' + toVal + '.html';
-                }
-                function toggleBasic(id) {
-                    const el = document.getElementById(id);
-                    const isVisible = el.style.display === 'block';
-                    document.getElementById('fromMenu').style.display = 'none';
-                    document.getElementById('toMenu').style.display = 'none';
-                    if (!isVisible) el.style.display = 'block';
-                }
-
-                document.addEventListener('click', function(e) {
-                    if (!e.target.closest('.format-selectors')) {
-                        if (document.getElementById('fromMenu')) document.getElementById('fromMenu').style.display = 'none';
-                        if (document.getElementById('toMenu')) document.getElementById('toMenu').style.display = 'none';
-                    }
-                });
-            </script>
-            </div>
-            
-            <div style="text-align: center; margin-top: 2rem;">
-                <button onclick="goToDedicatedPage()" style="display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; font-size: 1.1rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,23,103,0.4); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,23,103,0.5)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(0,23,103,0.4)';">
-                    <i class="fas fa-upload"></i> Upload
-                </button>
-            </div>
-
-            <div style="max-width: 800px; margin: 3rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
-                <a href="png-to-jpg.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
-                    PNG <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> JPG
-                </a>
-                <a href="jpg-to-webp.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
-                    JPG <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> WEBP
-                </a>
-                <a href="pdf-to-png.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
-                    PDF <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> PNG
-                </a>
-                <a href="ocr.html" style="background: white; border: 1px solid var(--border); padding: 15px; border-radius: 10px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm); transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border)';">
-                    OCR <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.8em;"></i> Text
-                </a>
-            </div>
-            
-            <div style="margin-top: 4rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; color: var(--text-main); border-top: 1px solid var(--border); padding-top: 2rem;">
-                <div style="text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">10,000+</div>
-                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Files Converted</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">100%</div>
-                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Browser-Based</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">MIT</div>
-                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Licensed Open Source</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);"><i class="fab fa-github"></i></div>
-                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Hosted on GitHub</div>
-                </div>
-            </div>
-
-        </section>
-
-        <section class="how-it-works" style="padding: 100px 8%; background: var(--bg-main); border-bottom: 1px solid var(--border);">
-            <div style="text-align: center; margin-bottom: 5rem;">
-                <h2 style="font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem;">Simple. Secure. Professional.</h2>
-                <p style="color: var(--text-muted); font-size: 1.2rem;">Converting files with Covertfily is a seamless 3-step experience.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 50px;">
-                <div style="text-align: center;">
-                    <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 24px; box-shadow: var(--shadow-md);">
-                        <i class="fas fa-file-import"></i>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                        Is Covertfily really free?
+                        <i class="fas fa-chevron-down"></i>
                     </div>
-                    <h4 style="font-size: 1.5rem; margin-bottom: 12px;">1. Select Formats</h4>
-                    <p style="color: var(--text-muted); line-height: 1.6;">Choose your source and target formats from our extensive library of 200+ supported extensions.</p>
-                </div>
-                <div style="text-align: center;">
-                    <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 24px; box-shadow: var(--shadow-md);">
-                        <i class="fas fa-magic"></i>
+                    <div class="accordion-content">
+                        Yes, Covertfily is an open-source project licensed under MIT. It is free to use for everyone, forever, without any hidden costs or subscriptions.
                     </div>
-                    <h4 style="font-size: 1.5rem; margin-bottom: 12px;">2. Real-time Conversion</h4>
-                    <p style="color: var(--text-muted); line-height: 1.6;">Our client-side engine processes your file instantly. Your data never leaves your browser window.</p>
-                </div>
-                <div style="text-align: center;">
-                    <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 24px; box-shadow: var(--shadow-md);">
-                        <i class="fas fa-download"></i>
-                    </div>
-                    <h4 style="font-size: 1.5rem; margin-bottom: 12px;">3. Instant Download</h4>
-                    <p style="color: var(--text-muted); line-height: 1.6;">Grab your converted file immediately. No email required, no subscriptions, and completely free.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="converters">
-            <div class="section-title">
-                <h2>Popular Converters</h2>
-            </div>
-            
-            <div class="grid">
-                <!-- Image Converter -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-image"></i></div>
-                    <h3>Image Converter</h3>
-                    <p>Convert JPG, PNG, WebP, SVG, and more than 100+ image formats.</p>
-                </div>
-
-                <!-- Video Converter -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-video"></i></div>
-                    <h3>Video Converter</h3>
-                    <p>Change MP4, AVI, MKV, MOV and other video formats easily.</p>
-                </div>
-
-                <!-- Audio Converter -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-music"></i></div>
-                    <h3>Audio Converter</h3>
-                    <p>Convert MP3, WAV, FLAC, OGG and 50+ audio formats instantly.</p>
-                </div>
-
-                <!-- Document Converter -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-file-alt"></i></div>
-                    <h3>Document Converter</h3>
-                    <p>PDF to Word, Excel to PDF, and other office document transformations.</p>
-                </div>
-
-                <!-- Ebook Converter -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-book"></i></div>
-                    <h3>Ebook Converter</h3>
-                    <p>Convert to EPUB, MOBI, AZW3, and PDF for your e-reader.</p>
-                </div>
-
-                <!-- Archive Converter -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-file-archive"></i></div>
-                    <h3>Archive Converter</h3>
-                    <p>Create or extract ZIP, RAR, 7Z, and GZ archives online.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="features" style="padding: 100px 8%; background: var(--bg-alt);">
-            <div style="text-align: center; margin-bottom: 5rem;">
-                <h2 style="font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem;">Enterprise-Grade Privacy</h2>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem;">Built for users who value data sovereignty and professional-grade security.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                <div style="background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); transition: transform 0.3s ease;" class="feature-card">
-                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 24px;"><i class="fas fa-user-shield"></i></div>
-                    <h4 style="font-size: 1.5rem; margin-bottom: 16px;">Sovereign Processing</h4>
-                    <p style="color: var(--text-muted); line-height: 1.7;">Your files stay on your machine. We use WebAssembly and modern browser APIs to handle heavy processing locally.</p>
-                </div>
-                <div style="background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); transition: transform 0.3s ease;" class="feature-card">
-                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 24px;"><i class="fas fa-balance-scale"></i></div>
-                    <h4 style="font-size: 1.5rem; margin-bottom: 16px;">Transparent & Open</h4>
-                    <p style="color: var(--text-muted); line-height: 1.7;">Open source code means you don't have to take our word for it. Audit our conversion logic on GitHub anytime.</p>
-                </div>
-                <div style="background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); transition: transform 0.3s ease;" class="feature-card">
-                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 24px;"><i class="fas fa-tachometer-alt"></i></div>
-                    <h4 style="font-size: 1.5rem; margin-bottom: 16px;">Unmatched Speed</h4>
-                    <p style="color: var(--text-muted); line-height: 1.7;">Eliminate upload and download wait times. Processing locally is often 5x faster than cloud-based alternatives.</p>
                 </div>
             </div>
         </section>
     </main>
 
-        <footer style="background: var(--text-main); color: white; padding: 80px 8% 40px;">
-        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px;" class="footer-grid">
+    <footer style="background: white; border-top: 1px solid var(--border); padding: 80px 8% 40px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px;">
             <div>
-                <div class="logo" style="margin-bottom: 24px;"><img src="logo.png" alt="Covertfily" style="height: 32px; filter: brightness(0) invert(1);"></div>
-                <p style="color: #94A3B8; line-height: 1.7; max-width: 320px;">The world's first professional-grade, 100% client-side file conversion platform. Privacy by default, performance by design.</p>
+                <div class="logo" style="margin-bottom: 20px;"><img src="logo.png" alt="Covertfily" style="height: 28px;"></div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; max-width: 250px;">100% private, client-side file conversion. No uploads. No tracking. Open source.</p>
             </div>
             <div>
-                <h4 style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 700;">Platform</h4>
-                <ul style="list-style: none; color: #94A3B8;">
-                    <li style="margin-bottom: 12px;"><a href="index.html" style="color: inherit; transition: color 0.2s;">Converter</a></li>
-                    <li style="margin-bottom: 12px;"><a href="ocr.html" style="color: inherit; transition: color 0.2s;">OCR Engine</a></li>
-                    <li style="margin-bottom: 12px;"><a href="watermark.html" style="color: inherit; transition: color 0.2s;">Watermarking</a></li>
+                <h4 style="font-weight: 700; margin-bottom: 20px; font-size: 0.95rem;">Product</h4>
+                <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem;">
+                    <li style="margin-bottom: 10px;"><a href="index.html" style="color: inherit;">Convert</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">Tools</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 700;">Resources</h4>
-                <ul style="list-style: none; color: #94A3B8;">
-                    <li style="margin-bottom: 12px;"><a href="blog.html" style="color: inherit; transition: color 0.2s;">Company Blog</a></li>
-                    <li style="margin-bottom: 12px;"><a href="sitemap.xml" style="color: inherit; transition: color 0.2s;">Sitemap</a></li>
+                <h4 style="font-weight: 700; margin-bottom: 20px; font-size: 0.95rem;">Resources</h4>
+                <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">GitHub</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">Documentation</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">FAQ</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 700;">Legal</h4>
-                <ul style="list-style: none; color: #94A3B8;">
-                    <li style="margin-bottom: 12px;">MIT License</li>
-                    <li style="margin-bottom: 12px;">Privacy Policy</li>
+                <h4 style="font-weight: 700; margin-bottom: 20px; font-size: 0.95rem;">Legal</h4>
+                <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">Privacy Policy</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">Terms of Use</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-weight: 700; margin-bottom: 20px; font-size: 0.95rem;">Community</h4>
+                <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">GitHub</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: inherit;">Discussions</a></li>
                 </ul>
             </div>
         </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; display: flex; justify-content: space-between; align-items: center; color: #94A3B8; font-size: 0.9rem;">
-            <p>&copy; 2026 Covertfily. Built with privacy in mind.</p>
-            <div style="display: flex; gap: 24px;">
-                <a href="https://github.com/jagathram-tech/covertfily" style="color: inherit;"><i class="fab fa-github"></i> Github</a>
-                <a href="#" style="color: inherit;"><i class="fab fa-twitter"></i> Twitter</a>
+        <div style="border-top: 1px solid var(--border); padding-top: 40px; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.85rem;">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div style="display: flex; gap: 20px; font-size: 1.2rem;">
+                <a href="#" style="color: inherit;"><i class="fab fa-github"></i></a>
+                <a href="#" style="color: inherit;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: inherit;"><i class="fas fa-envelope"></i></a>
             </div>
         </div>
     </footer>
 
-    <script src="main.js?v=1.2"></script>
+    <script src="main.js"></script>
+    <script>
+        function handleMainUpload(input) {
+            if (input.files && input.files[0]) {
+                // Here you would normally route to the appropriate conversion page
+                // For now, let's just log it
+                console.log("File uploaded:", input.files[0].name);
+                // In a real app, we'd detect the extension and redirect
+            }
+        }
+    </script>
 </body>
 </html>
