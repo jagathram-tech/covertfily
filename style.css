@@ -63,6 +63,51 @@ nav {
     gap: 8px;
 }
 
+.logo img {
+    height: 32px;
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-github-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-github-link:hover {
+    color: var(--primary);
+}
+
+.nav-github-link i {
+    font-size: 1.2rem;
+}
+
+.nav-actions .btn-primary {
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-size: 0.95rem;
+}
+
 .nav-links {
     display: flex;
     gap: 2rem;
@@ -446,6 +491,10 @@ footer {
 /* Dropdown Tools Menu */
 .dropdown { position: relative; }
 .dropdown-toggle { cursor: pointer; }
+.dropdown-toggle i {
+    font-size: 0.8em;
+    margin-left: 5px;
+}
 .dropdown-content {
     position: absolute;
     top: 100%;

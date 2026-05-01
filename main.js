@@ -133,6 +133,16 @@ window.selectToFormat = function(value, label) {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Covertfily initialized');
+    
+    // Set active nav link
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPath) {
+            link.classList.add('active');
+        }
+    });
+
     if (typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
