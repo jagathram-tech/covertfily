@@ -36,7 +36,6 @@ nav_content = '''    <nav>
             </ul>
         </div>
         <div class="nav-actions">
-            <a href="https://github.com/jagathram-tech/covertfily" class="nav-github-link"><i class="fab fa-github"></i> GitHub</a>
             <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
         </div>
     </nav>'''.encode('utf-8')
@@ -47,7 +46,6 @@ for f in files:
     with open(f, 'rb') as file:
         content = file.read()
     
-    # Replace <nav>...</nav>
     new_content = re.sub(b'<nav>.*?</nav>', nav_content, content, flags=re.DOTALL)
     
     if new_content != content:
@@ -55,4 +53,4 @@ for f in files:
             file.write(new_content)
         changed += 1
 
-print(f'Updated {changed} files with expanded separate tool links')
+print(f'Updated {changed} files with cleaned navbar (removed redundant GitHub link)')
