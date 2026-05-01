@@ -156,6 +156,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.toggle('nav-active');
         });
 
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (document.body.classList.contains('nav-active')) {
+                const navLinks = document.querySelector('.nav-links');
+                if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                    document.body.classList.remove('nav-active');
+                }
+            }
+        });
+
         // Handle Dropdowns in Mobile Menu
         const dropdowns = document.querySelectorAll('.dropdown');
         dropdowns.forEach(dropdown => {
