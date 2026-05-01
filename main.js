@@ -144,20 +144,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Mobile Menu Injection & Handling
-    const navLeft = document.querySelector('.nav-left');
-    if (navLeft && !document.querySelector('.menu-toggle')) {
+    const nav = document.querySelector('nav');
+    if (nav && !document.querySelector('.menu-toggle')) {
         const menuToggle = document.createElement('div');
         menuToggle.className = 'menu-toggle';
         menuToggle.innerHTML = '<span></span><span></span><span></span>';
-        navLeft.appendChild(menuToggle);
+        nav.appendChild(menuToggle); // Append to nav instead of nav-left for better control
 
         menuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             document.body.classList.toggle('nav-active');
         });
 
+        // Handle Dropdowns in Mobile Menu
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const toggle = dropdown.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            }
+        });
+
         // Close menu on link click
-        document.querySelectorAll('.nav-links a').forEach(link => {
+        document.querySelectorAll('.nav-links a:not(.dropdown-toggle)').forEach(link => {
             link.addEventListener('click', () => {
                 document.body.classList.remove('nav-active');
             });

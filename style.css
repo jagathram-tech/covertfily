@@ -906,19 +906,54 @@ footer {
         left: 0;
         right: 0;
         bottom: 0;
-        background: white;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         flex-direction: column;
         padding: 40px 20px;
-        gap: 15px;
+        gap: 10px;
         z-index: 1000;
-        animation: slideIn 0.3s ease-out;
+        animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+    }
+
+    /* Mobile Dropdown Logic */
+    .nav-links .dropdown-content {
+        display: none !important;
+        position: static !important;
+        transform: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        width: 100% !important;
+        pointer-events: auto !important;
+        background: #f8fafc !important;
+        border: none !important;
+        border-radius: 12px !important;
+        margin-top: 10px !important;
+    }
+
+    .nav-links .dropdown.active .dropdown-content {
+        display: flex !important;
+    }
+
+    .nav-links .dropdown.active .dropdown-toggle i {
+        transform: rotate(180deg);
+    }
+
+    .nav-links .tool-list {
+        max-height: none !important;
     }
 
     body.nav-active .nav-links a {
         font-size: 1.2rem;
-        padding: 15px;
+        padding: 15px 20px;
         border-bottom: 1px solid var(--border);
-        border-radius: 0;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     body.nav-active .nav-actions {
@@ -927,16 +962,16 @@ footer {
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 20px;
-        background: var(--bg-alt);
+        padding: 30px 20px;
+        background: white;
         border-top: 1px solid var(--border);
         z-index: 1001;
         justify-content: center;
     }
 
     @keyframes slideIn {
-        from { transform: translateY(-10px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
     }
 
     /* Hero & Selectors */
