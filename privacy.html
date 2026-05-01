@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert FLV to MP4 Online Free - Covertfily</title>
-    <meta name="description" content="Fast, secure, and 100% private FLV to MP4 converter. Change your FLV to MP4 format instantly in your browser without uploading files to any server.">
+    <title>Privacy Policy - Covertfily | 100% Private File Processing</title>
+    <meta name="description" content="Learn how Covertfily protects your data. We process all files locally in your browser, meaning your data never leaves your device.">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,17 +12,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .tool-container { max-width: 800px; margin: 60px auto; padding: 0 20px; text-align: center; }
-        .dropzone { margin-top: 40px; cursor: pointer; transition: all 0.2s; }
-        .dropzone:hover { border-color: var(--primary); background: #f8fafc; }
-        .seo-section { max-width: 800px; margin: 80px auto; text-align: left; line-height: 1.7; color: var(--text-muted); }
-        .seo-section h2 { color: var(--text-main); margin-top: 40px; font-size: 1.5rem; font-weight: 700; }
-        .btn-main { background: var(--primary); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .btn-main:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .legal-container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 0 20px;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+        .legal-container h1 {
+            color: var(--text-main);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .legal-container h2 {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .privacy-hero {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        .privacy-hero i {
+            font-size: 3rem;
+            color: #16a34a;
+            margin-bottom: 20px;
+        }
+        .privacy-hero h2 {
+            margin-top: 0;
+            color: #166534;
+        }
+        .privacy-hero p {
+            color: #166534;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+        .highlight-box {
+            border-left: 4px solid var(--primary);
+            background: #f8fafc;
+            padding: 20px 30px;
+            margin: 30px 0;
+            border-radius: 0 12px 12px 0;
+        }
     </style>
 </head>
 <body>
-        <nav>
+    <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
@@ -62,57 +105,44 @@
         </div>
     </nav>
 
-    <main>
-        <div class="tool-container">
-            <div class="section-title" style="display: block;">
-                <i class="fas fa-file" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
-                <h1>FLV to MP4 Converter</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert FLV files to MP4 format locally in your browser.</p>
-            </div>
+    <main class="legal-container">
+        <h1>Privacy Policy</h1>
+        <p style="text-align: center; margin-bottom: 60px;">Last Updated: May 1, 2026</p>
 
-            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-                <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h2>Select FLV File</h2>
-                <p>Drag and drop or click to upload</p>
-                <input type="file" id="fileInput" hidden onchange="handleFiles(this.files)">
-            </div>
-
-            <div id="loading" style="display: none; margin-top: 40px;">
-                <div class="dropzone-icon"><i class="fas fa-cog fa-spin" style="color: var(--primary);"></i></div>
-                <h2 id="loadingText">Processing...</h2>
-                <p>Running 100% locally on your device.</p>
-            </div>
-
-            <div id="resultArea" style="display: none; margin-top: 40px;">
-                <div class="dropzone-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-circle"></i></div>
-                <h2>Conversion Complete!</h2>
-                <p id="fileNameDisplay" style="font-weight: 600; margin: 10px 0; color: var(--text-main);"></p>
-                <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
-                    <button onclick="location.reload()" class="btn-main" style="background: #64748b;"><i class="fas fa-undo"></i> Convert Another</button>
-                </div>
-            </div>
+        <div class="privacy-hero">
+            <i class="fas fa-shield-halved"></i>
+            <h2>Our Privacy Philosophy</h2>
+            <p>At Covertfily, we believe your data belongs to you. That's why we built a platform where your files never leave your computer.</p>
         </div>
 
-        <div class="seo-section">
-            <h2>How to convert FLV to MP4</h2>
-            <p>Covertfily provides a seamless, privacy-first way to convert your FLV files to MP4. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
-            
-            <h2>Why Choose Local Conversion?</h2>
-            <p>1. <strong>Privacy:</strong> No one else ever sees your files.<br>
-               2. <strong>Speed:</strong> No wait times for uploading or downloading large files.<br>
-               3. <strong>Security:</strong> Eliminate the risk of data breaches on cloud servers.</p>
+        <h2>1. Zero Data Collection</h2>
+        <p>Unlike traditional online converters, Covertfily does not use any servers to process your files. All conversion logic is written in JavaScript and WebAssembly, which executes locally within your web browser's sandbox. We do not, and cannot, see your files, their contents, or their metadata.</p>
 
-            <h2>Frequently Asked Questions</h2>
-            <div style="margin-top: 20px;">
-                <strong>Is it free?</strong>
-                <p>Yes, Covertfily is free and open-source.</p>
-                <strong>What is the maximum file size?</strong>
-                <p>Since it runs on your device, it depends on your browser's memory, but most files up to 100MB work perfectly.</p>
-            </div>
+        <div class="highlight-box">
+            <strong>Key takeaway:</strong> Your files are processed in your RAM, not on our servers. When you close the tab, the data is gone forever.
+        </div>
+
+        <h2>2. No Account Required</h2>
+        <p>You can use every single feature of Covertfily without ever creating an account. We do not collect names, email addresses, or any personal identifiers.</p>
+
+        <h2>3. Third-Party Analytics</h2>
+        <p>We use Google Analytics (gtag.js) to understand general traffic patterns, such as which tools are most popular and which browsers are being used. This information is anonymized and does not include any data related to the files you process.</p>
+
+        <h2>4. Cookies</h2>
+        <p>We may use minimal cookies or local storage strictly for functional purposes, such as remembering your theme preference or tool settings. These cookies do not track you across other websites.</p>
+
+        <h2>5. Open Source Transparency</h2>
+        <p>To prove our commitment to privacy, the entire source code of Covertfily is available on GitHub. Anyone can inspect our code to verify that no data is being uploaded or transmitted to external servers.</p>
+
+        <h2>6. Changes to This Policy</h2>
+        <p>We may update this policy from time to time. Since we don't have your contact information, we encourage you to check this page periodically for updates.</p>
+
+        <div style="margin-top: 60px; text-align: center;">
+            <p>Questions? Contact us via <a href="https://github.com/jagathram-tech/covertfily" style="color: var(--primary);">GitHub</a></p>
         </div>
     </main>
 
-            <footer>
+        <footer>
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="logo"><img src="logo.png" alt="Covertfily"></div>
@@ -152,30 +182,5 @@
     </footer>
 
     <script src="main.js"></script>
-    <script>
-        async function handleFiles(files) {
-            if (!files.length) return;
-            const file = files[0];
-            const dropzone = document.getElementById('dropzone');
-            const loading = document.getElementById('loading');
-            const resultArea = document.getElementById('resultArea');
-            const loadingText = document.getElementById('loadingText');
-
-            dropzone.style.display = 'none';
-            loading.style.display = 'block';
-            loadingText.textContent = "Converting " + file.name + "...";
-
-            try {
-                await window.processFile(file, 'flv', 'mp4');
-                loading.style.display = 'none';
-                resultArea.style.display = 'block';
-                document.getElementById('fileNameDisplay').textContent = file.name;
-            } catch (err) {
-                console.error(err);
-                alert("Conversion failed: " + err.message);
-                location.reload();
-            }
-        }
-    </script>
 </body>
 </html>

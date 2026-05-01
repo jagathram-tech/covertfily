@@ -18,14 +18,14 @@ footer_content = '''    <footer>
                 <ul>
                     <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
                     <li><a href="documentation.html">Documentation</a></li>
-                    <li><a href="https://github.com/jagathram-tech/covertfily/discussions">Discussions</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Legal</h4>
                 <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
                 </ul>
             </div>
         </div>
@@ -55,4 +55,4 @@ for f in files:
             file.write(new_content)
         changed += 1
 
-print(f'Updated {changed} files with cleaned footer (removed redundant links)')
+print(f'Updated {changed} files with Privacy and Terms links and removed Discussions')

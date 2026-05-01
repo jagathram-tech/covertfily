@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert FLV to MP4 Online Free - Covertfily</title>
-    <meta name="description" content="Fast, secure, and 100% private FLV to MP4 converter. Change your FLV to MP4 format instantly in your browser without uploading files to any server.">
+    <title>Terms of Use - Covertfily | Open Source License</title>
+    <meta name="description" content="Read the terms of use for Covertfily. Our platform is open-source under the MIT license and provided as-is for your convenience.">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,17 +12,42 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .tool-container { max-width: 800px; margin: 60px auto; padding: 0 20px; text-align: center; }
-        .dropzone { margin-top: 40px; cursor: pointer; transition: all 0.2s; }
-        .dropzone:hover { border-color: var(--primary); background: #f8fafc; }
-        .seo-section { max-width: 800px; margin: 80px auto; text-align: left; line-height: 1.7; color: var(--text-muted); }
-        .seo-section h2 { color: var(--text-main); margin-top: 40px; font-size: 1.5rem; font-weight: 700; }
-        .btn-main { background: var(--primary); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .btn-main:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .legal-container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 0 20px;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+        .legal-container h1 {
+            color: var(--text-main);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .legal-container h2 {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .mit-license-box {
+            background: #f1f5f9;
+            padding: 40px;
+            border-radius: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #334155;
+            border: 1px solid var(--border);
+            margin: 40px 0;
+            white-space: pre-wrap;
+        }
     </style>
 </head>
 <body>
-        <nav>
+    <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
@@ -62,57 +87,49 @@
         </div>
     </nav>
 
-    <main>
-        <div class="tool-container">
-            <div class="section-title" style="display: block;">
-                <i class="fas fa-file" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
-                <h1>FLV to MP4 Converter</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert FLV files to MP4 format locally in your browser.</p>
-            </div>
+    <main class="legal-container">
+        <h1>Terms of Use</h1>
+        <p style="text-align: center; margin-bottom: 60px;">Last Updated: May 1, 2026</p>
 
-            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-                <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h2>Select FLV File</h2>
-                <p>Drag and drop or click to upload</p>
-                <input type="file" id="fileInput" hidden onchange="handleFiles(this.files)">
-            </div>
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing and using Covertfily, you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.</p>
 
-            <div id="loading" style="display: none; margin-top: 40px;">
-                <div class="dropzone-icon"><i class="fas fa-cog fa-spin" style="color: var(--primary);"></i></div>
-                <h2 id="loadingText">Processing...</h2>
-                <p>Running 100% locally on your device.</p>
-            </div>
+        <h2>2. Use License & Open Source</h2>
+        <p>Covertfily is an open-source project. The website software is provided under the MIT License. You are free to use, copy, modify, and distribute the software according to the license terms.</p>
 
-            <div id="resultArea" style="display: none; margin-top: 40px;">
-                <div class="dropzone-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-circle"></i></div>
-                <h2>Conversion Complete!</h2>
-                <p id="fileNameDisplay" style="font-weight: 600; margin: 10px 0; color: var(--text-main);"></p>
-                <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
-                    <button onclick="location.reload()" class="btn-main" style="background: #64748b;"><i class="fas fa-undo"></i> Convert Another</button>
-                </div>
-            </div>
+        <div class="mit-license-box">
+Copyright (c) 2024 Covertfily
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
         </div>
 
-        <div class="seo-section">
-            <h2>How to convert FLV to MP4</h2>
-            <p>Covertfily provides a seamless, privacy-first way to convert your FLV files to MP4. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
-            
-            <h2>Why Choose Local Conversion?</h2>
-            <p>1. <strong>Privacy:</strong> No one else ever sees your files.<br>
-               2. <strong>Speed:</strong> No wait times for uploading or downloading large files.<br>
-               3. <strong>Security:</strong> Eliminate the risk of data breaches on cloud servers.</p>
+        <h2>3. Disclaimer</h2>
+        <p>The materials on Covertfily's website are provided on an 'as is' basis. Covertfily makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
 
-            <h2>Frequently Asked Questions</h2>
-            <div style="margin-top: 20px;">
-                <strong>Is it free?</strong>
-                <p>Yes, Covertfily is free and open-source.</p>
-                <strong>What is the maximum file size?</strong>
-                <p>Since it runs on your device, it depends on your browser's memory, but most files up to 100MB work perfectly.</p>
-            </div>
-        </div>
+        <h2>4. Limitations</h2>
+        <p>In no event shall Covertfily or its contributors be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Covertfily's website, even if Covertfily or an authorized representative has been notified orally or in writing of the possibility of such damage.</p>
+
+        <h2>5. Accuracy of Materials</h2>
+        <p>The materials appearing on Covertfily's website could include technical, typographical, or photographic errors. Covertfily does not warrant that any of the materials on its website are accurate, complete, or current. Covertfily may make changes to the materials contained on its website at any time without notice.</p>
     </main>
 
-            <footer>
+        <footer>
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="logo"><img src="logo.png" alt="Covertfily"></div>
@@ -152,30 +169,5 @@
     </footer>
 
     <script src="main.js"></script>
-    <script>
-        async function handleFiles(files) {
-            if (!files.length) return;
-            const file = files[0];
-            const dropzone = document.getElementById('dropzone');
-            const loading = document.getElementById('loading');
-            const resultArea = document.getElementById('resultArea');
-            const loadingText = document.getElementById('loadingText');
-
-            dropzone.style.display = 'none';
-            loading.style.display = 'block';
-            loadingText.textContent = "Converting " + file.name + "...";
-
-            try {
-                await window.processFile(file, 'flv', 'mp4');
-                loading.style.display = 'none';
-                resultArea.style.display = 'block';
-                document.getElementById('fileNameDisplay').textContent = file.name;
-            } catch (err) {
-                console.error(err);
-                alert("Conversion failed: " + err.message);
-                location.reload();
-            }
-        }
-    </script>
 </body>
 </html>
