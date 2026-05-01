@@ -925,16 +925,47 @@ footer {
     }
 
     /* Hero & Selectors */
-    .hero { padding: 60px 20px 40px; }
-    .hero h1 { font-size: 2.2rem; margin-bottom: 1rem; }
+    .hero { 
+        padding: 60px 20px 40px !important; 
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        gap: 30px !important;
+    }
     
+    .hero h1 { font-size: 2.2rem !important; margin-bottom: 1rem; }
+    
+    .hero-visual {
+        display: none !important;
+    }
+
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-badges {
+        justify-content: center;
+    }
+
     .format-selectors {
         flex-direction: column;
         gap: 12px;
+        width: 100%;
+    }
+
+    .format-select {
+        width: 100% !important;
     }
 
     .format-select .dropdown-trigger {
-        width: 100%;
+        width: 100% !important;
+    }
+
+    .format-select .dropdown-content {
+        width: 100% !important;
+        left: 0 !important;
+        transform: none !important;
     }
 
     .format-connector {
@@ -951,10 +982,18 @@ footer {
     .tool-container {
         padding: 20px;
         margin: 20px auto;
+        width: 100%;
     }
 
     .dropzone {
         padding: 2.5rem 1.5rem;
+    }
+
+    /* Fix Horizontal Overflow */
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
     }
 }
 
