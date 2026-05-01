@@ -300,6 +300,21 @@ nav {
     font-size: 0.95rem;
 }
 
+/* Global Grid Utilities */
+.split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.tool-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+}
+
+
 /* Footer */
 footer {
     background: white;
@@ -948,6 +963,24 @@ footer {
         justify-content: center;
     }
 
+    .split-grid, .tool-grid {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+        text-align: center;
+    }
+
+    .split-grid ul {
+        display: inline-block;
+        text-align: left;
+    }
+
+    .comparison-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .format-selectors {
         flex-direction: column;
         gap: 12px;
@@ -979,7 +1012,7 @@ footer {
     }
 
     /* Tool Containers */
-    .tool-container {
+    .tool-grid {
         padding: 20px;
         margin: 20px auto;
         width: 100%;
