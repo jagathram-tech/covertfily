@@ -143,6 +143,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Mobile Menu Injection & Handling
+    const navLeft = document.querySelector('.nav-left');
+    if (navLeft && !document.querySelector('.menu-toggle')) {
+        const menuToggle = document.createElement('div');
+        menuToggle.className = 'menu-toggle';
+        menuToggle.innerHTML = '<span></span><span></span><span></span>';
+        navLeft.appendChild(menuToggle);
+
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.body.classList.toggle('nav-active');
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.body.classList.remove('nav-active');
+            });
+        });
+
+        // Close menu on click outside
+        document.addEventListener('click', (e) => {
+            if (document.body.classList.contains('nav-active') && !e.target.closest('.nav-links') && !e.target.closest('.menu-toggle')) {
+                document.body.classList.remove('nav-active');
+            }
+        });
+    }
+
     if (typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
