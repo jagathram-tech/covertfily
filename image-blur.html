@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Blur & Mosaic - Covertfily | Censor Sensitive Info Locally</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Manually blur or mosaic sensitive information in your images. 100% private, browser-based censoring tool for documents and photos.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .canvas-wrapper {
+            position: relative;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            margin-top: 40px;
+            cursor: crosshair;
+        }
+        #mainCanvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .tool-btn {
+            padding: 12px 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+        .tool-btn:hover {
+            background: var(--bg-alt);
+        }
+        .tool-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .control-panel {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: space-between;
+        }
+        .brush-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+        .brush-controls label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        input[type=range] {
+            flex: 1;
+        }
+        .btn-save {
+            padding: 14px 28px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        .btn-save:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+        <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Convert</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                            <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                            <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                            <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                            <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                            <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                            <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                            <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                            <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                            <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                            <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                            <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                            <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                            <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="nav-github-link"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title" style="display: block; text-align: center;">
+                <i class="fas fa-droplet" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                <h1>Image Blur & Mosaic</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Censor sensitive information by painting blur or mosaic effects directly on your image.</p>
+            </div>
+
+            <div id="uploadArea">
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon"><i class="fas fa-file-shield"></i></div>
+                    <h2>Upload Image to Censor</h2>
+                    <p>Select an image to start blurring sensitive areas</p>
+                    <input type="file" id="fileInput" hidden accept="image/*">
+                </div>
+            </div>
+
+            <div id="editorArea" style="display: none;">
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode('blur')"><i class="fas fa-tint"></i> Blur</button>
+                    <button class="tool-btn" onclick="setMode('mosaic')"><i class="fas fa-th"></i> Mosaic</button>
+                    <button class="tool-btn" onclick="clearCanvas()"><i class="fas fa-undo"></i> Reset</button>
+                </div>
+
+                <div class="canvas-wrapper">
+                    <canvas id="mainCanvas"></canvas>
+                </div>
+
+                <div class="control-panel">
+                    <div class="brush-controls">
+                        <label>Brush Size</label>
+                        <input type="range" id="brushSize" min="10" max="100" value="40">
+                        <span id="sizeValue">40px</span>
+                    </div>
+                    <button class="btn-save" id="saveBtn"><i class="fas fa-download"></i> Save Image</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Convert</a></li>
+                    <li><a href="image-tools.html">Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Use</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="https://github.com/jagathram-tech/covertfily/discussions">Discussions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const brushSizeInput = document.getElementById('brushSize');
+        const sizeValue = document.getElementById('sizeValue');
+        const saveBtn = document.getElementById('saveBtn');
+
+        let img = new Image();
+        let isDrawing = false;
+        let mode = 'blur';
+        let offscreenCanvas, offscreenCtx;
+
+        dropzone.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => loadFile(e.target.files[0]);
+
+        function loadFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                img.src = e.target.result;
+                img.onload = () => {
+                    document.getElementById('uploadArea').style.display = 'none';
+                    document.getElementById('editorArea').style.display = 'block';
+                    
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    setupOffscreen();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setupOffscreen() {
+            offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = canvas.width;
+            offscreenCanvas.height = canvas.height;
+            offscreenCtx = offscreenCanvas.getContext('2d');
+            
+            // Create the blurred/mosaiced version of the whole image
+            if (mode === 'blur') {
+                offscreenCtx.filter = 'blur(15px)';
+                offscreenCtx.drawImage(img, 0, 0);
+            } else {
+                const size = 20;
+                offscreenCtx.drawImage(img, 0, 0, canvas.width / size, canvas.height / size);
+                offscreenCtx.imageSmoothingEnabled = false;
+                offscreenCtx.drawImage(offscreenCanvas, 0, 0, canvas.width / size, canvas.height / size, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        window.setMode = (m) => {
+            mode = m;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            setupOffscreen();
+        };
+
+        window.clearCanvas = () => {
+            ctx.drawImage(img, 0, 0);
+        };
+
+        brushSizeInput.oninput = (e) => {
+            sizeValue.textContent = e.target.value + 'px';
+        };
+
+        canvas.onmousedown = (e) => { isDrawing = true; draw(e); };
+        canvas.onmousemove = (e) => { if (isDrawing) draw(e); };
+        window.onmouseup = () => { isDrawing = false; };
+
+        function draw(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            const size = parseInt(brushSizeInput.value);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(offscreenCanvas, 0, 0);
+            ctx.restore();
+        }
+
+        saveBtn.onclick = () => {
+            const link = document.createElement('a');
+            link.download = 'covertfily-censored.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        };
+    </script>
+</body>
+</html>

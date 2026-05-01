@@ -1,10 +1,48 @@
-<!DOCTYPE html>
+import os, glob, re
+
+# Define icons based on extension
+ICONS = {
+    'pdf': 'fa-file-pdf',
+    'jpg': 'fa-file-image',
+    'jpeg': 'fa-file-image',
+    'png': 'fa-file-image',
+    'webp': 'fa-file-image',
+    'bmp': 'fa-file-image',
+    'gif': 'fa-file-image',
+    'tiff': 'fa-file-image',
+    'docx': 'fa-file-word',
+    'txt': 'fa-file-alt',
+    'md': 'fa-file-alt',
+    'html': 'fa-file-code',
+    'xlsx': 'fa-file-excel',
+    'xls': 'fa-file-excel',
+    'csv': 'fa-file-csv',
+    'json': 'fa-file-code',
+    'xml': 'fa-file-code',
+    'mp4': 'fa-file-video',
+    'webm': 'fa-file-video',
+    'mov': 'fa-file-video',
+    'avi': 'fa-file-video',
+    'mkv': 'fa-file-video',
+    'mp3': 'fa-file-audio',
+    'wav': 'fa-file-audio',
+    'ogg': 'fa-file-audio',
+    'flac': 'fa-file-audio',
+    'aac': 'fa-file-audio',
+    'm4a': 'fa-file-audio',
+    'zip': 'fa-file-archive'
+}
+
+def get_icon(ext):
+    return ICONS.get(ext.lower(), 'fa-file')
+
+TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert HTML to TXT Online Free - Covertfily</title>
-    <meta name="description" content="Fast, secure, and 100% private HTML to TXT converter. Change your HTML to TXT format instantly in your browser without uploading files to any server.">
+    <title>Convert {FROM_UP} to {TO_UP} Online Free - Covertfily</title>
+    <meta name="description" content="Fast, secure, and 100% private {FROM_UP} to {TO_UP} converter. Change your {FROM_UP} to {TO_UP} format instantly in your browser without uploading files to any server.">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,14 +104,14 @@
     <main>
         <div class="tool-container">
             <div class="section-title" style="display: block;">
-                <i class="fas fa-file-code" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
-                <h1>HTML to TXT Converter</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert HTML files to TXT format locally in your browser.</p>
+                <i class="fas {ICON}" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                <h1>{FROM_UP} to {TO_UP} Converter</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert {FROM_UP} files to {TO_UP} format locally in your browser.</p>
             </div>
 
             <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
                 <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h2>Select HTML File</h2>
+                <h2>Select {FROM_UP} File</h2>
                 <p>Drag and drop or click to upload</p>
                 <input type="file" id="fileInput" hidden onchange="handleFiles(this.files)">
             </div>
@@ -95,8 +133,8 @@
         </div>
 
         <div class="seo-section">
-            <h2>How to convert HTML to TXT</h2>
-            <p>Covertfily provides a seamless, privacy-first way to convert your HTML files to TXT. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
+            <h2>How to convert {FROM_UP} to {TO_UP}</h2>
+            <p>Covertfily provides a seamless, privacy-first way to convert your {FROM_UP} files to {TO_UP}. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
             
             <h2>Why Choose Local Conversion?</h2>
             <p>1. <strong>Privacy:</strong> No one else ever sees your files.<br>
@@ -174,7 +212,7 @@
             loadingText.textContent = "Converting " + file.name + "...";
 
             try {
-                await window.processFile(file, 'html', 'txt');
+                await window.processFile(file, '{FROM}', '{TO}');
                 loading.style.display = 'none';
                 resultArea.style.display = 'block';
                 document.getElementById('fileNameDisplay').textContent = file.name;
@@ -186,4 +224,36 @@
         }
     </script>
 </body>
-</html>
+</html>"""
+
+files = glob.glob('*-to-*.html')
+# Exclude files with working custom logic
+EXCLUDES = ['pdf-to-word.html', 'pdf-to-txt.html', 'pdf-to-md.html', 'docx-to-pdf.html', 'txt-to-pdf.html']
+
+updated = 0
+for f in files:
+    if f in EXCLUDES: continue
+    
+    match = re.match(r'(.+)-to-(.+)\.html', f)
+    if not match: continue
+    
+    from_ext = match.group(1)
+    to_ext = match.group(2)
+    
+    # Check if it's a placeholder page
+    with open(f, 'r', encoding='utf-8') as file:
+        content = file.read()
+    
+    if 'alert(' in content and 'initializing' in content or 'PNG to JPG' in content:
+        # It's a placeholder, fix it
+        from_up = from_ext.upper()
+        to_up = to_ext.upper()
+        icon = get_icon(from_ext)
+        
+        new_content = TEMPLATE.replace('{FROM_UP}', from_up).replace('{TO_UP}', to_up).replace('{FROM}', from_ext).replace('{TO}', to_ext).replace('{ICON}', icon)
+        
+        with open(f, 'w', encoding='utf-8') as file:
+            file.write(new_content)
+        updated += 1
+
+print(f'Fixed {updated} converter pages with perfect standardized template')

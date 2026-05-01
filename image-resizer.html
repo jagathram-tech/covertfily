@@ -3,16 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-4Z6LTJ67E2');
-    </script>
-    <title>Image Resizer & Rounder - Covertfily</title>
+    <title>Image Resizer - Covertfily | 100% Private Image Scaling</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Resize your images locally in your browser. Maintain aspect ratio, set custom dimensions, and scale images up or down with 100% privacy.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,7 +20,7 @@
         }
         .image-editor {
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 1fr 320px;
             gap: 30px;
             margin-top: 40px;
             display: none;
@@ -38,19 +32,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 400px;
+            min-height: 450px;
             overflow: hidden;
             position: relative;
         }
         .preview-pane img {
-            max-width: 100%;
-            max-height: 500px;
+            max-width: 95%;
+            max-height: 400px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .preview-pane img.rounded {
-            border-radius: 50%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
+            border-radius: 4px;
         }
         .settings-pane {
             background: white;
@@ -58,56 +48,55 @@
             border-radius: 20px;
             border: 1px solid var(--border);
             text-align: left;
+            box-shadow: var(--shadow-sm);
         }
         .control-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         .control-group label {
             display: block;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-size: 0.9rem;
             color: var(--text-main);
         }
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
+        }
+        .input-field {
+            position: relative;
+        }
+        .input-field span {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
         }
         .input-row input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            outline: none;
-        }
-        .toggle-btn {
-            width: 100%;
-            padding: 12px;
-            background: #f1f5f9;
+            padding: 12px 35px 12px 12px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            outline: none;
+            font-family: inherit;
+            font-weight: 500;
         }
-        .toggle-btn.active {
-            background: var(--primary);
-            color: white;
+        .input-row input:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 23, 103, 0.1);
         }
         .btn-download {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             margin-top: 10px;
@@ -116,26 +105,58 @@
             justify-content: center;
             gap: 10px;
             transition: all 0.2s;
+            font-size: 1rem;
         }
         .btn-download:hover {
             background: var(--primary-hover);
+            transform: translateY(-2px);
         }
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 12px;
             font-size: 0.85rem;
             color: var(--text-muted);
             cursor: pointer;
+            user-select: none;
         }
         .checkbox-group input {
+            width: 16px;
+            height: 16px;
             cursor: pointer;
+        }
+        
+        /* Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 3px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
-                <nav>
+        <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
@@ -178,16 +199,16 @@
 
     <main>
         <div class="tool-container">
-            <div class="section-title" style="text-align: center;">
-                <i class="fas fa-expand-arrows-alt" style="color: var(--primary); font-size: 2rem;"></i>
-                <h1>Image Resizer & Rounder</h1>
-                <p style="color: var(--text-muted);">Resize and crop your images into perfect circles locally.</p>
+            <div class="section-title" style="display: block; text-align: center;">
+                <i class="fas fa-expand-arrows-alt" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                <h1>Image Resizer</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Scale and resize your images instantly with 100% privacy.</p>
             </div>
 
             <div class="dropzone" id="dropzone">
-                <div class="dropzone-icon"><i class="fas fa-image"></i></div>
+                <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                 <h2>Select Image</h2>
-                <p>Click or drag and drop your image file</p>
+                <p>Drag and drop your image or click to browse</p>
                 <input type="file" id="fileInput" hidden accept="image/*">
             </div>
 
@@ -197,36 +218,47 @@
                 </div>
                 <div class="settings-pane">
                     <div class="control-group">
-                        <label>Scale Image (<span id="scaleLabel">100</span>%)</label>
-                        <input type="range" id="scaleSlider" min="1" max="200" value="100" style="width:100%; margin-bottom: 20px;">
-                    </div>
-                    <div class="control-group">
-                        <label>Dimensions (px)</label>
-                        <div class="input-row">
-                            <input type="number" id="imgWidth" placeholder="Width">
-                            <input type="number" id="imgHeight" placeholder="Height">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <label style="margin-bottom: 0;">Scale Image</label>
+                            <span style="font-weight: 700; color: var(--primary); font-size: 0.9rem;"><span id="scaleLabel">100</span>%</span>
                         </div>
-                        <label class="checkbox-group">
+                        <input type="range" id="scaleSlider" min="1" max="200" value="100">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Target Dimensions</label>
+                        <div class="input-row">
+                            <div class="input-field">
+                                <input type="number" id="imgWidth" placeholder="Width">
+                                <span>px</span>
+                            </div>
+                            <div class="input-field">
+                                <input type="number" id="imgHeight" placeholder="Height">
+                                <span>px</span>
+                            </div>
+                        </div>
+                        <label class="checkbox-group" id="lockAspectLabel">
                             <input type="checkbox" id="lockAspect" checked>
                             <span>Lock Aspect Ratio</span>
                         </label>
                     </div>
-                    <div class="control-group">
-                        <label>Corner Roundness (<span id="roundLabel">0</span>%)</label>
-                        <input type="range" id="roundSlider" min="0" max="50" value="0" style="width:100%;">
-                    </div>
+
                     <button class="btn-download" id="downloadBtn">
-                        <i class="fas fa-download"></i> Download Image
+                        <i class="fas fa-download"></i> Resize & Download
                     </button>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 20px; text-align: center;">
-                        Processed 100% locally for your privacy.
-                    </p>
+                    
+                    <div style="margin-top: 24px; padding: 15px; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0; display: flex; gap: 12px; align-items: flex-start;">
+                        <i class="fas fa-shield-alt" style="color: #16a34a; margin-top: 3px;"></i>
+                        <p style="font-size: 0.8rem; color: #166534; margin: 0; line-height: 1.4;">
+                            <strong>Privacy Guaranteed:</strong> This tool works entirely in your browser. Your image is never uploaded to any server.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-            <footer>
+    <footer>
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="logo"><img src="logo.png" alt="Covertfily"></div>
@@ -272,6 +304,7 @@
         </div>
     </footer>
 
+    <script src="main.js"></script>
     <script>
         const fileInput = document.getElementById('fileInput');
         const dropzone = document.getElementById('dropzone');
@@ -281,11 +314,11 @@
         const imgHeight = document.getElementById('imgHeight');
         const scaleSlider = document.getElementById('scaleSlider');
         const scaleLabel = document.getElementById('scaleLabel');
-        const roundSlider = document.getElementById('roundSlider');
-        const roundLabel = document.getElementById('roundLabel');
         const downloadBtn = document.getElementById('downloadBtn');
+        const lockAspect = document.getElementById('lockAspect');
 
         let originalImg = new Image();
+        let aspectRatio = 1;
 
         dropzone.onclick = () => fileInput.click();
 
@@ -331,33 +364,27 @@
             }
         };
 
-        let aspectRatio = 1;
-        const lockAspect = document.getElementById('lockAspect');
-
-        // Handle manual inputs syncing slider
+        // Handle manual inputs
         imgWidth.oninput = () => {
             if (lockAspect.checked) {
                 imgHeight.value = Math.round(imgWidth.value / aspectRatio);
             }
-            updateScaleSlider();
-            updatePreview();
+            updateScaleLabel();
         };
 
         imgHeight.oninput = () => {
             if (lockAspect.checked) {
                 imgWidth.value = Math.round(imgHeight.value * aspectRatio);
             }
-            updateScaleSlider();
-            updatePreview();
+            updateScaleLabel();
         };
 
-        function updateScaleSlider() {
+        function updateScaleLabel() {
             if (!originalImg.width) return;
             const currentw = parseInt(imgWidth.value);
-            const rawScale = Math.round((currentw / originalImg.width) * 100);
-            const displayScale = Math.max(1, Math.min(200, rawScale)); // Clamp 1 to 200
-            scaleSlider.value = displayScale;
-            scaleLabel.textContent = displayScale;
+            const scale = Math.round((currentw / originalImg.width) * 100);
+            scaleLabel.textContent = scale;
+            scaleSlider.value = scale;
         }
 
         // Handle Scale Slider
@@ -366,27 +393,7 @@
             scaleLabel.textContent = scale;
             imgWidth.value = Math.round(originalImg.width * (scale / 100));
             imgHeight.value = Math.round(originalImg.height * (scale / 100));
-            updatePreview();
         };
-
-        // Handle Round Slider
-        roundSlider.oninput = (e) => {
-            roundLabel.textContent = e.target.value;
-            updatePreview();
-        };
-
-        function updatePreview() {
-            const rounding = parseInt(roundSlider.value);
-            previewImg.style.borderRadius = `${rounding}%`;
-            // Keep object fit styling if it's perfectly circular to ensure it uses the aspect ratio cropping technique logic visually
-            if (rounding > 40) {
-                 previewImg.style.objectFit = 'cover';
-                 previewImg.style.aspectRatio = '1 / 1';
-            } else {
-                 previewImg.style.objectFit = 'contain';
-                 previewImg.style.aspectRatio = 'auto';
-            }
-        }
 
         downloadBtn.onclick = () => {
             const canvas = document.createElement('canvas');
@@ -394,62 +401,16 @@
             
             const w = parseInt(imgWidth.value) || originalImg.width;
             const h = parseInt(imgHeight.value) || originalImg.height;
-            const roundPercentage = parseInt(roundSlider.value) || 0;
 
-            if (roundPercentage > 40) {
-                // If it is highly rounded, crop to a perfect center circle/square automatically preserving aspect ratio locally
-                canvas.width = Math.min(w, h);
-                canvas.height = Math.min(w, h);
-                const size = canvas.width;
-                
-                // Add the smooth rounded rect
-                const radius = (roundPercentage / 100) * size;
-                ctx.beginPath();
-                if (ctx.roundRect) {
-                     ctx.roundRect(0, 0, size, size, radius);
-                } else {
-                     ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
-                }
-                ctx.closePath();
-                ctx.clip();
-                
-                // Draw image cropped to center square
-                const srcSize = Math.min(originalImg.width, originalImg.height);
-                const srcX = (originalImg.width - srcSize) / 2;
-                const srcY = (originalImg.height - srcSize) / 2;
-                ctx.drawImage(originalImg, srcX, srcY, srcSize, srcSize, 0, 0, size, size);
-            } else if (roundPercentage > 0) {
-                // Slight rounding without severe crop, applying border radius to dimensions
-                canvas.width = w;
-                canvas.height = h;
-                
-                const radius = (roundPercentage / 100) * Math.min(w, h);
-                ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(0, 0, w, h, radius);
-                ctx.closePath();
-                ctx.clip();
-                
-                ctx.drawImage(originalImg, 0, 0, w, h);
-            } else {
-                // Completely flat
-                canvas.width = w;
-                canvas.height = h;
-                ctx.drawImage(originalImg, 0, 0, w, h);
-            }
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(originalImg, 0, 0, w, h);
 
             const link = document.createElement('a');
-            link.download = `covertfily-${roundPercentage > 0 ? 'rounded-' : ''}image.png`;
+            link.download = `covertfily-resized-image.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         };
-
-        // Tools search
-        document.querySelector('.tools-search').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.tools-list a').forEach(a => {
-                a.classList.toggle('hidden', !a.textContent.toLowerCase().includes(query));
-            });
-        });
     </script>
 </body>
 </html>

@@ -342,6 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     canvas.width = img.width;
                     canvas.height = img.height;
                     const ctx = canvas.getContext('2d');
+                    
+                    if (targetFormat === 'jpg' || targetFormat === 'jpeg') {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    
                     ctx.drawImage(img, 0, 0);
 
                     let mimeType = 'image/png';
