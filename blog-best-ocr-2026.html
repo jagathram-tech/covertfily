@@ -11,22 +11,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .blog-container { max-width: 800px; margin: 60px auto; padding: 0 20px; line-height: 1.8; }
-        .blog-header { text-align: center; margin-bottom: 60px; }
-        .blog-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.04em; }
-        .blog-meta { color: var(--text-muted); font-size: 0.9rem; display: flex; justify-content: center; gap: 20px; }
-        .blog-content h2 { font-size: 1.8rem; font-weight: 700; margin: 40px 0 20px; color: var(--text-main); }
-        .blog-content p { margin-bottom: 25px; color: #4b5563; font-size: 1.1rem; }
-        .comparison-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
-        .comparison-table th, .comparison-table td { padding: 15px; border: 1px solid var(--border); text-align: left; }
-        .comparison-table th { background: var(--bg-alt); }
-    </style>
 </head>
 <body>
     <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Convert</a></li>
                 <li><a href="blog.html">Blog</a></li>
@@ -36,7 +30,7 @@
 
     <main class="blog-container">
         <header class="blog-header">
-            <span class="badge-tag" style="background: #ecfdf5; color: #059669;">Tool Reviews</span>
+            <span class="badge-tag green">Tool Reviews</span>
             <h1>Best Free OCR Tools in 2026</h1>
             <div class="blog-meta">
                 <span><i class="far fa-calendar"></i> May 1, 2026</span>

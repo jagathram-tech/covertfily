@@ -26,6 +26,11 @@
                     <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Convert</a></li>
                 <li class="dropdown">
@@ -65,37 +70,37 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="hero" style="padding: 60px 8% 40px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; position: relative; overflow: hidden;">
+        <section class="hero">
             <div class="hero-content">
                 <span class="badge-tag">100% Private • Open Source</span>
-                <h1 style="font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; letter-spacing: -0.04em; color: var(--text-main);">Convert Files Privately — <br><span style="color: #3b82f6;">100% In Your Browser</span></h1>
-                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6; max-width: 600px;">Fast, secure file conversion with zero uploads, zero tracking, and no servers.</p>
+                <h1>Convert Files Privately — <br><span class="text-gradient">100% In Your Browser</span></h1>
+                <p>Fast, secure file conversion with zero uploads, zero tracking, and no servers.</p>
                 
-                <div class="hero-badges" style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <span class="badge-pill"><i class="fas fa-shield-alt" style="color: #3b82f6;"></i> 100% Private</span>
-                    <span class="badge-pill"><i class="fas fa-bolt" style="color: #f59e0b;"></i> Instant Conversion</span>
-                    <span class="badge-pill"><i class="fas fa-globe" style="color: #3b82f6;"></i> Open Source</span>
-                    <span class="badge-pill"><i class="fas fa-ban" style="color: #ef4444;"></i> No File Uploads</span>
-                    <span class="badge-pill"><i class="fas fa-laptop" style="color: #3b82f6;"></i> Works Offline</span>
+                <div class="hero-badges">
+                    <span class="badge-pill"><i class="fas fa-shield-alt"></i> 100% Private</span>
+                    <span class="badge-pill"><i class="fas fa-bolt"></i> Instant</span>
+                    <span class="badge-pill"><i class="fas fa-globe"></i> Open Source</span>
+                    <span class="badge-pill"><i class="fas fa-ban"></i> No Uploads</span>
+                    <span class="badge-pill"><i class="fas fa-laptop"></i> Works Offline</span>
                 </div>
             </div>
-            <div class="hero-visual" style="position: relative; z-index: 1;">
-                <div style="background: white; border-radius: 24px; padding: 30px; box-shadow: var(--shadow-xl); border: 1px solid var(--border); position: relative; overflow: hidden;">
-                    <div style="display: flex; gap: 8px; margin-bottom: 30px;">
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ff5f56;"></div>
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ffbd2e;"></div>
-                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #27c93f;"></div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <div class="window-controls">
+                        <div class="control red"></div>
+                        <div class="control yellow"></div>
+                        <div class="control green"></div>
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 40px; padding: 40px 0;">
-                        <div style="width: 90px; height: 120px; background: #818cf8; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; box-shadow: 0 10px 20px rgba(129, 140, 248, 0.3);"><i class="fas fa-file-pdf"></i></div>
-                        <i class="fas fa-arrow-right" style="color: #cbd5e1; font-size: 2rem;"></i>
-                        <div style="width: 90px; height: 120px; background: #34d399; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; box-shadow: 0 10px 20px rgba(52, 211, 153, 0.3);"><i class="fas fa-file-word"></i></div>
+                    <div class="conversion-preview">
+                        <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+                        <i class="fas fa-arrow-right connector"></i>
+                        <div class="file-icon word"><i class="fas fa-file-word"></i></div>
                     </div>
-                    <div style="width: 100%; height: 10px; background: #f1f5f9; border-radius: 100px; overflow: hidden; margin-top: 30px;">
-                        <div style="width: 70%; height: 100%; background: linear-gradient(90deg, #818cf8, #34d399); border-radius: 100px;"></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
                     </div>
                 </div>
-                <div style="position: absolute; right: -20px; bottom: -20px; width: 70px; height: 70px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; border: 5px solid white; box-shadow: var(--shadow-lg); z-index: 2;"><i class="fas fa-check"></i></div>
+                <div class="check-badge"><i class="fas fa-check"></i></div>
             </div>
         </section>
 
@@ -221,34 +226,34 @@
         </script>
 
         <!-- Stats Row -->
-        <section style="padding: 40px 8%; background: #fcfcfd; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 48px; height: 48px; background: #eff6ff; color: #3b82f6; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-cloud-download-alt"></i></div>
-                    <div>
-                        <div style="font-size: 1.25rem; font-weight: 800;">10,000+</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">Files Converted</div>
+        <section class="stats-row">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon blue"><i class="fas fa-cloud-download-alt"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value">10,000+</div>
+                        <div class="stat-label">Files Converted</div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 48px; height: 48px; background: #ecfdf5; color: #10b981; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-lock"></i></div>
-                    <div>
-                        <div style="font-size: 1.25rem; font-weight: 800;">100%</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">Private & Secure</div>
+                <div class="stat-item">
+                    <div class="stat-icon green"><i class="fas fa-lock"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Private & Secure</div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 48px; height: 48px; background: #fdf2f8; color: #db2777; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-code"></i></div>
-                    <div>
-                        <div style="font-size: 1.25rem; font-weight: 800;">MIT</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">Licensed</div>
+                <div class="stat-item">
+                    <div class="stat-icon pink"><i class="fas fa-code"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value">MIT</div>
+                        <div class="stat-label">Licensed</div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 48px; height: 48px; background: #fffbeb; color: #f59e0b; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fas fa-star"></i></div>
-                    <div>
-                        <div style="font-size: 1.25rem; font-weight: 800;">Open Source</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">on GitHub</div>
+                <div class="stat-item">
+                    <div class="stat-icon yellow"><i class="fas fa-star"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value">Open Source</div>
+                        <div class="stat-label">on GitHub</div>
                     </div>
                 </div>
             </div>
@@ -436,43 +441,47 @@
                 </ul>
             </div>
             <div>
-                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 25px;">Covertfily vs Other Converters</h3>
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Feature</th>
-                            <th>Covertfily</th>
-                            <th>Other Converters</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Files uploaded to server</td>
-                            <td><i class="fas fa-times"></i></td>
-                            <td><i class="fas fa-check"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Open source</td>
-                            <td><i class="fas fa-check"></i></td>
-                            <td><i class="fas fa-times"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Tracking / Analytics</td>
-                            <td><i class="fas fa-times"></i></td>
-                            <td><i class="fas fa-check"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Works offline</td>
-                            <td><i class="fas fa-check"></i></td>
-                            <td><i class="fas fa-times"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Privacy Focused</td>
-                            <td><i class="fas fa-check"></i></td>
-                            <td><i class="fas fa-times"></i></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="comparison-container">
+                <h3 class="comparison-title">Covertfily vs Others</h3>
+                <div class="comparison-table-wrapper">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Covertfily</th>
+                                <th>Other Converters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Files uploaded to server</td>
+                                <td><i class="fas fa-times"></i></td>
+                                <td><i class="fas fa-check"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Open source</td>
+                                <td><i class="fas fa-check"></i></td>
+                                <td><i class="fas fa-times"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Tracking / Analytics</td>
+                                <td><i class="fas fa-times"></i></td>
+                                <td><i class="fas fa-check"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Works offline</td>
+                                <td><i class="fas fa-check"></i></td>
+                                <td><i class="fas fa-times"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Privacy Focused</td>
+                                <td><i class="fas fa-check"></i></td>
+                                <td><i class="fas fa-times"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             </div>
         </section>
 

@@ -11,28 +11,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .blog-index { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
-        .blog-card { 
-            background: white; border-radius: 24px; border: 1px solid var(--border); 
-            overflow: hidden; display: grid; grid-template-columns: 300px 1fr; 
-            margin-bottom: 30px; transition: 0.3s;
-        }
-        .blog-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        .blog-card-img { background: var(--bg-alt); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--primary); }
-        .blog-card-content { padding: 30px; }
-        .blog-card-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
-        .blog-card-content p { color: var(--text-muted); margin-bottom: 20px; }
-        @media (max-width: 768px) {
-            .blog-card { grid-template-columns: 1fr; }
-            .blog-card-img { height: 200px; }
-        }
-    </style>
 </head>
 <body>
     <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Convert</a></li>
                 <li><a href="blog.html" class="active">Blog</a></li>
@@ -41,29 +29,29 @@
     </nav>
 
     <main class="blog-index">
-        <header style="text-align: center; margin-bottom: 60px;">
-            <h1 style="font-size: 3rem; font-weight: 800; letter-spacing: -0.04em;">Covertfily Blog</h1>
-            <p style="color: var(--text-muted); font-size: 1.2rem;">Insights on privacy, security, and the future of browser-based tools.</p>
+        <header class="blog-header">
+            <h1>Covertfily Blog</h1>
+            <p>Insights on privacy, security, and the future of browser-based tools.</p>
         </header>
 
         <div class="blog-list">
-            <a href="blog-local-vs-cloud.html" class="blog-card" style="text-decoration: none; color: inherit;">
+            <a href="blog-local-vs-cloud.html" class="blog-card">
                 <div class="blog-card-img"><i class="fas fa-user-shield"></i></div>
                 <div class="blog-card-content">
                     <span class="badge-tag">Security</span>
                     <h2>Why Local File Processing is Safer than Cloud Uploads</h2>
                     <p>Discover the hidden risks of traditional online converters and why browser-based processing is the new gold standard for privacy.</p>
-                    <span style="color: var(--primary); font-weight: 600;">Read More <i class="fas fa-arrow-right"></i></span>
+                    <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
 
-            <a href="blog-best-ocr-2026.html" class="blog-card" style="text-decoration: none; color: inherit;">
+            <a href="blog-best-ocr-2026.html" class="blog-card">
                 <div class="blog-card-img"><i class="fas fa-magic"></i></div>
                 <div class="blog-card-content">
                     <span class="badge-tag">Reviews</span>
                     <h2>Best Free OCR Tools in 2026</h2>
                     <p>Compare the top image-to-text tools of the year. We look at accuracy, speed, and most importantly, your data privacy.</p>
-                    <span style="color: var(--primary); font-weight: 600;">Read More <i class="fas fa-arrow-right"></i></span>
+                    <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
         </div>

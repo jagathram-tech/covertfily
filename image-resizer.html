@@ -12,153 +12,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .tool-container {
-            max-width: 900px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-        .image-editor {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 30px;
-            margin-top: 40px;
-            display: none;
-        }
-        .preview-pane {
-            background: #f8fafc;
-            border: 2px dashed #e2e8f0;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 450px;
-            overflow: hidden;
-            position: relative;
-        }
-        .preview-pane img {
-            max-width: 95%;
-            max-height: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 4px;
-        }
-        .settings-pane {
-            background: white;
-            padding: 24px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            text-align: left;
-            box-shadow: var(--shadow-sm);
-        }
-        .control-group {
-            margin-bottom: 24px;
-        }
-        .control-group label {
-            display: block;
-            font-weight: 700;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            color: var(--text-main);
-        }
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .input-field {
-            position: relative;
-        }
-        .input-field span {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .input-row input {
-            width: 100%;
-            padding: 12px 35px 12px 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            outline: none;
-            font-family: inherit;
-            font-weight: 500;
-        }
-        .input-row input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 23, 103, 0.1);
-        }
-        .btn-download {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
-        .btn-download:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 12px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            user-select: none;
-        }
-        .checkbox-group input {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-        
-        /* Slider Styling */
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        input[type=range]:focus {
-            outline: none;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: #e2e8f0;
-            border-radius: 3px;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            height: 20px;
-            width: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -7px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
+    </head>
 <body>
             <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Convert</a></li>
                 <li><a href="blog.html">Blog</a></li>
@@ -197,12 +60,12 @@
         </div>
     </nav>
 
-    <main>
-        <div class="tool-grid">
-            <div class="section-title" style="display: block; text-align: center;">
-                <i class="fas fa-expand-arrows-alt" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
+    <main class="tool-container">
+        <div class="tool-header">
+            <div class="section-title">
+                <i class="fas fa-expand-arrows-alt"></i>
                 <h1>Image Resizer</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Scale and resize your images instantly with 100% privacy.</p>
+                <p>Scale and resize your images instantly with 100% privacy.</p>
             </div>
 
             <div class="dropzone" id="dropzone">
@@ -247,11 +110,9 @@
                         <i class="fas fa-download"></i> Resize & Download
                     </button>
                     
-                    <div style="margin-top: 24px; padding: 15px; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0; display: flex; gap: 12px; align-items: flex-start;">
-                        <i class="fas fa-shield-alt" style="color: #16a34a; margin-top: 3px;"></i>
-                        <p style="font-size: 0.8rem; color: #166534; margin: 0; line-height: 1.4;">
-                            <strong>Privacy Guaranteed:</strong> This tool works entirely in your browser. Your image is never uploaded to any server.
-                        </p>
+                    <div class="trust-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <p><strong>Privacy Guaranteed:</strong> This tool works entirely in your browser. Your image is never uploaded to any server.</p>
                     </div>
                 </div>
             </div>
