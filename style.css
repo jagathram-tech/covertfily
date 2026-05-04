@@ -1127,6 +1127,57 @@ footer {
     }
 }
 
+/* Mobile Access Restriction */
+#mobile-restriction {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    z-index: 999999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    #mobile-restriction {
+        display: flex;
+    }
+    body {
+        overflow: hidden !important;
+    }
+}
+
+#mobile-restriction i {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+#mobile-restriction h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: var(--text-main);
+}
+
+#mobile-restriction p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 300px;
+    line-height: 1.6;
+}
+
+#mobile-restriction .logo {
+    position: absolute;
+    top: 40px;
+}
+
 /* Utils for JS injection */
 .menu-toggle {
     display: none;

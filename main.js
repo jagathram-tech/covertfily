@@ -1068,4 +1068,17 @@ ${paragraphs}
             if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Or click to select files from your computer';
         }
     }
+
+    // Mobile Restriction Injection
+    if (!document.getElementById('mobile-restriction')) {
+        const restriction = document.createElement('div');
+        restriction.id = 'mobile-restriction';
+        restriction.innerHTML = `
+            <div class="logo"><img src="logo.png" alt="Covertfily" style="height: 32px;"></div>
+            <i class="fas fa-desktop" style="font-size:4rem; color:var(--primary); margin-bottom:20px;"></i>
+            <h2>Visit via PC</h2>
+            <p>Covertfily is optimized for desktop use. Please visit us from your PC or laptop for the full experience.</p>
+        `;
+        document.body.appendChild(restriction);
+    }
 });
