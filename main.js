@@ -290,15 +290,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const formatFromContainer = document.getElementById('formatFromContainer');
         const formatToContainer = document.getElementById('formatToContainer');
         
-        const formatFrom = formatFromContainer ? formatFromContainer.dataset.value : '';
-        const formatTo = formatToContainer ? formatToContainer.dataset.value : '';
+        let formatFrom = formatFromContainer ? formatFromContainer.dataset.value : '';
+        let formatTo = formatToContainer ? formatToContainer.dataset.value : '';
+
+        const file = files[0];
+        const ext = file.name.split('.').pop().toLowerCase();
+        const extMap = { 'jpeg': 'jpg' };
+        const normalizedExt = extMap[ext] || ext;
+
+        if (!formatFrom) {
+            formatFrom = normalizedExt;
+        }
+
+        if (!formatTo) {
+            const targets = window.FORMAT_MAPPING ? window.FORMAT_MAPPING[formatFrom] : [];
+            if (targets && targets.length > 0) {
+                formatTo = targets[0];
+            }
+        }
 
         if (!formatFrom || !formatTo) {
             alert("Please select 'From' and 'To' formats first!");
             return;
         }
 
-        window.location.href = formatFrom + '-to-' + formatTo + '.html';
+        const targetPage = formatFrom + '-to-' + formatTo + '.html';
+        console.log('Redirecting to:', targetPage);
+        window.location.href = targetPage;
     };
 
     window.processFile = async function(file, from, to) {
