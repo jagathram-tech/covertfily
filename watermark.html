@@ -134,9 +134,7 @@
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
-                <li><a href="index.html">Convert</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li class="dropdown">
+                <li><a href="index.html">Home</a></li>`n                <li><a href="blog.html">Blog</a></li>`n                <li class="dropdown">
                     <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <div class="tool-search-wrapper">
@@ -223,8 +221,8 @@
             <div class="footer-col">
                 <h4>Product</h4>
                 <ul>
-                    <li><a href="index.html">Convert</a></li>
-                <li><a href="blog.html">Blog</a></li>
+                    <li><a href="index.html">Home</a></li>
+                
                     <li><a href="image-resizer.html">Image Tools</a></li>
                 </ul>
             </div>
@@ -258,11 +256,11 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         // Tools Search Filtering
-        const toolsSearch = document.querySelector('.tools-search');
+        const toolsSearch = document.querySelector('.tool-search');
         if (toolsSearch) {
             toolsSearch.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase();
-                const tools = document.querySelectorAll('.tools-list a');
+                const tools = document.querySelectorAll('.tool-list a');
                 tools.forEach(tool => {
                     const text = tool.textContent.toLowerCase();
                     tool.classList.toggle('hidden', !text.includes(query));
@@ -345,12 +343,8 @@
         function draw() {
             if (!originalImage && !originalPdf) return;
 
-            // Clear and redraw background
             if (originalImage) {
                 ctx.drawImage(originalImage, 0, 0);
-            } else {
-                // Background is handled by renderPdfPage for the preview
-                // but we might need to re-render for full quality on download
             }
 
             ctx.save();
@@ -393,8 +387,6 @@
                 link.href = canvas.toDataURL();
                 link.click();
             }
-        });
-
         });
     </script>
 </body>
