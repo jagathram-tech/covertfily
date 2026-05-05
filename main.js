@@ -287,52 +287,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('handleFiles triggered', files);
         if (files.length === 0) return;
         
-        // Remove old download buttons
-        const oldDl = document.getElementById('downloadContainer');
-        if (oldDl) oldDl.remove();
-        
         const formatFromContainer = document.getElementById('formatFromContainer');
         const formatToContainer = document.getElementById('formatToContainer');
         
         const formatFrom = formatFromContainer ? formatFromContainer.dataset.value : '';
         const formatTo = formatToContainer ? formatToContainer.dataset.value : '';
 
-        if (!formatTo) {
-            alert("Please select a 'Convert to' format first!");
+        if (!formatFrom || !formatTo) {
+            alert("Please select 'From' and 'To' formats first!");
             return;
         }
 
-        // Show loading state instead of removing dropzone
-        const loading = document.getElementById('loading');
-        const loadingText = document.getElementById('loadingText');
-        const dropzoneTitle = document.getElementById('dropzoneTitle');
-        const dropzoneSubtitle = document.getElementById('dropzoneSubtitle');
-        const dropzone = document.getElementById('dropzone');
-        
-        if (loading && loadingText) {
-            loading.style.display = 'block';
-            if (dropzone) dropzone.style.display = 'none';
-            loadingText.textContent = `Converting ${files.length} file(s) locally...`;
-        }
-
-        try {
-            // If converting multiple files to PDF, merge them into a single document
-            if (formatTo === 'pdf' && files.length > 1) {
-                await mergeToPDF(files, formatFrom);
-            } else {
-                for (let i = 0; i < files.length; i++) {
-                    if (loadingText) loadingText.textContent = `Converting file ${i+1} of ${files.length}...`;
-                    await window.processFile(files[i], formatFrom, formatTo);
-                }
-            }
-        } finally {
-            if (loading) loading.style.display = 'none';
-            if (dropzone) {
-                dropzone.style.display = 'block';
-                if (dropzoneTitle) dropzoneTitle.textContent = 'Conversion Complete!';
-                if (dropzoneSubtitle) dropzoneSubtitle.innerHTML = 'Drop more files or <b>click the button below</b> to download again';
-            }
-        }
+        window.location.href = formatFrom + '-to-' + formatTo + '.html';
     };
 
     window.processFile = async function(file, from, to) {
