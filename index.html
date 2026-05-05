@@ -21,6 +21,122 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/docx@7.1.1/build/index.js"></script>
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://covertfily.com/#webapp",
+        "name": "Covertfily",
+        "url": "https://covertfily.com",
+        "description": "Covertfily is a privacy-first, browser-based file converter that allows users to convert images, PDFs, documents, audio, and video files directly in their browser without uploading them to any server. 100% client-side processing ensures your files never leave your device.",
+        "applicationCategory": "UtilitiesApplication",
+        "applicationSubCategory": "File Converter",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires a modern web browser with JavaScript enabled (Chrome, Firefox, Edge, Safari)",
+        "featureList": [
+          "100% client-side file processing",
+          "No file uploads to servers",
+          "Privacy-first architecture",
+          "Image conversion (JPG, PNG, WebP, BMP, GIF, AVIF, TIFF, HEIC)",
+          "PDF tools (merge, compress, convert)",
+          "OCR - Image to Text extraction",
+          "Document conversion (DOCX, TXT, MD, HTML)",
+          "Audio conversion (MP3, WAV, OGG, AAC, FLAC)",
+          "Video conversion (MP4, WebM, AVI, MOV, MKV)",
+          "Works offline after initial page load",
+          "Open source (MIT Licensed)"
+        ],
+        "screenshot": "https://covertfily.com/logo.png",
+        "softwareVersion": "1.0",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "description": "Free forever, no registration required, no file upload limits"
+        },
+        "isAccessibleForFree": true,
+        "license": "https://opensource.org/licenses/MIT",
+        "keywords": "file converter, pdf converter, image converter, privacy-first converter, no upload converter, browser-based converter, OCR tool, merge PDF, compress PDF",
+        "inLanguage": "en",
+        "provider": {
+          "@id": "https://covertfily.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "UseAction",
+          "target": "https://covertfily.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://covertfily.com/#organization",
+        "name": "Covertfily",
+        "url": "https://covertfily.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://covertfily.com/logo.png"
+        },
+        "description": "Open source privacy-first file conversion tools built entirely in the browser. No servers, no uploads, no tracking.",
+        "foundingDate": "2024",
+        "sameAs": [
+          "https://github.com/jagathram-tech/covertfily"
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://covertfily.com/#website",
+        "name": "Covertfily",
+        "url": "https://covertfily.com",
+        "description": "100% private, browser-based file conversion. Convert PDF, Images, Video, and Audio locally with zero uploads, zero tracking.",
+        "publisher": {
+          "@id": "https://covertfily.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://covertfily.com/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        },
+        "inLanguage": "en"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my files safe on Covertfily?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, absolutely. Covertfily processes your files entirely within your web browser. Your data is never uploaded to any server, making it 100% private."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need an internet connection to use Covertfily?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Only to load the website initially. Once the page is loaded, the conversion logic runs locally on your computer. You could disconnect from the internet and conversions would still work."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Covertfily really free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Covertfily is an open-source project licensed under MIT. It is free to use for everyone, forever, without any hidden costs or subscriptions."
+            }
+          }
+        ]
+      }
+    ]
+    </script>
 </head>
 <body>
                     <nav>
@@ -107,12 +223,12 @@
         <section style="padding: 20px 8% 60px;">
             <div class="format-selectors" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
                 <!-- BASIC FROM DROPDOWN -->
-                <div class="dropdown format-select" id="formatFromContainer" data-value="" style="position:relative; width:260px;">
+                <div class="dropdown format-select" id="formatFromContainer" data-value="" style="position:relative; flex: 1 1 240px; max-width: 300px; min-width: 200px;">
                     <button id="fromTrigger" class="dropdown-trigger" onclick="toggleBasic('fromMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500;">
                         <span id="fromValue" class="dropdown-value">From: Select Input</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
-                    <div id="fromMenu" style="display:none; position:absolute; top:58px; left:0; width:340px; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
+                    <div id="fromMenu" style="display:none; position:absolute; top:58px; left:0; width:100%; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
                         <div style="padding:10px; border-bottom:1px solid #eee;">
                             <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('fromItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
                         </div>
@@ -133,12 +249,12 @@
                 </div>
 
                 <!-- BASIC TO DROPDOWN -->
-                <div class="dropdown format-select" id="formatToContainer" data-value="" style="position:relative; width:260px;">
+                <div class="dropdown format-select" id="formatToContainer" data-value="" style="position:relative; flex: 1 1 240px; max-width: 300px; min-width: 200px;">
                     <button id="toTrigger" class="dropdown-trigger" onclick="toggleBasic('toMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500; opacity:0.5; pointer-events:none;">
                         <span id="toValue" class="dropdown-value">Select input first...</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
-                    <div id="toMenu" style="display:none; position:absolute; top:58px; left:0; width:340px; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
+                    <div id="toMenu" style="display:none; position:absolute; top:58px; left:0; width:100%; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
                         <div style="padding:10px; border-bottom:1px solid #eee;">
                             <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('toItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
                         </div>

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wav To Aac Online - Free, Fast & Private | Covertfily</title>
-    <meta name="description" content="Use our Wav To Aac tool to process your files securely in your browser. 100% private, no server uploads, and completely free.">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <title>PNG To JPG Online - Free, Fast & Private | Covertfily</title>
+    <meta name="description" content="Use our PNG To JPG tool to process your files securely in your browser. 100% private, no server uploads, and completely free.">
+    <link rel="icon" type=".wav" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -68,12 +68,12 @@
             <div class="section-title" style="display: block;">
                 <i class="fas fa-file-audio" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
                 <h1>WAV to AAC Converter</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert WAV files to AAC format locally in your browser.</p>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert PNG files to JPG format locally in your browser.</p>
             </div>
 
             <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
                 <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h2>Select WAV File</h2>
+                <h2>Select PNG File</h2>
                 <p>Drag and drop or click to upload</p>
                 <input type="file" id="fileInput" hidden onchange="handleFiles(this.files)">
             </div>
@@ -88,7 +88,8 @@
                 <div class="dropzone-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-circle"></i></div>
                 <h2>Conversion Complete!</h2>
                 <p id="fileNameDisplay" style="font-weight: 600; margin: 10px 0; color: var(--text-main);"></p>
-                <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
+                <div id="actionButtons" style="margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                    <a id="downloadBtn" href="#" class="btn-main"><i class="fas fa-download"></i> Download</a>
                     <button onclick="location.reload()" class="btn-main" style="background: #64748b;"><i class="fas fa-undo"></i> Convert Another</button>
                 </div>
             </div>
@@ -96,7 +97,7 @@
 
         <div class="seo-section">
             <h2>How to convert WAV to AAC</h2>
-            <p>Covertfily provides a seamless, privacy-first way to convert your WAV files to AAC. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
+            <p>Covertfily provides a seamless, privacy-first way to convert your PNG files to JPG. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
             
             <h2>Why Choose Local Conversion?</h2>
             <p>1. <strong>Privacy:</strong> No one else ever sees your files.<br>

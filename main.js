@@ -1147,38 +1147,12 @@ ${paragraphs}
         a.click();
         document.body.removeChild(a);
 
-        // Provide an explicit download button in the UI
-        const dropzone = document.getElementById('dropzone');
-        if (dropzone) {
-            let dlContainer = document.getElementById('downloadContainer');
-            if (!dlContainer) {
-                dlContainer = document.createElement('div');
-                dlContainer.id = 'downloadContainer';
-                dlContainer.style.marginTop = '20px';
-                dlContainer.style.display = 'flex';
-                dlContainer.style.flexDirection = 'column';
-                dlContainer.style.gap = '10px';
-                dlContainer.style.width = '100%';
-                dlContainer.onclick = (e) => e.stopPropagation(); // prevent triggering dropzone file dialog
-                dropzone.appendChild(dlContainer);
-            }
-            
-            const btn = document.createElement('button');
-            btn.className = 'btn-primary';
-            btn.innerHTML = `<i class="fas fa-download"></i> Download ${filename}`;
-            btn.style.width = '100%';
-            btn.style.justifyContent = 'center';
-            btn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const a2 = document.createElement('a');
-                a2.href = url;
-                a2.download = filename;
-                document.body.appendChild(a2);
-                a2.click();
-                document.body.removeChild(a2);
-            };
-            dlContainer.appendChild(btn);
+        // Provide an explicit download button in the UI if it exists (e.g. in resultArea)
+        const dlBtn = document.getElementById('downloadBtn');
+        if (dlBtn) {
+            dlBtn.href = url;
+            dlBtn.download = filename;
+            dlBtn.onclick = null; // Remove any previous handlers just in case
         }
     }
 

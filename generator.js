@@ -64,54 +64,6 @@ function getIcon(ext) {
     return 'fa-file-alt';
 }
 
-function getLogic(from, to) {
-    const isImageToImage = ['jpg','png','webp','bmp'].includes(from) && ['jpg','png','webp','bmp'].includes(to);
-    
-    if (isImageToImage) {
-        return "        function handleFile(file) {\\n" +
-"            if (!file.type.match('image/')) {\\n" +
-"                alert('Please select a valid image file.');\\n" +
-"                return;\\n" +
-"            }\\n" +
-"\\n" +
-"            const reader = new FileReader();\\n" +
-"            reader.onload = function(event) {\\n" +
-"                const img = new Image();\\n" +
-"                img.onload = function() {\\n" +
-"                    const canvas = document.createElement('canvas');\\n" +
-"                    canvas.width = img.width;\\n" +
-"                    canvas.height = img.height;\\n" +
-"                    const ctx = canvas.getContext('2d');\\n" +
-"                    \\n" +
-"                    if ('" + to + "' === 'jpg') {\\n" +
-"                        ctx.fillStyle = '#FFFFFF';\\n" +
-"                        ctx.fillRect(0, 0, canvas.width, canvas.height);\\n" +
-"                    }\\n" +
-"                    ctx.drawImage(img, 0, 0);\\n" +
-"\\n" +
-"                    const dataUrl = canvas.toDataURL('image/" + (to === 'jpg' ? 'jpeg' : to) + "', 0.9);\\n" +
-"                    \\n" +
-"                    previewImage.src = dataUrl;\\n" +
-"                    downloadBtn.href = dataUrl;\\n" +
-"                    \\n" +
-"                    const originalName = file.name.replace(/\\\\.[^/.]+$/, '');\\n" +
-"                    downloadBtn.download = originalName + '_covertfily." + to + "';\\n" +
-"\\n" +
-"                    dropZone.style.display = 'none';\\n" +
-"                    resultArea.style.display = 'block';\\n" +
-"                };\\n" +
-"                img.src = event.target.result;\\n" +
-"            };\\n" +
-"            reader.readAsDataURL(file);\\n" +
-"        }";
-    }
-
-    return "        function handleFile(file) {\\n" +
-"            alert('Client-side " + from.toUpperCase() + " to " + to.toUpperCase() + " conversion engine is initializing... Please check back later or use a supported browser format.');\\n" +
-"            resetTool();\\n" +
-"        }";
-}
-
 for (const [from, tos] of Object.entries(BASIC_MAPPING)) {
     for (const to of tos) {
         if (from === 'png' && to === 'jpg') continue; // already hand-crafted
@@ -130,14 +82,8 @@ for (const [from, tos] of Object.entries(BASIC_MAPPING)) {
             .replace(/Upload PNG/g, 'Upload ' + from.toUpperCase())
             .replace(/image\/png/g, '.' + from)
             .replace(/Download JPG/g, 'Download ' + to.toUpperCase())
-            .replace(/converted\.jpg/g, 'converted.' + to);
-
-        const logicStart = newHtml.indexOf('function handleFile(file)');
-        const logicEnd = newHtml.indexOf('function resetTool()');
-        
-        if (logicStart !== -1 && logicEnd !== -1) {
-            newHtml = newHtml.substring(0, logicStart) + getLogic(from, to) + '\\n\\n        ' + newHtml.substring(logicEnd);
-        }
+            .replace(/converted\.jpg/g, 'converted.' + to)
+            .replace(/'png', 'jpg'/g, "'" + from + "', '" + to + "'");
 
         fs.writeFileSync(from + '-to-' + to + '.html', newHtml);
         count++;
