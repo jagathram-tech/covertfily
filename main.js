@@ -353,8 +353,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 3. Media Conversions (MP4, WebM, MP3, etc.)
-            if (['mp4', 'webm', 'mov', 'avi', 'mkv', 'mp3', 'wav', 'ogg', 'aac', 'm4a', 'flac'].includes(to)) {
-                await convertMedia(file, to);
+            if (['mp4', 'webm', 'mov', 'avi', 'mkv', 'mp3', 'wav', 'ogg', 'aac', 'm4a', 'flac'].includes(targetFormat)) {
+                await convertMedia(file, targetFormat);
+                return;
+            }
+
+            // 4. Text Conversions (MD, HTML, TXT)
+            if (['md', 'html', 'txt'].includes(targetFormat) && ['md', 'html', 'txt'].includes(sourceFormat)) {
+                await convertText(file, sourceFormat, targetFormat);
                 return;
             }
 
@@ -551,6 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (sourceFormat === 'html' && targetFormat === 'md') {
             const turndownService = new TurndownService();
             result = turndownService.turndown(text);
+        } else if (targetFormat === 'txt' && sourceFormat === 'html') {
+            const temp = document.createElement('div');
+            temp.innerHTML = text;
+            result = temp.textContent || temp.innerText || "";
         }
 
         const blob = new Blob([result], { type: 'text/plain' });
@@ -654,28 +664,103 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     }
 
-    // Convert Video & Audio via lightweight Native blob wrapping (as requested)
+    // Load FFmpeg dynamically
+    let ffmpeg = null;
+    async function loadFFmpeg() {
+        if (ffmpeg) return ffmpeg;
+        
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = "Loading Media Engine...";
+
+        if (!window.FFmpeg) {
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        const { FFmpeg } = window.FFmpeg;
+        ffmpeg = new FFmpeg();
+        
+        ffmpeg.on('log', ({ message }) => {
+            console.log(message);
+        });
+
+        // Use single-threaded core for broad browser compatibility without COOP/COEP
+        const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
+        const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
+
+        await ffmpeg.load({
+            coreURL: coreURL,
+            wasmURL: wasmURL,
+        });
+
+        return ffmpeg;
+    }
+
+    // Convert Video & Audio using actual FFmpeg.wasm Engine
     async function convertMedia(file, targetFormat) {
         const loadingText = document.getElementById('loadingText');
-        if (loadingText) loadingText.textContent = `Processing ${targetFormat.toUpperCase()} package...`;
         
-        await new Promise(r => setTimeout(r, 600)); // Simulating processing time
-        
-        let mimeType = 'video/mp4';
-        if (targetFormat === 'webm') mimeType = 'video/webm';
-        else if (targetFormat === 'mov') mimeType = 'video/quicktime';
-        else if (targetFormat === 'avi') mimeType = 'video/x-msvideo';
-        else if (targetFormat === 'mkv') mimeType = 'video/x-matroska';
-        else if (targetFormat === 'mp3') mimeType = 'audio/mp3';
-        else if (targetFormat === 'wav') mimeType = 'audio/wav';
+        try {
+            const ff = await loadFFmpeg();
+            const { fetchFile } = window.FFmpegUtil;
+            
+            if (loadingText) loadingText.textContent = "Writing file to memory...";
+            const inputName = 'input_' + file.name.replace(/[^a-zA-Z0-9.]/g, ''); 
+            const outputName = 'output.' + targetFormat;
+            
+            await ff.writeFile(inputName, await fetchFile(file));
+            
+            if (loadingText) loadingText.textContent = `Converting... (this may take a while depending on file size)`;
+            
+            ff.on('progress', ({ progress }) => {
+                if (loadingText) {
+                    const pct = Math.max(0, Math.min(100, Math.round(progress * 100)));
+                    loadingText.textContent = `Converting... ${pct}%`;
+                }
+            });
+            
+            await ff.exec(['-i', inputName, outputName]);
+            
+            if (loadingText) loadingText.textContent = "Finalizing file...";
+            const data = await ff.readFile(outputName);
+            
+            let mimeType = 'video/mp4';
+            if (targetFormat === 'webm') mimeType = 'video/webm';
+            else if (targetFormat === 'mov') mimeType = 'video/quicktime';
+            else if (targetFormat === 'avi') mimeType = 'video/x-msvideo';
+            else if (targetFormat === 'mkv') mimeType = 'video/x-matroska';
+            else if (targetFormat === 'mp3') mimeType = 'audio/mp3';
+            else if (targetFormat === 'wav') mimeType = 'audio/wav';
+            else if (targetFormat === 'ogg') mimeType = 'audio/ogg';
+            else if (targetFormat === 'flac') mimeType = 'audio/flac';
+            else if (targetFormat === 'aac') mimeType = 'audio/aac';
+            else if (targetFormat === 'm4a') mimeType = 'audio/m4a';
 
-        // Direct packaging into target Blob wrapper
-        const data = await file.arrayBuffer();
-        const convertedBlob = new Blob([data], { type: mimeType });
-
-        const url = URL.createObjectURL(convertedBlob);
-        downloadFile(url, file.name.replace(/\.[^/.]+$/, "") + '.' + targetFormat);
-        URL.revokeObjectURL(url);
+            const convertedBlob = new Blob([data.buffer], { type: mimeType });
+            const url = URL.createObjectURL(convertedBlob);
+            downloadFile(url, file.name.replace(/\.[^/.]+$/, "") + '.' + targetFormat);
+            URL.revokeObjectURL(url);
+            
+            // Clean up memory
+            await ff.deleteFile(inputName);
+            await ff.deleteFile(outputName);
+            
+        } catch (error) {
+            console.error("FFmpeg Conversion Error:", error);
+            alert("Media conversion failed. The format may be unsupported by the browser engine.");
+        }
     }
 
     async function convertDocx(file, targetFormat) {
