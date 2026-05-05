@@ -65,15 +65,15 @@
 
     <main>
         <div class="tool-grid">
-            <div class="section-title" style="display: block;">
+            <div class="section-title" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
                 <i class="fas fa-file-image" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
                 <h1>PNG to JPG Converter</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Convert PNG files to JPG format locally in your browser.</p>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px;">Convert PNG files to JPG format locally in your browser.</p>
             </div>
 
             <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
                 <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h2>Select PNG File</h2>
+                <h2>Upload PNG</h2>
                 <p>Drag and drop or click to upload</p>
                 <input type="file" id="fileInput" hidden onchange="handleFiles(this.files)">
             </div>

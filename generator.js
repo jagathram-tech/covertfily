@@ -79,11 +79,18 @@ for (const [from, tos] of Object.entries(BASIC_MAPPING)) {
             .replace(/PNG images to JPEG/g, fromLabel + ' to ' + toLabel)
             .replace(/PNG images to JPG/g, fromLabel + ' to ' + toLabel)
             .replace(/class="fas fa-file-image"/g, 'class="fas ' + icon + '"')
-            .replace(/Upload PNG/g, 'Upload ' + from.toUpperCase())
-            .replace(/image\/png/g, '.' + from)
-            .replace(/Download JPG/g, 'Download ' + to.toUpperCase())
-            .replace(/converted\.jpg/g, 'converted.' + to)
-            .replace(/'png', 'jpg'/g, "'" + from + "', '" + to + "'");
+            .replace(/Upload PNG/gi, 'Upload ' + from.toUpperCase())
+            .replace(/image\/png/gi, '.' + from)
+            .replace(/Download JPG/gi, 'Download ' + to.toUpperCase())
+            .replace(/converted\.jpg/gi, 'converted.' + to)
+            .replace(/'png', 'jpg'/g, "'" + from + "', '" + to + "'")
+            .replace(/How to convert PNG to JPG/gi, 'How to convert ' + from.toUpperCase() + ' to ' + to.toUpperCase())
+            .replace(/convert PNG files to JPG/gi, 'convert ' + from.toUpperCase() + ' files to ' + to.toUpperCase())
+            .replace(/Convert PNG files to JPG/gi, 'Convert ' + from.toUpperCase() + ' files to ' + to.toUpperCase())
+            .replace(/your PNG files to JPG/gi, 'your ' + from.toUpperCase() + ' files to ' + to.toUpperCase())
+            .replace(/PNG To JPG/gi, from.toUpperCase() + ' To ' + to.toUpperCase())
+            .replace(/PNG images to JPEG/gi, fromLabel + ' to ' + toLabel)
+            .replace(/PNG images to JPG/gi, fromLabel + ' to ' + toLabel);
 
         fs.writeFileSync(from + '-to-' + to + '.html', newHtml);
         count++;
