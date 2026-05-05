@@ -279,6 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.handleFiles = async function(files) {
         console.log('handleFiles triggered', files);
         if (files.length === 0) return;
+        
+        // Remove old download buttons
+        const oldDl = document.getElementById('downloadContainer');
+        if (oldDl) oldDl.remove();
+        
         const formatFromContainer = document.getElementById('formatFromContainer');
         const formatToContainer = document.getElementById('formatToContainer');
         
@@ -318,12 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dropzone) {
                 dropzone.style.display = 'block';
                 if (dropzoneTitle) dropzoneTitle.textContent = 'Conversion Complete!';
-                if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Drop more files to convert again';
+                if (dropzoneSubtitle) dropzoneSubtitle.innerHTML = 'Drop more files or <b>click the button below</b> to download again';
             }
-            setTimeout(() => {
-                if (dropzoneTitle) dropzoneTitle.textContent = 'Drop files here';
-                if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Or click to select files from your computer';
-            }, 3000);
         }
     };
 
@@ -1145,6 +1146,40 @@ ${paragraphs}
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+
+        // Provide an explicit download button in the UI
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone) {
+            let dlContainer = document.getElementById('downloadContainer');
+            if (!dlContainer) {
+                dlContainer = document.createElement('div');
+                dlContainer.id = 'downloadContainer';
+                dlContainer.style.marginTop = '20px';
+                dlContainer.style.display = 'flex';
+                dlContainer.style.flexDirection = 'column';
+                dlContainer.style.gap = '10px';
+                dlContainer.style.width = '100%';
+                dlContainer.onclick = (e) => e.stopPropagation(); // prevent triggering dropzone file dialog
+                dropzone.appendChild(dlContainer);
+            }
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary';
+            btn.innerHTML = `<i class="fas fa-download"></i> Download ${filename}`;
+            btn.style.width = '100%';
+            btn.style.justifyContent = 'center';
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const a2 = document.createElement('a');
+                a2.href = url;
+                a2.download = filename;
+                document.body.appendChild(a2);
+                a2.click();
+                document.body.removeChild(a2);
+            };
+            dlContainer.appendChild(btn);
+        }
     }
 
     function resetDropzone() {
@@ -1158,6 +1193,9 @@ ${paragraphs}
             dropzone.style.display = 'block';
             if (dropzoneTitle) dropzoneTitle.textContent = 'Drop files here';
             if (dropzoneSubtitle) dropzoneSubtitle.textContent = 'Or click to select files from your computer';
+            
+            const dlContainer = document.getElementById('downloadContainer');
+            if (dlContainer) dlContainer.remove();
         }
     }
 
