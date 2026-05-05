@@ -254,6 +254,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Click handler moved to inline in index.html to prevent double-firing
     // dropzone.addEventListener('click', () => { ... });
 
+    // Dropzone click handler for index.html
+    if (dropzone) {
+        dropzone.addEventListener('click', () => {
+            fileInput.click();
+        });
+    }
+
     // Handle drag and drop
     dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -1147,12 +1154,17 @@ ${paragraphs}
         a.click();
         document.body.removeChild(a);
 
-        // Provide an explicit download button in the UI if it exists (e.g. in resultArea)
+        const downloadContainer = document.getElementById('downloadContainer');
         const dlBtn = document.getElementById('downloadBtn');
-        if (dlBtn) {
+        if (downloadContainer && dlBtn) {
+            downloadContainer.style.display = 'block';
             dlBtn.href = url;
             dlBtn.download = filename;
-            dlBtn.onclick = null; // Remove any previous handlers just in case
+        }
+
+        const resultArea = document.getElementById('resultArea');
+        if (resultArea) {
+            resultArea.style.display = 'block';
         }
     }
 

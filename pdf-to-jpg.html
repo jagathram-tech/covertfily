@@ -5,24 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF To JPG Online - Free, Fast & Private | Covertfily</title>
     <meta name="description" content="Use our PDF To JPG tool to process your files securely in your browser. 100% private, no server uploads, and completely free.">
-    <link rel="icon" type=".pdf" href="favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .tool-container { max-width: 800px; margin: 60px auto; padding: 0 20px; text-align: center; }
-        .dropzone { margin-top: 40px; cursor: pointer; transition: all 0.2s; }
-        .dropzone:hover { border-color: var(--primary); background: #f8fafc; }
-        .seo-section { max-width: 800px; margin: 80px auto; text-align: left; line-height: 1.7; color: var(--text-muted); }
-        .seo-section h2 { color: var(--text-main); margin-top: 40px; font-size: 1.5rem; font-weight: 700; }
-        .btn-main { background: var(--primary); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .btn-main:hover { background: var(--primary-hover); transform: translateY(-2px); }
-    </style>
 </head>
 <body>
-        <nav>
+    <nav>
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
@@ -64,57 +55,54 @@
     </nav>
 
     <main>
-        <div class="tool-grid">
-            <div class="section-title" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                <i class="fas fa-file-pdf" style="color: var(--primary); font-size: 2.5rem; margin-bottom: 20px;"></i>
-                <h1>PDF to JPG Converter</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px;">convert PDF files to JPG format locally in your browser.</p>
-            </div>
+        <section class="tool-page-hero">
+            <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+            <h1>PDF to JPG Converter</h1>
+            <p>Convert PDF pages to high-quality JPG images instantly. 100% private, runs entirely in your browser.</p>
+        </section>
 
+        <section class="tool-workspace">
             <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
                 <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <h2>Upload PDF</h2>
-                <p>Drag and drop or click to upload</p>
-                <input type="file" id="fileInput" hidden onchange="handleFiles(this.files)">
+                <h2>Upload PDF File</h2>
+                <p>Drag & drop or click to select your PDF</p>
+                <input type="file" id="fileInput" hidden accept=".pdf" onchange="handleFiles(this.files)">
             </div>
 
-            <div id="loading" style="display: none; margin-top: 40px;">
-                <div class="dropzone-icon"><i class="fas fa-cog fa-spin" style="color: var(--primary);"></i></div>
-                <h2 id="loadingText">Processing...</h2>
-                <p>Running 100% locally on your device.</p>
+            <div id="loading" style="display:none; text-align:center; padding:3rem;">
+                <i class="fas fa-cog fa-spin" style="font-size:3rem;color:var(--primary);"></i>
+                <p id="loadingText" style="margin-top:1rem;font-size:1.1rem;color:var(--text-muted);">Converting...</p>
             </div>
 
-            <div id="resultArea" style="display: none; margin-top: 40px;">
-                <div class="dropzone-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-circle"></i></div>
-                <h2>Conversion Complete!</h2>
-                <p id="fileNameDisplay" style="font-weight: 600; margin: 10px 0; color: var(--text-main);"></p>
-                <div id="actionButtons" style="margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-                    <a id="downloadBtn" href="#" class="btn-main"><i class="fas fa-download"></i> Download</a>
-                    <button onclick="location.reload()" class="btn-main" style="background: #64748b;"><i class="fas fa-undo"></i> Convert Another</button>
+            <div id="resultArea" style="display:none; text-align:center; padding:3rem; background:white; border-radius:16px; border:2px solid #ecfdf5; margin-top:2rem;">
+                <div style="font-size:3rem;color:#10b981;margin-bottom:1rem;"><i class="fas fa-check-circle"></i></div>
+                <h2 style="margin-bottom:0.5rem;">Conversion Complete!</h2>
+                <p id="fileNameDisplay" style="color:var(--text-muted);margin-bottom:1.5rem;"></p>
+                <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+                    <a id="downloadBtn" href="#" class="btn-main"><i class="fas fa-download"></i> Download JPG</a>
+                    <button onclick="location.reload()" style="padding:14px 28px;border-radius:12px;border:2px solid var(--border);background:white;font-weight:600;cursor:pointer;font-size:1rem;color:var(--text-muted);">
+                        <i class="fas fa-redo"></i> Convert Another
+                    </button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="seo-section">
-            <h2>How to convert PDF to JPG</h2>
+        <section class="seo-section">
+            <h2>How to Convert PDF to JPG</h2>
             <p>Covertfily provides a seamless, privacy-first way to convert your PDF files to JPG. Unlike traditional online converters, our technology performs the conversion directly in your web browser. This means your data is never sent to our servers, keeping your sensitive information 100% private.</p>
             
             <h2>Why Choose Local Conversion?</h2>
-            <p>1. <strong>Privacy:</strong> No one else ever sees your files.<br>
-               2. <strong>Speed:</strong> No wait times for uploading or downloading large files.<br>
-               3. <strong>Security:</strong> Eliminate the risk of data breaches on cloud servers.</p>
+            <p><strong>Privacy:</strong> No one else ever sees your files.<br>
+               <strong>Speed:</strong> No wait times for uploading or downloading large files.<br>
+               <strong>Security:</strong> Eliminate the risk of data breaches on cloud servers.</p>
 
             <h2>Frequently Asked Questions</h2>
-            <div style="margin-top: 20px;">
-                <strong>Is it free?</strong>
-                <p>Yes, Covertfily is free and open-source.</p>
-                <strong>What is the maximum file size?</strong>
-                <p>Since it runs on your device, it depends on your browser's memory, but most files up to 100MB work perfectly.</p>
-            </div>
-        </div>
+            <p><strong>Is it free?</strong><br>Yes, Covertfily is free and open-source.</p>
+            <p><strong>What is the maximum file size?</strong><br>Since it runs on your device, it depends on your browser's memory, but most files up to 100MB work perfectly.</p>
+        </section>
     </main>
 
-            <footer>
+    <footer>
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="logo"><img src="logo.png" alt="Covertfily"></div>
@@ -124,7 +112,7 @@
                 <h4>Product</h4>
                 <ul>
                     <li><a href="index.html">Convert</a></li>
-                <li><a href="blog.html">Blog</a></li>
+                    <li><a href="blog.html">Blog</a></li>
                     <li><a href="image-resizer.html">Image Tools</a></li>
                 </ul>
             </div>
@@ -166,7 +154,7 @@
 
             dropzone.style.display = 'none';
             loading.style.display = 'block';
-            loadingText.textContent = "Converting " + file.name + "...";
+            loadingText.textContent = 'Converting ' + file.name + '...';
 
             try {
                 await window.processFile(file, 'pdf', 'jpg');
@@ -175,7 +163,7 @@
                 document.getElementById('fileNameDisplay').textContent = file.name;
             } catch (err) {
                 console.error(err);
-                alert("Conversion failed: " + err.message);
+                alert('Conversion failed: ' + err.message);
                 location.reload();
             }
         }

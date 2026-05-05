@@ -220,123 +220,203 @@
             </div>
         </section>
 
-        <section style="padding: 20px 8% 60px;">
-            <div class="format-selectors" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
-                <!-- BASIC FROM DROPDOWN -->
-                <div class="dropdown format-select" id="formatFromContainer" data-value="" style="position:relative; flex: 1 1 240px; max-width: 300px; min-width: 200px;">
-                    <button id="fromTrigger" class="dropdown-trigger" onclick="toggleBasic('fromMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500;">
-                        <span id="fromValue" class="dropdown-value">From: Select Input</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div id="fromMenu" style="display:none; position:absolute; top:58px; left:0; width:100%; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
-                        <div style="padding:10px; border-bottom:1px solid #eee;">
-                            <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('fromItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+        <section class="converter-section">
+            <div class="converter-container">
+                <h2 class="converter-title">Convert Your Files Now</h2>
+                <p class="converter-subtitle">Select formats, upload your file, and convert instantly — 100% in your browser</p>
+
+                <div class="format-selectors">
+                    <div class="custom-dropdown format-select" id="formatFromContainer" data-value="">
+                        <button class="dropdown-trigger" type="button">
+                            <span class="dropdown-value">From: Select format...</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <input type="text" class="dropdown-search" placeholder="Search formats..." oninput="filterDropdownItems(this, 'fromItems')">
+                            <div class="dropdown-items" id="fromItems">
+                                <div class="dropdown-group-label">Images</div>
+                                <div class="dropdown-item" data-value="jpg" onclick="selectFromFormat('jpg','JPG/JPEG')">JPG/JPEG</div>
+                                <div class="dropdown-item" data-value="png" onclick="selectFromFormat('png','PNG')">PNG</div>
+                                <div class="dropdown-item" data-value="webp" onclick="selectFromFormat('webp','WebP')">WebP</div>
+                                <div class="dropdown-item" data-value="gif" onclick="selectFromFormat('gif','GIF')">GIF</div>
+                                <div class="dropdown-item" data-value="bmp" onclick="selectFromFormat('bmp','BMP')">BMP</div>
+                                <div class="dropdown-item" data-value="svg" onclick="selectFromFormat('svg','SVG')">SVG</div>
+                                <div class="dropdown-item" data-value="avif" onclick="selectFromFormat('avif','AVIF')">AVIF</div>
+                                <div class="dropdown-item" data-value="tiff" onclick="selectFromFormat('tiff','TIFF')">TIFF</div>
+                                <div class="dropdown-item" data-value="heic" onclick="selectFromFormat('heic','HEIC/HEIF')">HEIC/HEIF</div>
+                                <div class="dropdown-group-label">Documents</div>
+                                <div class="dropdown-item" data-value="pdf" onclick="selectFromFormat('pdf','PDF')">PDF Document</div>
+                                <div class="dropdown-item" data-value="docx" onclick="selectFromFormat('docx','Word (DOCX)')">Word (DOCX)</div>
+                                <div class="dropdown-item" data-value="xlsx" onclick="selectFromFormat('xlsx','Excel')">Excel (XLSX)</div>
+                                <div class="dropdown-item" data-value="csv" onclick="selectFromFormat('csv','CSV')">CSV Data</div>
+                                <div class="dropdown-item" data-value="md" onclick="selectFromFormat('md','Markdown')">Markdown (MD)</div>
+                                <div class="dropdown-item" data-value="html" onclick="selectFromFormat('html','HTML')">HTML Page</div>
+                                <div class="dropdown-item" data-value="txt" onclick="selectFromFormat('txt','Text')">Plain Text (TXT)</div>
+                                <div class="dropdown-group-label">Media</div>
+                                <div class="dropdown-item" data-value="mp4" onclick="selectFromFormat('mp4','MP4')">MP4 Video</div>
+                                <div class="dropdown-item" data-value="webm" onclick="selectFromFormat('webm','WebM')">WebM Video</div>
+                                <div class="dropdown-item" data-value="mov" onclick="selectFromFormat('mov','MOV')">MOV Video</div>
+                                <div class="dropdown-item" data-value="avi" onclick="selectFromFormat('avi','AVI')">AVI Video</div>
+                                <div class="dropdown-item" data-value="mkv" onclick="selectFromFormat('mkv','MKV')">MKV Video</div>
+                                <div class="dropdown-item" data-value="mp3" onclick="selectFromFormat('mp3','MP3')">MP3 Audio</div>
+                                <div class="dropdown-item" data-value="wav" onclick="selectFromFormat('wav','WAV')">WAV Audio</div>
+                                <div class="dropdown-item" data-value="ogg" onclick="selectFromFormat('ogg','OGG')">OGG Audio</div>
+                                <div class="dropdown-item" data-value="flac" onclick="selectFromFormat('flac','FLAC')">FLAC Audio</div>
+                            </div>
+                            <div class="no-results">No matching formats</div>
                         </div>
-                        <div id="fromItems" style="max-height:300px; overflow-y:auto; padding:5px;">
-                            <div style="font-size:10px; color:#999; padding:10px 10px 5px; text-transform:uppercase; letter-spacing:1px;">Images</div>
-                            <div class="dropdown-item" onclick="selectBasic('from', 'jpg', 'JPG')">JPG</div>
-                            <div class="dropdown-item" onclick="selectBasic('from', 'png', 'PNG')">PNG</div>
-                            <div class="dropdown-item" onclick="selectBasic('from', 'webp', 'WebP')">WebP</div>
-                            <div class="dropdown-item" onclick="selectBasic('from', 'pdf', 'PDF')">PDF</div>
-                            <div class="dropdown-item" onclick="selectBasic('from', 'mp4', 'MP4')">MP4</div>
-                            <div class="dropdown-item" onclick="selectBasic('from', 'mp3', 'MP3')">MP3</div>
+                    </div>
+
+                    <div class="format-connector">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+
+                    <div class="custom-dropdown format-select" id="formatToContainer" data-value="">
+                        <button class="dropdown-trigger" type="button" disabled>
+                            <span class="dropdown-value">To: Select output...</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <input type="text" class="dropdown-search" placeholder="Search formats..." oninput="filterDropdownItems(this, 'toItems')">
+                            <div class="dropdown-items" id="toItems">
+                                <div class="dropdown-placeholder" style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.9rem;">Select input format first</div>
+                            </div>
+                            <div class="no-results">No matching formats</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="format-connector" style="color: var(--text-muted); font-size: 1.2rem;">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-
-                <!-- BASIC TO DROPDOWN -->
-                <div class="dropdown format-select" id="formatToContainer" data-value="" style="position:relative; flex: 1 1 240px; max-width: 300px; min-width: 200px;">
-                    <button id="toTrigger" class="dropdown-trigger" onclick="toggleBasic('toMenu')" style="width:100%; height:52px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:0 15px; font-weight:500; opacity:0.5; pointer-events:none;">
-                        <span id="toValue" class="dropdown-value">Select input first...</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div id="toMenu" style="display:none; position:absolute; top:58px; left:0; width:100%; background:white; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:10000;">
-                        <div style="padding:10px; border-bottom:1px solid #eee;">
-                            <input type="text" placeholder="Search..." oninput="var q=this.value.toLowerCase(); document.getElementById('toItems').querySelectorAll('.dropdown-item').forEach(it=>it.style.display=it.textContent.toLowerCase().includes(q)?'flex':'none')" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
-                        </div>
-                        <div id="toItems" style="max-height:300px; overflow-y:auto; padding:5px;">
-                            <div style="padding:20px; text-align:center; color:#999; font-size:14px;">Select from format first</div>
-                        </div>
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon" id="dropzoneIcon">
+                        <i class="fas fa-cloud-upload-alt"></i>
                     </div>
+                    <h2 id="dropzoneTitle">Drop files here</h2>
+                    <p id="dropzoneSubtitle">Or click to select files from your computer</p>
+                    <input type="file" id="fileInput" hidden multiple onchange="window.handleFiles(this.files)">
                 </div>
-            </div>
 
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="goToDedicatedPage()" class="btn-primary" style="padding: 18px 60px; font-size: 1.25rem; border-radius: 16px; background: var(--primary); cursor: pointer; display: inline-flex; align-items: center; gap: 12px; box-shadow: var(--shadow-lg);">
-                    <i class="fas fa-upload"></i> Upload & Convert
-                </button>
-                <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
-                    <a href="https://github.com/jagathram-tech/covertfily" style="color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;"><i class="fab fa-github"></i> Open Source on GitHub</a>
+                <div class="loading" id="loading" style="display:none;">
+                    <i class="fas fa-cog fa-spin" style="font-size:3rem;color:var(--primary);"></i>
+                    <p id="loadingText">Converting...</p>
+                </div>
+
+                <div id="downloadContainer" style="display:none;margin-top:30px;">
+                    <a id="downloadBtn" href="#" class="btn-main" style="background:var(--primary);color:white;padding:16px 40px;border-radius:14px;font-weight:700;font-size:1.1rem;display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
+                        <i class="fas fa-download"></i> Download Converted File
+                    </a>
+                    <button onclick="location.reload()" style="margin-left:12px;padding:16px 30px;border-radius:14px;border:2px solid var(--border);background:white;font-weight:600;cursor:pointer;font-size:1rem;color:var(--text-muted);">
+                        <i class="fas fa-redo"></i> Convert Another
+                    </button>
                 </div>
             </div>
         </section>
 
         <script>
-            const BASIC_MAPPING = {
-                'jpg': ['png', 'webp', 'bmp', 'pdf'],
-                'png': ['jpg', 'webp', 'bmp', 'pdf'],
-                'webp': ['jpg', 'png', 'bmp', 'pdf'],
-                'bmp': ['jpg', 'png', 'webp', 'pdf'],
-                'gif': ['jpg', 'png', 'webp', 'pdf'],
-                'pdf': ['jpg', 'png', 'webp', 'txt', 'md', 'docx'],
-                'mp4': ['webm', 'mov', 'avi', 'mp3'],
-                'mp3': ['wav', 'ogg', 'aac', 'm4a', 'flac'],
-                'docx': ['pdf', 'txt', 'md']
+            const FORMAT_MAPPING = {
+                'jpg': ['png','webp','bmp','pdf'],
+                'png': ['jpg','webp','bmp','pdf'],
+                'webp': ['jpg','png','bmp','pdf'],
+                'bmp': ['jpg','png','webp','pdf'],
+                'gif': ['jpg','png','webp','pdf'],
+                'svg': ['png','jpg','pdf'],
+                'avif': ['jpg','png','webp'],
+                'tiff': ['jpg','png','pdf'],
+                'heic': ['jpg','png','pdf'],
+                'pdf': ['jpg','png','webp','txt','md','docx'],
+                'docx': ['pdf','txt','md'],
+                'xlsx': ['csv','json','ods','pdf'],
+                'csv': ['xlsx','json','ods','pdf'],
+                'mp4': ['webm','mov','avi','mkv','mp3'],
+                'webm': ['mp4','mov','avi','mkv','mp3'],
+                'mov': ['mp4','webm','avi','mkv','mp3'],
+                'avi': ['mp4','webm','mov','mp3'],
+                'mkv': ['mp4','webm','mov','mp3'],
+                'mp3': ['wav','ogg','aac','m4a','flac'],
+                'wav': ['mp3','ogg','aac','m4a','flac'],
+                'ogg': ['mp3','wav','aac'],
+                'aac': ['mp3','wav'],
+                'flac': ['mp3','wav'],
+                'md': ['html','pdf','txt','docx'],
+                'html': ['md','pdf','txt','docx'],
+                'txt': ['pdf','md','html','docx']
             };
-            const BASIC_LABELS = {
-                'jpg': 'JPG Image', 'png': 'PNG Image', 'webp': 'WebP Image', 'pdf': 'PDF Document', 
-                'mp4': 'MP4 Video', 'mp3': 'MP3 Audio', 'docx': 'Word (DOCX)'
+            const FORMAT_LABELS = {
+                'jpg':'JPG/JPEG','png':'PNG','webp':'WebP','bmp':'BMP','gif':'GIF','svg':'SVG','avif':'AVIF','tiff':'TIFF','heic':'HEIC/HEIF',
+                'pdf':'PDF Document','docx':'Word (DOCX)','xlsx':'Excel (XLSX)','csv':'CSV Data','json':'JSON Data','ods':'ODS Calc',
+                'md':'Markdown (MD)','html':'HTML Page','txt':'Plain Text (TXT)',
+                'mp4':'MP4 Video','webm':'WebM Video','mov':'MOV Video','avi':'AVI Video','mkv':'MKV Video',
+                'mp3':'MP3 Audio','wav':'WAV Audio','ogg':'OGG Audio','aac':'AAC Audio','m4a':'M4A Audio','flac':'FLAC Audio'
             };
 
-            function selectBasic(type, val, label) {
-                if (type === 'from') {
-                    document.getElementById('fromValue').textContent = "From: " + label;
-                    document.getElementById('fromMenu').style.display = 'none';
-                    document.getElementById('formatFromContainer').dataset.value = val;
-                    
-                    const toTrig = document.getElementById('toTrigger');
-                    toTrig.style.opacity = '1';
-                    toTrig.style.pointerEvents = 'auto';
-                    document.getElementById('toValue').textContent = "Convert to...";
-                    
-                    const toItems = document.getElementById('toItems');
-                    let targets = BASIC_MAPPING[val] || [];
-                    let html = '';
-                    targets.forEach(t => {
-                        const l = BASIC_LABELS[t] || t.toUpperCase();
-                        html += `<div class="dropdown-item" onclick="selectBasic('to', '${t}', '${l}')" style="padding:10px; cursor:pointer; border-radius:6px;">${l}</div>`;
-                    });
-                    toItems.innerHTML = html || '<div style="padding:10px; color:#999;">No formats available</div>';
+            window.filterDropdownItems = function(input, containerId) {
+                const query = input.value.toLowerCase();
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                let visible = 0;
+                container.querySelectorAll('.dropdown-item').forEach(item => {
+                    const match = item.textContent.toLowerCase().includes(query);
+                    item.classList.toggle('hidden', !match);
+                    if (match) visible++;
+                });
+                container.querySelectorAll('.dropdown-group-label').forEach(l => l.style.display = 'block');
+                const noResults = container.parentElement.querySelector('.no-results');
+                if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
+            };
+
+            window.selectFromFormat = function(val, label) {
+                const container = document.getElementById('formatFromContainer');
+                container.querySelector('.dropdown-value').textContent = 'From: ' + label;
+                container.dataset.value = val;
+                container.classList.remove('open');
+
+                const toContainer = document.getElementById('formatToContainer');
+                const toTrigger = toContainer.querySelector('.dropdown-trigger');
+                toTrigger.disabled = false;
+                toTrigger.querySelector('.dropdown-value').textContent = 'To: Select output...';
+                toContainer.dataset.value = '';
+
+                const toItems = document.getElementById('toItems');
+                const targets = FORMAT_MAPPING[val] || [];
+                if (targets.length === 0) {
+                    toItems.innerHTML = '<div class="dropdown-placeholder" style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.9rem;">No output formats available</div>';
                 } else {
-                    document.getElementById('toValue').textContent = "To: " + label;
-                    document.getElementById('toMenu').style.display = 'none';
-                    document.getElementById('formatToContainer').dataset.value = val;
+                    toItems.innerHTML = targets.map(t =>
+                        `<div class="dropdown-item" data-value="${t}" onclick="selectToFormat('${t}','${FORMAT_LABELS[t]||t.toUpperCase()}')">${FORMAT_LABELS[t]||t.toUpperCase()}</div>`
+                    ).join('');
                 }
-            }
+            };
 
-            function toggleBasic(id) {
-                const el = document.getElementById(id);
-                const isVisible = el.style.display === 'block';
-                document.getElementById('fromMenu').style.display = 'none';
-                document.getElementById('toMenu').style.display = 'none';
-                if (!isVisible) el.style.display = 'block';
-            }
-
-            function goToDedicatedPage() {
-                const fromVal = document.getElementById('formatFromContainer').dataset.value;
-                const toVal = document.getElementById('formatToContainer').dataset.value;
-                if (!fromVal || !toVal) { alert('Please select formats first.'); return; }
-                window.location.href = fromVal + '-to-' + toVal + '.html';
-            }
+            window.selectToFormat = function(val, label) {
+                const container = document.getElementById('formatToContainer');
+                container.querySelector('.dropdown-value').textContent = 'To: ' + label;
+                container.dataset.value = val;
+                container.classList.remove('open');
+            };
 
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.format-select')) {
-                    document.getElementById('fromMenu').style.display = 'none';
-                    document.getElementById('toMenu').style.display = 'none';
+                document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
+                    if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+                });
+            });
+
+            document.querySelectorAll('.custom-dropdown').forEach(dropdown => {
+                const trigger = dropdown.querySelector('.dropdown-trigger');
+                if (trigger) {
+                    trigger.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (trigger.disabled) return;
+                        const wasOpen = dropdown.classList.contains('open');
+                        document.querySelectorAll('.custom-dropdown.open').forEach(d => { if (d !== dropdown) d.classList.remove('open'); });
+                        dropdown.classList.toggle('open');
+                        if (!wasOpen) {
+                            const search = dropdown.querySelector('.dropdown-search');
+                            if (search) { search.value = ''; search.focus(); }
+                            dropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('hidden'));
+                            dropdown.querySelectorAll('.dropdown-group-label').forEach(l => l.style.display = 'block');
+                            const noResults = dropdown.querySelector('.no-results');
+                            if (noResults) noResults.style.display = 'none';
+                        }
+                    });
                 }
             });
         </script>
