@@ -286,7 +286,7 @@
                     </p>
                     <input
                         type="file"
-                        id="fileInput"
+                        id="fileInputEl"
                         hidden
                         onchange="handleFiles(this.files)"
                     />
@@ -425,7 +425,7 @@
         <script src="main.js"></script>
         <script>
             // Keep a reference to the file input so we can reset it
-            const fileInput = document.getElementById("fileInput");
+            const fileInput = document.getElementById("fileInputEl");
             const initialDropzoneIcon =
                 document.getElementById("dropzoneIcon").innerHTML;
             const initialDropzoneTitle =
