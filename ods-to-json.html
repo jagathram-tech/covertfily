@@ -488,7 +488,7 @@
                 loadingText.textContent = "Converting " + file.name + "...";
 
                 try {
-                    await window.processFile(file, "png", "jpg");
+                    await window.processFile(file, 'ods', 'json');
                     loading.style.display = "none";
                     if (progressContainer)
                         progressContainer.style.display = "none";
