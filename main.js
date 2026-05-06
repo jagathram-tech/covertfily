@@ -310,8 +310,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Click handler moved to inline in index.html to prevent double-firing
   // dropzone.addEventListener('click', () => { ... });
 
-  // Handle drag and drop for pages that actually accept direct uploads.
-  if (dropzone && document.getElementById("fileInput")) {
+  // Handle drag and drop only on pages with format containers (like index.html)
+  // Avoid interfering with specialty tool pages that handle files themselves
+  if (
+    dropzone &&
+    document.getElementById("fileInput") &&
+    formatFromContainer &&
+    formatToContainer
+  ) {
     dropzone.addEventListener("dragover", (e) => {
       e.preventDefault();
       dropzone.style.borderColor = "var(--primary-hover)";

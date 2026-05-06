@@ -433,10 +433,22 @@
             const initialDropzoneSubtitle =
                 document.getElementById("dropzoneSubtitle").textContent;
 
+            // Prevent file input click from bubbling to dropzone
+            fileInput.addEventListener("click", function (e) {
+                e.stopPropagation();
+            });
+
             // Make dropzone clickable to trigger file input
             document
                 .getElementById("dropzone")
-                .addEventListener("click", function () {
+                .addEventListener("click", function (e) {
+                    // Don't trigger if clicking the file input itself
+                    if (
+                        e.target === fileInput ||
+                        e.target.closest("#fileInputEl")
+                    ) {
+                        return;
+                    }
                     fileInput.click();
                 });
 
@@ -488,7 +500,7 @@
                 loadingText.textContent = "Converting " + file.name + "...";
 
                 try {
-                    await window.processFile(file, 'avif', 'png');
+                    await window.processFile(file, "avif", "png");
                     loading.style.display = "none";
                     if (progressContainer)
                         progressContainer.style.display = "none";
