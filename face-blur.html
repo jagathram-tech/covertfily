@@ -115,7 +115,9 @@
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>`n                <li><a href="blog.html">Blog</a></li>`n                <li class="dropdown">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <div class="tool-search-wrapper">
@@ -290,7 +292,7 @@
     </footer>
 
     <script>
-        // ─── State ───────────────────────────────────────────────────────────
+        // â”€â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         let originalImageData = null;
         let redactions = [];           // array of { x, y, w, h, mode, intensity } for box tool
         let currentMode = 'blur';      // 'blur' | 'mosaic'
@@ -300,7 +302,7 @@
         let imgNaturalW, imgNaturalH;
         const brushCursor = document.getElementById('brushCursor');
 
-        // ─── DOM Refs ─────────────────────────────────────────────────────────
+        // â”€â”€â”€ DOM Refs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         const fileInput       = document.getElementById('fileInput');
         const canvasArea      = document.getElementById('canvasArea');
         const canvasWrap      = document.getElementById('canvasWrap');
@@ -316,7 +318,7 @@
         const btnClearAll     = document.getElementById('btnClearAll');
         const btnDownload     = document.getElementById('btnDownload');
 
-        // ─── File Loading ─────────────────────────────────────────────────────
+        // â”€â”€â”€ File Loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         fileInput.addEventListener('change', e => {
             const file = e.target.files[0];
             if (!file) return;
@@ -347,7 +349,7 @@
             fileInput.value = '';
         });
 
-        // ─── Mode & Intensity ─────────────────────────────────────────────────
+        // â”€â”€â”€ Mode & Intensity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         window.setMode = (m) => {
             currentMode = m;
             document.getElementById('modeBlur').classList.toggle('active', m === 'blur');
@@ -374,7 +376,7 @@
             brushCursor.style.height = size + 'px';
         };
 
-        // ─── Canvas coordinate helpers ────────────────────────────────────────
+        // â”€â”€â”€ Canvas coordinate helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function getCanvasCoords(e) {
             const rect = mainCanvas.getBoundingClientRect();
             const scaleX = mainCanvas.width  / rect.width;
@@ -395,7 +397,7 @@
             return { x: clientX - rect.left, y: clientY - rect.top };
         }
 
-        // ─── Draw Events ──────────────────────────────────────────────────────
+        // â”€â”€â”€ Draw Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         mainCanvas.addEventListener('mousedown',  onPointerDown);
         mainCanvas.addEventListener('mousemove',  onPointerMove);
         mainCanvas.addEventListener('mouseup',    onPointerUp);
@@ -491,7 +493,7 @@
         // Also hide brush cursor on mouseleave
         mainCanvas.addEventListener('mouseleave', () => { brushCursor.style.display = 'none'; isDrawing = false; selectionBox.style.display = 'none'; });
 
-        // ─── Rendering ───────────────────────────────────────────────────────
+        // â”€â”€â”€ Rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function renderCanvas() {
             ctx.putImageData(originalImageData, 0, 0);
             redactions.forEach(r => {
@@ -503,7 +505,7 @@
             });
         }
 
-        // ─── Brush painting ───────────────────────────────────────────────────
+        // â”€â”€â”€ Brush painting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function applyEffectAt(cx, cy) {
             const brushR = parseInt(document.getElementById('brushSlider').value);
             const intensity = parseInt(intensitySlider.value);
@@ -601,7 +603,7 @@
             ctx.putImageData(imageData, x, y);
         }
 
-        // ─── Redaction List ──────────────────────────────────────────────────
+        // â”€â”€â”€ Redaction List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function renderRedactionList() {
             redactionList.innerHTML = '';
             redactionListGroup.style.display = redactions.length ? 'flex' : 'none';
@@ -611,7 +613,7 @@
                 pill.className = 'redaction-pill';
                 const label = r.type === 'brush'
                     ? `<i class="fas fa-paint-brush"></i> Brush stroke`
-                    : `<i class="fas fa-${r.mode === 'blur' ? 'tint' : 'th'}"></i> ${r.mode === 'blur' ? 'Blur' : 'Mosaic'} box — ${r.w}×${r.h}px`;
+                    : `<i class="fas fa-${r.mode === 'blur' ? 'tint' : 'th'}"></i> ${r.mode === 'blur' ? 'Blur' : 'Mosaic'} box â€” ${r.w}Ã—${r.h}px`;
                 pill.innerHTML = `<span>${label}</span><button onclick="removeRedaction(${i})" title="Remove"><i class="fas fa-times"></i></button>`;
                 redactionList.appendChild(pill);
             });
@@ -624,7 +626,7 @@
             updateButtons();
         };
 
-        // ─── Actions ─────────────────────────────────────────────────────────
+        // â”€â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         window.undoLast = () => {
             if (!redactions.length) return;
             redactions.pop();
@@ -655,7 +657,7 @@
             btnDownload.disabled = !originalImageData;
         }
 
-        // ─── Nav search ───────────────────────────────────────────────────────
+        // â”€â”€â”€ Nav search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         document.querySelector('.tool-search').addEventListener('input', (e) => {
             const q = e.target.value.toLowerCase();
             document.querySelectorAll('.tool-list a').forEach(a => {

@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -219,7 +212,9 @@
         <div class="nav-left">
             <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>`n                <li><a href="blog.html">Blog</a></li>`n                <li class="dropdown">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <div class="tool-search-wrapper">
@@ -317,7 +312,7 @@
                     <div class="status-bar" id="statusBar">
                         <div class="status-top">
                             <div class="status-dot pulse" id="statusDot"></div>
-                            <span class="status-text" id="statusText">Loading AI model…</span>
+                            <span class="status-text" id="statusText">Loading AI modelâ€¦</span>
                             <span class="status-pct" id="statusPct"></span>
                         </div>
                         <div class="progress-track" id="progressTrack">
@@ -358,8 +353,24 @@
         <section style="padding: 80px 8%; background: #f8fafc;">
             <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
                 <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 50px;">See Image to Text OCR Online in Action</h2>
-                <div style="position: relative; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-xl); border: 1px solid var(--border);">
-                    <img src="ocr_demo_visual_1777635700807.png" alt="OCR Demo" style="width: 100%; display: block;">
+                <div style="position: relative; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-xl); border: 1px solid var(--border); background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 340px; display: grid; place-items: center;">
+                    <div style="width: min(88%, 760px); background: white; border-radius: 18px; border: 1px solid #cbd5e1; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12); overflow: hidden;">
+                        <div style="padding: 18px 22px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; text-align: left; font-weight: 700; color: var(--text-main);">Invoice Scan</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                            <div style="padding: 22px; background: repeating-linear-gradient(0deg, #f8fafc 0 22px, #eef2f7 22px 23px); text-align: left; color: #64748b; font-family: serif;">
+                                ACME SUPPLIES<br>
+                                Invoice #2048<br>
+                                Date: 2026-05-05<br>
+                                Total: $148.00
+                            </div>
+                            <div style="padding: 22px; background: white; text-align: left; color: var(--text-main); line-height: 1.8;">
+                                <strong>ACME SUPPLIES</strong><br>
+                                Invoice #2048<br>
+                                Date: 2026-05-05<br>
+                                Total: $148.00
+                            </div>
+                        </div>
+                    </div>
                     <div style="position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); color: white; padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 700; backdrop-filter: blur(4px);">BEFORE: SCANNED PHOTO</div>
                     <div style="position: absolute; top: 20px; right: 20px; background: var(--primary); color: white; padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 700;">AFTER: DIGITIZED TEXT</div>
                 </div>
@@ -449,7 +460,7 @@
     <!-- Tesseract.js for browser OCR -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script>
-        // ─── State ──────────────────────────────────────────────────────────
+        // â”€â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         let uploadedImage = null;
         let originalFilename = 'image';
         let imgElement = new Image();
@@ -476,7 +487,7 @@
             {"code":"pol","name":"Polish"}
         ];
 
-        // ─── DOM refs ────────────────────────────────────────────────────────
+        // â”€â”€â”€ DOM refs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         const dropzone        = document.getElementById('dropzone');
         const fileInput       = document.getElementById('fileInput');
         const uploadPreview   = document.getElementById('uploadPreview');
@@ -498,7 +509,7 @@
         const langSearch      = document.getElementById('langSearch');
         const langOptions     = document.getElementById('langOptions');
 
-        // ─── Custom Dropdown Logic ────────────────────────────────────────────
+        // â”€â”€â”€ Custom Dropdown Logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function renderLangOptions(query = '') {
             langOptions.innerHTML = '';
             const filtered = languages.filter(l => l.name.toLowerCase().includes(query.toLowerCase()));
@@ -542,7 +553,7 @@
         // Initial render
         renderLangOptions();
 
-        // ─── Status & progress helpers ────────────────────────────────────────
+        // â”€â”€â”€ Status & progress helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function setStatus(msg, isError = false, pct = null) {
             statusBar.style.display = 'flex';
             statusBar.classList.toggle('error', isError);
@@ -566,7 +577,7 @@
             statusPct.textContent = '';
         }
 
-        // ─── File handling ────────────────────────────────────────────────────
+        // â”€â”€â”€ File handling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; };
         dropzone.ondragleave = () => { dropzone.style.borderColor = '#cbd5e1'; };
         dropzone.ondrop = (e) => {
@@ -594,7 +605,7 @@
             reader.readAsDataURL(file);
         }
 
-        // ─── Image Preprocessing ─────────────────────────────────────────────
+        // â”€â”€â”€ Image Preprocessing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function preprocessImage() {
             if (!document.getElementById('chkPreprocess').checked) {
                 const c = document.createElement('canvas');
@@ -648,31 +659,31 @@
             return canvas.toDataURL('image/png');
         }
 
-        // ─── OCR ─────────────────────────────────────────────────────────────
+        // â”€â”€â”€ OCR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         window.extractText = async () => {
             if (!uploadedImage) return;
             btnExtract.disabled = true;
-            btnExtract.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
+            btnExtract.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processingâ€¦';
             
             const lang = selectedLang;
 
             try {
                 // Preprocess
-                setStatus('Preprocessing image…', false, 0);
+                setStatus('Preprocessing imageâ€¦', false, 0);
                 await new Promise(r => setTimeout(r, 50));
                 const processedSrc = preprocessImage();
 
                 // Start Tesseract
-                setStatus('Initializing OCR Engine…', false, 5);
+                setStatus('Initializing OCR Engineâ€¦', false, 5);
                 
                 const worker = await Tesseract.createWorker(lang, 1, {
                     langPath: 'https://tessdata.projectnaptha.com/4.0.0_best',
                     cacheMethod: 'indexedDB',
                     logger: m => {
                         if (m.status === 'loading tesseract core' || m.status === 'loading language traineddata' || m.status === 'downloading tesseract data' || m.status === 'downloading language traineddata') {
-                            setStatus(`Downloading OCR data (${lang})…`, false, (m.progress * 50));
+                            setStatus(`Downloading OCR data (${lang})â€¦`, false, (m.progress * 50));
                         } else if (m.status === 'recognizing text') {
-                            setStatus('Extracting text…', false, 50 + (m.progress * 50));
+                            setStatus('Extracting textâ€¦', false, 50 + (m.progress * 50));
                         }
                     }
                 });
@@ -705,7 +716,7 @@
             }
         };
 
-        // ─── Actions ──────────────────────────────────────────────────────────
+        // â”€â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         window.copyText = () => {
             navigator.clipboard.writeText(textOutput.value).then(() => {
                 const originalHtml = btnCopy.innerHTML;
@@ -724,7 +735,7 @@
             URL.revokeObjectURL(url);
         };
 
-        // ─── Nav search ───────────────────────────────────────────────────────
+        // â”€â”€â”€ Nav search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         document.querySelector('.tool-search').addEventListener('input', (e) => {
             const q = e.target.value.toLowerCase();
             document.querySelectorAll('.tool-list a').forEach(a => {

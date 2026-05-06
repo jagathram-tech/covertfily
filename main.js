@@ -48,6 +48,33 @@ const formatLabels = {
     'xml': 'XML Data', 'zip': 'Archive (ZIP)', 'docx': 'Word Document (DOCX)'
 };
 
+window.FORMAT_MAPPING = formatMapping;
+window.FORMAT_LABELS = formatLabels;
+
+window.updateTargetDropdown = function(sourceFormat) {
+    const toContainer = document.getElementById('formatToContainer');
+    const toItems = document.getElementById('toItems');
+    if (!toContainer || !toItems) return;
+
+    const trigger = toContainer.querySelector('.dropdown-trigger');
+    const valueSpan = toContainer.querySelector('.dropdown-value');
+    const targets = formatMapping[sourceFormat] || [];
+
+    toContainer.dataset.value = '';
+    if (valueSpan) valueSpan.textContent = 'To: Select output...';
+    if (trigger) trigger.disabled = targets.length === 0;
+
+    if (targets.length === 0) {
+        toItems.innerHTML = '<div class="dropdown-placeholder" style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.9rem;">No output formats available</div>';
+        return;
+    }
+
+    toItems.innerHTML = targets.map(target => {
+        const label = formatLabels[target] || target.toUpperCase();
+        return `<div class="dropdown-item" data-value="${target}" onclick="selectToFormat('${target}','${label}')">${label}</div>`;
+    }).join('');
+};
+
 window.filterFormats = function(input, containerId) {
     const query = input.value.toLowerCase();
     const container = document.getElementById(containerId);
@@ -129,8 +156,6 @@ window.selectToFormat = function(value, label) {
     dropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.toggle('selected', i.dataset.value === value));
 };
 
-// Function updateTargetDropdown removed. Logic consolidated into selectBasic in index.html.
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Covertfily initialized');
     
@@ -195,14 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-        // Close menu on click outside
-        document.addEventListener('click', (e) => {
-            if (document.body.classList.contains('nav-active') && !e.target.closest('.nav-links') && !e.target.closest('.menu-toggle')) {
-                document.body.classList.remove('nav-active');
-            }
-        });
-    }
-
     if (typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
@@ -262,23 +279,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle drag and drop
-    dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzone.style.borderColor = 'var(--primary-hover)';
-        dropzone.style.background = 'var(--bg-alt)';
-    });
+    if (dropzone) {
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary-hover)';
+            dropzone.style.background = 'var(--bg-alt)';
+        });
 
-    dropzone.addEventListener('dragleave', () => {
-        dropzone.style.borderColor = 'var(--primary)';
-        dropzone.style.background = 'white';
-    });
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+        });
 
-    dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.style.borderColor = 'var(--primary)';
-        dropzone.style.background = 'white';
-        if (window.handleFiles) window.handleFiles(e.dataTransfer.files);
-    });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+            if (window.handleFiles) window.handleFiles(e.dataTransfer.files);
+        });
+    }
 
     // Change handler moved to inline in index.html to prevent double-firing
     // fileInput.addEventListener('change', (e) => { ... });
@@ -303,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!formatTo) {
-            const targets = window.FORMAT_MAPPING ? window.FORMAT_MAPPING[formatFrom] : [];
+            const targets = formatMapping[formatFrom] || [];
             if (targets && targets.length > 0) {
                 formatTo = targets[0];
             }
@@ -1169,36 +1188,20 @@ ${paragraphs}
         }
     }
 
-    // Mobile menu toggle logic
-    const menuToggle = document.querySelector('.menu-toggle');
-    const body = document.body;
-
-    if (menuToggle) {
-        menuToggle.onclick = (e) => {
-            e.stopPropagation();
-            body.classList.toggle('nav-active');
-        };
-    }
-
-    // Close menu when clicking outside or on links
-    document.addEventListener('click', (e) => {
-        if (body.classList.contains('nav-active')) {
-            const navLinks = document.querySelector('.nav-links');
-            if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
-                body.classList.remove('nav-active');
-            }
-        }
-    });
-
-    // Handle mobile dropdowns
-    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
-        toggle.onclick = (e) => {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                toggle.parentElement.classList.toggle('active');
-            }
-        };
-    });
-
     // Mobile support is now fully enabled and optimized.
+    
+    // Progress Bar Utility
+    window.updateProgress = function(percent) {
+        const fill = document.querySelector('.progress-bar-fill');
+        const container = document.querySelector('.progress-container');
+        if (container) container.style.display = 'block';
+        if (fill) fill.style.width = percent + '%';
+    };
+
+    window.hideProgress = function() {
+        const container = document.querySelector('.progress-container');
+        if (container) container.style.display = 'none';
+        const fill = document.querySelector('.progress-bar-fill');
+        if (fill) fill.style.width = '0%';
+    };
 });

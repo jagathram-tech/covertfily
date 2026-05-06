@@ -80,7 +80,6 @@ for (const [from, tos] of Object.entries(BASIC_MAPPING)) {
             .replace(/PNG images to JPG/g, fromLabel + ' to ' + toLabel)
             .replace(/class="fas fa-file-image"/g, 'class="fas ' + icon + '"')
             .replace(/Upload PNG/gi, 'Upload ' + from.toUpperCase())
-            .replace(/image\/png/gi, '.' + from)
             .replace(/Download JPG/gi, 'Download ' + to.toUpperCase())
             .replace(/converted\.jpg/gi, 'converted.' + to)
             .replace(/'png', 'jpg'/g, "'" + from + "', '" + to + "'")
@@ -90,7 +89,9 @@ for (const [from, tos] of Object.entries(BASIC_MAPPING)) {
             .replace(/your PNG files to JPG/gi, 'your ' + from.toUpperCase() + ' files to ' + to.toUpperCase())
             .replace(/PNG To JPG/gi, from.toUpperCase() + ' To ' + to.toUpperCase())
             .replace(/PNG images to JPEG/gi, fromLabel + ' to ' + toLabel)
-            .replace(/PNG images to JPG/gi, fromLabel + ' to ' + toLabel);
+            .replace(/PNG images to JPG/gi, fromLabel + ' to ' + toLabel)
+            .replace(/<link rel="icon" type="[^"]+" href="favicon\.png">/i, '<link rel="icon" type="image/png" href="favicon.png">')
+            .replace(/`n/g, '\n');
 
         fs.writeFileSync(from + '-to-' + to + '.html', newHtml);
         count++;
