@@ -224,7 +224,7 @@
         <section class="converter-section">
             <div class="converter-container">
                 <h2 class="converter-title">Convert Your Files Now</h2>
-                <p class="converter-subtitle">Select formats, upload your file, and convert instantly — 100% in your browser</p>
+                <p class="converter-subtitle">Select your formats and jump straight into the dedicated converter page.</p>
 
                 <div class="format-selectors">
                     <div class="custom-dropdown format-select" id="formatFromContainer" data-value="">
@@ -287,13 +287,12 @@
                     </div>
                 </div>
 
-                <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                <div class="dropzone" id="dropzone" onclick="goToDedicatedPage()">
                     <div class="dropzone-icon" id="dropzoneIcon">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                        <i class="fas fa-arrow-right"></i>
                     </div>
-                    <h2 id="dropzoneTitle">Drop files here</h2>
-                    <p id="dropzoneSubtitle">Or click to select files from your computer</p>
-                    <input type="file" id="fileInput" hidden multiple onchange="window.handleFiles(this.files)">
+                    <h2 id="dropzoneTitle">Open Dedicated Converter</h2>
+                    <p id="dropzoneSubtitle">No upload dialog here. Pick formats first, then continue.</p>
                 </div>
 
                 <div class="loading" id="loading" style="display:none;">
@@ -392,6 +391,20 @@
                 container.querySelector('.dropdown-value').textContent = 'To: ' + label;
                 container.dataset.value = val;
                 container.classList.remove('open');
+            };
+
+            window.goToDedicatedPage = function() {
+                const fromContainer = document.getElementById('formatFromContainer');
+                const toContainer = document.getElementById('formatToContainer');
+                const fromVal = fromContainer ? fromContainer.dataset.value : '';
+                const toVal = toContainer ? toContainer.dataset.value : '';
+
+                if (!fromVal || !toVal) {
+                    alert('Select both From and To formats first.');
+                    return;
+                }
+
+                window.location.href = `${fromVal}-to-${toVal}.html`;
             };
 
             document.addEventListener('click', function(e) {
