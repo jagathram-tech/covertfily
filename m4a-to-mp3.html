@@ -27,12 +27,12 @@
                 padding: 0 20px;
                 text-align: center;
             }
-            .dropzone {
+            .tool-container .dropzone {
                 margin-top: 40px;
                 cursor: pointer;
                 transition: all 0.2s;
             }
-            .dropzone:hover {
+            .tool-container .dropzone:hover {
                 border-color: var(--primary);
                 background: #f8fafc;
             }
@@ -61,10 +61,79 @@
                 align-items: center;
                 gap: 10px;
                 transition: 0.2s;
+                text-decoration: none;
             }
             .btn-main:hover {
                 background: var(--primary-hover);
                 transform: translateY(-2px);
+            }
+            .progress-container {
+                width: 100%;
+                max-width: 400px;
+                height: 8px;
+                background: #e2e8f0;
+                border-radius: 10px;
+                margin: 20px auto;
+                overflow: hidden;
+            }
+            .progress-bar-fill {
+                width: 0%;
+                height: 100%;
+                background: var(--primary);
+                border-radius: 10px;
+                transition: width 0.3s ease;
+            }
+            .loading-block {
+                margin-top: 40px;
+                padding: 3rem 2rem;
+                text-align: center;
+            }
+            .loading-block .spinner-icon {
+                font-size: 3rem;
+                color: var(--primary);
+                margin-bottom: 1rem;
+            }
+            .loading-block h2 {
+                font-size: 1.3rem;
+                color: var(--text-main);
+                margin-bottom: 0.5rem;
+            }
+            .loading-block p {
+                color: var(--text-muted);
+                font-size: 0.95rem;
+            }
+            .result-block {
+                margin-top: 40px;
+                padding: 3rem 2rem;
+                text-align: center;
+            }
+            .result-block .success-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 70px;
+                height: 70px;
+                background: #ecfdf5;
+                color: #10b981;
+                border-radius: 50%;
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            .result-block h2 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            .result-block .file-name {
+                font-weight: 600;
+                margin: 10px 0 24px;
+                color: var(--text-main);
+                word-break: break-all;
+            }
+            .result-block .actions {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                flex-wrap: wrap;
             }
         </style>
     </head>
@@ -173,7 +242,8 @@
         </nav>
 
         <main>
-            <div class="tool-grid">
+            <div class="tool-container">
+                <!-- Header -->
                 <div
                     class="section-title"
                     style="
@@ -203,6 +273,7 @@
                     </p>
                 </div>
 
+                <!-- Upload Dropzone -->
                 <div
                     class="dropzone"
                     id="dropzone"
@@ -221,52 +292,39 @@
                     />
                 </div>
 
-                <div id="loading" style="display: none; margin-top: 40px">
-                    <div class="dropzone-icon">
-                        <i
-                            class="fas fa-cog fa-spin"
-                            style="color: var(--primary)"
-                        ></i>
+                <!-- Loading / Progress -->
+                <div id="loading" class="loading-block" style="display: none">
+                    <div class="spinner-icon">
+                        <i class="fas fa-cog fa-spin"></i>
                     </div>
                     <h2 id="loadingText">Processing...</h2>
                     <p>Running 100% locally on your device.</p>
+                    <div class="progress-container" id="progressContainer">
+                        <div
+                            class="progress-bar-fill"
+                            id="progressBarFill"
+                        ></div>
+                    </div>
                 </div>
 
-                <div id="resultArea" style="display: none; margin-top: 40px">
-                    <div
-                        class="dropzone-icon"
-                        style="background: #ecfdf5; color: #10b981"
-                    >
+                <!-- Result -->
+                <div id="resultArea" class="result-block" style="display: none">
+                    <div class="success-icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h2>Conversion Complete!</h2>
-                    <p
-                        id="fileNameDisplay"
-                        style="
-                            font-weight: 600;
-                            margin: 10px 0;
-                            color: var(--text-main);
-                        "
-                    ></p>
-                    <div
-                        id="actionButtons"
-                        style="
-                            margin-top: 24px;
-                            display: flex;
-                            justify-content: center;
-                            gap: 12px;
-                            flex-wrap: wrap;
-                        "
-                    >
+                    <p class="file-name" id="fileNameDisplay"></p>
+                    <div class="actions">
                         <a
                             id="downloadBtn"
                             href="#"
                             download
                             class="btn-main"
                             style="font-size: 1.1rem; padding: 16px 32px"
-                            ><i class="fas fa-download"></i> Download Converted
-                            File</a
                         >
+                            <i class="fas fa-download"></i> Download Converted
+                            File
+                        </a>
                         <button
                             onclick="location.reload()"
                             class="btn-main"
@@ -327,7 +385,6 @@
                     <h4>Product</h4>
                     <ul>
                         <li><a href="index.html">Home</a></li>
-
                         <li><a href="image-resizer.html">Image Tools</a></li>
                     </ul>
                 </div>
@@ -371,16 +428,22 @@
                 const file = files[0];
                 const dropzone = document.getElementById("dropzone");
                 const loading = document.getElementById("loading");
+                const progressContainer =
+                    document.getElementById("progressContainer");
                 const resultArea = document.getElementById("resultArea");
                 const loadingText = document.getElementById("loadingText");
 
                 dropzone.style.display = "none";
                 loading.style.display = "block";
+                if (progressContainer)
+                    progressContainer.style.display = "block";
                 loadingText.textContent = "Converting " + file.name + "...";
 
                 try {
                     await window.processFile(file, "png", "jpg");
                     loading.style.display = "none";
+                    if (progressContainer)
+                        progressContainer.style.display = "none";
                     resultArea.style.display = "block";
                     document.getElementById("fileNameDisplay").textContent =
                         file.name;
