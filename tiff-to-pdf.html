@@ -62,6 +62,8 @@
                 gap: 10px;
                 transition: 0.2s;
                 text-decoration: none;
+                font-size: 1rem;
+                font-family: inherit;
             }
             .btn-main:hover {
                 background: var(--primary-hover);
@@ -274,16 +276,14 @@
                 </div>
 
                 <!-- Upload Dropzone -->
-                <div
-                    class="dropzone"
-                    id="dropzone"
-                    onclick="document.getElementById('fileInput').click()"
-                >
-                    <div class="dropzone-icon">
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon" id="dropzoneIcon">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
-                    <h2>Upload TIFF</h2>
-                    <p>Drag and drop or click to upload</p>
+                    <h2 id="dropzoneTitle">Upload TIFF</h2>
+                    <p id="dropzoneSubtitle">
+                        Drag and drop or click to upload
+                    </p>
                     <input
                         type="file"
                         id="fileInput"
@@ -326,7 +326,8 @@
                             File
                         </a>
                         <button
-                            onclick="location.reload()"
+                            id="convertAnotherBtn"
+                            onclick="resetConverter()"
                             class="btn-main"
                             style="background: #64748b"
                         >
@@ -423,25 +424,62 @@
 
         <script src="main.js"></script>
         <script>
+            // Keep a reference to the file input so we can reset it
+            const fileInput = document.getElementById("fileInput");
+            const initialDropzoneIcon =
+                document.getElementById("dropzoneIcon").innerHTML;
+            const initialDropzoneTitle =
+                document.getElementById("dropzoneTitle").textContent;
+            const initialDropzoneSubtitle =
+                document.getElementById("dropzoneSubtitle").textContent;
+
+            // Make dropzone clickable to trigger file input
+            document
+                .getElementById("dropzone")
+                .addEventListener("click", function () {
+                    fileInput.click();
+                });
+
+            // Handle drag and drop
+            const dropzone = document.getElementById("dropzone");
+            dropzone.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                dropzone.style.borderColor = "var(--primary-hover)";
+                dropzone.style.background = "#f8fafc";
+            });
+            dropzone.addEventListener("dragleave", function () {
+                dropzone.style.borderColor = "var(--primary)";
+                dropzone.style.background = "white";
+            });
+            dropzone.addEventListener("drop", function (e) {
+                e.preventDefault();
+                dropzone.style.borderColor = "var(--primary)";
+                dropzone.style.background = "white";
+                if (e.dataTransfer.files.length) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+
             async function handleFiles(files) {
                 if (!files.length) return;
                 const file = files[0];
-                const dropzone = document.getElementById("dropzone");
+
+                // Update dropzone to show selected file (don't overwrite innerHTML!)
+                document.getElementById("dropzoneIcon").innerHTML =
+                    '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
+                document.getElementById("dropzoneTitle").textContent =
+                    "File Selected!";
+                document.getElementById("dropzoneSubtitle").textContent =
+                    file.name;
+
+                // Brief pause to show confirmation
+                await new Promise((resolve) => setTimeout(resolve, 800));
+
                 const loading = document.getElementById("loading");
                 const progressContainer =
                     document.getElementById("progressContainer");
                 const resultArea = document.getElementById("resultArea");
                 const loadingText = document.getElementById("loadingText");
-
-                // Show immediate feedback in dropzone
-                dropzone.innerHTML = `
-                <div class="dropzone-icon"><i class="fas fa-check-circle" style="color: #10b981;"></i></div>
-                <h2>File Selected!</h2>
-                <p>${file.name}</p>
-            `;
-
-                // Brief pause to show feedback, then start conversion
-                await new Promise((resolve) => setTimeout(resolve, 1000));
 
                 dropzone.style.display = "none";
                 loading.style.display = "block";
@@ -459,18 +497,27 @@
                         file.name;
                 } catch (err) {
                     console.error(err);
-                    // Reset UI on error so user can try again
-                    dropzone.style.display = "block";
-                    loading.style.display = "none";
-                    if (progressContainer)
-                        progressContainer.style.display = "none";
-                    dropzone.innerHTML = `
-                    <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <h2>Upload TIFF</h2>
-                    <p>Drag and drop or click to upload</p>
-                `;
                     alert("Conversion failed: " + err.message);
+                    // Reset UI so user can try again
+                    resetConverter();
                 }
+            }
+
+            function resetConverter() {
+                // Reset all UI elements to initial state
+                document.getElementById("dropzone").style.display = "";
+                document.getElementById("dropzoneIcon").innerHTML =
+                    initialDropzoneIcon;
+                document.getElementById("dropzoneTitle").textContent =
+                    initialDropzoneTitle;
+                document.getElementById("dropzoneSubtitle").textContent =
+                    initialDropzoneSubtitle;
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("progressContainer").style.display =
+                    "none";
+                document.getElementById("resultArea").style.display = "none";
+                // Reset file input so same file can be re-selected
+                fileInput.value = "";
             }
         </script>
     </body>
