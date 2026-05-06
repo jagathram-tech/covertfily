@@ -433,6 +433,16 @@
                 const resultArea = document.getElementById("resultArea");
                 const loadingText = document.getElementById("loadingText");
 
+                // Show immediate feedback in dropzone
+                dropzone.innerHTML = `
+                <div class="dropzone-icon"><i class="fas fa-check-circle" style="color: #10b981;"></i></div>
+                <h2>File Selected!</h2>
+                <p>${file.name}</p>
+            `;
+
+                // Brief pause to show feedback, then start conversion
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+
                 dropzone.style.display = "none";
                 loading.style.display = "block";
                 if (progressContainer)
@@ -449,8 +459,17 @@
                         file.name;
                 } catch (err) {
                     console.error(err);
+                    // Reset UI on error so user can try again
+                    dropzone.style.display = "block";
+                    loading.style.display = "none";
+                    if (progressContainer)
+                        progressContainer.style.display = "none";
+                    dropzone.innerHTML = `
+                    <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <h2>Upload JPG</h2>
+                    <p>Drag and drop or click to upload</p>
+                `;
                     alert("Conversion failed: " + err.message);
-                    location.reload();
                 }
             }
         </script>
