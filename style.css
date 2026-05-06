@@ -488,6 +488,184 @@ nav {
     gap: 30px;
 }
 
+/* Dedicated converter pages */
+.converter-tool-page {
+    padding: clamp(32px, 5vw, 68px) 8% 28px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.converter-workspace {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    gap: 32px;
+    align-items: stretch;
+}
+
+.converter-copy {
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.converter-copy i {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 1.8rem;
+    margin-bottom: 22px;
+}
+
+.converter-copy h1 {
+    font-size: clamp(2rem, 4vw, 3.35rem);
+    letter-spacing: 0;
+    margin-bottom: 16px;
+}
+
+.converter-copy p {
+    max-width: 620px;
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    line-height: 1.65;
+}
+
+.converter-dropzone {
+    margin-top: 0;
+    min-height: 340px;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-width: 2px;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: var(--shadow-lg);
+}
+
+.converter-dropzone:hover,
+.converter-dropzone.dragover {
+    border-color: var(--secondary);
+    background: #fffbeb;
+    transform: translateY(-3px);
+}
+
+.converter-status-card {
+    grid-column: 1 / -1;
+    display: none;
+    margin-top: 0;
+    padding: 30px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-md);
+}
+
+.converter-status-card h2 {
+    margin-top: 12px;
+    font-size: 1.45rem;
+}
+
+.converter-status-card p {
+    color: var(--text-muted);
+}
+
+.conversion-progress {
+    width: min(640px, 100%);
+    height: 12px;
+    margin: 24px auto 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.conversion-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+    transition: width 0.25s ease;
+}
+
+.conversion-progress-meta {
+    width: min(640px, 100%);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.conversion-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-main.download-output-btn {
+    background: var(--primary);
+    color: #ffffff;
+    min-width: 220px;
+    justify-content: center;
+}
+
+.btn-main.secondary-action {
+    background: #64748b;
+}
+
+.btn-main.secondary-action:hover {
+    background: #475569;
+}
+
+.converter-page .seo-section {
+    width: min(800px, calc(100% - 40px));
+}
+
+@media (max-width: 860px) {
+    .converter-tool-page {
+        padding: 28px 20px 20px;
+    }
+
+    .converter-workspace {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .converter-copy {
+        min-height: auto;
+        align-items: center;
+        text-align: center;
+    }
+
+    .converter-dropzone {
+        min-height: 260px;
+    }
+
+    .converter-status-card {
+        padding: 24px 18px;
+    }
+
+    .conversion-progress-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+}
+
 
 /* Footer */
 footer {
