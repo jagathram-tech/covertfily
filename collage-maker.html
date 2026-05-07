@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -261,7 +261,7 @@
         dropzone.ondrop = (e) => {
             e.preventDefault();
             dropzone.style.borderColor = '#cbd5e1'; dropzone.style.background = '#f8fafc';
-            handleFiles(e.dataTransfer.files);
+            handleToolFile(e.dataTransfer.files);
         };
         fileInput.onchange = (e) => handleFiles(e.target.files);
 
@@ -480,3 +480,4 @@
     </script>
 </body>
 </html>
+

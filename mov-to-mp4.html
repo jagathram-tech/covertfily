@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -288,7 +288,7 @@
     type="file"
     id="fileInputEl"
     hidden
-    onchange="handlePngToJpg(this.files)"
+    onchange="handleToolFile(this.files)"
   />
                 </div>
 
@@ -440,7 +440,7 @@ fileInput.addEventListener("click", function (e) {
              // Handle file selection via change event without causing navigation
              fileInput.addEventListener('change', async function(e) {
                  e.stopPropagation();
-                 await handleFiles(e.target.files);
+                 await handleToolFile(e.target.files);
              });
 
             // Make dropzone clickable to trigger file input
@@ -473,11 +473,11 @@ fileInput.addEventListener("click", function (e) {
                 dropzone.style.borderColor = "var(--primary)";
                 dropzone.style.background = "white";
                 if (e.dataTransfer.files.length) {
-                    handleFiles(e.dataTransfer.files);
+                    handleToolFile(e.dataTransfer.files);
                 }
             });
 
-            async function handlePngToJpg(files) {
+            async function handleToolFile(files) {
                 if (!files.length) return;
                 const file = files[0];
 
@@ -539,3 +539,4 @@ fileInput.addEventListener("click", function (e) {
         </script>
     </body>
 </html>
+
