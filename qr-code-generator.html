@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>QR Code Generator - Secure & Private Online | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Generate QR codes for URLs, plain text, email addresses, or phone numbers completely in your browser. No uploads, fully offline after load.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
+        .tabs { display: flex; justify-content: center; gap: 12px; margin-top: 20px; margin-bottom: 20px; }
+        .tab-btn { padding: 8px 18px; border-radius: 999px; background: #e2e8f0; color: var(--text-muted); border: none; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 5px; }
+        .input-group input[type=text], .input-group input[type=number] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
+        .preview-area { background: #f8fafc; border: 2px dashed var(--border); border-radius: 20px; min-height: 300px; display: flex; align-items: center; justify-content: center; }
+        .toolbar { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                            <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                            <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                            <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                            <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                            <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                            <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                            <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                            <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                            <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                            <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                            <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                            <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                            <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                            <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main class="tool-container">
+        <div class="section-title" style="text-align:center;">
+            <i class="fas fa-qrcode" style="color: var(--primary); font-size: 2rem;"></i>
+            <h1>QR Code Generator</h1>
+            <p style="color: var(--text-muted);">Create QR codes for URLs, text, email addresses, or phone numbers. All processing runs locally in your browser.</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tabUrl" onclick="switchQRTab('url')">URL</button>
+            <button class="tab-btn" id="tabText" onclick="switchQRTab('text')">Text</button>
+            <button class="tab-btn" id="tabEmail" onclick="switchQRTab('email')">Email</button>
+            <button class="tab-btn" id="tabPhone" onclick="switchQRTab('phone')">Phone</button>
+        </div>
+
+        <div class="input-group">
+            <label for="qrInput" id="qrInputLabel">Enter URL</label>
+            <input type="text" id="qrInput" placeholder="https://example.com" oninput="updateQRCode()">
+        </div>
+
+        <div class="input-group">
+            <label for="qrSize">Size (px)</label>
+            <input type="number" id="qrSize" value="256" min="64" max="1024" step="16" oninput="updateQRCode()">
+        </div>
+
+        <div class="input-group" style="display:flex; gap:12px; align-items:center;">
+            <div>
+                <label for="fgColor">Foreground</label>
+                <input type="color" id="fgColor" value="#000000" oninput="updateQRCode()">
+            </div>
+            <div>
+                <label for="bgColor">Background</label>
+                <input type="color" id="bgColor" value="#ffffff" oninput="updateQRCode()">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="ecLevelSelect">Error Correction Level</label>
+            <select id="ecLevelSelect" oninput="updateQRCode()">
+                <option value="L">Low (L) – 7% restoration</option>
+                <option value="M" selected>Medium (M) – 15% restoration</option>
+                <option value="Q">Quartile (Q) – 25% restoration</option>
+                <option value="H">High (H) – 30% restoration</option>
+            </select>
+        </div>
+
+        <div class="preview-area" id="qrPreview">
+            <span style="color: var(--text-muted);">QR preview will appear here</span>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn-download" onclick="downloadPNG()"><i class="fas fa-download"></i> Download PNG</button>
+            <button class="btn-download" onclick="downloadSVG()"><i class="fas fa-download"></i> Download SVG</button>
+        </div>
+
+        <div class="trust-badge" style="margin-top:24px;">
+            <i class="fas fa-shield-alt"></i>
+            <p><strong>Privacy Guaranteed:</strong> No data leaves your device. Everything runs client‑side.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="image-resizer.html">Image Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- QR Code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
+    <script>
+        // State variables
+        let currentMode = 'url';
+        const qrInput = document.getElementById('qrInput');
+        const qrInputLabel = document.getElementById('qrInputLabel');
+        const previewDiv = document.getElementById('qrPreview');
+
+        function switchQRTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
+            // Update placeholder/label based on mode
+            let placeholder = '';
+            switch (mode) {
+                case 'url':
+                    placeholder = 'https://example.com';
+                    qrInputLabel.textContent = 'Enter URL';
+                    break;
+                case 'text':
+                    placeholder = 'Hello world';
+                    qrInputLabel.textContent = 'Enter Text';
+                    break;
+                case 'email':
+                    placeholder = 'user@example.com';
+                    qrInputLabel.textContent = 'Enter Email';
+                    break;
+                case 'phone':
+                    placeholder = '+1234567890';
+                    qrInputLabel.textContent = 'Enter Phone Number';
+                    break;
+            }
+            qrInput.placeholder = placeholder;
+            updateQRCode();
+        }
+
+        function formatContent() {
+            const val = qrInput.value.trim();
+            if (!val) return '';
+            switch (currentMode) {
+                case 'url':
+                    return val;
+                case 'text':
+                    return val;
+                case 'email':
+                    return 'mailto:' + val;
+                case 'phone':
+                    return 'tel:' + val;
+                default:
+                    return val;
+            }
+        }
+
+        function updateQRCode() {
+            const text = formatContent();
+            const size = parseInt(document.getElementById('qrSize').value) || 256;
+            const fg = document.getElementById('fgColor').value || '#000000';
+            const bg = document.getElementById('bgColor').value || '#ffffff';
+            const ec = document.getElementById('ecLevelSelect').value || 'M';
+
+            // Clear previous
+            previewDiv.innerHTML = '';
+            if (!text) {
+                const span = document.createElement('span');
+                span.style.color = 'var(--text-muted)';
+                span.textContent = 'QR preview will appear here';
+                previewDiv.appendChild(span);
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            previewDiv.appendChild(canvas);
+            QRCode.toCanvas(canvas, text, {
+                errorCorrectionLevel: ec,
+                width: size,
+                color: { dark: fg, light: bg }
+            }, function (error) {
+                if (error) console.error(error);
+            });
+        }
+
+        function downloadPNG() {
+            const canvas = previewDiv.querySelector('canvas');
+            if (!canvas) return;
+            const url = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'qr-code.png';
+            link.href = url;
+            link.click();
+        }
+
+        function downloadSVG() {
+            const text = formatContent();
+            const size = parseInt(document.getElementById('qrSize').value) || 256;
+            const fg = document.getElementById('fgColor').value || '#000000';
+            const bg = document.getElementById('bgColor').value || '#ffffff';
+            const ec = document.getElementById('ecLevelSelect').value || 'M';
+            if (!text) return;
+            QRCode.toString(text, {
+                errorCorrectionLevel: ec,
+                type: 'svg',
+                width: size,
+                color: { dark: fg, light: bg }
+            }, function (err, svg) {
+                if (err) { console.error(err); return; }
+                const blob = new Blob([svg], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'qr-code.svg';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // Initialize
+        switchQRTab('url');
+
+        // Tool search (same as other pages)
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
