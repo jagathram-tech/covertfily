@@ -284,12 +284,11 @@
                     <p id="dropzoneSubtitle">
                         Drag and drop or click to upload
                     </p>
-                    <input
-                        type="file"
-                        id="fileInputEl"
-                        hidden
-                        onchange="handleFiles(this.files)"
-                    />
+<input
+                         type="file"
+                         id="fileInputEl"
+                         hidden
+                     />
                 </div>
 
                 <!-- Loading / Progress -->
@@ -434,9 +433,14 @@
                 document.getElementById("dropzoneSubtitle").textContent;
 
             // Prevent file input click from bubbling to dropzone
-            fileInput.addEventListener("click", function (e) {
-                e.stopPropagation();
-            });
+fileInput.addEventListener("click", function (e) {
+                 e.stopPropagation();
+             });
+             // Handle file selection via change event without causing navigation
+             fileInput.addEventListener('change', async function(e) {
+                 e.stopPropagation();
+                 await handleFiles(e.target.files);
+             });
 
             // Make dropzone clickable to trigger file input
             document
