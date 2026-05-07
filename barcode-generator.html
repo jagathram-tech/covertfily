@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Generator - Secure & Private Online | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Generate barcodes (Code128, EAN-13, EAN-8, UPC, Code39, ITF) directly in your browser. No uploads, fully offline after load.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                            <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                            <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                            <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                            <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                            <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                            <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                            <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                            <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                            <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                            <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                            <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                            <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                            <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                            <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                            <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main class="tool-container">
+        <div class="tool-header">
+            <div class="section-title">
+                <i class="fas fa-barcode" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Barcode Generator</h1>
+                <p style="color: var(--text-muted);">Create various barcode formats locally. All processing runs in your browser.</p>
+            </div>
+        </div>
+
+        <div class="tool-grid">
+            <div class="converter-dropzone" id="barcodePreview">
+                <canvas id="barcodeCanvas" style="max-width:100%; height:auto;"></canvas>
+            </div>
+            <div class="settings-panel">
+                <div class="setting-group">
+                    <label class="setting-label">Format</label>
+                    <select id="formatSelect" class="text-input">
+                        <option value="CODE128">Code128</option>
+                        <option value="EAN13">EAN-13</option>
+                        <option value="EAN8">EAN-8</option>
+                        <option value="UPC">UPC</option>
+                        <option value="CODE39">Code39</option>
+                        <option value="ITF">ITF</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Value</label>
+                    <input type="text" id="valueInput" class="text-input" placeholder="Enter data" oninput="updateBarcode()">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Width (module width)</label>
+                    <input type="number" id="widthInput" class="text-input" value="2" min="1" oninput="updateBarcode()">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Height (pixels)</label>
+                    <input type="number" id="heightInput" class="text-input" value="100" min="10" oninput="updateBarcode()">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Font Size (for text)</label>
+                    <input type="number" id="fontSizeInput" class="text-input" value="20" min="8" oninput="updateBarcode()">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Foreground Color</label>
+                    <input type="color" id="fgColor" value="#000000" oninput="updateBarcode()">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Background Color</label>
+                    <input type="color" id="bgColor" value="#ffffff" oninput="updateBarcode()">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Show Text</label>
+                    <input type="checkbox" id="showText" checked oninput="updateBarcode()">
+                </div>
+                <div class="toolbar">
+                    <button class="btn-main download-output-btn" onclick="downloadPNG()"><i class="fas fa-download"></i> Download PNG</button>
+                    <button class="btn-main download-output-btn" onclick="downloadSVG()"><i class="fas fa-download"></i> Download SVG</button>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <p><strong>Privacy Guaranteed:</strong> No data leaves your device. All generation is client‑side.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="image-resizer.html">Image Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('barcodeCanvas');
+        const formatSelect = document.getElementById('formatSelect');
+        const valueInput = document.getElementById('valueInput');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const fontSizeInput = document.getElementById('fontSizeInput');
+        const fgColor = document.getElementById('fgColor');
+        const bgColor = document.getElementById('bgColor');
+        const showText = document.getElementById('showText');
+        const previewDiv = document.getElementById('barcodePreview');
+        const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svgEl.style.display = 'none';
+        document.body.appendChild(svgEl);
+
+        function updateBarcode() {
+            const format = formatSelect.value;
+            const value = valueInput.value.trim();
+            if (!value) {
+                // clear canvas
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                previewDiv.innerHTML = '<span style="color: var(--text-muted);">Enter a value to generate a barcode</span>';
+                return;
+            }
+            const options = {
+                format: format,
+                lineColor: fgColor.value,
+                background: bgColor.value,
+                width: parseInt(widthInput.value) || 2,
+                height: parseInt(heightInput.value) || 100,
+                fontOptions: {fontSize: parseInt(fontSizeInput.value) || 20},
+                displayValue: showText.checked,
+            };
+            // Render to canvas
+            JsBarcode(canvas, value, options);
+            // Render to SVG for download
+            JsBarcode(svgEl, value, options);
+        }
+
+        function downloadPNG() {
+            const url = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'barcode.png';
+            link.href = url;
+            link.click();
+        }
+
+        function downloadSVG() {
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svgEl);
+            const blob = new Blob([svgString], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = 'barcode.svg';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize empty preview
+        previewDiv.innerHTML = '<span style="color: var(--text-muted);">Enter a value to generate a barcode</span>';
+</script>
+    <script src="main.js"></script>
+</body>
+</html>

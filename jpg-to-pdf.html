@@ -284,11 +284,12 @@
                     <p id="dropzoneSubtitle">
                         Drag and drop or click to upload
                     </p>
-<input
-                         type="file"
-                         id="fileInputEl"
-                         hidden
-                     />
+  <input
+    type="file"
+    id="fileInputEl"
+    hidden
+    onchange="handlePngToJpg(this.files)"
+  />
                 </div>
 
                 <!-- Loading / Progress -->
@@ -476,7 +477,7 @@ fileInput.addEventListener("click", function (e) {
                 }
             });
 
-            async function handleFiles(files) {
+            async function handlePngToJpg(files) {
                 if (!files.length) return;
                 const file = files[0];
 
