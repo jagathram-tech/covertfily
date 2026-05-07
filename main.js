@@ -1144,7 +1144,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const blob = new Blob([fullText], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       downloadFile(url, file.name.replace(/\.[^/.]+$/, "") + ".txt");
-      URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
       alert("Error extracting text from PDF: " + err.message);
@@ -1400,33 +1399,54 @@ ${paragraphs}
     };
   }
 
-  function downloadFile(url, filename) {
-    // Create a hidden anchor to trigger the download immediately
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    // If there's a visible download button in the result area, link it too
-    const dlBtn = document.getElementById("downloadBtn");
-    if (dlBtn) {
-      dlBtn.href = url;
-      dlBtn.download = filename;
-      dlBtn.textContent = " Download " + filename;
-      const icon = document.createElement("i");
-      icon.className = "fas fa-download";
-      dlBtn.insertBefore(icon, dlBtn.firstChild);
+function downloadFile(url, filename) {
+  // Revoke any previously created object URL to avoid memory leaks
+  const dlBtn = document.getElementById("downloadBtn");
+  if (dlBtn) {
+    const prevUrl = dlBtn.href;
+    if (prevUrl && prevUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(prevUrl);
     }
-
-    const resultArea = document.getElementById("resultArea");
-    if (resultArea) {
-      resultArea.style.display = "block";
-    }
+    // Update the button to point to the new file without auto‑triggering a download
+    dlBtn.href = url;
+    dlBtn.download = filename;
+    // Clear previous contents and set the new label
+    dlBtn.innerHTML = "";
+    const icon = document.createElement("i");
+    icon.className = "fas fa-download";
+    dlBtn.appendChild(icon);
+    dlBtn.appendChild(document.createTextNode(" Download " + filename));
   }
 
+  // Show the appropriate UI container for the download button
+  const resultArea = document.getElementById("resultArea");
+  if (resultArea) {
+    resultArea.style.display = "block";
+  }
+  const downloadContainer = document.getElementById("downloadContainer");
+  if (downloadContainer) {
+    downloadContainer.style.display = "block";
+  }
+}
+
   function resetDropzone() {
+    // Revoke any previously created object URL to free memory
+    const dlBtn = document.getElementById("downloadBtn");
+    if (dlBtn) {
+      const prevUrl = dlBtn.href;
+      if (prevUrl && prevUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(prevUrl);
+      }
+      // Reset button attributes and label
+      dlBtn.removeAttribute("href");
+      dlBtn.removeAttribute("download");
+      dlBtn.innerHTML = "";
+      const icon = document.createElement("i");
+      icon.className = "fas fa-download";
+      dlBtn.appendChild(icon);
+      dlBtn.appendChild(document.createTextNode(" Download Converted File"));
+    }
+
     const loading = document.getElementById("loading");
     const dropzone = document.getElementById("dropzone");
     const dropzoneTitle = document.getElementById("dropzoneTitle");
