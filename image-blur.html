@@ -12,6 +12,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 800px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        .section-title i { color: var(--primary); font-size: 2rem; margin-bottom: 1rem; display: block; }
+        
+        #uploadArea { margin-bottom: 2rem; }
+        .dropzone {
+            max-width: 600px; margin: 0 auto; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        
+        #editorArea { max-width: 600px; margin: 0 auto; }
+        .toolbar {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem;
+        }
+        .tool-btn {
+            flex: 1; max-width: 150px; padding: 10px 20px;
+            background: var(--bg-alt); color: var(--text-main);
+            border: 1px solid var(--border); border-radius: 8px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .tool-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .tool-btn:hover { background: var(--primary-light); }
+        
+        .canvas-wrapper {
+            margin: 1.5rem auto; text-align: center;
+        }
+        .canvas-wrapper canvas {
+            max-width: 100%; height: auto; margin: 0 auto; display: block;
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .control-panel { margin-top: 2rem; text-align: center; }
+        .brush-controls {
+            max-width: 400px; margin: 0 auto 1.5rem;
+        }
+        .brush-controls label {
+            display: block; font-weight: 700; margin-bottom: 0.75rem;
+            font-size: 0.9rem; color: var(--text-main);
+        }
+        .brush-slider-container { margin: 1rem 0; }
+        .brush-slider-container input[type="range"] { width: 100%; }
+        .brush-value { font-weight: 700; color: var(--primary); font-size: 0.9rem; margin-top: 0.5rem; }
+        
+        .btn-save {
+            width: 100%; max-width: 200px; margin: 2rem auto 0; padding: 15px 30px;
+            background: var(--primary); color: white; border: none; border-radius: 10px;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 10px; transition: all 0.2s; font-size: 1rem;
+        }
+        .btn-save:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    </style>
     </head>
 <body>
             <nav>
@@ -63,41 +124,41 @@
 </nav>
 
     <main class="tool-container">
-        <div class="tool-header">
-            <div class="section-title">
-                <i class="fas fa-droplet"></i>
-                <h1>Image Blur & Mosaic</h1>
-                <p>Censor sensitive information by painting blur or mosaic effects directly on your image.</p>
+        <div class="section-title">
+            <i class="fas fa-droplet"></i>
+            <h1>Image Blur & Mosaic</h1>
+            <p>Censor sensitive information by painting blur or mosaic effects directly on your image.</p>
+        </div>
+
+        <div id="uploadArea">
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon"><i class="fas fa-file-shield"></i></div>
+                <h2>Upload Image to Censor</h2>
+                <p>Select an image to start blurring sensitive areas</p>
+                <input type="file" id="fileInput" hidden accept="image/*">
+            </div>
+        </div>
+
+        <div id="editorArea" style="display: none;">
+            <div class="toolbar">
+                <button class="tool-btn active" onclick="setMode('blur')"><i class="fas fa-tint"></i> Blur</button>
+                <button class="tool-btn" onclick="setMode('mosaic')"><i class="fas fa-th"></i> Mosaic</button>
+                <button class="tool-btn" onclick="clearCanvas()"><i class="fas fa-undo"></i> Reset</button>
             </div>
 
-            <div id="uploadArea">
-                <div class="dropzone" id="dropzone">
-                    <div class="dropzone-icon"><i class="fas fa-file-shield"></i></div>
-                    <h2>Upload Image to Censor</h2>
-                    <p>Select an image to start blurring sensitive areas</p>
-                    <input type="file" id="fileInput" hidden accept="image/*">
-                </div>
+            <div class="canvas-wrapper">
+                <canvas id="mainCanvas"></canvas>
             </div>
 
-            <div id="editorArea" style="display: none;">
-                <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode('blur')"><i class="fas fa-tint"></i> Blur</button>
-                    <button class="tool-btn" onclick="setMode('mosaic')"><i class="fas fa-th"></i> Mosaic</button>
-                    <button class="tool-btn" onclick="clearCanvas()"><i class="fas fa-undo"></i> Reset</button>
-                </div>
-
-                <div class="canvas-wrapper">
-                    <canvas id="mainCanvas"></canvas>
-                </div>
-
-                <div class="control-panel">
-                    <div class="brush-controls">
-                        <label>Brush Size</label>
+            <div class="control-panel">
+                <div class="brush-controls">
+                    <label>Brush Size</label>
+                    <div class="brush-slider-container">
                         <input type="range" id="brushSize" min="10" max="100" value="40">
-                        <span id="sizeValue">40px</span>
                     </div>
-                    <button class="btn-save" id="saveBtn"><i class="fas fa-download"></i> Save Image</button>
+                    <div class="brush-value"><span id="sizeValue">40</span>px</div>
                 </div>
+                <button class="btn-save" id="saveBtn"><i class="fas fa-download"></i> Save Image</button>
             </div>
         </div>
     </main>
