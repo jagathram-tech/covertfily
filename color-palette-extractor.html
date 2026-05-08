@@ -21,21 +21,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .tool-container { max-width: 900px; margin: 60px auto; padding: 0 20px; }
-        .image-editor { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 40px; display: none; }
+        .tool-container { max-width: 800px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        .image-editor { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 1rem; }
         .preview-pane {
             background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
-            display: flex; align-items: center; justify-content: center; min-height: 400px; overflow: hidden; position: relative;
+            display: flex; align-items: center; justify-content: center; min-height: 400px; overflow: hidden; padding: 2rem;
         }
-        .preview-pane img { max-width: 100%; max-height: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; }
+        .preview-pane img { max-width: 100%; max-height: 500px; margin: 0 auto; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; }
         .palette-pane {
-            background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border); text-align: left;
+            background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border); text-align: center;
+        }
+        .controls-row {
+            display: flex; gap: 20px; align-items: center; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .controls-row h3 { margin: 0; }
+        .controls-row select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            outline: none;
         }
         .colors-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin-top: 20px;
+            justify-items: center;
         }
         .color-card {
             border: 1px solid var(--border);
@@ -44,6 +69,8 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 250px;
         }
         .color-swatch {
             height: 120px;
@@ -69,16 +96,6 @@
             cursor: pointer; padding: 4px 8px; transition: 0.2s; font-size: 0.8rem;
         }
         .copy-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-        .controls-row {
-            display: flex; gap: 20px; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap;
-        }
-        .controls-row select {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            font-size: 1rem;
-            outline: none;
-        }
     </style>
 </head>
 <body>
@@ -131,8 +148,8 @@
 </nav>
 
     <main>
-        <div class="tool-grid">
-            <div class="section-title" style="text-align: center;">
+        <div class="tool-container">
+            <div class="section-title">
                 <i class="fas fa-palette" style="color: var(--primary); font-size: 2rem;"></i>
                 <h1>Color Palette Extractor</h1>
                 <p style="color: var(--text-muted);">Extract dominant colors from any image locally. Get HEX, RGB, and HSL codes.</p>
@@ -147,11 +164,11 @@
 
             <div class="image-editor" id="editor">
                 <div class="preview-pane" id="previewPane">
-                    <img id="previewImg" src="">
+                    <img id="previewImg" src="" alt="Preview">
                 </div>
                 <div class="palette-pane">
                     <div class="controls-row">
-                        <h3 style="margin: 0;">Extracted Palette</h3>
+                        <h3>Extracted Palette</h3>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <label for="colorCount" style="font-weight: 600;">Colors:</label>
                             <select id="colorCount">
@@ -164,12 +181,12 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="colors-grid" id="colorsGrid">
                         <!-- Color cards will be generated here -->
                     </div>
 
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 30px; text-align: center;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2rem; text-align: center;">
                         Processed 100% locally for your privacy.
                     </p>
                 </div>

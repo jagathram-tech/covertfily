@@ -1,16 +1,16 @@
-# AGENTS.md – Guidance for OpenCode
+# AGENTS.md
 
-- After changing `generator.js` BASIC_MAPPING or `main.js` FORMAT_MAPPING, run `node generator.js` to regenerate conversion pages and the homepage dropdown logic.
-- Conversion pages are based on `png-to-jpg.html`; edit this template for UI tweaks instead of each generated file.
-- Serve the site via HTTP (e.g., `npx serve .`). Opening `index.html` with `file://` blocks CDN scripts.
-- Heavy libraries (SheetJS, JSZip, PDF.js, FFmpeg.wasm, etc.) load from CDNs on first use; an internet connection is required initially, after which the app works offline.
-- The homepage dropdown uses `goToDedicatedPage` injected by `generator.js`; without it format navigation fails.
-- Core UI expects specific DOM IDs (`#dropzone`, `#formatFromContainer`, `#formatToContainer`, progress bar elements). Renaming/removing them breaks file handling.
-- PDF conversion needs reachable `pdf.worker.min.js` from its CDN.
-- FFmpeg.wasm is downloaded on first audio/video conversion – expect a delay.
-- `downloadFile` triggers downloads via a temporary anchor; browsers may block automatic downloads.
-- No build system or package manager; changes are reflected directly when the site is served.
-- `generator.js` skips regeneration of hand‑crafted `png-to-jpg.html` and `pdf-to-docx.html`; maintain those manually if edited.
-- Mobile navigation toggles the `nav-active` class on `<body>`; ensure CSS respects this class.
-- Navbar live search (`.tool-search`) works only if `.tool-list a` entries exist for each tool.
-- Global objects (`window.FORMAT_MAPPING`, `window.updateProgress`, etc.) are referenced throughout; renaming them will break functionality.
+- Static site, no build system. Serve via HTTP (`npx serve .`); `file://` blocks CDN scripts.
+- Run `node generator.js` after editing BASIC_MAPPING (generator.js) or FORMAT_MAPPING (main.js) to regenerate conversion pages and homepage dropdown.
+- Conversion pages generated from `png-to-jpg.html` template. Edit template for UI changes, not generated files.
+- `generator.js` skips hand-crafted `png-to-jpg.html` and `pdf-to-word.html` (not `pdf-to-docx.html`).
+- Hand-crafted tool pages (watermark, merge-pdf, ocr, etc.) are not generated; see nav in png-to-jpg.html for full list.
+- `main.js` loads on all pages; exports `window.FORMAT_MAPPING`, `window.updateProgress`, etc. Don't rename globals.
+- Core UI requires DOM IDs: `#dropzone`, `#formatFromContainer`, `#formatToContainer`, `.progress-bar-fill`.
+- Homepage uses `goToDedicatedPage` injected by `generator.js`; format navigation fails without it.
+- CDN libraries (SheetJS, JSZip, PDF.js, FFmpeg.wasm) load on first use. Works offline after initial load.
+- FFmpeg.wasm uses single-threaded core (no COOP/COEP). First media conversion downloads ~10MB.
+- PDF conversion requires `pdf.worker.min.js` from CDN.
+- `downloadFile` uses temporary anchor; browsers may block auto-downloads.
+- Mobile nav toggles `nav-active` class on `<body>`.
+- Navbar live search (`.tool-search`) needs `.tool-list a` entries for each tool.
