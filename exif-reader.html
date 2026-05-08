@@ -21,49 +21,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .tool-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
-        .reader-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 40px; display: none; }
+        .tool-container { max-width: 800px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        
+        .reader-layout { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 1rem; display: none; }
+        @media (min-width: 800px) {
+            .reader-layout { grid-template-columns: 350px 1fr; }
+        }
         
         .preview-pane {
             background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px; text-align: center; flex-direction: column; align-self: start;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 2rem; text-align: center; align-self: start;
         }
-        .preview-pane img { max-width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .btn-new { margin-top: 20px; padding: 12px 24px; background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .preview-pane img { max-width: 100%; max-height: 500px; margin: 0 auto; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; }
+        .btn-new { margin-top: 1.5rem; padding: 12px 24px; background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         .btn-new:hover { background: var(--primary); color: white; }
         
         .data-pane {
-            background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+            background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border); text-align: left;
         }
         .data-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-            padding-bottom: 15px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+            padding-bottom: 1rem; border-bottom: 1px solid var(--border);
         }
         .data-header h3 { margin: 0; font-size: 1.2rem; color: var(--text-main); }
         
-        .data-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;
+        .exif-rows { display: flex; flex-direction: column; }
+        .exif-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 12px 16px; border-bottom: 1px solid var(--border);
         }
-        .data-card {
-            background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;
-        }
-        .data-card i { color: var(--primary); font-size: 1.2rem; margin-bottom: 10px; }
-        .data-card .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; font-weight: 600; }
-        .data-card .value { font-size: 1rem; color: var(--text-main); font-weight: 500; word-break: break-word; }
+        .exif-row:nth-child(odd) { background: #f8fafc; }
+        .exif-row:last-child { border-bottom: none; }
+        .exif-tag { font-weight: 600; color: var(--text-muted); font-size: 0.9rem; flex: 0 0 40%; }
+        .exif-value { color: var(--text-main); font-size: 1rem; flex: 1; word-break: break-word; }
         
         .empty-state {
             text-align: center; padding: 40px 20px; color: var(--text-muted);
+            font-style: italic;
         }
         .empty-state i { font-size: 3rem; color: #cbd5e1; margin-bottom: 15px; }
 
-        .raw-data { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
-        .raw-data details { cursor: pointer; color: var(--primary); font-weight: 500; }
-        .raw-data pre { background: #0f172a; color: #38bdf8; padding: 15px; border-radius: 8px; font-size: 0.85rem; overflow-x: auto; margin-top: 10px; }
-        
-        @media (max-width: 800px) {
-            .reader-layout { grid-template-columns: 1fr; }
-        }
+        .raw-data { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; }
+        .raw-data details { cursor: pointer; color: var(--primary); font-weight: 500; display: inline-block; }
+        .raw-data pre { background: #0f172a; color: #38bdf8; padding: 15px; border-radius: 8px; font-size: 0.85rem; overflow-x: auto; margin-top: 10px; text-align: left; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
 </head>
@@ -117,8 +132,8 @@
 </nav>
 
     <main>
-        <div class="tool-grid">
-            <div class="section-title" style="text-align: center;">
+        <div class="tool-container">
+            <div class="section-title">
                 <i class="fas fa-camera" style="color: var(--primary); font-size: 2rem;"></i>
                 <h1>EXIF Data Reader</h1>
                 <p style="color: var(--text-muted);">Instantly view hidden metadata from your photos. Processed 100% locally.</p>
@@ -133,7 +148,7 @@
 
             <div class="reader-layout" id="readerResult">
                 <div class="preview-pane">
-                    <img id="previewImg" src="">
+                    <img id="previewImg" src="" alt="Preview">
                     <button class="btn-new" onclick="resetTool()"><i class="fas fa-redo"></i> Load Another Photo</button>
                 </div>
                 <div class="data-pane">
@@ -142,7 +157,7 @@
                         <span style="font-size: 0.8rem; background: var(--bg-alt); color: var(--primary); padding: 5px 10px; border-radius: 20px; font-weight: 600;"><i class="fas fa-lock"></i> Private & Offline</span>
                     </div>
                     
-                    <div id="dataContainer" class="data-grid">
+                    <div id="dataContainer" class="exif-rows">
                         <!-- Populated dynamically -->
                     </div>
                     
@@ -215,12 +230,11 @@
 
         dropzone.onclick = () => fileInput.click();
 
-        function createCard(icon, label, value) {
+        function createRow(label, value) {
             return `
-                <div class="data-card">
-                    <i class="fas ${icon}"></i>
-                    <div class="label">${label}</div>
-                    <div class="value">${value}</div>
+                <div class="exif-row">
+                    <span class="exif-tag">${label}</span>
+                    <span class="exif-value">${value}</span>
                 </div>
             `;
         }
@@ -259,38 +273,38 @@
                     let html = '';
                     
                     if (data.Make || data.Model) {
-                        html += createCard('fa-camera', 'Camera', `${data.Make || ''} ${data.Model || ''}`.trim());
+                        html += createRow('Camera', `${data.Make || ''} ${data.Model || ''}`.trim());
                     }
                     if (data.LensModel) {
-                        html += createCard('fa-camera-retro', 'Lens', data.LensModel);
+                        html += createRow('Lens', data.LensModel);
                     }
                     if (data.DateTimeOriginal || data.CreateDate) {
                         const date = new Date(data.DateTimeOriginal || data.CreateDate);
-                        html += createCard('fa-calendar-alt', 'Date Taken', date.toLocaleString());
+                        html += createRow('Date Taken', date.toLocaleString());
                     }
                     if (data.ExposureTime) {
-                        html += createCard('fa-stopwatch', 'Shutter Speed', `${formatFraction(data.ExposureTime)}s`);
+                        html += createRow('Shutter Speed', `${formatFraction(data.ExposureTime)}s`);
                     }
                     if (data.FNumber) {
-                        html += createCard('fa-bullseye', 'Aperture', `f/${data.FNumber}`);
+                        html += createRow('Aperture', `f/${data.FNumber}`);
                     }
                     if (data.ISO || data.ISOSpeedRatings) {
-                        html += createCard('fa-film', 'ISO', data.ISO || data.ISOSpeedRatings);
+                        html += createRow('ISO', data.ISO || data.ISOSpeedRatings);
                     }
                     if (data.FocalLength) {
-                        html += createCard('fa-search-plus', 'Focal Length', `${data.FocalLength}mm`);
+                        html += createRow('Focal Length', `${data.FocalLength}mm`);
                     }
                     if (data.ImageWidth && data.ImageHeight) {
-                        html += createCard('fa-crop', 'Dimensions', `${data.ImageWidth} x ${data.ImageHeight}`);
+                        html += createRow('Dimensions', `${data.ImageWidth} x ${data.ImageHeight}`);
                     }
                     if (data.latitude && data.longitude) {
                         const lat = data.latitude.toFixed(6);
                         const lon = data.longitude.toFixed(6);
                         const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
-                        html += createCard('fa-map-marker-alt', 'GPS Location', `<a href="${mapsLink}" target="_blank" style="color:var(--primary);text-decoration:none;">${lat}, ${lon} <i class="fas fa-external-link-alt" style="font-size:0.8rem;margin-left:5px;"></i></a>`);
+                        html += createRow('GPS Location', `<a href="${mapsLink}" target="_blank" style="color:var(--primary);text-decoration:none;">${lat}, ${lon} <i class="fas fa-external-link-alt" style="font-size:0.8rem;margin-left:5px;"></i></a>`);
                     }
                     if (data.Software) {
-                        html += createCard('fa-laptop-code', 'Software', data.Software);
+                        html += createRow('Software', data.Software);
                     }
 
                     if (html === '') {

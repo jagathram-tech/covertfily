@@ -23,69 +23,61 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <style>
-        .tool-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-            text-align: center;
+        .tool-container { max-width: 800px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        
         .file-list {
-            margin-top: 30px;
-            text-align: left;
-            background: white;
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            overflow: hidden;
+            max-width: 600px; margin: 2rem auto 0;
+            text-align: left; background: white;
+            border-radius: 15px; border: 1px solid var(--border); overflow: hidden;
         }
-
+        
         .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 20px; border-bottom: 1px solid var(--border); gap: 12px;
         }
-
         .file-item:last-child { border-bottom: none; }
-
+        
         .file-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            display: flex; align-items: center; gap: 12px;
+            min-width: 0; flex: 1; overflow: hidden;
         }
-
+        .file-info span { 
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; 
+        }
+        .file-info small { flex-shrink: 0; }
+        .file-info i { flex-shrink: 0; }
+        
         .btn-remove {
-            color: #ef4444;
-            cursor: pointer;
-            padding: 5px;
+            color: #ef4444; cursor: pointer; padding: 5px; flex-shrink: 0;
         }
-
+        
         .merge-actions {
-            margin-top: 30px;
+            margin-top: 2rem; text-align: center;
         }
-
+        
         .btn-merge {
-            padding: 15px 40px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s;
+            padding: 15px 40px; background: var(--primary); color: white;
+            border: none; border-radius: 10px; font-weight: 700;
+            cursor: pointer; font-size: 1.1rem; transition: all 0.2s; min-width: 200px;
         }
-
         .btn-merge:hover:not(:disabled) {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
+            background: var(--primary-hover); transform: translateY(-2px);
         }
-
-        .btn-merge:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn-merge:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
     <!-- Schema.org JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -173,12 +165,12 @@
 </nav>
 
     <main>
-        <div class="tool-grid">
+        <div class="tool-container">
             <div class="section-title">
                 <i class="fas fa-file-pdf" style="color: var(--primary); font-size: 2rem;"></i>
                 <h1>Merge PDF Files</h1>
+                <p style="color: var(--text-muted);">Combine multiple PDF documents into one single file locally in your browser.</p>
             </div>
-            <p style="color: var(--text-muted); margin-bottom: 40px;">Combine multiple PDF documents into one single file locally in your browser.</p>
 
             <div class="dropzone" id="dropzone">
                 <div class="dropzone-icon">
@@ -188,9 +180,9 @@
                 <p>Click to select or drag and drop PDFs</p>
                 <input type="file" id="fileInput" hidden multiple accept="application/pdf">
             </div>
-
+            
             <div class="file-list" id="fileList" style="display: none;"></div>
-
+            
             <div class="merge-actions">
                 <button class="btn-merge" id="mergeBtn" disabled>Merge PDFs</button>
             </div>
