@@ -21,32 +21,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .tool-container { max-width: 1100px; margin: 60px auto; padding: 0 20px; }
-        .pixel-layout { display: grid; grid-template-columns: 1fr 350px; gap: 30px; margin-top: 40px; display: none; }
+        .tool-container { max-width: 800px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        .section-title i { color: var(--primary); font-size: 2rem; margin-bottom: 1rem; display: block; }
+        
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        
+        #editor { max-width: 600px; margin: 0 auto; }
+        .pixel-layout {
+            display: grid; grid-template-columns: 1fr; gap: 2rem;
+            margin-top: 1rem; text-align: center; display: none;
+        }
         
         .preview-pane {
             background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
-            display: flex; align-items: center; justify-content: center; min-height: 400px;
-            padding: 20px; text-align: center; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem; text-align: center;
         }
         .preview-pane canvas {
-            max-width: 100%; max-height: 600px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            image-rendering: pixelated; /* Crucial for sharp pixel art display */
+            max-width: 100%; max-height: 500px; margin: 0 auto; display: block;
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            image-rendering: pixelated;
         }
         
         .controls-pane {
-            background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border);
-            display: flex; flex-direction: column; gap: 25px; align-self: start;
+            background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 1.5rem; text-align: center;
         }
         
-        .control-group { display: flex; flex-direction: column; gap: 10px; }
-        .control-header { display: flex; justify-content: space-between; align-items: center; }
+        .control-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+        .control-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .control-label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
         .control-val { font-size: 0.85rem; color: white; background: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
         
+        .slider-container { margin: 1rem 0; }
+        .slider-container input[type="range"] { width: 100%; }
+        .slider-help { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem; }
+        
         input[type="range"] {
             -webkit-appearance: none; width: 100%; background: transparent; height: 6px; border-radius: 3px;
-            background: #e2e8f0; outline: none; margin: 10px 0;
+            background: #e2e8f0; outline: none;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--primary);
@@ -54,15 +79,20 @@
         }
         input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
-        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .btn-dl { padding: 12px; background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary-hover); border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-        .btn-dl:hover { background: var(--primary); color: white; }
-        .btn-reset { padding: 12px; background: #f8fafc; color: var(--text-muted); border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; grid-column: span 2; }
-        .btn-reset:hover { background: #e2e8f0; color: var(--text-main); }
-        
-        @media (max-width: 900px) {
-            .pixel-layout { grid-template-columns: 1fr; }
+        .action-btns { display: flex; justify-content: center; gap: 10px; margin-top: 1.5rem; flex-wrap: wrap; }
+        .btn-dl { 
+            flex: 1; max-width: 180px; padding: 12px; background: var(--bg-alt); color: var(--primary); 
+            border: 1px solid var(--primary-hover); border-radius: 8px; font-weight: 600; 
+            cursor: pointer; transition: 0.2s; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
+        .btn-dl:hover { background: var(--primary); color: white; }
+        .btn-reset { 
+            flex: 1; max-width: 200px; margin: 1.5rem auto 0; padding: 12px; 
+            background: #f8fafc; color: var(--text-muted); border: 1px solid #cbd5e1; 
+            border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-reset:hover { background: #e2e8f0; color: var(--text-main); }
     </style>
 </head>
 <body>
@@ -115,11 +145,11 @@
 </nav>
 
     <main>
-        <div class="tool-grid">
-            <div class="section-title" style="text-align: center;">
-                <i class="fas fa-gamepad" style="color: var(--primary); font-size: 2rem;"></i>
+        <div class="tool-container">
+            <div class="section-title">
+                <i class="fas fa-gamepad"></i>
                 <h1>Pixel Art Converter</h1>
-                <p style="color: var(--text-muted);">Turn any photo into retro pixel art instantly with adjustable grid size and palette limits.</p>
+                <p>Turn any photo into retro pixel art instantly with adjustable grid size and palette limits.</p>
             </div>
 
             <div class="dropzone" id="dropzone">
@@ -129,7 +159,7 @@
                 <input type="file" id="fileInput" hidden accept="image/*">
             </div>
 
-            <div class="pixel-layout" id="editor">
+            <div id="editor" class="pixel-layout">
                 <div class="preview-pane">
                     <canvas id="previewCanvas"></canvas>
                 </div>
@@ -139,8 +169,10 @@
                             <span class="control-label">Pixel Size (Grid)</span>
                             <span class="control-val" id="valSize">15</span>
                         </div>
-                        <input type="range" id="pixelSize" min="1" max="100" value="15">
-                        <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Larger values mean bigger pixels.</p>
+                        <div class="slider-container">
+                            <input type="range" id="pixelSize" min="1" max="100" value="15">
+                        </div>
+                        <p class="slider-help">Larger values mean bigger pixels.</p>
                     </div>
                     
                     <div class="control-group">
@@ -148,17 +180,17 @@
                             <span class="control-label">Color Depth (Palette)</span>
                             <span class="control-val" id="valColor">32</span>
                         </div>
-                        <input type="range" id="colorDepth" min="2" max="255" value="32">
-                        <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Lower values create a retro, limited color palette.</p>
+                        <div class="slider-container">
+                            <input type="range" id="colorDepth" min="2" max="255" value="32">
+                        </div>
+                        <p class="slider-help">Lower values create a retro, limited color palette.</p>
                     </div>
 
-                    <div style="border-top: 1px solid var(--border); margin: 5px 0;"></div>
-                    
                     <div class="action-btns">
                         <button class="btn-dl" onclick="downloadImage('png')"><i class="fas fa-download"></i> PNG</button>
                         <button class="btn-dl" onclick="downloadImage('jpg')"><i class="fas fa-download"></i> JPG</button>
-                        <button class="btn-reset" onclick="resetTool()"><i class="fas fa-redo"></i> Load New Photo</button>
                     </div>
+                    <button class="btn-reset" onclick="resetTool()"><i class="fas fa-redo"></i> Load New Photo</button>
                 </div>
             </div>
         </div>
