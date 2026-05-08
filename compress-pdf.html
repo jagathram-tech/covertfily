@@ -24,56 +24,75 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
-        .tool-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-            text-align: center;
+        .tool-container { max-width: 800px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        
         .compression-settings {
-            margin-top: 30px;
-            background: white;
-            padding: 24px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            text-align: left;
-            display: none;
+            max-width: 600px; margin: 2rem auto 0;
+            background: white; padding: 24px;
+            border-radius: 20px; border: 1px solid var(--border);
+            text-align: center; display: none;
         }
-
+        .settings-label { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 1rem; font-weight: 700;
+        }
+        .slider-container { margin: 1.5rem 0; }
+        .slider-container input[type="range"] { width: 100%; }
+        .slider-help { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem; }
+        
         .btn-compress {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.2s;
+            width: 100%; max-width: 220px; margin: 2rem auto 0; padding: 15px;
+            background: var(--primary); color: white;
+            border: none; border-radius: 10px;
+            font-weight: 700; cursor: pointer;
+            transition: all 0.2s; display: block;
         }
-
-        .btn-compress:hover {
-            background: var(--primary-hover);
-        }
-
+        .btn-compress:hover { background: var(--primary-hover); }
+        
         .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--bg-alt);
-            border-radius: 4px;
-            margin-top: 15px;
-            overflow: hidden;
-            display: none;
+            width: 100%; height: 8px;
+            background: var(--bg-alt); border-radius: 4px;
+            margin-top: 1.5rem; overflow: hidden; display: none;
         }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.3s;
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+        
+        .status-text { text-align: center; font-size: 0.9rem; margin-top: 0.75rem; display: none; }
+        
+        .editorial-section {
+            max-width: 800px; margin: 3rem auto 0; padding: 3rem 20px 0;
+            border-top: 1px solid var(--border); text-align: left;
         }
+        .editorial-section h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1.5rem; }
+        .editorial-section > p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
+        
+        .split-grid { display: grid; gap: 2rem; margin-bottom: 3rem; }
+        @media (min-width: 768px) { .split-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .editorial-section h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .feature-list { list-style: none; padding: 0; }
+        .feature-list li { margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; }
+        .feature-list li i { color: var(--primary); flex-shrink: 0; }
+        
+        .faq-container { background: var(--bg-alt); padding: 2.5rem; border-radius: 24px; margin-top: 2rem; }
+        .faq-container h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; }
+        .faq-grid { display: grid; gap: 1.25rem; }
+        .faq-item { background: white; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border); }
+        .faq-item h4 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .faq-item p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
     </style>
     <!-- Schema.org JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -182,12 +201,12 @@
 </nav>
 
     <main>
-        <div class="tool-grid">
+        <div class="tool-container">
             <div class="section-title">
                 <i class="fas fa-compress-arrows-alt" style="color: var(--primary); font-size: 2rem;"></i>
                 <h1>Compress PDF</h1>
+                <p style="color: var(--text-muted);">Reduce your PDF file size locally while maintaining quality.</p>
             </div>
-            <p style="color: var(--text-muted); margin-bottom: 40px;">Reduce your PDF file size locally while maintaining quality.</p>
 
             <div class="dropzone" id="dropzone">
                 <div class="dropzone-icon">
@@ -197,57 +216,57 @@
                 <p>Click or drag and drop your PDF file</p>
                 <input type="file" id="fileInput" hidden accept="application/pdf">
             </div>
-
+            
             <div class="compression-settings" id="settings">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <span style="font-weight: 700;">Compression Level</span>
+                <div class="settings-label">
+                    <span>Compression Level</span>
                     <span id="qualityVal">Medium (70%)</span>
                 </div>
-                <input type="range" id="qualityRange" style="width: 100%;" min="10" max="90" value="70">
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Lower quality results in a smaller file size.</p>
+                <div class="slider-container">
+                    <input type="range" id="qualityRange" min="10" max="90" value="70">
+                </div>
+                <p class="slider-help">Lower quality results in a smaller file size.</p>
                 
                 <div class="progress-bar" id="progressBar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <p id="statusTxt" style="text-align: center; font-size: 0.9rem; margin-top: 10px; display: none;"></p>
-
+                <p class="status-text" id="statusTxt"></p>
+                
                 <button class="btn-compress" id="compressBtn">Compress PDF Now</button>
             </div>
         </div>
-
+        
         <!-- SEO Content Section -->
-        <section style="padding: 60px 8%; border-top: 1px solid var(--border);">
-            <div style="max-width: 900px; margin: 0 auto;">
-                <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 25px;">How to Compress PDF Securely Online?</h2>
-                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px;">Many online tools require you to upload your sensitive PDF files to their servers. Covertfily is different. Our **Compress PDF Securely** tool works entirely within your browser using advanced client-side technologies. Your documents never leave your device, giving you total peace of mind.</p>
-                
-                <div class="split-grid" style="gap: 40px; margin-bottom: 60px;">
-                    <div>
-                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 15px;">Privacy-First PDF Compression</h3>
-                        <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 12px;"><i class="fas fa-lock" style="color: var(--primary);"></i> Zero Uploads - Total Privacy</li>
-                            <li style="margin-bottom: 12px;"><i class="fas fa-bolt" style="color: var(--primary);"></i> Instant Local Processing</li>
-                            <li style="margin-bottom: 12px;"><i class="fas fa-check" style="color: var(--primary);"></i> Adjustable Quality Levels</li>
-                            <li style="margin-bottom: 12px;"><i class="fas fa-shield-alt" style="color: var(--primary);"></i> MIT Licensed & Open Source</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 15px;">Why Size Matters</h3>
-                        <p style="color: var(--text-muted);">Large PDFs are hard to email and slow to load. By compressing your files, you make them easier to share while keeping the text and images clear enough for professional use.</p>
-                    </div>
+        <section class="editorial-section">
+            <h2>How to Compress PDF Securely Online?</h2>
+            <p>Many online tools require you to upload your sensitive PDF files to their servers. Covertfily is different. Our <strong>Compress PDF Securely</strong> tool works entirely within your browser using advanced client-side technologies. Your documents never leave your device, giving you total peace of mind.</p>
+            
+            <div class="split-grid">
+                <div>
+                    <h3>Privacy-First PDF Compression</h3>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-lock"></i> Zero Uploads - Total Privacy</li>
+                        <li><i class="fas fa-bolt"></i> Instant Local Processing</li>
+                        <li><i class="fas fa-check"></i> Adjustable Quality Levels</li>
+                        <li><i class="fas fa-shield-alt"></i> MIT Licensed & Open Source</li>
+                    </ul>
                 </div>
-
-                <div id="faq" style="background: var(--bg-alt); padding: 40px; border-radius: 24px;">
-                    <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 30px; text-align: center;">Frequently Asked Questions</h3>
-                    <div style="display: grid; gap: 20px;">
-                        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
-                            <h4 style="margin-bottom: 10px;">Does compressing a PDF reduce its quality?</h4>
-                            <p style="color: var(--text-muted); font-size: 0.95rem;">Some quality loss is necessary to reduce file size, but you can use our slider to find the perfect balance between size and clarity.</p>
-                        </div>
-                        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
-                            <h4 style="margin-bottom: 10px;">Is this really secure?</h4>
-                            <p style="color: var(--text-muted); font-size: 0.95rem;">Yes. Because the compression happens in your browser's memory, no one (including us) can see your files.</p>
-                        </div>
+                <div>
+                    <h3>Why Size Matters</h3>
+                    <p style="color: var(--text-muted);">Large PDFs are hard to email and slow to load. By compressing your files, you make them easier to share while keeping the text and images clear enough for professional use.</p>
+                </div>
+            </div>
+            
+            <div class="faq-container" id="faq">
+                <h3>Frequently Asked Questions</h3>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <h4>Does compressing a PDF reduce its quality?</h4>
+                        <p>Some quality loss is necessary to reduce file size, but you can use our slider to find the perfect balance between size and clarity.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Is this really secure?</h4>
+                        <p>Yes. Because the compression happens in your browser's memory, no one (including us) can see your files.</p>
                     </div>
                 </div>
             </div>
