@@ -21,15 +21,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .tool-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
-        
-        .collage-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 40px; }
-        
+        .tool-container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
+
+        .collage-layout { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; margin-top: 2rem; }
+
         .controls-pane {
             background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border);
-            display: flex; flex-direction: column; gap: 20px; align-self: start;
+            display: flex; flex-direction: column; gap: 2rem; align-self: start;
             max-height: 80vh; overflow-y: auto;
         }
+
+        .layout-toggle { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .layout-toggle .tab-btn {
+            flex: 1; max-width: 200px; padding: 12px 24px; border-radius: 50px; font-weight: 600;
+            cursor: pointer; border: none; background: #e2e8f0; color: var(--text-muted);
+            transition: 0.2s; text-align: center;
+        }
+        .layout-toggle .tab-btn.active { background: var(--primary); color: white; }
+
+        #gridSettings { display: flex; flex-direction: row; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        #gridSettings .control-group { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 150px; }
 
         .upload-area {
             border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center;
@@ -37,7 +48,7 @@
         }
         .upload-area:hover { border-color: var(--primary); background: #f0fdf4; }
         
-        .thumbnail-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .thumbnail-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
         .thumbnail { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; }
         
         .control-group { display: flex; flex-direction: column; gap: 10px; }
@@ -122,8 +133,8 @@
 </nav>
 
     <main>
-        <div class="tool-grid">
-            <div class="section-title" style="text-align: center;">
+        <div class="tool-container">
+            <div class="section-title" style="text-align: center; margin-bottom: 2rem;">
                 <i class="fas fa-th-large" style="color: var(--primary); font-size: 2rem;"></i>
                 <h1>Photo Collage Maker</h1>
                 <p style="color: var(--text-muted);">Arrange your photos into beautiful grids or scattered polaroid freeform layouts instantly.</p>
@@ -141,20 +152,22 @@
                             <input type="file" id="fileInput" hidden accept="image/*" multiple>
                         </div>
                         <div class="thumbnail-strip" id="thumbnailStrip"></div>
-                        <button class="btn-action btn-danger" id="btnClear" style="display:none;" onclick="clearPhotos()"><i class="fas fa-trash-alt"></i> Clear All Photos</button>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                            <button class="btn-action btn-danger" id="btnClear" style="display:none;" onclick="clearPhotos()"><i class="fas fa-trash-alt"></i> Clear All Photos</button>
+                        </div>
                     </div>
 
-                    <hr style="border:0; border-top: 1px solid var(--border); margin: 5px 0;">
+                    <hr style="border:0; border-top: 1px solid var(--border); margin: 2rem 0;">
 
                     <div class="control-group">
                         <span class="control-label"><i class="fas fa-layer-group"></i> 2. Layout Style</span>
-                        <select id="layoutMode" onchange="toggleModeSettings(); drawCollage();">
-                            <option value="grid">Grid (Square Cells)</option>
-                            <option value="scatter">Polaroid Scatter (Freeform)</option>
-                        </select>
+                        <div class="layout-toggle">
+                            <button class="tab-btn active" onclick="setLayoutMode('grid', this)">Grid (Square Cells)</button>
+                            <button class="tab-btn" onclick="setLayoutMode('scatter', this)">Polaroid Scatter (Freeform)</button>
+                        </div>
                     </div>
 
-                    <div id="gridSettings" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div id="gridSettings">
                         <div class="control-group">
                             <div class="control-header"><span class="control-label">Columns</span><span class="control-val" id="valCols">3</span></div>
                             <input type="range" id="gridCols" min="1" max="8" value="3" oninput="updateVal('gridCols', 'valCols'); drawCollage();">
@@ -174,14 +187,16 @@
                         <button class="btn-action btn-secondary" onclick="shuffleScatter()"><i class="fas fa-random"></i> Shuffle Arrangement</button>
                     </div>
 
-                    <hr style="border:0; border-top: 1px solid var(--border); margin: 5px 0;">
+                    <hr style="border:0; border-top: 1px solid var(--border); margin: 2rem 0;">
 
                     <div class="control-group">
-                        <span class="control-label"><i class="fas fa-fill-drip"></i> 3. Background Color</span>
-                        <input type="color" id="bgColor" value="#ffffff" oninput="drawCollage()">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                            <span class="control-label"><i class="fas fa-fill-drip"></i> 3. Background Color</span>
+                            <input type="color" id="bgColor" value="#ffffff" oninput="drawCollage()">
+                        </div>
                     </div>
 
-                    <button class="btn-action" id="btnDownload" onclick="downloadCollage()" style="display:none; margin-top: 10px;">
+                    <button class="btn-action" id="btnDownload" onclick="downloadCollage()" style="display:none; margin:1.5rem auto 0; max-width:300px;">
                         <i class="fas fa-download"></i> Download Collage
                     </button>
                 </div>
@@ -250,14 +265,23 @@
 
         let loadedImages = [];
         let scatterSeed = Math.random();
+        let currentLayoutMode = 'grid';
 
         // UI toggles
         function updateVal(id, valId, suffix='') {
             document.getElementById(valId).textContent = document.getElementById(id).value + suffix;
         }
 
+        function setLayoutMode(mode, btn) {
+            currentLayoutMode = mode;
+            document.querySelectorAll('.layout-toggle .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            toggleModeSettings();
+            drawCollage();
+        }
+
         function toggleModeSettings() {
-            const mode = document.getElementById('layoutMode').value;
+            const mode = currentLayoutMode;
             document.getElementById('gridSettings').style.display = mode === 'grid' ? 'flex' : 'none';
             document.getElementById('scatterSettings').style.display = mode === 'scatter' ? 'flex' : 'none';
         }
@@ -342,7 +366,7 @@
         function drawCollage() {
             if (loadedImages.length === 0) return;
             
-            const mode = document.getElementById('layoutMode').value;
+            const mode = currentLayoutMode;
             const bgColor = document.getElementById('bgColor').value;
 
             if (mode === 'grid') {

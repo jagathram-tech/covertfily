@@ -1,11 +1,11 @@
 # AGENTS.md
 
 - Static site, no build system. Serve via HTTP (`npx serve .`); `file://` blocks CDN scripts.
-- Run `node generator.js` after editing BASIC_MAPPING (generator.js) or FORMAT_MAPPING (main.js) to regenerate conversion pages and homepage dropdown.
-- Conversion pages generated from `png-to-jpg.html` template. Edit template for UI changes, not generated files.
-- `generator.js` skips hand-crafted `png-to-jpg.html` and `pdf-to-word.html` (not `pdf-to-docx.html`).
-- Hand-crafted tool pages (watermark, merge-pdf, ocr, etc.) are not generated; see nav in png-to-jpg.html for full list.
-- `main.js` loads on all pages; exports `window.FORMAT_MAPPING`, `window.updateProgress`, etc. Don't rename globals.
+- Run `node generator.js` after editing `BASIC_MAPPING` (in `generator.js`) or `FORMAT_MAPPING` (in `main.js`) to regenerate conversion pages and homepage dropdown.
+- Conversion pages are generated from the hand-crafted `png-to-jpg.html` template. Edit the template for UI changes; generated files are overwritten on next generator run.
+- `generator.js` skips hand-crafted `png-to-jpg.html` and `pdf-to-word.html` (does not skip `pdf-to-docx.html`).
+- Hand-crafted tool pages (watermark, merge-pdf, ocr, etc.) are not generated; see nav in `png-to-jpg.html` for full list.
+- `main.js` loads on all pages, exports `window.FORMAT_MAPPING`, `window.updateProgress`, etc. Do not rename these globals.
 - Core UI requires DOM IDs: `#dropzone`, `#formatFromContainer`, `#formatToContainer`, `.progress-bar-fill`.
 - Homepage uses `goToDedicatedPage` injected by `generator.js`; format navigation fails without it.
 - CDN libraries (SheetJS, JSZip, PDF.js, FFmpeg.wasm) load on first use. Works offline after initial load.

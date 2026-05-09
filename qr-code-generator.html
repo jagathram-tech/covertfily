@@ -20,7 +20,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-
+    <style>
+        .tool-container { max-width: 700px; margin: 0 auto; padding: 1.5rem; }
+        .toolbar { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
+        .tool-btn {
+            flex: 1; max-width: 150px; padding: 12px 24px; border-radius: 50px; font-weight: 600;
+            cursor: pointer; border: none; background: #e2e8f0; color: var(--text-muted);
+            transition: 0.2s; text-align: center;
+        }
+        .tool-btn.active { background: var(--primary); color: white; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; margin: 1.5rem 0; }
+        .input-group label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .input-group input[type="text"], .input-group input[type="number"], .input-group select {
+            width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--border);
+            font-family: inherit; font-size: 1rem;
+        }
+        .input-group input[type="color"] {
+            width: 100%; height: 44px; border-radius: 10px; border: 1px solid var(--border);
+            padding: 3px; cursor: pointer;
+        }
+        #qrPreview {
+            border: 2px dashed #e2e8f0; border-radius: 20px; min-height: 250px;
+            display: flex; align-items: center; justify-content: center; margin: 1.5rem 0; padding: 20px; text-align: center;
+        }
+        #qrPreview canvas, #qrPreview svg { display: block; margin: 0 auto; }
+        .download-toolbar { display: flex; gap: 1rem; justify-content: center; margin: 1.5rem 0; }
+        .btn-download {
+            flex: 1; max-width: 200px; padding: 12px 20px; background: var(--bg-alt); color: var(--primary);
+            border: 1px solid var(--primary); border-radius: 10px; font-weight: 600; cursor: pointer;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-download:hover { background: var(--primary); color: white; }
+        .trust-badge {
+            display: flex; align-items: center; gap: 8px; justify-content: center;
+            font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -109,10 +144,10 @@
         <div class="input-group">
             <label for="ecLevelSelect">Error Correction Level</label>
             <select id="ecLevelSelect" oninput="updateQRCode()">
-                <option value="L">Low (L) â€“ 7% restoration</option>
-                <option value="M" selected>Medium (M) â€“ 15% restoration</option>
-                <option value="Q">Quartile (Q) â€“ 25% restoration</option>
-                <option value="H">High (H) â€“ 30% restoration</option>
+                <option value="L">Low (L) – 7% restoration</option>
+                <option value="M" selected>Medium (M) – 15% restoration</option>
+                <option value="Q">Quartile (Q) – 25% restoration</option>
+                <option value="H">High (H) – 30% restoration</option>
             </select>
         </div>
 
@@ -120,14 +155,14 @@
             <span style="color: var(--text-muted);">QR preview will appear here</span>
         </div>
 
-        <div class="toolbar">
+        <div class="download-toolbar">
             <button class="btn-download" onclick="downloadPNG()"><i class="fas fa-download"></i> Download PNG</button>
             <button class="btn-download" onclick="downloadSVG()"><i class="fas fa-download"></i> Download SVG</button>
         </div>
 
         <div class="trust-badge" style="margin-top:24px;">
             <i class="fas fa-shield-alt"></i>
-            <p><strong>Privacy Guaranteed:</strong> No data leaves your device. Everything runs clientâ€‘side.</p>
+            <p><strong>Privacy Guaranteed:</strong> No data leaves your device. Everything runs client-side.</p>
         </div>
     </main>
 
