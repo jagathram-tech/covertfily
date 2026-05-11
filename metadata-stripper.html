@@ -1,0 +1,808 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>Metadata Stripper - Remove EXIF & PDF Info | Covertfily</title>
+    <meta name="description" content="Strip EXIF metadata from images and document properties from PDFs. 100% private — files never leave your browser.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 900px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        .dropzone.has-file { border-color: #10b981; background: #ecfdf5; }
+        .dropzone.has-file .dropzone-icon { color: #10b981; }
+        
+        .result-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+            text-align: left;
+        }
+        @media (min-width: 768px) {
+            .result-layout { grid-template-columns: 1fr 1fr; }
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .panel-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .panel-title i { color: var(--primary); }
+        .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .badge.removed { background: #fef2f2; color: #dc2626; }
+        .badge.kept { background: #ecfdf5; color: #10b981; }
+        
+        .metadata-table { width: 100%; border-collapse: collapse; }
+        .metadata-table th { text-align: left; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .metadata-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .metadata-table tr:last-child td { border-bottom: none; }
+        .metadata-key { color: var(--text-muted); font-weight: 500; }
+        .metadata-value { color: var(--text-main); word-break: break-word; }
+        .metadata-none { color: var(--text-muted); font-style: italic; font-size: 0.9rem; }
+        .metadata-removed { color: #dc2626; text-decoration: line-through; }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: none;
+        }
+        .summary-box.visible { display: block; animation: fadeIn 0.3s ease; }
+        .summary-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .file-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .empty-preview {
+            width: 100%;
+            height: 150px;
+            background: var(--bg-alt);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .loading-overlay.active { opacity: 1; pointer-events: all; }
+        .spinner {
+            font-size: 3rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+        .checkbox-wrapper input { accent-color: var(--primary); }
+        
+        .btn-strip {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .btn-strip:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .btn-strip:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+</head>
+<body>
+    <nav>
+    <div class="nav-left">
+        <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-content">
+                    <div class="tool-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    </div>
+                    <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                        <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                        <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
+                        <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                        <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                        <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                    </div>
+                </div>
+            </li>
+        <li><a href="blog.html">Blog</a></li>
+            </ul>
+    </div>
+    <div class="nav-actions">
+        <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+    </div>
+</nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title">
+                <i class="fas fa-eraser" style="color: var(--primary); font-size: 2.5rem;"></i>
+                <h1>Metadata Stripper</h1>
+                <p style="color: var(--text-muted);">Remove EXIF data from images and document properties from PDFs. 100% private, browser-based.</p>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon" id="dropzoneIcon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h2 id="dropzoneTitle">Upload File</h2>
+                <p id="dropzoneSubtitle">Drag and drop or click to upload (JPG, PNG, WebP, PDF)</p>
+                <input type="file" id="fileInput" hidden accept=".jpg,.jpeg,.png,.webp,.pdf">
+            </div>
+
+            <div id="loading" class="loading-overlay">
+                <i class="fas fa-cog fa-spin spinner"></i>
+                <h2>Stripping Metadata...</h2>
+                <p id="loadingText">Processing your file...</p>
+            </div>
+
+            <div id="resultArea" style="display: none;">
+                <!-- Preview Section -->
+                <div style="margin: 2rem 0;">
+                    <img id="previewImg" class="file-preview" style="display: none;" alt="Preview">
+                    <div id="pdfIcon" class="empty-preview" style="display: none;">
+                        <i class="fas fa-file-pdf" style="font-size: 4rem; color: #ef4444; margin-bottom: 1rem;"></i><br>
+                        <span>PDF Document</span>
+                    </div>
+                </div>
+
+                <!-- Before/After Panels -->
+                <div class="result-layout">
+                    <!-- BEFORE -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><i class="fas fa-info-circle"></i> Before (Original)</div>
+                            <span id="beforeCount" class="badge">0 fields</span>
+                        </div>
+                        <table class="metadata-table">
+                            <thead>
+                                <tr><th>Field</th><th>Value</th></tr>
+                            </thead>
+                            <tbody id="beforeTable">
+                                <tr><td colspan="2" class="metadata-none">No metadata found</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- AFTER -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><i class="fas fa-shield-alt"></i> After (Cleaned)</div>
+                            <span id="afterCount" class="badge kept">0 fields</span>
+                        </div>
+                        <table class="metadata-table">
+                            <thead>
+                                <tr><th>Field</th><th>Value</th></tr>
+                            </thead>
+                            <tbody id="afterTable">
+                                <tr><td colspan="2" class="metadata-none">No metadata remaining</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div id="summaryBox" class="summary-box">
+                    <h3 style="margin: 0 0 0.5rem 0;"><i class="fas fa-check-circle"></i> Stripping Complete!</h3>
+                    <p style="margin: 0; opacity: 0.9;">All metadata has been successfully removed.</p>
+                    <div class="summary-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="removedCount">0</span>
+                            <span class="stat-label">Fields Removed</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="remainingCount">0</span>
+                            <span class="stat-label">Remaining</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button id="downloadBtn" class="btn-strip">
+                        <i class="fas fa-download"></i> Download Clean File
+                    </button>
+                    <button onclick="resetTool()" class="btn-strip" style="background: #64748b;">
+                        <i class="fas fa-redo"></i> Strip Another
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="image-resizer.html">Image Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <i class="fas fa-cog fa-spin spinner"></i>
+        <h2 id="loadingTitle">Processing...</h2>
+        <p id="loadingMessage">Please wait</p>
+    </div>
+
+    <script>
+        // State
+        let originalFile = null;
+        let originalMetadata = {};
+        let cleanedBlobUrl = null;
+        let currentPreviewUrl = null;
+
+        // Immutable fields (cannot be stripped)
+        const IMMUTABLE_FIELDS = ['File Name', 'File Size', 'File Type', 'Dimensions', 'Pages', 'PDF Version'];
+
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const dropzoneIcon = document.getElementById('dropzoneIcon');
+        const dropzoneTitle = document.getElementById('dropzoneTitle');
+        const dropzoneSubtitle = document.getElementById('dropzoneSubtitle');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const resultArea = document.getElementById('resultArea');
+        const previewImg = document.getElementById('previewImg');
+        const pdfIcon = document.getElementById('pdfIcon');
+        const beforeTable = document.getElementById('beforeTable');
+        const afterTable = document.getElementById('afterTable');
+        const beforeCount = document.getElementById('beforeCount');
+        const afterCount = document.getElementById('afterCount');
+        const summaryBox = document.getElementById('summaryBox');
+        const removedCountEl = document.getElementById('removedCount');
+        const remainingCountEl = document.getElementById('remainingCount');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Initial texts (for reset)
+        const initialIcon = dropzoneIcon.innerHTML;
+        const initialTitle = dropzoneTitle.textContent;
+        const initialSubtitle = dropzoneSubtitle.textContent;
+
+        // Setup Dropzone
+        dropzone.onclick = (e) => {
+            if (e.target !== fileInput) fileInput.click();
+        };
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary-hover)';
+            dropzone.style.background = 'var(--bg-alt)';
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                handleFile(fileInput.files[0]);
+            }
+        });
+
+        async function handleFile(file) {
+            if (!file) return;
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a valid file: JPG, PNG, WebP, or PDF');
+                return;
+            }
+
+            originalFile = file;
+            showLoading('Reading file...');
+
+            try {
+                // Read metadata
+                if (file.type.startsWith('image/')) {
+                    await readImageMetadata(file);
+                } else if (file.type === 'application/pdf') {
+                    await readPDFMetadata(file);
+                }
+
+                // Display before state
+                displayBeforeMetadata();
+                dropzone.classList.add('has-file');
+                dropzoneTitle.textContent = 'File Loaded';
+                dropzoneSubtitle.textContent = file.name;
+                dropzone.style.display = 'none';
+                resultArea.style.display = 'block';
+            } catch (err) {
+                console.error('Error reading metadata:', err);
+                alert('Failed to read metadata: ' + err.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function readImageMetadata(file) {
+            // Parse EXIF using exifr
+            const data = await exifr.parse(file, { exif: true, gps: true, tiff: true, icc: true });
+
+            originalMetadata = {
+                'File Name': file.name,
+                'File Size': formatBytes(file.size),
+                'File Type': file.type,
+                'Dimensions': data?.ImageWidth && data?.ImageHeight ? `${data.ImageWidth} x ${data.ImageHeight}` : 'Unknown',
+            };
+
+            if (data) {
+                if (data.Make) originalMetadata['Camera Make'] = data.Make;
+                if (data.Model) originalMetadata['Camera Model'] = data.Model;
+                if (data.LensModel) originalMetadata['Lens'] = data.LensModel;
+                if (data.DateTimeOriginal) originalMetadata['Date Taken'] = new Date(data.DateTimeOriginal).toLocaleString();
+                if (data.CreateDate) originalMetadata['Date Created'] = new Date(data.CreateDate).toLocaleString();
+                if (data.ExposureTime) originalMetadata['Exposure Time'] = `${data.ExposureTime}s`;
+                if (data.FNumber) originalMetadata['Aperture'] = `f/${data.FNumber}`;
+                if (data.ISO || data.ISOSpeedRatings) originalMetadata['ISO'] = data.ISO || data.ISOSpeedRatings;
+                if (data.FocalLength) originalMetadata['Focal Length'] = `${data.FocalLength}mm`;
+                if (data.Flash) originalMetadata['Flash'] = data.Flash;
+                if (data.WhiteBalance) originalMetadata['White Balance'] = data.WhiteBalance;
+                if (data.ExposureProgram) originalMetadata['Exposure Program'] = data.ExposureProgram;
+                if (data.MeteringMode) originalMetadata['Metering Mode'] = data.MeteringMode;
+                if (data.XResolution) originalMetadata['X Resolution'] = data.XResolution;
+                if (data.YResolution) originalMetadata['Y Resolution'] = data.YResolution;
+                if (data.Software) originalMetadata['Software'] = data.Software;
+                if (data.Artist) originalMetadata['Artist'] = data.Artist;
+                if (data.Copyright) originalMetadata['Copyright'] = data.Copyright;
+                if (data.Orientation) originalMetadata['Orientation'] = data.Orientation;
+                if (data.ColorSpace) originalMetadata['Color Space'] = data.ColorSpace;
+                if (data.ExifVersion) originalMetadata['EXIF Version'] = data.ExifVersion;
+                if (data.GPSLatitude) {
+                    originalMetadata['GPS Latitude'] = `${data.GPSLatitude.toFixed(6)} ${data.GPSLatitudeRef || ''}`;
+                }
+                if (data.GPSLongitude) {
+                    originalMetadata['GPS Longitude'] = `${data.GPSLongitude.toFixed(6)} ${data.GPSLongitudeRef || ''}`;
+                }
+                if (data.GPSAltitude) {
+                    originalMetadata['GPS Altitude'] = `${data.GPSAltitude} ${data.GPSAltitudeRef === 0 ? 'm' : 'm (below sea level)'}`;
+                }
+            }
+
+            // Show preview
+            if (previewImg.src && previewImg.src.startsWith('blob:')) {
+                URL.revokeObjectURL(previewImg.src);
+            }
+            previewImg.src = URL.createObjectURL(file);
+            previewImg.style.display = 'block';
+            pdfIcon.style.display = 'none';
+        }
+
+        async function readPDFMetadata(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+            const info = await pdf.getMetadata().catch(() => ({}));
+            originalMetadata = {
+                'File Name': file.name,
+                'File Size': formatBytes(file.size),
+                'File Type': 'application/pdf',
+                'Pages': pdf.numPages,
+                'PDF Version': pdf.pdfInfo?.pdfFormatVersion || 'Unknown',
+            };
+
+            if (info?.info) {
+                if (info.info.Title) originalMetadata['Title'] = info.info.Title;
+                if (info.info.Author) originalMetadata['Author'] = info.info.Author;
+                if (info.info.Subject) originalMetadata['Subject'] = info.info.Subject;
+                if (info.info.Keywords) originalMetadata['Keywords'] = info.info.Keywords;
+                if (info.info.Creator) originalMetadata['Creator'] = info.info.Creator;
+                if (info.info.Producer) originalMetadata['Producer'] = info.info.Producer;
+                if (info.info.CreationDate) originalMetadata['Creation Date'] = info.info.CreationDate;
+                if (info.info.ModDate) originalMetadata['Modification Date'] = info.info.ModDate;
+            }
+
+            pdfIcon.style.display = 'flex';
+            previewImg.style.display = 'none';
+        }
+
+        function displayBeforeMetadata() {
+            beforeTable.innerHTML = '';
+            afterTable.innerHTML = '';
+
+            let beforeCountVal = 0;
+            const entries = Object.entries(originalMetadata).filter(([k, v]) => v && v.toString().trim());
+
+            entries.forEach(([key, value]) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="metadata-key">${key}</td><td class="metadata-value">${value}</td>`;
+                beforeTable.appendChild(tr);
+                beforeCountVal++;
+            });
+
+            if (beforeCountVal === 0) {
+                beforeTable.innerHTML = '<tr><td colspan="2" class="metadata-none">No metadata found</td></tr>';
+            }
+
+            beforeCount.textContent = `${beforeCountVal} fields`;
+            beforeCount.className = 'badge';
+            beforeCount.style.background = '#e2e8f0';
+            beforeCount.style.color = '#64748b';
+        }
+
+        function displayAfterMetadata(cleanedData) {
+            afterTable.innerHTML = '';
+            let afterCountVal = 0;
+
+            Object.entries(cleanedData).forEach(([key, value]) => {
+                const tr = document.createElement('tr');
+                if (value) {
+                    tr.innerHTML = `<td class="metadata-key">${key}</td><td class="metadata-value">${value}</td>`;
+                    afterCountVal++;
+                } else {
+                    tr.innerHTML = `<td class="metadata-key">${key}</td><td class="metadata-none">(removed)</td>`;
+                }
+                afterTable.appendChild(tr);
+            });
+
+            afterCount.textContent = `${afterCountVal} fields`;
+            afterCount.className = 'badge kept';
+        }
+
+        function showLoading(text = 'Processing...') {
+            loadingText.textContent = text;
+            loadingOverlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Strip metadata from image using canvas
+        async function stripImageMetadata(file) {
+            showLoading('Stripping image metadata...');
+
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    canvas.toBlob((blob) => {
+                        resolve({
+                            blob: blob,
+                            name: file.name.replace(/\.[^/.]+$/, '') + '_clean.' + file.type.split('/')[1],
+                            type: file.type
+                        });
+                    }, file.type, 0.95);
+                };
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // Strip metadata from PDF
+        async function stripPDFMetadata(file) {
+            showLoading('Stripping PDF metadata...');
+
+            // Ensure PDFLib is loaded
+            if (typeof window.PDFLib === 'undefined') {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+                    script.onload = resolve;
+                    script.onerror = () => reject(new Error('Failed to load PDF library'));
+                    document.head.appendChild(script);
+                });
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const { PDFDocument } = window.PDFLib;
+            const pdfDoc = await PDFDocument.load(new Uint8Array(arrayBuffer));
+
+            // Clear all document metadata
+            pdfDoc.setTitle(null);
+            pdfDoc.setAuthor(null);
+            pdfDoc.setSubject(null);
+            pdfDoc.setKeywords([]);
+            pdfDoc.setProducer(null);
+            pdfDoc.setCreator(null);
+            pdfDoc.setCreationDate(null);
+            pdfDoc.setModificationDate(null);
+
+            // Save without metadata
+            const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+
+            return {
+                blob: new Blob([pdfBytes], { type: 'application/pdf' }),
+                name: file.name.replace(/\.[^/.]+$/, '') + '_clean.pdf',
+                type: 'application/pdf'
+            };
+        }
+
+
+
+        // Main strip function
+        async function stripMetadata() {
+            if (!originalFile) return;
+
+            showLoading('Analyzing and stripping metadata...');
+
+            try {
+                let result;
+
+                if (originalFile.type.startsWith('image/')) {
+                    result = await stripImageMetadata(originalFile);
+                } else if (originalFile.type === 'application/pdf') {
+                    result = await stripPDFMetadata(originalFile);
+                }
+
+                // Revoke previous URL if exists
+                if (cleanedBlobUrl) URL.revokeObjectURL(cleanedBlobUrl);
+
+                cleanedBlobUrl = URL.createObjectURL(result.blob);
+
+                // Set up download
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = cleanedBlobUrl;
+                    a.download = result.name;
+                    a.click();
+                };
+
+                // Build after metadata (immutable fields preserved, others stripped)
+                const afterMetadata = {};
+                let removedCount = 0;
+                Object.keys(originalMetadata).forEach(key => {
+                    if (IMMUTABLE_FIELDS.includes(key)) {
+                        afterMetadata[key] = originalMetadata[key]; // keep original
+                    } else {
+                        afterMetadata[key] = null; // stripped
+                        if (originalMetadata[key]) removedCount++;
+                    }
+                });
+
+                displayAfterMetadata(afterMetadata);
+
+                // Update summary
+                const remainingCount = Object.values(afterMetadata).filter(v => v).length;
+                removedCountEl.textContent = removedCount;
+                remainingCountEl.textContent = remainingCount;
+                summaryBox.classList.add('visible');
+
+                hideLoading();
+            } catch (err) {
+                console.error('Stripping failed:', err);
+                alert('Failed to strip metadata: ' + err.message);
+                hideLoading();
+            }
+        }
+
+        // Reset tool
+        function resetTool() {
+            // Clean up URLs
+            if (cleanedBlobUrl) {
+                URL.revokeObjectURL(cleanedBlobUrl);
+                cleanedBlobUrl = null;
+            }
+            if (previewImg.src && previewImg.src.startsWith('blob:')) {
+                URL.revokeObjectURL(previewImg.src);
+            }
+
+            // Reset state
+            originalFile = null;
+            originalMetadata = {};
+
+            // Reset UI
+            dropzone.classList.remove('has-file');
+            dropzoneIcon.innerHTML = initialIcon;
+            dropzoneTitle.textContent = initialTitle;
+            dropzoneSubtitle.textContent = initialSubtitle;
+            dropzone.style.display = 'flex';
+            resultArea.style.display = 'none';
+            fileInput.value = '';
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+            pdfIcon.style.display = 'none';
+            beforeTable.innerHTML = '<tr><td colspan="2" class="metadata-none">No metadata found</td></tr>';
+            afterTable.innerHTML = '<tr><td colspan="2" class="metadata-none">No metadata remaining</td></tr>';
+            summaryBox.classList.remove('visible');
+            downloadBtn.onclick = null;
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Clean File';
+        }
+
+        // Tools search
+        const toolsSearch = document.querySelector('.tool-search');
+        if (toolsSearch) {
+            toolsSearch.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                document.querySelectorAll('.tool-list a').forEach(a => {
+                    a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+                });
+            });
+        }
+
+        // Auto-strip on file load? Let user click
+        // We could add auto-strip, but better to show before and let user click
+        // I'll add trigger: after loading, we can auto-strip
+        setTimeout(() => {
+            if (originalFile && originalMetadata) {
+                stripMetadata();
+            }
+        }, 500);
+
+    </script>
+</body>
+</html>
