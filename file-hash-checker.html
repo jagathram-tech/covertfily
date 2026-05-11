@@ -1,0 +1,925 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-4Z6LTJ67E2');
+        </script>
+        <title>File Hash Checker - Verify SHA & MD5 Hashes Online | Covertfily</title>
+        <link rel="icon" type="image/png" href="favicon.png">
+        <meta name="description" content="Generate MD5, SHA-1, SHA-256, SHA-512 hashes for any file. 100% private, browser-based hash checker — no uploads, fully secure.">
+        <meta name="keywords" content="file hash checker, MD5, SHA-256, SHA-512, SHA-1, checksum verifier, hash calculator, file integrity, offline hash tool">
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="style.css">
+        <style>
+            .hash-container {
+                max-width: 1000px;
+                margin: 40px auto;
+                padding: 0 20px;
+            }
+
+            .section-title {
+                margin-bottom: 2rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .section-title h1 {
+                margin: 0.5rem 0;
+            }
+
+            .section-title p {
+                margin: 0;
+                color: var(--text-muted);
+                font-size: 1.1rem;
+            }
+
+            .dropzone {
+                max-width: 800px;
+                margin: 0 auto 2rem;
+                background: white;
+                border: 2px dashed var(--primary);
+                border-radius: 20px;
+                padding: 4rem 2rem;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: var(--shadow-sm);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .dropzone:hover {
+                background: var(--bg-alt);
+                border-color: var(--primary-hover);
+                transform: scale(1.01);
+            }
+
+            .dropzone-icon {
+                font-size: 3rem;
+                color: var(--primary);
+                margin-bottom: 1rem;
+            }
+
+            .dropzone h2 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                color: var(--text-main);
+            }
+
+            .dropzone p {
+                color: var(--text-muted);
+            }
+
+            .loading-block {
+                margin-top: 40px;
+                padding: 3rem 2rem;
+                text-align: center;
+                display: none;
+            }
+
+            .loading-block .spinner-icon {
+                font-size: 3rem;
+                color: var(--primary);
+                margin-bottom: 1rem;
+            }
+
+            .loading-block h2 {
+                font-size: 1.3rem;
+                color: var(--text-main);
+                margin-bottom: 0.5rem;
+            }
+
+            .loading-block p {
+                color: var(--text-muted);
+                font-size: 0.95rem;
+            }
+
+            .progress-container {
+                width: 100%;
+                max-width: 400px;
+                height: 8px;
+                background: var(--border);
+                border-radius: 10px;
+                margin: 20px auto;
+                overflow: hidden;
+            }
+
+            .progress-bar-fill {
+                width: 0%;
+                height: 100%;
+                background: var(--primary);
+                border-radius: 10px;
+                transition: width 0.3s ease;
+            }
+
+            .result-section {
+                display: none;
+                margin-top: 40px;
+            }
+
+            .result-card {
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 24px;
+                margin-bottom: 20px;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .result-card h3 {
+                font-size: 1.1rem;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .hash-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .hash-row:last-child {
+                margin-bottom: 0;
+            }
+
+            .hash-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                min-width: 100px;
+            }
+
+            .hash-value {
+                flex: 1;
+                font-family: 'Courier New', monospace;
+                font-size: 0.9rem;
+                background: var(--bg-alt);
+                padding: 10px 14px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                color: var(--text-main);
+                word-break: break-all;
+                line-height: 1.4;
+            }
+
+            .hash-value.success {
+                border-color: var(--success);
+                background: rgba(16, 185, 129, 0.05);
+            }
+
+            .hash-value.error {
+                border-color: #ef4444;
+                background: rgba(239, 68, 68, 0.05);
+            }
+
+            .btn-icon {
+                padding: 10px 16px;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .btn-icon:hover {
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+            }
+
+            .file-info {
+                background: var(--bg-alt);
+                padding: 16px 20px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .file-info i {
+                font-size: 2rem;
+                color: var(--primary);
+            }
+
+            .file-details {
+                flex: 1;
+            }
+
+            .file-name {
+                font-weight: 600;
+                margin-bottom: 4px;
+                color: var(--text-main);
+            }
+
+            .file-meta {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+            }
+
+            .verify-section {
+                background: var(--bg-alt);
+                padding: 20px;
+                border-radius: 12px;
+                margin-top: 24px;
+            }
+
+            .verify-section h3 {
+                margin-bottom: 12px;
+                font-size: 1rem;
+            }
+
+            .verify-input-group {
+                display: flex;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .verify-input {
+                flex: 1;
+                padding: 12px 16px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-family: 'Courier New', monospace;
+                font-size: 0.95rem;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            .verify-input:focus {
+                border-color: var(--primary);
+            }
+
+            .btn-verify {
+                padding: 12px 24px;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                white-space: nowrap;
+            }
+
+            .btn-verify:hover {
+                background: var(--primary-hover);
+            }
+
+            .verify-result {
+                margin-top: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 600;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+
+            .verify-result.visible {
+                opacity: 1;
+            }
+
+            .verify-result.success {
+                color: var(--success);
+            }
+
+            .verify-result.error {
+                color: #ef4444;
+            }
+
+            .reset-btn {
+                margin-top: 1.5rem;
+                padding: 12px 24px;
+                background: var(--bg-alt);
+                color: var(--primary);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+
+            .reset-btn:hover {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 40px 20px;
+                color: var(--text-muted);
+                font-style: italic;
+            }
+
+            .empty-state i {
+                font-size: 3rem;
+                color: #cbd5e1;
+                margin-bottom: 15px;
+            }
+
+            @media (max-width: 768px) {
+                .hash-row {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .btn-icon {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .verify-input-group {
+                    flex-direction: column;
+                }
+
+                .btn-verify {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="nav-left">
+                <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <div class="tool-search-wrapper">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="tool-search" placeholder="Search tools...">
+                            </div>
+                            <div class="tool-list">
+                                <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                                <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                                <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                                <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                                <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                                <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                                <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                                <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                                <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
+                                <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                                <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                                <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
+                                <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
+                                <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                                <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                                <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                                <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                                <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                                <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                                <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                                <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                                <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                                <a href="video-trimmer.html"><i class="fas fa-cut"></i> Video Trimmer</a>
+                                <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="nav-actions">
+                <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+            </div>
+        </nav>
+
+        <main>
+            <div class="hash-container">
+                <div class="section-title">
+                    <i class="fas fa-fingerprint" style="color: var(--primary); font-size: 2rem;"></i>
+                    <div>
+                        <h1>File Hash Checker</h1>
+                        <p>Generate MD5, SHA-1, SHA-256, SHA-512 hashes locally. 100% private — no server uploads.</p>
+                    </div>
+                </div>
+
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <h2>Select Any File</h2>
+                    <p>Drag and drop or click to upload any file from your computer</p>
+                    <input type="file" id="fileInput" hidden>
+                </div>
+
+                <div id="loadingBlock" class="loading-block">
+                    <div class="spinner-icon">
+                        <i class="fas fa-cog fa-spin"></i>
+                    </div>
+                    <h2 id="loadingText">Computing Hashes...</h2>
+                    <p id="fileNameDisplay">Processing file...</p>
+                    <div class="progress-container">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
+                    </div>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <div class="result-card">
+                        <div class="file-info">
+                            <i class="fas fa-file"></i>
+                            <div class="file-details">
+                                <div class="file-name" id="resultFileName"></div>
+                                <div class="file-meta" id="resultFileMeta"></div>
+                            </div>
+                        </div>
+
+                        <div class="hash-row">
+                            <span class="hash-label">MD5</span>
+                            <div class="hash-value" id="md5Hash"></div>
+                            <button class="btn-icon" onclick="copyHash('md5Hash')">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="hash-row">
+                            <span class="hash-label">SHA-1</span>
+                            <div class="hash-value" id="sha1Hash"></div>
+                            <button class="btn-icon" onclick="copyHash('sha1Hash')">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="hash-row">
+                            <span class="hash-label">SHA-256</span>
+                            <div class="hash-value" id="sha256Hash"></div>
+                            <button class="btn-icon" onclick="copyHash('sha256Hash')">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="hash-row">
+                            <span class="hash-label">SHA-512</span>
+                            <div class="hash-value" id="sha512Hash"></div>
+                            <button class="btn-icon" onclick="copyHash('sha512Hash')">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="verify-section">
+                            <h3><i class="fas fa-check-circle"></i> Verify Hash</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.9rem;">
+                                Paste any hash below (MD5, SHA-1, SHA-256, or SHA-512) to verify it matches this file.
+                            </p>
+                            <div class="verify-input-group">
+                                <input type="text" 
+                                       class="verify-input" 
+                                       id="verifyInput" 
+                                       placeholder="Paste hash to verify..." 
+                                       autocomplete="off">
+                                <button class="btn-verify" onclick="verifyHash()">
+                                    <i class="fas fa-check"></i> Verify
+                                </button>
+                            </div>
+                            <div class="verify-result" id="verifyResult">
+                                <i class="fas fa-check-circle"></i> <span>Hash matches!</span>
+                            </div>
+                        </div>
+
+                        <button class="reset-btn" onclick="resetTool()">
+                            <i class="fas fa-redo"></i> Check Another File
+                        </button>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-fingerprint"></i>
+                    <h3>No Hash Results</h3>
+                    <p>Select a file to generate its cryptographic hash values.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                    <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+                </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                
+                    <li><a href="image-resizer.html">Image Tools</a></li>
+                </ul>
+            </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                        <li><a href="documentation.html">Documentation</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+                <div class="footer-social">
+                    <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // DOM Elements
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const loadingBlock = document.getElementById('loadingBlock');
+            const loadingText = document.getElementById('loadingText');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const resultSection = document.getElementById('resultSection');
+            const resultFileName = document.getElementById('resultFileName');
+            const resultFileMeta = document.getElementById('resultFileMeta');
+            const emptyState = document.getElementById('emptyState');
+            const verifyInput = document.getElementById('verifyInput');
+            const verifyResult = document.getElementById('verifyResult');
+
+            // Click dropzone to open file picker
+            dropzone.onclick = () => fileInput.click();
+
+            // Drag and drop handlers
+            dropzone.ondragover = (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--primary-hover)';
+                dropzone.style.background = 'var(--bg-alt)';
+            };
+
+            dropzone.ondragleave = (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--primary)';
+                dropzone.style.background = 'white';
+            };
+
+            dropzone.ondrop = (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--primary)';
+                dropzone.style.background = 'white';
+                const file = e.dataTransfer.files[0];
+                handleFile(file);
+            };
+
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) handleFile(file);
+            };
+
+            // Current hashes storage for verification
+            let currentHashes = {};
+
+            async function handleFile(file) {
+                if (!file) return;
+
+                // Show loading, hide dropzone
+                dropzone.style.display = 'none';
+                loadingBlock.style.display = 'block';
+                resultSection.style.display = 'none';
+                emptyState.style.display = 'none';
+                verifyResult.classList.remove('visible', 'success', 'error');
+
+                // Update file info
+                document.getElementById('fileNameDisplay').textContent = file.name;
+
+                try {
+                    // Read file using FileReader to show progress
+                    const reader = new FileReader();
+                    
+                    reader.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 30);
+                            progressBarFill.style.width = percent + '%';
+                        }
+                    };
+
+                    reader.onload = async (e) => {
+                        const buffer = e.target.result;
+                        // Update progress - reading complete
+                        progressBarFill.style.width = '50%';
+                        loadingText.textContent = 'Computing hashes...';
+
+                        // Compute all hashes
+                        currentHashes = await computeAllHashes(buffer);
+
+                        // Complete
+                        progressBarFill.style.width = '100%';
+                        setTimeout(() => {
+                            loadingBlock.style.display = 'none';
+                            displayResults(file);
+                        }, 300);
+                    };
+
+                    reader.onerror = () => {
+                        alert('Error reading file. Please try again.');
+                        resetTool();
+                    };
+
+                    reader.readAsArrayBuffer(file);
+
+                } catch (error) {
+                    console.error('Hash computation error:', error);
+                    alert('Error computing hashes. Please try again.');
+                    resetTool();
+                }
+            }
+
+            async function computeAllHashes(buffer) {
+                const data = new Uint8Array(buffer);
+
+                // Helper to simulate progress during hashing
+                const algorithms = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512'];
+                const results = {};
+
+                // Web Crypto API supports SHA family, but MD5 is not available in standard API
+                // We'll implement MD5 separately (not available in Web Crypto)
+                // Compute SHA hashes via Web Crypto, MD5 via custom implementation
+
+                // For SHA family
+                const shaResults = await computeSHA256and512(data);
+                results.sha256 = shaResults.sha256;
+                results.sha512 = shaResults.sha512;
+
+                // Also compute SHA-1
+                results.sha1 = await computeSHA1(data);
+
+                // MD5 (needs custom implementation since not in Web Crypto)
+                results.md5 = await computeMD5(data);
+
+                return {
+                    'MD5': results.md5,
+                    'SHA-1': results.sha1,
+                    'SHA-256': results.sha256,
+                    'SHA-512': results.sha512
+                };
+            }
+
+            async function computeSHA256and512(data) {
+                const hash256 = await crypto.subtle.digest('SHA-256', data);
+                const hash512 = await crypto.subtle.digest('SHA-512', data);
+                return {
+                    sha256: bufferToHex(hash256),
+                    sha512: bufferToHex(hash512)
+                };
+            }
+
+            async function computeSHA1(data) {
+                const hash = await crypto.subtle.digest('SHA-1', data);
+                return bufferToHex(hash);
+            }
+
+            async function computeMD5(data) {
+                // Simple MD5 implementation (RFC 1321)
+                // Credits: Paul Johnston, Chris Dombrowski, etc.
+                const MOD = 2 ** 32;
+                function add(x, y) { return (x + y) % MOD; }
+                function F(x, y, z) { return (x & y) | ((~x) & z); }
+                function G(x, y, z) { return (x & z) | (y & (~z)); }
+                function H(x, y, z) { return x ^ y ^ z; }
+                function I(x, y, z) { return y ^ (x | (~z)); }
+                function FF(a, b, c, d, x, s, ac) {
+                    a = add(a, add(add(F(b, c, d), x), ac));
+                    return add(a << s, a >>> (32 - s)) + b;
+                }
+                function GG(a, b, c, d, x, s, ac) {
+                    a = add(a, add(add(G(b, c, d), x), ac));
+                    return add(a << s, a >>> (32 - s)) + b;
+                }
+                function HH(a, b, c, d, x, s, ac) {
+                    a = add(a, add(add(H(b, c, d), x), ac));
+                    return add(a << s, a >>> (32 - s)) + b;
+                }
+                function II(a, b, c, d, x, s, ac) {
+                    a = add(a, add(add(I(b, c, d), x), ac));
+                    return add(a << s, a >>> (32 - s)) + b;
+                }
+
+                let state = [
+                    0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476
+                ];
+
+                let x = new Uint32Array(16);
+                let i;
+
+                // Padding
+                let msgLen = data.length;
+                const padding = new Uint8Array(((msgLen + 64) >>> 6) * 64 + 64);
+                padding.set(data);
+                padding[msgLen] = 0x80;
+
+                const bitLen = msgLen * 8;
+                padding[msgLen + 1] = 0;
+                padding[msgLen + 2] = 0;
+                padding[msgLen + 3] = 0;
+                padding[msgLen + 4] = 0;
+                padding[msgLen + 5] = 0;
+                padding[msgLen + 6] = 0;
+                padding[msgLen + 7] = 0;
+                padding[msgLen + 8] = (bitLen) & 0xFF;
+                padding[msgLen + 9] = (bitLen >>> 8) & 0xFF;
+                padding[msgLen + 10] = (bitLen >>> 16) & 0xFF;
+                padding[msgLen + 11] = (bitLen >>> 24) & 0xFF;
+
+                for (i = 0; i < padding.length; i += 64) {
+                    for (let j = 0; j < 16; j++) {
+                        x[j] = padding[i + j * 4] |
+                               (padding[i + j * 4 + 1] << 8) |
+                               (padding[i + j * 4 + 2] << 16) |
+                               (padding[i + j * 4 + 3] << 24);
+                    }
+
+                    let a = state[0], b = state[1], c = state[2], d = state[3];
+
+                    let k = [0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821];
+                    let s = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21];
+
+                    for (let j = 0; j < 64; j++) {
+                        let t, tmp;
+                        if (j < 16) {
+                            t = FF(a, b, c, d, x[j & 15], s[j], k[j]);
+                        } else if (j < 32) {
+                            t = GG(a, b, c, d, x[(j * 5 + 1) & 15], s[j], k[j]);
+                        } else if (j < 48) {
+                            t = HH(a, b, c, d, x[(j * 3 + 5) & 15], s[j], k[j]);
+                        } else {
+                            t = II(a, b, c, d, x[(j * 7 + 0) & 15], s[j], k[j]);
+                        }
+                        a = d;
+                        d = c;
+                        c = b;
+                        b = t;
+                    }
+
+                    state[0] = add(state[0], a);
+                    state[1] = add(state[1], b);
+                    state[2] = add(state[2], c);
+                    state[3] = add(state[3], d);
+                }
+
+                return (state[0].toString(16).padStart(8, '0') +
+                        state[1].toString(16).padStart(8, '0') +
+                        state[2].toString(16).padStart(8, '0') +
+                        state[3].toString(16).padStart(8, '0')).toLowerCase();
+            }
+
+            function bufferToHex(buffer) {
+                return Array.from(new Uint8Array(buffer))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+            }
+
+            function displayResults(file) {
+                // Update file info
+                resultFileName.textContent = file.name;
+                resultFileMeta.textContent = formatFileSize(file.size);
+
+                // Populate hash values
+                document.getElementById('md5Hash').textContent = currentHashes['MD5'];
+                document.getElementById('sha1Hash').textContent = currentHashes['SHA-1'];
+                document.getElementById('sha256Hash').textContent = currentHashes['SHA-256'];
+                document.getElementById('sha512Hash').textContent = currentHashes['SHA-512'];
+
+                // Clear previous verification
+                verifyInput.value = '';
+                verifyResult.classList.remove('visible', 'success', 'error');
+
+                // Show results
+                resultSection.style.display = 'block';
+            }
+
+            function copyHash(elementId) {
+                const hashText = document.getElementById(elementId).textContent;
+                navigator.clipboard.writeText(hashText).then(() => {
+                    const btn = event.target.closest('.btn-icon');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.style.background = 'var(--success)';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.style.background = '';
+                    }, 1500);
+                }).catch(err => {
+                    console.error('Copy failed:', err);
+                    alert('Failed to copy hash to clipboard.');
+                });
+            }
+
+            function verifyHash() {
+                const input = verifyInput.value.trim().toLowerCase();
+                if (!input) {
+                    verifyResult.classList.remove('visible', 'success', 'error');
+                    return;
+                }
+
+                // Check against all hash types
+                const allHashes = {
+                    'md5': currentHashes['MD5'],
+                    'sha1': currentHashes['SHA-1'],
+                    'sha256': currentHashes['SHA-256'],
+                    'sha512': currentHashes['SHA-512']
+                };
+
+                for (const [type, hash] of Object.entries(allHashes)) {
+                    if (hash && input === hash.toLowerCase()) {
+                        showVerifyResult(true);
+                        return;
+                    }
+                }
+
+                showVerifyResult(false);
+            }
+
+            function showVerifyResult(match) {
+                verifyResult.classList.add('visible');
+                if (match) {
+                    verifyResult.className = 'verify-result visible success';
+                    verifyResult.innerHTML = '<i class="fas fa-check-circle"></i> <span>Hash matches! File is authentic.</span>';
+                } else {
+                    verifyResult.className = 'verify-result visible error';
+                    verifyResult.innerHTML = '<i class="fas fa-times-circle"></i> <span>No match — file may be corrupted or modified.</span>';
+                }
+            }
+
+            // Real-time verification on input
+            verifyInput.addEventListener('input', () => {
+                if (verifyInput.value.trim()) {
+                    verifyHash();
+                } else {
+                    verifyResult.classList.remove('visible', 'success', 'error');
+                }
+            });
+
+            function resetTool() {
+                dropzone.style.display = 'flex';
+                loadingBlock.style.display = 'none';
+                resultSection.style.display = 'none';
+                emptyState.style.display = 'none';
+                fileInput.value = '';
+                progressBarFill.style.width = '0%';
+                verifyInput.value = '';
+                verifyResult.classList.remove('visible', 'success', 'error');
+                currentHashes = {};
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+                if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+                return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+            }
+
+            // Tools search (same as other pages)
+            document.querySelector('.tool-search').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                document.querySelectorAll('.tool-list a').forEach(a => {
+                    a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+                });
+            });
+        </script>
+    </body>
+</html>
