@@ -127,6 +127,9 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             border: 1px solid var(--border);
         }
+        .color-swatch.locked {
+            border: 2px solid var(--primary);
+        }
         .color-values {
             display: grid;
             gap: 1rem;
@@ -341,6 +344,7 @@
 
         let currentImage = null;
         let scaleX = 1, scaleY = 1;
+        let locked = false;
         const LOUPE_SIZE = 60; // Size of the loupe box in pixels (the zoomed area)
         const LOUPE_DISPLAY = 120; // Size of the loupe display circle
         const ZOOM_LEVEL = 5; // How much we zoom in the loupe
@@ -499,16 +503,23 @@
             const g = pixel[1];
             const b = pixel[2];
             
-            // Update color display
-            const hex = rgbToHex(r, g, b);
-            const rgb = `rgb(${r}, ${g}, ${b})`;
-            const hslArr = rgbToHsl(r, g, b);
-            const hsl = `hsl(${hslArr[0]}, ${hslArr[1]}%, ${hslArr[2]}%)`;
-            
-            colorSwatch.style.backgroundColor = hex;
-            hexValue.textContent = hex;
-            rgbValue.textContent = rgb;
-            hslValue.textContent = hsl;
+            // Update color display (only if not locked)
+            if (!locked) {
+                const hex = rgbToHex(r, g, b);
+                const rgb = `rgb(${r}, ${g}, ${b})`;
+                const hslArr = rgbToHsl(r, g, b);
+                const hsl = `hsl(${hslArr[0]}, ${hslArr[1]}%, ${hslArr[2]}%)`;
+                colorSwatch.style.backgroundColor = hex;
+                hexValue.textContent = hex;
+                rgbValue.textContent = rgb;
+                hslValue.textContent = hsl;
+                // Add locked class if locked (though UI updates not happening while locked)
+                if (locked) {
+                    colorSwatch.classList.add('locked');
+                } else {
+                    colorSwatch.classList.remove('locked');
+                }
+            }
         }
 
         function rgbToHex(r, g, b) {
@@ -566,7 +577,15 @@
         });
 
         imageCanvas.addEventListener('click', (e) => {
-            // The color is already updated in mousemove, so just show a visual feedback
+            const pos = getMousePos(imageCanvas, e);
+            // Temporarily unlock to update UI for this click's color
+            locked = false;
+            updateLoupe(pos);
+            // Now lock the selected color
+            locked = true;
+            // Add lock visual indicator
+            colorSwatch.classList.add('locked');
+            // Visual feedback for loupe scaling
             loupe.style.transform = 'scale(1.1)';
             setTimeout(() => {
                 loupe.style.transform = 'scale(1)';
