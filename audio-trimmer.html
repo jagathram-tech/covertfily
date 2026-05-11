@@ -637,16 +637,21 @@
         }
 
         // Audio playback for preview
-        playPauseBtn.addEventListener('click', () => {
+        playPauseBtn.addEventListener('click', async () => {
             if (isPlaying) {
                 stopPreview();
             } else {
-                playPreview();
+                await playPreview();
             }
         });
 
-        function playPreview() {
+        async function playPreview() {
             if (!audioBuffer) return;
+
+            // Resume audio context if suspended (browser autoplay policy)
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
 
             sourceNode = audioContext.createBufferSource();
             sourceNode.buffer = audioBuffer;
