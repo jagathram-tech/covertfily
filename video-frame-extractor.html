@@ -1,0 +1,514 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Frame Extractor Tool - Secure & Private Online | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Extract frames from videos locally. Capture single frames or bulk export every N seconds as images. 100% private, no uploads, free.">
+    <meta name="keywords" content="video frame extractor, extract frames from video, video to image, frame capture, video screenshot tool">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .tool-container { max-width: 1000px; margin: 0 auto; padding: 1.5rem 20px 3rem; }
+        .section-title { text-align: center; margin-bottom: 2.5rem; }
+        .section-title i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .section-title h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .section-title p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        .editor-panel { display: none; }
+        .editor-panel.visible { display: block; }
+
+        .video-section {
+            background: white; border-radius: 20px; border: 1px solid var(--border);
+            padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);
+        }
+        .video-container { border-radius: 12px; overflow: hidden; background: #000; }
+        .video-container video { width: 100%; display: block; }
+
+        .mode-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .mode-tab {
+            flex: 1; padding: 12px; background: var(--bg-alt); border: none;
+            border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .mode-tab.active { background: var(--primary); color: white; }
+        .mode-tab:hover:not(.active) { background: var(--border); }
+
+        .controls-panel { margin-top: 1.5rem; }
+        .control-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        @media (max-width: 768px) { .control-row { grid-template-columns: 1fr; } }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-weight: 600; font-size: 0.9rem; }
+        .form-group input, .form-group select {
+            padding: 12px; border: 1px solid var(--border); border-radius: 8px;
+            font-family: inherit; font-size: 1rem;
+        }
+
+        .btn-action {
+            width: 100%; padding: 15px; background: var(--primary);
+            color: white; border: none; border-radius: 12px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-action:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-action:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+        .progress-container {
+            max-width: 400px; height: 8px; background: var(--bg-alt);
+            border-radius: 10px; margin: 1.5rem auto; overflow: hidden; display: none;
+        }
+        .progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
+
+        .status-msg { text-align: center; margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-muted); display: none; }
+
+        .loading-block { text-align: center; padding: 2rem; display: none; }
+        .loading-block .spinner-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .frames-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;
+            margin-top: 2rem; display: none;
+        }
+        .frame-card {
+            background: white; border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden; transition: transform 0.2s;
+        }
+        .frame-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        .frame-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #000; }
+        .frame-info { padding: 0.75rem; }
+        .frame-time { font-weight: 600; font-size: 0.85rem; color: var(--primary); }
+        .frame-actions { display: flex; gap: 6px; margin-top: 6px; }
+        .btn-mini {
+            flex: 1; padding: 6px; font-size: 0.8rem; border: 1px solid var(--border);
+            background: white; border-radius: 6px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-mini:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-zip {
+            width: 100%; padding: 14px; background: var(--secondary);
+            color: #001767; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 1.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-zip:hover { background: var(--secondary-hover); transform: translateY(-2px); }
+
+        .empty-state { text-align: center; color: var(--text-muted); padding: 3rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                        <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                        <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                        <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                        <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                        <a href="video-trimmer.html"><i class="fas fa-cut"></i> Video Trimmer</a>
+                        <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main class="tool-container">
+        <div class="section-title">
+            <i class="fas fa-images"></i>
+            <h1>Video Frame Extractor</h1>
+            <p>Extract frames from videos locally — save as PNG/JPG or download all as ZIP.</p>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+            <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <h2>Select Video</h2>
+            <p>Drag and drop your video or click to browse</p>
+            <input type="file" id="fileInput" hidden accept="video/*">
+        </div>
+
+        <div class="editor-panel" id="editor">
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="videoPlayer" controls></video>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="mode-tabs">
+                    <button class="mode-tab active" id="singleModeTab" onclick="setMode('single')">
+                        <i class="fas fa-camera"></i> Single Frame
+                    </button>
+                    <button class="mode-tab" id="bulkModeTab" onclick="setMode('bulk')">
+                        <i class="fas fa-images"></i> Bulk Extract
+                    </button>
+                </div>
+
+                <!-- Single Frame Controls -->
+                <div id="singleControls" class="control-row">
+                    <div class="form-group">
+                        <label>Seek to timestamp</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="time" id="seekTime" step="1">
+                            <button class="btn-action" style="flex:0 0 auto; width:auto; padding:0 20px;" onclick="seekVideo()">
+                                <i class="fas fa-search"></i> Seek
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <label>&nbsp;</label>
+                        <button class="btn-action" id="captureBtn" onclick="captureFrame()">
+                            <i class="fas fa-camera"></i> Capture Frame
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bulk Extract Controls -->
+                <div id="bulkControls" class="control-row" style="display:none;">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="bulkStart" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="bulkEnd" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Interval</label>
+                        <select id="bulkInterval">
+                            <option value="1">Every 1 second</option>
+                            <option value="2">Every 2 seconds</option>
+                            <option value="5">Every 5 seconds</option>
+                            <option value="10">Every 10 seconds</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <label>&nbsp;</label>
+                        <button class="btn-action" id="extractBtn" onclick="extractFrames()">
+                            <i class="fas fa-play"></i> Start Extraction
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <p id="progressText" style="text-align:center; margin-top:0.5rem; font-size:0.9rem; color:var(--text-muted); display:none;"></p>
+
+            <div class="loading-block" id="loadingBlock">
+                <div class="spinner-icon"><i class="fas fa-cog fa-spin"></i></div>
+                <h2 id="loadingTitle">Processing...</h2>
+                <p id="loadingText">Please wait</p>
+            </div>
+
+            <div id="framesSection" style="display:none;">
+                <div class="frames-grid" id="framesGrid"></div>
+                <button class="btn-zip" id="zipBtn" onclick="downloadAllFrames()">
+                    <i class="fas fa-file-archive"></i> Download All as ZIP
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="video-frame-extractor.html">Frame Extractor</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JSZip for batch download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const editor = document.getElementById('editor');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const seekTime = document.getElementById('seekTime');
+        const captureBtn = document.getElementById('captureBtn');
+        const bulkStart = document.getElementById('bulkStart');
+        const bulkEnd = document.getElementById('bulkEnd');
+        const bulkInterval = document.getElementById('bulkInterval');
+        const extractBtn = document.getElementById('extractBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const loadingBlock = document.getElementById('loadingBlock');
+        const loadingTitle = document.getElementById('loadingTitle');
+        const loadingText = document.getElementById('loadingText');
+        const framesSection = document.getElementById('framesSection');
+        const framesGrid = document.getElementById('framesGrid');
+        const zipBtn = document.getElementById('zipBtn');
+
+        let videoFile = null;
+        let videoDuration = 0;
+        let extractedFrames = [];
+        let currentMode = 'single';
+
+        // File upload handling
+        dropzone.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+        dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary-hover)'; dropzone.style.background = 'var(--bg-alt)'; };
+        dropzone.ondragleave = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; };
+        dropzone.ondrop = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('video/')) handleFileSelect(f); };
+
+        function handleFileSelect(file) {
+            if (!file) return;
+            videoFile = file;
+            const url = URL.createObjectURL(file);
+            videoPlayer.src = url;
+            videoPlayer.onloadedmetadata = () => {
+                videoDuration = videoPlayer.duration;
+                initializeControls();
+                dropzone.style.display = 'none';
+                editor.classList.add('visible');
+            };
+        }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+
+        function formatShortTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+
+        function initializeControls() {
+            seekTime.value = '00:00:00';
+            bulkStart.value = '00:00:00';
+            bulkEnd.value = formatTime(videoDuration);
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('singleModeTab').classList.toggle('active', mode === 'single');
+            document.getElementById('bulkModeTab').classList.toggle('active', mode === 'bulk');
+            document.getElementById('singleControls').style.display = mode === 'single' ? 'grid' : 'none';
+            document.getElementById('bulkControls').style.display = mode === 'bulk' ? 'grid' : 'none';
+            framesSection.style.display = 'none';
+            extractedFrames = [];
+            resetProgress();
+        }
+
+        function seekVideo() {
+            const t = parseTime(seekTime.value);
+            videoPlayer.currentTime = Math.min(t, videoDuration);
+        }
+
+        function parseTime(val) {
+            const p = val.split(':').map(Number);
+            return (p[0]||0)*3600 + (p[1]||0)*60 + (p[2]||0);
+        }
+
+        function captureFrame() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = videoPlayer.videoWidth;
+            canvas.height = videoPlayer.videoHeight;
+            ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            const timestamp = formatTime(videoPlayer.currentTime);
+            extractedFrames.push({ dataUrl, time: timestamp });
+            renderFramesGrid();
+            framesSection.style.display = 'block';
+        }
+
+        function renderFramesGrid() {
+            framesGrid.innerHTML = extractedFrames.map((frame, i) => `
+                <div class="frame-card">
+                    <img class="frame-thumb" src="${frame.dataUrl}" alt="Frame ${i+1}">
+                    <div class="frame-info">
+                        <div class="frame-time">${frame.time}</div>
+                        <div class="frame-actions">
+                            <button class="btn-mini" onclick="downloadFrame(${i}, 'png')">PNG</button>
+                            <button class="btn-mini" onclick="downloadFrame(${i}, 'jpg')">JPG</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function downloadFrame(index, fmt) {
+            const frame = extractedFrames[index];
+            const mime = fmt === 'png' ? 'image/png' : 'image/jpeg';
+            const dataUrl = frame.dataUrl.replace('image/jpeg', mime);
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `frame_${frame.time.replace(/:/g,'-')}.${fmt}`;
+            a.click();
+        }
+
+        async function extractFrames() {
+            const start = parseTime(bulkStart.value);
+            const end = parseTime(bulkEnd.value);
+            const interval = parseInt(bulkInterval.value);
+            if (start >= end) { alert('Start must be before end.'); return; }
+
+            extractedFrames = [];
+            framesGrid.innerHTML = '';
+            framesSection.style.display = 'block';
+
+            loadingTitle.textContent = 'Extracting Frames';
+            loadingText.textContent = 'Please wait...';
+            loadingBlock.style.display = 'block';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressText.style.display = 'block';
+
+            const total = Math.floor((end - start) / interval);
+            let captured = 0;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            for (let t = start; t < end; t += interval) {
+                loadingText.textContent = `Capturing frame at ${formatTime(t)}...`;
+                videoPlayer.currentTime = t;
+                await new Promise(r => videoPlayer.onseeked = r);
+
+                canvas.width = videoPlayer.videoWidth;
+                canvas.height = videoPlayer.videoHeight;
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                extractedFrames.push({ dataUrl, time: formatTime(t) });
+                renderFramesGrid();
+
+                captured++;
+                const pct = Math.round((captured / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressText.textContent = `Extracting... ${pct}%`;
+            }
+
+            loadingBlock.style.display = 'none';
+            progressText.textContent = 'Extraction complete!';
+        }
+
+        async function downloadAllFrames() {
+            if (!extractedFrames.length) return;
+            loadingBlock.style.display = 'block';
+            loadingTitle.textContent = 'Preparing ZIP';
+            loadingText.textContent = 'Please wait...';
+            progressBar.style.width = '0%';
+            progressContainer.style.display = 'block';
+            progressText.style.display = 'block';
+
+            const zip = new JSZip();
+            extractedFrames.forEach((frame, i) => {
+                const base64 = frame.dataUrl.split(',')[1];
+                zip.file(`frame_${frame.time.replace(/:/g,'-')}.jpg`, base64, { base64: true });
+            });
+
+            zip.generateAsync({
+                type: 'blob',
+                compression: 'DEFLATE',
+                compressionOptions: { level: 6 }
+            }, (metadata) => {
+                const pct = Math.round(metadata.percent * 100);
+                progressBar.style.width = pct + '%';
+                progressText.textContent = `Zipping... ${pct}%`;
+            }).then(content => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(content);
+                a.download = 'frames.zip';
+                a.click();
+                loadingBlock.style.display = 'none';
+                progressText.style.display = 'none';
+            });
+        }
+
+        function resetProgress() {
+            progressContainer.style.display = 'none';
+            progressBar.style.width = '0%';
+            progressText.style.display = 'none';
+            loadingBlock.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

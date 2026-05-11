@@ -1,0 +1,513 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Trimmer Tool - Secure & Private Online | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Trim and cut videos locally in your browser. Extract segments from MP4, MOV, WebM and more — 100% private, no uploads, completely free.">
+    <meta name="keywords" content="video trimmer, cut video, video cutter, trim MP4, local video editor, private video tool">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .tool-container { max-width: 900px; margin: 0 auto; padding: 1.5rem 20px 3rem; }
+        .section-title { text-align: center; margin-bottom: 2.5rem; }
+        .section-title i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .section-title h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .section-title p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        .editor-panel { display: none; background: white; border-radius: 20px; border: 1px solid var(--border); padding: 2rem; box-shadow: var(--shadow-sm); }
+        .editor-panel.visible { display: block; }
+
+        .video-preview {
+            width: 100%; border-radius: 12px; overflow: hidden;
+            background: #000; margin-bottom: 2rem;
+        }
+        .video-preview video { width: 100%; display: block; }
+
+        .trim-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+        @media (max-width: 768px) { .trim-controls { grid-template-columns: 1fr; } }
+
+        .time-input-group { margin-bottom: 1.5rem; }
+        .time-input-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .time-input-wrapper { display: flex; align-items: center; gap: 10px; }
+        .time-input-wrapper input[type="time"] {
+            flex: 1; padding: 12px; border: 1px solid var(--border);
+            border-radius: 8px; font-family: inherit; font-size: 1rem;
+        }
+        .time-display { font-weight: 700; color: var(--primary); min-width: 80px; text-align: right; }
+
+        .slider-track {
+            position: relative; height: 6px; background: var(--border);
+            border-radius: 3px; margin: 2rem 0;
+        }
+        .slider-range {
+            position: absolute; height: 100%; background: var(--primary);
+            border-radius: 3px;
+        }
+        .slider-thumb {
+            position: absolute; width: 20px; height: 20px;
+            background: var(--primary); border: 3px solid white;
+            border-radius: 50%; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            margin-top: -7px; margin-left: -10px;
+        }
+        .slider-thumb:active { cursor: grabbing; }
+
+        .btn-trim {
+            width: 100%; padding: 16px; background: var(--primary);
+            color: white; border: none; border-radius: 12px;
+            font-weight: 700; font-size: 1.1rem; cursor: pointer;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-trim:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-trim:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+        .progress-container {
+            max-width: 400px; height: 8px; background: var(--bg-alt);
+            border-radius: 10px; margin: 1.5rem auto; overflow: hidden; display: none;
+        }
+        .progress-bar-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
+
+        .loading-block { text-align: center; padding: 2rem; display: none; }
+        .loading-block .spinner-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .result-block { text-align: center; padding: 2rem; display: none; }
+        .result-block .success-icon {
+            width: 80px; height: 80px; background: #ecfdf5; color: #10b981;
+            border-radius: 50%; font-size: 2.5rem; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        .result-block h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .result-block .file-info { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+        .trust-badge {
+            margin-top: 2rem; padding: 1rem; background: var(--bg-alt);
+            border-radius: 12px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem;
+        }
+        .trust-badge i { color: #10b981; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                        <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                        <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                        <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                        <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                        <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                        <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                        <a href="video-trimmer.html"><i class="fas fa-cut"></i> Video Trimmer</a>
+                        <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main class="tool-container">
+        <div class="section-title">
+            <i class="fas fa-cut"></i>
+            <h1>Video Trimmer</h1>
+            <p>Cut and trim videos locally — no uploads, fully private.</p>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+            <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <h2>Select Video</h2>
+            <p>Drag and drop your video or click to browse</p>
+            <input type="file" id="fileInput" hidden accept="video/*">
+        </div>
+
+        <div class="editor-panel" id="editor">
+            <div class="video-preview">
+                <video id="videoPlayer" controls></video>
+            </div>
+
+            <div class="trim-controls">
+                <div>
+                    <div class="time-input-group">
+                        <label>Start Time</label>
+                        <div class="time-input-wrapper">
+                            <input type="time" id="startTimeInput" step="1">
+                            <span class="time-display" id="startTimeDisplay">00:00:00</span>
+                        </div>
+                    </div>
+                    <div class="time-input-group">
+                        <label>End Time</label>
+                        <div class="time-input-wrapper">
+                            <input type="time" id="endTimeInput" step="1">
+                            <span class="time-display" id="endTimeDisplay">00:00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">Timeline Selection</label>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">Drag the handles to select the segment</p>
+                    <div class="slider-track" id="sliderTrack">
+                        <div class="slider-range" id="sliderRange"></div>
+                        <div class="slider-thumb" id="startThumb" style="left: 0%;"></div>
+                        <div class="slider-thumb" id="endThumb" style="left: 100%;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted);">
+                        <span id="timeStartLabel">00:00</span>
+                        <span id="timeEndLabel">00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-trim" id="trimBtn">
+                <i class="fas fa-cut"></i> Trim Video
+            </button>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <p id="progressText" style="text-align:center; margin-top:0.5rem; font-size:0.9rem; color:var(--text-muted); display:none;"></p>
+
+            <div class="loading-block" id="loadingBlock">
+                <div class="spinner-icon"><i class="fas fa-cog fa-spin"></i></div>
+                <h2>Processing Video...</h2>
+                <p id="loadingText">Loading FFmpeg engine...</p>
+            </div>
+
+            <div class="result-block" id="resultBlock">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h2>Trim Complete!</h2>
+                <p class="file-info">Your trimmed video is ready</p>
+                <a id="downloadBtn" class="btn-main" style="display:inline-flex; align-items:center; gap:8px; padding:14px 28px;">
+                    <i class="fas fa-download"></i> Download Trimmed Video
+                </a>
+                <button onclick="resetTool()" style="margin-top:1rem; padding:12px 24px; border:1px solid var(--border); background:white; border-radius:10px; cursor:pointer; color:var(--text-muted);">
+                    <i class="fas fa-redo"></i> Trim Another
+                </button>
+            </div>
+
+            <div class="trust-badge">
+                <i class="fas fa-shield-alt"></i>
+                <p><strong>Privacy Guaranteed:</strong> All processing happens in your browser. Your video never leaves your device.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="video-trimmer.html">Video Trimmer</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FFmpeg.wasm -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+
+    <script>
+        // FFmpeg singleton
+        let ffmpeg = null;
+        let ffmpegLoaded = false;
+
+        async function loadFFmpeg() {
+            if (ffmpegLoaded) return ffmpeg;
+            if (!window.FFmpeg) {
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+                });
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
+                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+                });
+            }
+            const { FFmpeg } = window.FFmpeg;
+            ffmpeg = new FFmpeg();
+            ffmpeg.on('log', ({ message }) => console.log(message));
+            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
+            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
+            await ffmpeg.load({ coreURL, wasmURL });
+            ffmpegLoaded = true;
+            return ffmpeg;
+        }
+
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const editor = document.getElementById('editor');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const startTimeInput = document.getElementById('startTimeInput');
+        const endTimeInput = document.getElementById('endTimeInput');
+        const startTimeDisplay = document.getElementById('startTimeDisplay');
+        const endTimeDisplay = document.getElementById('endTimeDisplay');
+        const sliderTrack = document.getElementById('sliderTrack');
+        const sliderRange = document.getElementById('sliderRange');
+        const startThumb = document.getElementById('startThumb');
+        const endThumb = document.getElementById('endThumb');
+        const timeStartLabel = document.getElementById('timeStartLabel');
+        const timeEndLabel = document.getElementById('timeEndLabel');
+        const trimBtn = document.getElementById('trimBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const loadingBlock = document.getElementById('loadingBlock');
+        const loadingText = document.getElementById('loadingText');
+        const resultBlock = document.getElementById('resultBlock');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let videoFile = null;
+        let videoDuration = 0;
+        let isDragging = null;
+
+        // File handling
+        dropzone.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+        dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary-hover)'; dropzone.style.background = 'var(--bg-alt)'; };
+        dropzone.ondragleave = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; };
+        dropzone.ondrop = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('video/')) handleFileSelect(f); };
+
+        function handleFileSelect(file) {
+            if (!file) return;
+            videoFile = file;
+            const url = URL.createObjectURL(file);
+            videoPlayer.src = url;
+            videoPlayer.onloadedmetadata = () => {
+                videoDuration = videoPlayer.duration;
+                initializeTrimControls();
+                dropzone.style.display = 'none';
+                editor.classList.add('visible');
+            };
+        }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+
+        function formatShortTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+
+        function initializeTrimControls() {
+            startTimeInput.value = '00:00:00';
+            endTimeInput.value = formatTime(videoDuration);
+            startTimeDisplay.textContent = '00:00:00';
+            endTimeDisplay.textContent = formatTime(videoDuration);
+            timeStartLabel.textContent = '00:00';
+            timeEndLabel.textContent = formatShortTime(videoDuration);
+            updateSliderRange();
+        }
+
+        function updateSliderRange() {
+            const startPct = (parseTimeInput(startTimeInput.value) / videoDuration) * 100;
+            const endPct = (parseTimeInput(endTimeInput.value) / videoDuration) * 100;
+            sliderRange.style.left = startPct + '%';
+            sliderRange.style.width = (endPct - startPct) + '%';
+            startThumb.style.left = startPct + '%';
+            endThumb.style.left = endPct + '%';
+        }
+
+        function parseTimeInput(val) {
+            const parts = val.split(':').map(Number);
+            return (parts[0]||0)*3600 + (parts[1]||0)*60 + (parts[2]||0);
+        }
+
+        function timeFromPct(pct) {
+            const sec = Math.max(0, Math.min(videoDuration, pct/100 * videoDuration));
+            return formatTime(sec);
+        }
+
+        // Slider drag handlers
+        startThumb.addEventListener('mousedown', (e) => { isDragging = 'start'; e.preventDefault(); });
+        endThumb.addEventListener('mousedown', (e) => { isDragging = 'end'; e.preventDefault(); });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const rect = sliderTrack.getBoundingClientRect();
+            const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+            const pct = (x / rect.width) * 100;
+            const timeSec = (x / rect.width) * videoDuration;
+            const timeStr = formatTime(timeSec);
+
+            if (isDragging === 'start') {
+                const maxSec = parseTimeInput(endTimeInput.value) - 1;
+                if (timeSec > maxSec) return;
+                startTimeInput.value = timeStr;
+                startTimeDisplay.textContent = timeStr;
+            } else {
+                const minSec = parseTimeInput(startTimeInput.value) + 1;
+                if (timeSec < minSec) return;
+                endTimeInput.value = timeStr;
+                endTimeDisplay.textContent = timeStr;
+            }
+            updateSliderRange();
+        });
+
+        document.addEventListener('mouseup', () => { isDragging = null; });
+
+        // Input sync
+        startTimeInput.oninput = () => { startTimeDisplay.textContent = startTimeInput.value; updateSliderRange(); };
+        endTimeInput.oninput = () => { endTimeDisplay.textContent = endTimeInput.value; updateSliderRange(); };
+
+        // Main trimming logic
+        trimBtn.onclick = async () => {
+            const start = parseTimeInput(startTimeInput.value);
+            const end = parseTimeInput(endTimeInput.value);
+            if (start >= end) { alert('Start time must be before end time.'); return; }
+
+            trimBtn.disabled = true;
+            loadingBlock.style.display = 'block';
+            resultBlock.style.display = 'none';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressText.style.display = 'block';
+            progressText.textContent = 'Loading FFmpeg...';
+
+            try {
+                const ff = await loadFFmpeg();
+                const { fetchFile } = window.FFmpegUtil;
+
+                progressText.textContent = 'Writing file to memory...';
+                const inputName = 'input_' + videoFile.name.replace(/[^a-zA-Z0-9.]/g, '');
+                const outputName = 'trimmed_' + videoFile.name.replace(/\.[^/.]+$/, '') + '.mp4';
+
+                await ff.writeFile(inputName, await fetchFile(videoFile));
+
+                progressText.textContent = 'Trimming video...';
+                ff.on('progress', ({ progress }) => {
+                    const pct = Math.round(progress * 100);
+                    progressBar.style.width = pct + '%';
+                    progressText.textContent = `Trimming... ${pct}%`;
+                });
+
+                // Use -ss before -i for fast seeking, then -to for duration; re-encode for reliability
+                await ff.exec([
+                    '-i', inputName,
+                    '-ss', startTimeInput.value,
+                    '-to', endTimeInput.value,
+                    '-c:v', 'libx264', '-preset', 'fast', '-crf', '23',
+                    '-c:a', 'aac', '-b:a', '128k',
+                    outputName
+                ]);
+
+                progressText.textContent = 'Preparing download...';
+                const data = await ff.readFile(outputName);
+                const blob = new Blob([data.buffer], { type: 'video/mp4' });
+                const url = URL.createObjectURL(blob);
+                downloadBtn.href = url;
+                downloadBtn.download = outputName;
+
+                await ff.deleteFile(inputName);
+                await ff.deleteFile(outputName);
+
+                loadingBlock.style.display = 'none';
+                resultBlock.style.display = 'block';
+            } catch (error) {
+                console.error('Trim error:', error);
+                alert('Video trimming failed: ' + error.message);
+                loadingBlock.style.display = 'none';
+                trimBtn.disabled = false;
+            }
+        };
+
+        function resetTool() {
+            videoPlayer.pause();
+            videoPlayer.src = '';
+            videoFile = null;
+            startTimeInput.value = '00:00:00';
+            endTimeInput.value = '00:00:00';
+            progressBar.style.width = '0%';
+            resultBlock.style.display = 'none';
+            loadingBlock.style.display = 'none';
+            editor.classList.remove('visible');
+            dropzone.style.display = 'flex';
+            fileInput.value = '';
+        }
+    </script>
+</body>
+</html>
