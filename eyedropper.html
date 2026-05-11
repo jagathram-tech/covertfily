@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <title>EyeDropper Color Picker - Secure & Private Online | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Pick colors from any image with a magnifying loupe. Get HEX, RGB, and HSL values instantly — all processed locally in your browser, no uploads.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 900px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        .image-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem; align-items: start; }
+        .canvas-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            position: relative; overflow: hidden; min-height: 500px;
+        }
+        .canvas-pane canvas { display: block; width: 100%; height: 100%; }
+        .loupe {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 0 0 3px var(--bg-alt), 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+        }
+        .loupe canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            image-rendering: pixelated;
+        }
+        .loupe::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: translate(-50%, -50%);
+            z-index: 11;
+            opacity: 0.7;
+        }
+        
+        .loupe::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: var(--primary);
+            transform: translate(-50%, -50%);
+            z-index: 11;
+            opacity: 0.7;
+        }
+        
+        .loupe::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: translate(-50%, -50%);
+            z-index: 11;
+            opacity: 0.7;
+        }
+        
+        .loupe::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: var(--primary);
+            transform: translate(-50%, -50%);
+            z-index: 11;
+            opacity: 0.7;
+        }
+        .result-pane {
+            background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border);
+            text-align: center;
+        }
+        .color-display {
+            margin: 1.5rem 0;
+        }
+        .color-swatch {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+        .color-values {
+            display: grid;
+            gap: 1rem;
+            text-align: left;
+        }
+        .color-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--bg-alt);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .color-label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .color-value {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .copy-btn {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: 0.2s;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .copy-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .instructions {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                            <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                            <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                            <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                            <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                            <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                            <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                            <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                            <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                            <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                            <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                            <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                            <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                            <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+                            <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                            <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                            <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="section-title">
+                <i class="fas fa-eye-dropper" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>EyeDropper Color Picker</h1>
+                <p style="color: var(--text-muted);">Pick colors from any image with a magnifying loupe. Get HEX, RGB, and HSL values instantly.</p>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="dropzone-icon"><i class="fas fa-image"></i></div>
+                <h2>Select Image</h2>
+                <p>Click or drag and drop your image file</p>
+                <input type="file" id="fileInput" hidden accept="image/*">
+            </div>
+
+            <div class="image-editor" id="editor" style="display: none;">
+                <div class="canvas-pane">
+                    <canvas id="imageCanvas"></canvas>
+                    <div class="loupe" id="loupe">
+                        <canvas id="loupeCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="result-pane">
+                    <h3>Picked Color</h3>
+                    <div class="color-display">
+                        <div class="color-swatch" id="colorSwatch"></div>
+                    </div>
+                    <div class="color-values">
+                        <div class="color-item">
+                            <span class="color-label">HEX</span>
+                            <div class="color-value">
+                                <span id="hexValue">#000000</span>
+                                <button class="copy-btn" onclick="copyToClipboard('hexValue', this)" title="Copy HEX"><i class="far fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <span class="color-label">RGB</span>
+                            <div class="color-value">
+                                <span id="rgbValue">rgb(0, 0, 0)</span>
+                                <button class="copy-btn" onclick="copyToClipboard('rgbValue', this)" title="Copy RGB"><i class="far fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <span class="color-label">HSL</span>
+                            <div class="color-value">
+                                <span id="hslValue">hsl(0, 0%, 0%)</span>
+                                <button class="copy-btn" onclick="copyToClipboard('hslValue', this)" title="Copy HSL"><i class="far fa-copy"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="instructions">
+                        Hover over the image to see the magnifying loupe. Click to pick a color.<br>
+                        Processed 100% locally for your privacy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="image-resizer.html">Image Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const editor = document.getElementById('editor');
+        const imageCanvas = document.getElementById('imageCanvas');
+        const loupe = document.getElementById('loupe');
+        const loupeCanvas = document.getElementById('loupeCanvas');
+        const colorSwatch = document.getElementById('colorSwatch');
+        const hexValue = document.getElementById('hexValue');
+        const rgbValue = document.getElementById('rgbValue');
+        const hslValue = document.getElementById('hslValue');
+
+        let currentImage = null;
+        let scaleX = 1, scaleY = 1;
+        const LOUPE_SIZE = 60; // Size of the loupe box in pixels (the zoomed area)
+        const LOUPE_DISPLAY = 120; // Size of the loupe display circle
+        const ZOOM_LEVEL = 5; // How much we zoom in the loupe
+
+        dropzone.onclick = () => fileInput.click();
+
+        function handleFileSelect(file) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        currentImage = img;
+                        // Set canvas size to image size (or max size)
+                        const maxSize = 800;
+                        let width = img.naturalWidth;
+                        let height = img.naturalHeight;
+                        if (width > maxSize || height > maxSize) {
+                            if (width > height) {
+                                height = Math.round(height * maxSize / width);
+                                width = maxSize;
+                            } else {
+                                width = Math.round(width * maxSize / height);
+                                height = maxSize;
+                            }
+                        }
+                        imageCanvas.width = width;
+                        imageCanvas.height = height;
+                        // Calculate scale factors for mapping back to original image
+                        scaleX = img.naturalWidth / width;
+                        scaleY = img.naturalHeight / height;
+                        
+                        const ctx = imageCanvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Set up loupe canvas
+                        loupeCanvas.width = LOUPE_SIZE * ZOOM_LEVEL;
+                        loupeCanvas.height = LOUPE_SIZE * ZOOM_LEVEL;
+                        
+                        dropzone.style.display = 'none';
+                        editor.style.display = 'grid';
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+        dropzone.ondragover = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary-hover)';
+            dropzone.style.background = 'var(--bg-alt)';
+        };
+        
+        dropzone.ondragleave = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+        };
+        
+        dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--primary)';
+            dropzone.style.background = 'white';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            }
+        };
+
+        // Mouse tracking for loupe and color picking
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function updateLoupe(pos) {
+            if (!currentImage) return;
+            
+            const canvas = imageCanvas;
+            const ctx = canvas.getContext('2d');
+            const loupeCtx = loupeCanvas.getContext('2d');
+            
+            // Get the displayed size of the canvas (CSS pixels)
+            const displayedWidth = canvas.clientWidth;
+            const displayedHeight = canvas.clientHeight;
+            
+            // Get the intrinsic size of the canvas (actual pixels)
+            const intrinsicWidth = canvas.width;
+            const intrinsicHeight = canvas.height;
+            
+            // Handle case where canvas has zero size (shouldn't happen but safe check)
+            if (displayedWidth === 0 || displayedHeight === 0) {
+                return;
+            }
+            
+            // Calculate the ratio from displayed coordinates to intrinsic coordinates
+            const scaleX = intrinsicWidth / displayedWidth;
+            const scaleY = intrinsicHeight / displayedHeight;
+            
+            // Convert the displayed position to intrinsic coordinates
+            const intrinsicPosX = pos.x * scaleX;
+            const intrinsicPosY = pos.y * scaleY;
+            
+            // Calculate the ideal region to zoom in on (centered on cursor in intrinsic coordinates)
+            const size = LOUPE_SIZE;
+            const halfSize = size / 2;
+            const idealStartX = intrinsicPosX - halfSize;
+            const idealStartY = intrinsicPosY - halfSize;
+            
+            // Calculate the actual region we can extract from the canvas (in intrinsic coordinates)
+            const clipStartX = Math.max(0, idealStartX);
+            const clipStartY = Math.max(0, idealStartY);
+            const clipEndX = Math.min(intrinsicWidth, idealStartX + size);
+            const clipEndY = Math.min(intrinsicHeight, idealStartY + size);
+            const clipWidth = clipEndX - clipStartX;
+            const clipHeight = clipEndY - clipStartY;
+            
+            // Clear the loupe canvas
+            loupeCtx.clearRect(0, 0, loupeCanvas.width, loupeCanvas.height);
+            loupeCtx.imageSmoothingEnabled = false;
+            
+            // Calculate where to draw the clipped region in the loupe canvas
+            // so that the cursor pixel remains centered
+            const destStartX = (clipStartX - idealStartX) * ZOOM_LEVEL;
+            const destStartY = (clipStartY - idealStartY) * ZOOM_LEVEL;
+            const destWidth = clipWidth * ZOOM_LEVEL;
+            const destHeight = clipHeight * ZOOM_LEVEL;
+            
+            // Draw the clipped and zoomed region
+            loupeCtx.drawImage(
+                imageCanvas,
+                clipStartX, clipStartY, clipWidth, clipHeight,
+                destStartX, destStartY, destWidth, destHeight
+            );
+            
+            // Position the loupe (using displayed coordinates for positioning)
+            loupe.style.left = (pos.x - LOUPE_DISPLAY/2) + 'px';
+            loupe.style.top = (pos.y - LOUPE_DISPLAY/2) + 'px';
+            loupe.style.display = 'block';
+            
+            // Get the color at the exact mouse position (from intrinsic canvas coordinates)
+            const imgCtx = canvas.getContext('2d');
+            const pixel = imgCtx.getImageData(
+                Math.round(intrinsicPosX), 
+                Math.round(intrinsicPosY), 
+                1, 
+                1
+            ).data;
+            const r = pixel[0];
+            const g = pixel[1];
+            const b = pixel[2];
+            
+            // Update color display
+            const hex = rgbToHex(r, g, b);
+            const rgb = `rgb(${r}, ${g}, ${b})`;
+            const hslArr = rgbToHsl(r, g, b);
+            const hsl = `hsl(${hslArr[0]}, ${hslArr[1]}%, ${hslArr[2]}%)`;
+            
+            colorSwatch.style.backgroundColor = hex;
+            hexValue.textContent = hex;
+            rgbValue.textContent = rgb;
+            hslValue.textContent = hsl;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase();
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max == min) {
+                h = s = 0;
+            } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [
+                Math.round(h * 360),
+                Math.round(s * 100),
+                Math.round(l * 100)
+            ];
+        }
+
+        function copyToClipboard(elementId, btn) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalIcon = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.color = 'var(--success)';
+                btn.style.borderColor = 'var(--success)';
+                setTimeout(() => {
+                    btn.innerHTML = originalIcon;
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Mousemove and click handlers
+        imageCanvas.addEventListener('mousemove', (e) => {
+            const pos = getMousePos(imageCanvas, e);
+            updateLoupe(pos);
+        });
+
+        imageCanvas.addEventListener('mouseleave', () => {
+            loupe.style.display = 'none';
+        });
+
+        imageCanvas.addEventListener('click', (e) => {
+            // The color is already updated in mousemove, so just show a visual feedback
+            loupe.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                loupe.style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        // Tools search
+        document.querySelector('.tool-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-list a').forEach(a => {
+                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

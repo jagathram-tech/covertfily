@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://covertfily.com/</loc>
-        <lastmod>2026-04-28</lastmod>
+        <lastmod>2026-05-09</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
@@ -11,9 +11,9 @@
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://covertfily.com/compress-pdf.html</loc>
+        <loc>https://covertfily.com/documents.html</loc>
         <lastmod>2026-04-28</lastmod>
-        <priority>0.8</priority>
+        <priority>0.9</priority>
     </url>
     <url>
         <loc>https://covertfily.com/watermark.html</loc>
@@ -26,9 +26,29 @@
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://covertfily.com/blog.html</loc>
+        <loc>https://covertfily.com/compress-pdf.html</loc>
         <lastmod>2026-04-28</lastmod>
-        <priority>0.7</priority>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/image-resizer.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/image-rounder.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/image-blur.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/face-blur.html</loc>
+        <lastmod>2026-04-28</lastmod>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://covertfily.com/color-palette-extractor.html</loc>
@@ -76,14 +96,49 @@
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://covertfily.com/documents.html</loc>
-        <lastmod>2026-04-28</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
         <loc>https://covertfily.com/ocr.html</loc>
         <lastmod>2026-04-28</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/qr-code-generator.html</loc>
+        <lastmod>2026-05-07</lastmod>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/barcode-generator.html</loc>
+        <lastmod>2026-05-07</lastmod>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/blog.html</loc>
+        <lastmod>2026-04-28</lastmod>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/blog-best-ocr-2026.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/blog-local-vs-cloud.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/privacy.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/terms.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://covertfily.com/documentation.html</loc>
+        <lastmod>2026-05-01</lastmod>
+        <priority>0.5</priority>
     </url>
 </urlset>
