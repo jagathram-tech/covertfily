@@ -1482,3 +1482,251 @@ function downloadFile(url, filename) {
     if (fill) fill.style.width = "0%";
   };
 });
+
+/* ============================================================================
+   MOBILE-FIRST ENHANCEMENTS
+   ============================================================================ */
+
+(function() {
+  // Detect if device is mobile
+  const isMobile = window.innerWidth <= 768 || /mobile|android|iphone|tablet/i.test(navigator.userAgent);
+  
+  // 1. MOBILE NAVIGATION SETUP
+  if (isMobile) {
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeMobileNav();
+      setupFormatSwapper();
+      setupTouchOptimizations();
+      setupAccordions();
+      setupScrollIndicators();
+    });
+  }
+
+  // Initialize mobile navigation drawer
+  function initializeMobileNav() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const navActions = document.querySelector('.nav-actions');
+    
+    if (!menuToggle) return;
+
+    // Create backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    document.body.appendChild(backdrop);
+
+    menuToggle.setAttribute('aria-label', 'Toggle navigation menu');
+    menuToggle.setAttribute('aria-expanded', 'false');
+
+    menuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isOpen = navLinks.classList.toggle('mobile-open');
+      if (navActions) navActions.classList.toggle('mobile-open');
+      backdrop.classList.toggle('active');
+      menuToggle.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Close menu when clicking backdrop
+    backdrop.addEventListener('click', function() {
+      navLinks.classList.remove('mobile-open');
+      if (navActions) navActions.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    });
+
+    // Close menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('mobile-open');
+        if (navActions) navActions.classList.remove('mobile-open');
+        backdrop.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close menu on ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && navLinks.classList.contains('mobile-open')) {
+        navLinks.classList.remove('mobile-open');
+        if (navActions) navActions.classList.remove('mobile-open');
+        backdrop.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // 2. FORMAT SWAPPER - Swap from/to on mobile
+  function setupFormatSwapper() {
+    const formatSelectors = document.querySelector('.format-selectors');
+    if (!formatSelectors) return;
+
+    // Create swap button if it doesn't exist
+    if (!document.querySelector('.format-connector')) {
+      const swapBtn = document.createElement('button');
+      swapBtn.className = 'format-connector';
+      swapBtn.setAttribute('type', 'button');
+      swapBtn.setAttribute('aria-label', 'Swap formats');
+      swapBtn.innerHTML = '<i class="fas fa-arrows-up-down"></i>';
+      
+      const fromContainer = document.getElementById('formatFromContainer');
+      const toContainer = document.getElementById('formatToContainer');
+      
+      if (fromContainer && toContainer) {
+        fromContainer.parentNode.insertBefore(swapBtn, toContainer);
+        
+        swapBtn.addEventListener('click', function() {
+          // Swap values
+          const fromValue = fromContainer.dataset.value;
+          const toValue = toContainer.dataset.value;
+          const fromLabel = fromContainer.querySelector('.dropdown-value').textContent;
+          const toLabel = toContainer.querySelector('.dropdown-value').textContent;
+          
+          if (fromValue && toValue) {
+            fromContainer.dataset.value = toValue;
+            toContainer.dataset.value = fromValue;
+            fromContainer.querySelector('.dropdown-value').textContent = toLabel;
+            toContainer.querySelector('.dropdown-value').textContent = fromLabel;
+            
+            // Add visual feedback
+            swapBtn.style.transform = 'rotate(180deg)';
+            setTimeout(() => { swapBtn.style.transform = ''; }, 300);
+          }
+        });
+      }
+    }
+  }
+
+  // 3. TOUCH OPTIMIZATIONS
+  function setupTouchOptimizations() {
+    // Ensure all buttons are at least 44px tap target
+    document.querySelectorAll('button, a[role="button"], input[type="submit"]').forEach(btn => {
+      const rect = btn.getBoundingClientRect();
+      if (rect.width < 44 || rect.height < 44) {
+        btn.style.minWidth = '44px';
+        btn.style.minHeight = '44px';
+        btn.style.padding = (btn.style.padding || '12px 16px');
+      }
+    });
+
+    // Smooth scrolling for mobile
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            const headerHeight = document.querySelector('nav')?.offsetHeight || 0;
+            const targetTop = target.offsetTop - headerHeight;
+            window.scrollTo({
+              top: targetTop,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+  }
+
+  // 4. ACCORDION FUNCTIONALITY
+  function setupAccordions() {
+    // FAQ accordion
+    document.querySelectorAll('[role="button"].faq-question').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+        const answer = this.nextElementSibling;
+        if (answer && answer.classList.contains('faq-answer')) {
+          answer.classList.toggle('open');
+        }
+      });
+      
+      // Keyboard support
+      btn.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
+      });
+    });
+
+    // Advanced options accordion
+    document.querySelectorAll('.advanced-header').forEach(header => {
+      header.addEventListener('click', function() {
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+        const content = this.nextElementSibling;
+        if (content && content.classList.contains('advanced-content')) {
+          content.classList.toggle('open');
+        }
+      });
+    });
+  }
+
+  // 5. SCROLL INDICATORS FOR CAROUSELS
+  function setupScrollIndicators() {
+    document.querySelectorAll('.testimonials-container').forEach(container => {
+      const indicators = container.parentElement?.querySelector('.testimonial-indicators');
+      if (!indicators) return;
+
+      container.addEventListener('scroll', debounce(function() {
+        updateCarouselIndicators(container, indicators);
+      }, 100));
+
+      // Update on load
+      updateCarouselIndicators(container, indicators);
+    });
+  }
+
+  function updateCarouselIndicators(container, indicators) {
+    const cards = container.querySelectorAll('.testimonial-card');
+    const scrollLeft = container.scrollLeft;
+    const cardWidth = cards[0]?.offsetWidth || 0;
+    const currentIndex = Math.round(scrollLeft / cardWidth);
+
+    document.querySelectorAll('.indicator').forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentIndex);
+    });
+  }
+
+  // 6. UTILITY: DEBOUNCE
+  function debounce(fn, delay) {
+    let timeoutId;
+    return function(...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  // 7. PREVENT 300MS TAP DELAY (already in CSS but reinforced here)
+  document.addEventListener('touchstart', function() {}, false);
+
+  // 8. HANDLE VIEWPORT CHANGES
+  let lastWidth = window.innerWidth;
+  window.addEventListener('orientationchange', debounce(function() {
+    if (Math.abs(window.innerWidth - lastWidth) > 100) {
+      lastWidth = window.innerWidth;
+      // Reinitialize if crossing mobile/desktop boundary
+      if ((lastWidth <= 768 && lastWidth > 768) || (lastWidth > 768 && lastWidth <= 768)) {
+        location.reload();
+      }
+    }
+  }, 300));
+
+  // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
+  const viewportHeight = window.innerHeight;
+  window.addEventListener('resize', debounce(function() {
+    const newHeight = window.innerHeight;
+    if (newHeight < viewportHeight * 0.75) {
+      // Virtual keyboard is shown - collapse non-essential UI
+      document.querySelectorAll('.nav-backdrop.active, .dropdown-content.active').forEach(el => {
+        el.style.display = 'none';
+      });
+    }
+  }, 200));
+
+})();

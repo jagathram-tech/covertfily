@@ -1948,3 +1948,1324 @@ footer {
 body.nav-active .menu-toggle span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
 body.nav-active .menu-toggle span:nth-child(2) { opacity: 0; }
 body.nav-active .menu-toggle span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* ============================================================================
+   COMPREHENSIVE MOBILE-FIRST OPTIMIZATION
+   Mobile (320px-480px) | Tablet (481px-768px) | Desktop (769px+)
+   ============================================================================ */
+
+/* 1. GLOBAL BASE STYLES */
+html {
+    font-size: 16px; /* Ensure minimum 16px base */
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+}
+
+button, a, [role="button"], input, select, textarea {
+    touch-action: manipulation; /* Remove 300ms tap delay */
+}
+
+img, picture, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Prevent horizontal overflow */
+body, main, section {
+    overflow-x: hidden;
+}
+
+/* ============================================================================
+   2. NAVIGATION / HEADER - MOBILE FIRST
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    nav {
+        padding: 0 1rem; /* Reduce padding on mobile */
+        height: 70px; /* Shorter on mobile */
+        justify-content: space-between;
+    }
+
+    .nav-left {
+        gap: 20px; /* Reduce gap */
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo img {
+        height: 32px; /* Smaller logo on mobile */
+    }
+
+    /* Show hamburger menu */
+    .menu-toggle {
+        display: flex !important;
+        width: 44px; /* WCAG AA tap target */
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .menu-toggle span {
+        width: 24px;
+        height: 2.5px;
+    }
+
+    /* Hide desktop nav on mobile */
+    .nav-links {
+        display: none;
+    }
+
+    .nav-links.mobile-open {
+        display: flex;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+        flex-direction: column;
+        background: white;
+        gap: 0;
+        max-width: 100vw;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-links.mobile-open li {
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-links.mobile-open a {
+        display: block;
+        padding: 16px 1.5rem;
+        width: 100%;
+        text-align: left;
+    }
+
+    /* Mobile backdrop */
+    .nav-backdrop {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 998;
+    }
+
+    .nav-backdrop.active {
+        display: block;
+    }
+
+    /* Hide GitHub button on mobile nav */
+    .nav-actions {
+        display: none;
+    }
+
+    .nav-actions.mobile-open {
+        display: flex;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        padding: 1rem;
+        background: white;
+        border-bottom: 1px solid var(--border);
+        width: 100%;
+    }
+
+    .nav-actions .btn-primary {
+        width: 100%;
+        padding: 12px 1rem;
+    }
+
+    /* Tools dropdown for mobile */
+    .dropdown-content {
+        position: fixed !important;
+        top: 70px !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        transform: none !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+        border-radius: 0 !important;
+        max-height: 100vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 !important;
+        z-index: 1001;
+    }
+
+    .tool-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .tool-list a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 1.5rem;
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+        font-weight: 500;
+    }
+
+    .tool-list a:hover {
+        background: var(--primary-light);
+    }
+
+    .tool-search-wrapper {
+        position: sticky;
+        top: 0;
+        background: white;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        z-index: 1002;
+    }
+
+    .tool-search {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 16px; /* Prevent auto-zoom on iOS */
+    }
+}
+
+@media (max-width: 480px) {
+    nav {
+        height: 64px;
+    }
+
+    .logo img {
+        height: 28px;
+    }
+
+    .menu-toggle {
+        width: 48px;
+        height: 48px;
+    }
+
+    .nav-links.mobile-open,
+    .dropdown-content {
+        top: 64px !important;
+    }
+
+    .nav-backdrop.active {
+        top: 64px;
+    }
+}
+
+/* ============================================================================
+   3. HERO SECTION - MOBILE FIRST
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1rem;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-items: stretch;
+    }
+
+    .hero h1 {
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .badge-tag {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .hero-badges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin-top: 1.5rem;
+    }
+
+    .badge-pill {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .hero-visual {
+        width: 100%;
+    }
+
+    .hero-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .conversion-preview {
+        gap: 20px;
+        padding: 30px 0;
+    }
+
+    .file-icon {
+        width: 70px;
+        height: 90px;
+        font-size: 2rem;
+    }
+
+    .connector {
+        font-size: 1.5rem;
+    }
+
+    .check-badge {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .progress-bar {
+        height: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+
+    .hero h1 {
+        font-size: clamp(1.4rem, 4.5vw, 2rem);
+    }
+
+    .badge-pill {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+
+    .hero-card {
+        padding: 16px;
+    }
+
+    .conversion-preview {
+        gap: 15px;
+        padding: 20px 0;
+    }
+
+    .file-icon {
+        width: 60px;
+        height: 80px;
+        font-size: 1.8rem;
+    }
+}
+
+/* ============================================================================
+   4. FORMAT CONVERTER (FROM/TO DROPDOWNS)
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .converter-section {
+        padding: 2rem 1rem;
+    }
+
+    .converter-container {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .converter-title {
+        font-size: 1.5rem;
+    }
+
+    .format-selectors {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .custom-dropdown {
+        width: 100% !important;
+    }
+
+    .dropdown-trigger {
+        width: 100%;
+        padding: 16px;
+        min-height: 48px;
+        font-size: 1rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .dropdown-value {
+        flex: 1;
+        text-align: left;
+    }
+
+    /* Swap icon between dropdowns on mobile */
+    .format-connector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: var(--primary-light);
+        border-radius: 50%;
+        cursor: pointer;
+        margin: 8px 0;
+        touch-action: manipulation;
+        font-size: 1.2rem;
+        color: var(--primary);
+        transition: transform 0.2s;
+    }
+
+    .format-connector:active {
+        transform: rotate(180deg);
+    }
+
+    /* Full-width file drop zone */
+    .dropzone {
+        width: 100%;
+        min-height: 180px;
+        padding: 2rem 1rem;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        cursor: pointer;
+        margin-top: 1.5rem;
+    }
+
+    .dropzone i {
+        font-size: 2.5rem;
+    }
+
+    .dropzone h3 {
+        font-size: 1rem;
+    }
+
+    .dropzone p {
+        font-size: 0.85rem;
+    }
+
+    .open-dedicated-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 1rem;
+        padding: 12px 1rem;
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .converter-container {
+        padding: 1rem;
+    }
+
+    .converter-title {
+        font-size: 1.3rem;
+    }
+
+    .dropdown-trigger {
+        font-size: 0.95rem;
+        padding: 14px;
+        min-height: 44px;
+    }
+
+    .dropzone {
+        min-height: 160px;
+    }
+}
+
+/* ============================================================================
+   5. STATS BAR - 2x2 GRID ON MOBILE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .stats-row {
+        padding: 2rem 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.5rem;
+        padding: 1.5rem 1rem;
+        background: var(--bg-alt);
+        border-radius: 12px;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+        margin: 0 !important;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+        font-weight: 800;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-item {
+        padding: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================================================================
+   6. POPULAR CONVERTERS GRID
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .popular-converters {
+        padding: 2rem 1rem;
+    }
+
+    .popular-converters h2 {
+        font-size: 1.5rem;
+    }
+
+    .converter-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .card {
+        padding: 1.5rem 1rem;
+        border-radius: 12px;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        margin: 0 auto 0.5rem;
+    }
+
+    .card h3 {
+        font-size: 0.95rem;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .card p {
+        font-size: 0.75rem;
+        display: none; /* Hide descriptions on mobile */
+    }
+}
+
+@media (max-width: 360px) {
+    .converter-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================================
+   7. HOW IT WORKS - STACKED STEPS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .how-it-works {
+        padding: 2rem 1rem;
+    }
+
+    .how-it-works h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .steps-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        max-width: 100%;
+    }
+
+    .step-number {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .step-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .step h4 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .step p {
+        font-size: 0.9rem;
+        max-width: 100%;
+    }
+
+    .step-arrow {
+        display: none;
+    }
+}
+
+/* ============================================================================
+   8. COMPARISON TABLE - SCROLLABLE / CARD LAYOUT
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .comparison-container {
+        margin-top: 1.5rem;
+    }
+
+    .comparison-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: white;
+    }
+
+    .comparison-table-wrapper::after {
+        content: "← Scroll →";
+        display: block;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        padding: 0.5rem;
+        background: var(--bg-alt);
+    }
+
+    .comparison-table {
+        width: 100%;
+        min-width: 500px;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 12px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .comparison-table th {
+        font-weight: 600;
+        background: var(--bg-alt);
+        position: sticky;
+        top: 0;
+    }
+
+    .comparison-table tbody tr {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .comparison-table i {
+        font-size: 1.1rem;
+    }
+}
+
+/* ============================================================================
+   9. TESTIMONIALS - SWIPEABLE CAROUSEL
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .testimonials {
+        padding: 2rem 1rem;
+    }
+
+    .testimonials h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .testimonials-container {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+        /* Hide scrollbar */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .testimonials-container::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }
+
+    .testimonial-card {
+        flex: 0 0 85vw;
+        min-width: 85vw;
+        scroll-snap-align: start;
+        border-radius: 12px;
+        padding: 1.5rem;
+        background: white;
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .testimonial-card:last-child {
+        margin-right: 1rem;
+    }
+
+    .testimonial-stars {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+
+    .testimonial-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        color: var(--text-muted);
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .testimonial-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .testimonial-author-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .testimonial-author-title {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    /* Scroll indicators */
+    .testimonial-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 1.5rem;
+    }
+
+    .indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .indicator.active {
+        background: var(--primary);
+    }
+}
+
+/* ============================================================================
+   10. FAQ SECTION - ACCORDION
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .faq {
+        padding: 2rem 1rem;
+    }
+
+    .faq h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .faq-item {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .faq-question {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        min-height: 48px;
+        background: white;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        font-size: 15px;
+        font-weight: 600;
+        width: 100%;
+        transition: background 0.2s;
+    }
+
+    .faq-question:active,
+    .faq-question:hover {
+        background: var(--bg-alt);
+    }
+
+    .faq-icon {
+        font-size: 1.2rem;
+        color: var(--primary);
+        transition: transform 0.2s;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .faq-question[aria-expanded="true"] .faq-icon {
+        transform: rotate(45deg);
+    }
+
+    .faq-answer {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: var(--bg-alt);
+    }
+
+    .faq-answer.open {
+        padding: 1rem;
+        max-height: 500px;
+    }
+
+    .faq-answer p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-muted);
+    }
+}
+
+/* ============================================================================
+   11. BLOG CARDS - SINGLE COLUMN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .blog-section {
+        padding: 2rem 1rem;
+    }
+
+    .blog-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .blog-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: white;
+    }
+
+    .blog-card-image {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        background: var(--bg-alt);
+    }
+
+    .blog-card-content {
+        padding: 1.5rem;
+    }
+
+    .blog-card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .blog-card-excerpt {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+
+    .blog-card-meta {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .blog-card-cta {
+        display: inline-block;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .view-all-posts {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 1.5rem;
+    }
+}
+
+/* ============================================================================
+   12. FOOTER - STACKED & TOUCH-FRIENDLY
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    footer {
+        padding: 2rem 1rem;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-column {
+        text-align: center;
+    }
+
+    .footer-column h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .footer-links a {
+        padding: 0.5rem 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .footer-links a:active {
+        color: var(--primary);
+    }
+
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .footer-social a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: var(--primary-light);
+        border-radius: 50%;
+        color: var(--primary);
+        font-size: 1.2rem;
+        transition: background 0.2s;
+    }
+
+    .footer-social a:active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+}
+
+/* ============================================================================
+   13. INDIVIDUAL TOOL PAGES - FILE UPLOAD & ACTIONS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .tool-container {
+        padding: 1.5rem;
+    }
+
+    .tool-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .tool-container p {
+        font-size: 0.95rem;
+    }
+
+    /* File upload zone */
+    .upload-zone,
+    .dropzone {
+        width: 100%;
+        min-height: 180px;
+        padding: 2rem 1rem;
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 1.5rem;
+    }
+
+    .upload-zone:active,
+    .dropzone:active {
+        border-color: var(--primary);
+        background: var(--primary-light);
+    }
+
+    .upload-zone i,
+    .dropzone i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+    }
+
+    .upload-zone h3,
+    .dropzone h3 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .upload-zone p,
+    .dropzone p {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    /* Action buttons - full width & stacked */
+    .action-buttons,
+    .tool-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .btn-main,
+    .btn-action,
+    button.convert,
+    button.download,
+    button.reset {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 1rem;
+        font-size: 1rem;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    /* Preview panels - stack vertically */
+    .preview-grid,
+    .tool-grid,
+    .before-after {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .preview-pane {
+        min-height: 250px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 1rem;
+        background: var(--bg-alt);
+    }
+
+    /* Progress bar */
+    .progress-container {
+        width: 100%;
+        margin: 1.5rem 0;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        transition: width 0.2s;
+    }
+
+    .progress-percent {
+        text-align: center;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
+    }
+
+    /* Advanced options collapse */
+    .advanced-options {
+        margin-top: 1.5rem;
+    }
+
+    .advanced-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: var(--bg-alt);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        min-height: 48px;
+    }
+
+    .advanced-header:active {
+        background: var(--border);
+    }
+
+    .advanced-icon {
+        transition: transform 0.2s;
+    }
+
+    .advanced-header[aria-expanded="true"] .advanced-icon {
+        transform: rotate(180deg);
+    }
+
+    .advanced-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .advanced-content.open {
+        max-height: 1000px;
+        padding: 1rem 0;
+    }
+
+    .option-group {
+        margin-bottom: 1.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .option-group:last-child {
+        border-bottom: none;
+    }
+
+    .option-label {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .checkbox-group,
+    .radio-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.5rem 0;
+    }
+
+    .checkbox-group input,
+    .radio-group input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 480px) {
+    .tool-container {
+        padding: 1rem;
+    }
+
+    .tool-container h1 {
+        font-size: 1.3rem;
+    }
+
+    .upload-zone,
+    .dropzone {
+        min-height: 160px;
+        padding: 1.5rem;
+    }
+
+    .btn-main,
+    .btn-action {
+        min-height: 44px;
+        font-size: 0.95rem;
+        padding: 10px 1rem;
+    }
+
+    .preview-pane {
+        min-height: 200px;
+    }
+}
+
+/* ============================================================================
+   14. ACCESSIBILITY & TOUCH POLISH
+   ============================================================================ */
+
+/* Focus styles for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Ensure minimum contrast */
+a {
+    color: var(--primary);
+}
+
+a:visited {
+    color: var(--primary-hover);
+}
+
+/* Remove tap highlight on webkit browsers */
+*:not(input):not(textarea) {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollable area with momentum on iOS */
+.scrollable-area {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================================
+   15. VIEWPORT-SPECIFIC ADJUSTMENTS
+   ============================================================================ */
+
+/* Very small screens (below 320px - edge case) */
+@media (max-width: 319px) {
+    html {
+        font-size: 14px;
+    }
+
+    .converter-cards {
+        grid-template-columns: 1fr;
+    }
+
+    button, .btn-main {
+        font-size: 0.85rem;
+        min-height: 40px;
+    }
+}
+
+/* Large tablets and small desktops */
+@media (min-width: 769px) and (max-width: 1024px) {
+    nav {
+        padding: 0 4%;
+    }
+
+    .hero {
+        padding: 60px 4%;
+        gap: 40px;
+    }
+
+    .converter-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Large desktops */
+@media (min-width: 1025px) {
+    .converter-cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
