@@ -2144,6 +2144,139 @@ body, main, section {
         padding: 12px 16px;
         font-size: 16px; /* Prevent auto-zoom on iOS */
     }
+
+    /* Mobile Tools Dropdown - Collapsible Categories */
+    .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 16px 1.5rem;
+        background: white;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-main);
+        cursor: pointer;
+        text-align: left;
+        transition: background 0.2s;
+        min-height: 56px; /* WCAG touch target */
+    }
+
+    .dropdown-toggle:hover {
+        background: var(--bg-alt);
+    }
+
+    .dropdown-toggle i.chevron {
+        transition: transform 0.3s ease;
+    }
+
+    .dropdown-toggle[aria-expanded="true"] i.chevron {
+        transform: rotate(180deg);
+    }
+
+    .has-nested-menu .dropdown-content {
+        display: none;
+    }
+
+    .has-nested-menu.has-open .dropdown-content {
+        display: block;
+    }
+
+    /* Hide desktop-only list on mobile */
+    .desktop-only {
+        display: none !important;
+    }
+
+    /* Mobile categories container */
+    .mobile-categories {
+        display: block;
+    }
+
+    /* Mobile category section */
+    .mobile-category {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-category:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 1.5rem;
+        background: var(--bg-alt);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--primary);
+        cursor: pointer;
+        min-height: 48px;
+        transition: background 0.2s;
+        border: none;
+        width: 100%;
+        text-align: left;
+    }
+
+    .mobile-category-header:hover,
+    .mobile-category-header:focus {
+        background: var(--border);
+        outline: none;
+    }
+
+    .mobile-category-header:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: -3px;
+    }
+
+    .mobile-category-header i {
+        font-size: 0.8rem;
+        transition: transform 0.2s;
+    }
+
+    /* Expand icon rotation */
+    .mobile-category.expanded > .mobile-category-header i {
+        transform: rotate(90deg);
+    }
+
+    /* Category items list */
+    .mobile-category-items {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: white;
+    }
+
+    .mobile-category.expanded > .mobile-category-items {
+        max-height: 1500px;
+    }
+
+    .mobile-category-items a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 1.5rem 14px 2.5rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+
+    .mobile-category-items a:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-category-items a:hover {
+        background: var(--primary-light);
+    }
+
+    /* Hide search on mobile inside mobile drawer */
+    .dropdown-content .tool-search-wrapper {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2171,7 +2304,35 @@ body, main, section {
 }
 
 /* ============================================================================
-   3. HERO SECTION - MOBILE FIRST
+   2.5 DESKTOP TOOLS DROPDOWN (ensure desktop still shows flat list)
+   ============================================================================ */
+
+/* Desktop: show flat list, hide grouped categories */
+@media (min-width: 769px) {
+    .has-nested-menu .dropdown-content {
+        display: none; /* hidden by default on desktop, shown on hover */
+    }
+    
+    .has-nested-menu:hover .dropdown-content {
+        display: block;
+    }
+    
+    .mobile-categories {
+        display: none !important;
+    }
+    
+    .desktop-only {
+        display: flex !important;
+    }
+    
+    .dropdown-toggle i.chevron {
+        margin-left: 6px;
+        font-size: 0.8em;
+    }
+}
+
+/* ============================================================================
+    3. HERO SECTION - MOBILE FIRST
    ============================================================================ */
 
 @media (max-width: 768px) {

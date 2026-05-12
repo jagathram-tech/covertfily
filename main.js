@@ -1717,7 +1717,7 @@ function downloadFile(url, filename) {
     }
   }, 300));
 
-  // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
+   // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
   const viewportHeight = window.innerHeight;
   window.addEventListener('resize', debounce(function() {
     const newHeight = window.innerHeight;
@@ -1728,5 +1728,97 @@ function downloadFile(url, filename) {
       });
     }
   }, 200));
+
+  // 10. MOBILE TOOLS DROPDOWN - Collapsible categories
+  function setupMobileToolsDropdown() {
+    const toolsToggle = document.getElementById('tools-toggle');
+    const dropdown = document.querySelector('.has-nested-menu');
+    
+    if (!toolsToggle || !dropdown) return;
+
+    // Initialize state
+    toolsToggle.setAttribute('aria-expanded', 'false');
+    dropdown.classList.remove('has-open');
+
+    // Handle Tools button click (expand/collapse entire dropdown)
+    toolsToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const isOpen = dropdown.classList.toggle('has-open');
+      toolsToggle.setAttribute('aria-expanded', isOpen);
+      
+      // Close other categories if opening
+      if (isOpen) {
+        document.querySelectorAll('.mobile-category.expanded').forEach(cat => {
+          if (cat !== dropdown) cat.classList.remove('expanded');
+        });
+      }
+    });
+
+    // Mobile category accordion
+    document.querySelectorAll('.mobile-category-header').forEach(header => {
+      header.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const category = this.parentElement;
+        const isExpanded = category.classList.toggle('expanded');
+        
+        // Update ARIA
+        this.setAttribute('aria-expanded', isExpanded);
+        
+        // Close siblings (accordion behavior)
+        if (isExpanded) {
+          document.querySelectorAll('.mobile-category.expanded').forEach(sibling => {
+            if (sibling !== category) {
+              sibling.classList.remove('expanded');
+              sibling.querySelector('.mobile-category-header').setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+      });
+    });
+
+    // Tool link click - close drawer and navigate
+    document.querySelectorAll('.mobile-category-items a').forEach(link => {
+      link.addEventListener('click', function() {
+        const navLinks = document.querySelector('.nav-links');
+        const backdrop = document.querySelector('.nav-backdrop');
+        const menuToggle = document.querySelector('.menu-toggle');
+        
+        // Close drawer
+        if (navLinks) navLinks.classList.remove('mobile-open');
+        if (backdrop) backdrop.classList.remove('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        
+        document.body.style.overflow = '';
+        
+        // Navigate to the link (default behavior - no preventDefault)
+      });
+    });
+
+    // Close mobile menu when clicking outside on backdrop
+    const backdrop = document.querySelector('.nav-backdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', function() {
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks && navLinks.classList.contains('mobile-open')) {
+          navLinks.classList.remove('mobile-open');
+          dropdown.classList.remove('has-open');
+          toolsToggle.setAttribute('aria-expanded', 'false');
+          backdrop.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  }
+
+  // Initialize mobile tools dropdown
+  if (isMobile) {
+    document.addEventListener('DOMContentLoaded', function() {
+      setupMobileToolsDropdown();
+    });
+  }
 
 })();
