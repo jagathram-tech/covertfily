@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word & Character Counter - Real-Time Text Analytics | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Count words, characters, sentences, paragraphs, and reading time. Real-time text analytics with keyword density analysis. 100% private, no uploads.">
+    <meta name="keywords" content="Word Counter, Character Counter, Text Analytics, Reading Time, Covertfily">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .counter-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .counter-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .textarea-section {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .stats-panel {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .textarea-wrapper {
+            position: relative;
+        }
+        #textInput {
+            width: 100%;
+            min-height: 400px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+        }
+        #textInput:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 23, 103, 0.1);
+        }
+        .stat-card {
+            padding: 16px;
+            background: var(--bg-alt);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .btn-action i {
+            margin-right: 6px;
+        }
+        .keyword-section {
+            margin-top: 40px;
+        }
+        .keyword-header {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+        .keyword-list {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .keyword-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .keyword-item:last-child {
+            border-bottom: none;
+        }
+        .keyword-word {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .keyword-count {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .keyword-bar {
+            height: 4px;
+            background: var(--primary-light);
+            border-radius: 2px;
+            min-width: 100px;
+        }
+        .keyword-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .copy-confirmation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .copy-confirmation.show {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 768px) {
+            .counter-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="word-counter.html"><i class="fas fa-spell-check"></i> Word Counter</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="counter-container">
+            <div style="margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">
+                    <i class="fas fa-spell-check" style="margin-right: 10px;"></i>Word & Character Counter
+                </h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Real-time text analytics with reading time and keyword density.</p>
+            </div>
+
+            <div class="counter-grid">
+                <div class="textarea-section">
+                    <div class="textarea-wrapper">
+                        <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-action" onclick="copyText()">
+                            <i class="fas fa-copy"></i>Copy
+                        </button>
+                        <button class="btn-action" onclick="clearText()">
+                            <i class="fas fa-trash"></i>Clear
+                        </button>
+                    </div>
+
+                    <div class="keyword-section">
+                        <div class="keyword-header">Top 10 Keywords</div>
+                        <div class="keyword-list" id="keywordList"></div>
+                    </div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="stat-card">
+                        <div class="stat-value" id="charCount">0</div>
+                        <div class="stat-label">Characters (w/ spaces)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="charCountNoSpace">0</div>
+                        <div class="stat-label">Characters (no spaces)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="wordCount">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="sentenceCount">0</div>
+                        <div class="stat-label">Sentences</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="paragraphCount">0</div>
+                        <div class="stat-label">Paragraphs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lineCount">0</div>
+                        <div class="stat-label">Lines</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="readingTime">0m</div>
+                        <div class="stat-label">Reading Time (200 wpm)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="speakingTime">0m</div>
+                        <div class="stat-label">Speaking Time (130 wpm)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="copy-confirmation" id="copyConfirmation">
+        <i class="fas fa-check-circle"></i>
+        <span>Copied to clipboard!</span>
+    </div>
+
+    <footer style="background: var(--bg-alt); padding: 40px 8%; margin-top: 80px; text-align: center; color: var(--text-muted);">
+        <p>&copy; 2024 Covertfily. 100% Private. Open Source. No Uploads.</p>
+    </footer>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+
+        function updateStats() {
+            const text = textInput.value;
+
+            // Character counts
+            const charCount = text.length;
+            const charCountNoSpace = text.replace(/\s/g, '').length;
+
+            // Word count
+            const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+
+            // Sentence count (rough estimate: . ! ? followed by space or end)
+            const sentenceCount = (text.match(/[.!?]+/g) || []).length || 0;
+
+            // Paragraph count (separated by double newlines or single newlines)
+            const paragraphCount = text.trim() === '' ? 0 : text.trim().split(/\n\n+|\n/).length;
+
+            // Line count
+            const lineCount = text === '' ? 0 : text.split('\n').length;
+
+            // Reading time (200 words per minute)
+            const readingTimeMin = Math.ceil(wordCount / 200);
+
+            // Speaking time (130 words per minute)
+            const speakingTimeMin = Math.ceil(wordCount / 130);
+
+            document.getElementById('charCount').textContent = charCount.toLocaleString();
+            document.getElementById('charCountNoSpace').textContent = charCountNoSpace.toLocaleString();
+            document.getElementById('wordCount').textContent = wordCount.toLocaleString();
+            document.getElementById('sentenceCount').textContent = sentenceCount.toLocaleString();
+            document.getElementById('paragraphCount').textContent = paragraphCount.toLocaleString();
+            document.getElementById('lineCount').textContent = lineCount.toLocaleString();
+            document.getElementById('readingTime').textContent = readingTimeMin + 'm';
+            document.getElementById('speakingTime').textContent = speakingTimeMin + 'm';
+
+            updateKeywords(text);
+        }
+
+        function updateKeywords(text) {
+            // Extract words and count frequency
+            const words = text.toLowerCase()
+                .replace(/[^\w\s]/g, '')
+                .split(/\s+/)
+                .filter(w => w.length > 3); // Only words longer than 3 characters
+
+            const stopWords = new Set([
+                'the', 'this', 'that', 'with', 'from', 'have', 'been', 'were', 
+                'will', 'would', 'could', 'should', 'just', 'into', 'more', 'only',
+                'over', 'such', 'then', 'them', 'very', 'when', 'your', 'also',
+                'what', 'some', 'make', 'than', 'like', 'time', 'each', 'take',
+                'people', 'year', 'work', 'back', 'call', 'come', 'know', 'think'
+            ]);
+
+            const frequency = {};
+            words.forEach(word => {
+                if (!stopWords.has(word)) {
+                    frequency[word] = (frequency[word] || 0) + 1;
+                }
+            });
+
+            // Get top 10 keywords
+            const sorted = Object.entries(frequency)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const maxCount = sorted.length > 0 ? sorted[0][1] : 1;
+
+            const keywordList = document.getElementById('keywordList');
+            keywordList.innerHTML = sorted.map(([word, count]) => {
+                const percentage = ((count / words.length) * 100).toFixed(2);
+                const barWidth = (count / maxCount) * 100;
+                return `
+                    <div class="keyword-item">
+                        <div class="keyword-word">${word}</div>
+                        <div class="keyword-count">
+                            <div style="width: 80px;">
+                                <div class="keyword-bar">
+                                    <div class="keyword-bar-fill" style="width: ${barWidth}%"></div>
+                                </div>
+                            </div>
+                            <span>${count}x</span>
+                            <span style="color: var(--text-muted);">${percentage}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div style="padding: 16px; text-align: center; color: var(--text-muted);">No keywords yet</div>';
+        }
+
+        function copyText() {
+            const text = textInput.value;
+            if (!text) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const confirmation = document.getElementById('copyConfirmation');
+                confirmation.classList.add('show');
+                setTimeout(() => confirmation.classList.remove('show'), 2000);
+            });
+        }
+
+        function clearText() {
+            if (confirm('Are you sure you want to clear all text?')) {
+                textInput.value = '';
+                updateStats();
+            }
+        }
+
+        textInput.addEventListener('input', updateStats);
+        updateStats();
+
+        // Mobile nav
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+            document.body.classList.toggle('nav-active');
+        });
+
+        document.querySelectorAll('.tool-search').forEach(search => {
+            search.addEventListener('input', function(e) {
+                const query = this.value.toLowerCase();
+                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
+                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

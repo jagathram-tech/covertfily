@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reorder PDF Pages - Drag & Drop | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Reorder PDF pages using drag & drop. 100% private, browser-based PDF page reordering — no uploads, no server, completely free.">
+    <meta name="keywords" content="Reorder PDF, PDF Page Reorder, Rearrange PDF, PDF Editor, Covertfily">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        .reorder-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px dashed var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .upload-section input {
+            display: none;
+        }
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            min-height: 200px;
+        }
+        .page-thumbnail {
+            position: relative;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: grab;
+            transition: all 0.2s;
+            touch-action: none;
+        }
+        .page-thumbnail:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        .page-thumbnail.sortable-ghost {
+            opacity: 0.5;
+            background: var(--primary-light);
+        }
+        .page-canvas {
+            width: 100%;
+            height: 180px;
+            display: block;
+        }
+        .page-number {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .page-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .page-thumbnail:hover .page-actions {
+            opacity: 1;
+        }
+        .page-action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .page-action-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+        .spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .spinner.active {
+            display: block;
+        }
+        .spinner-circle {
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        .btn-main {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .btn-main:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .btn-main:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status-message {
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .status-message.success {
+            display: block;
+            background: #ecfdf5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .status-message.error {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
+                            <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="reorder-container">
+            <div style="margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">Reorder PDF Pages</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Drag and drop to rearrange PDF pages. 100% private, browser-based.</p>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+
+            <div class="upload-section" id="uploadSection" onclick="document.getElementById('pdfInput').click()">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin: 15px 0; color: var(--text-main);">Click to upload or drag & drop</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">PDF files only (max 100MB)</p>
+                <input type="file" id="pdfInput" accept=".pdf" />
+            </div>
+
+            <div class="spinner" id="spinner">
+                <div class="spinner-circle"></div>
+                <p style="margin-top: 15px; color: var(--text-muted);">Loading PDF pages...</p>
+            </div>
+
+            <div id="pagesContainer" style="display: none;">
+                <p style="margin-bottom: 20px; color: var(--text-muted);">Drag to reorder • Hover for options</p>
+                <div class="pages-grid" id="pagesGrid"></div>
+                <div class="action-buttons">
+                    <button class="btn-main" onclick="downloadReorderedPDF()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i> Download Reordered PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-alt); padding: 40px 8%; margin-top: 80px; text-align: center; color: var(--text-muted);">
+        <p>&copy; 2024 Covertfily. 100% Private. Open Source. No Uploads.</p>
+    </footer>
+
+    <script>
+        let pdfDoc = null;
+        let pages = [];
+        const pdfjsLib = window.pdfjsLib;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        function showStatus(message, isError = false) {
+            const el = document.getElementById('statusMessage');
+            el.textContent = message;
+            el.className = `status-message ${isError ? 'error' : 'success'}`;
+        }
+
+        document.getElementById('pdfInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                pdfDoc = pdf;
+                pages = Array.from({ length: pdf.numPages }, (_, i) => i + 1);
+
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('pagesContainer').style.display = 'block';
+                document.getElementById('spinner').classList.add('active');
+
+                await renderPages();
+                document.getElementById('spinner').classList.remove('active');
+
+                Sortable.create(document.getElementById('pagesGrid'), {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: (evt) => {
+                        const moved = pages.splice(evt.oldIndex, 1)[0];
+                        pages.splice(evt.newIndex, 0, moved);
+                        updatePageNumbers();
+                    }
+                });
+            } catch (err) {
+                showStatus(`Error loading PDF: ${err.message}`, true);
+            }
+        });
+
+        async function renderPages() {
+            const grid = document.getElementById('pagesGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < pages.length; i++) {
+                const pageNum = pages[i];
+                const page = await pdfDoc.getPage(pageNum);
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                await page.render({
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: viewport
+                }).promise;
+
+                const div = document.createElement('div');
+                div.className = 'page-thumbnail';
+                div.dataset.pageNum = pageNum;
+                div.innerHTML = `
+                    <canvas class="page-canvas" style="display:block;width:100%;"></canvas>
+                    <div class="page-number">Page ${pageNum}</div>
+                    <div class="page-actions">
+                        <button class="page-action-btn" title="Move to Front" onclick="movePageToFront(${i})">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="page-action-btn" title="Move to End" onclick="movePageToEnd(${i})">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button class="page-action-btn" title="Delete Page" onclick="deletePage(${i})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                const ctx = div.querySelector('canvas').getContext('2d');
+                ctx.drawImage(canvas, 0, 0);
+
+                grid.appendChild(div);
+            }
+        }
+
+        function updatePageNumbers() {
+            document.querySelectorAll('.page-thumbnail').forEach((el, i) => {
+                el.querySelector('.page-number').textContent = `Page ${pages[i]}`;
+            });
+        }
+
+        function movePageToFront(index) {
+            const moved = pages.splice(index, 1)[0];
+            pages.unshift(moved);
+            renderPages();
+        }
+
+        function movePageToEnd(index) {
+            const moved = pages.splice(index, 1)[0];
+            pages.push(moved);
+            renderPages();
+        }
+
+        function deletePage(index) {
+            pages.splice(index, 1);
+            renderPages();
+            showStatus('Page deleted');
+        }
+
+        async function downloadReorderedPDF() {
+            if (!pdfDoc || pages.length === 0) return;
+
+            try {
+                const newPdf = await PDFLib.PDFDocument.create();
+                const copiedPages = await newPdf.copyPages(pdfDoc, pages);
+                copiedPages.forEach(page => newPdf.addPage(page));
+
+                const pdfBytes = await newPdf.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'reordered.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showStatus('PDF downloaded successfully!');
+            } catch (err) {
+                showStatus(`Error downloading PDF: ${err.message}`, true);
+            }
+        }
+
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            document.getElementById('uploadSection').style.background = var(--primary-light);
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                document.getElementById('pdfInput').files = e.dataTransfer.files;
+                document.getElementById('pdfInput').dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Mobile nav toggle
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+            document.body.classList.toggle('nav-active');
+        });
+
+        document.querySelectorAll('.tool-search').forEach(search => {
+            search.addEventListener('input', function(e) {
+                const query = this.value.toLowerCase();
+                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
+                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

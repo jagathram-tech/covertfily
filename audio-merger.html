@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Merger - Combine Audio Files | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Merge multiple MP3, WAV, OGG, and FLAC files into one audio file. 100% private, browser-based audio merging with silence gaps.">
+    <meta name="keywords" content="Audio Merger, Combine Audio, Merge MP3, Join Audio Files, Covertfily">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        .merger-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px dashed var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .upload-section input {
+            display: none;
+        }
+        .files-list {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            min-height: 100px;
+            display: none;
+        }
+        .files-list.active {
+            display: block;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: grab;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-item.sortable-ghost {
+            opacity: 0.5;
+            background: var(--primary-light);
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        .file-details {
+            flex: 1;
+        }
+        .file-name {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .file-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .file-remove {
+            background: #fef2f2;
+            color: #ef4444;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-remove:hover {
+            background: #fee2e2;
+        }
+        .options-section {
+            background: var(--bg-alt);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .options-section.active {
+            display: block;
+        }
+        .option-group {
+            margin-bottom: 16px;
+        }
+        .option-label {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+        .silence-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .silence-input input {
+            width: 100px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .format-selector {
+            display: flex;
+            gap: 10px;
+        }
+        .format-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .format-option.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-main {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .btn-main:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .btn-main:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .progress-container.active {
+            display: block;
+        }
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .status-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .status-message.error {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
+                            <a href="audio-merger.html"><i class="fas fa-object-group"></i> Audio Merger</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="merger-container">
+            <div style="margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">
+                    <i class="fas fa-object-group" style="margin-right: 10px;"></i>Audio Merger
+                </h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Combine multiple audio files into one. Drag to reorder. 100% private, browser-based.</p>
+            </div>
+
+            <div class="status-message" id="errorMessage"></div>
+
+            <div class="upload-section" onclick="document.getElementById('audioInput').click()">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin: 15px 0; color: var(--text-main);">Click to upload or drag & drop</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">MP3, WAV, OGG, FLAC files (max 100MB each)</p>
+                <input type="file" id="audioInput" accept=".mp3,.wav,.ogg,.flac" multiple />
+            </div>
+
+            <div class="files-list" id="filesList">
+                <div id="filesContainer"></div>
+            </div>
+
+            <div class="options-section" id="optionsSection">
+                <div class="option-group">
+                    <div class="option-label">Silence Gap Between Tracks (seconds)</div>
+                    <div class="silence-input">
+                        <input type="range" id="silenceGap" min="0" max="5" value="0" step="0.5">
+                        <span id="silenceLabel">0s</span>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <div class="option-label">Output Format</div>
+                    <div class="format-selector">
+                        <div class="format-option active" onclick="selectFormat('mp3')">MP3</div>
+                        <div class="format-option" onclick="selectFormat('wav')">WAV</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="progressContainer" class="progress-container">
+                <div class="progress-label">Merging audio files...</div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons" id="actionButtons" style="display: none;">
+                <button class="btn-main" onclick="mergeAudio()">
+                    <i class="fas fa-download" style="margin-right: 8px;"></i> Merge & Download
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-alt); padding: 40px 8%; margin-top: 80px; text-align: center; color: var(--text-muted);">
+        <p>&copy; 2024 Covertfily. 100% Private. Open Source. No Uploads.</p>
+    </footer>
+
+    <script>
+        let audioFiles = [];
+        let selectedFormat = 'mp3';
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        async function getAudioDuration(file) {
+            return new Promise((resolve) => {
+                const url = URL.createObjectURL(file);
+                const audio = new Audio();
+                audio.onloadedmetadata = () => {
+                    URL.revokeObjectURL(url);
+                    resolve(audio.duration);
+                };
+                audio.onerror = () => resolve(0);
+                audio.src = url;
+            });
+        }
+
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        document.getElementById('audioInput').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            
+            for (const file of files) {
+                const duration = await getAudioDuration(file);
+                audioFiles.push({
+                    file,
+                    name: file.name,
+                    size: file.size,
+                    duration
+                });
+            }
+
+            renderFiles();
+        });
+
+        document.getElementById('silenceGap').addEventListener('input', (e) => {
+            document.getElementById('silenceLabel').textContent = e.target.value + 's';
+        });
+
+        function selectFormat(format) {
+            selectedFormat = format;
+            document.querySelectorAll('.format-option').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function renderFiles() {
+            const container = document.getElementById('filesContainer');
+            container.innerHTML = audioFiles.map((audio, index) => `
+                <div class="file-item" data-index="${index}">
+                    <div class="file-info">
+                        <div class="file-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-name">${audio.name}</div>
+                            <div class="file-meta">${formatFileSize(audio.size)} • ${formatDuration(audio.duration)}</div>
+                        </div>
+                    </div>
+                    <button class="file-remove" onclick="removeFile(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('filesList').classList.toggle('active', audioFiles.length > 0);
+            document.getElementById('optionsSection').classList.toggle('active', audioFiles.length > 0);
+            document.getElementById('actionButtons').style.display = audioFiles.length > 0 ? 'flex' : 'none';
+
+            if (audioFiles.length > 0) {
+                Sortable.create(document.getElementById('filesContainer'), {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: (evt) => {
+                        const moved = audioFiles.splice(evt.oldIndex, 1)[0];
+                        audioFiles.splice(evt.newIndex, 0, moved);
+                    }
+                });
+            }
+        }
+
+        function removeFile(index) {
+            audioFiles.splice(index, 1);
+            renderFiles();
+        }
+
+        async function mergeAudio() {
+            if (audioFiles.length === 0) return;
+
+            try {
+                const progressContainer = document.getElementById('progressContainer');
+                progressContainer.classList.add('active');
+
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const silenceGap = parseFloat(document.getElementById('silenceGap').value);
+                let totalDuration = 0;
+
+                // Calculate total duration
+                for (const audio of audioFiles) {
+                    totalDuration += audio.duration + silenceGap;
+                }
+
+                const offlineContext = new OfflineAudioContext(2, audioContext.sampleRate * totalDuration, audioContext.sampleRate);
+                let currentTime = 0;
+
+                // Decode and mix all audio files
+                for (let i = 0; i < audioFiles.length; i++) {
+                    const audio = audioFiles[i];
+                    const arrayBuffer = await audio.file.arrayBuffer();
+                    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                    
+                    const source = offlineContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(offlineContext.destination);
+                    source.start(currentTime);
+                    
+                    currentTime += audio.duration + silenceGap;
+                    document.getElementById('progressFill').style.width = ((i + 1) / audioFiles.length * 100) + '%';
+                }
+
+                const mergedAudioBuffer = await offlineContext.startRendering();
+                
+                // Convert to WAV or MP3
+                const blob = audioBufferToWav(mergedAudioBuffer);
+                downloadFile(blob, `merged.${selectedFormat}`);
+
+                progressContainer.classList.remove('active');
+            } catch (err) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = 'Error merging audio: ' + err.message;
+                errorDiv.classList.add('error');
+            }
+        }
+
+        function audioBufferToWav(audioBuffer) {
+            const numberOfChannels = audioBuffer.numberOfChannels;
+            const sampleRate = audioBuffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numberOfChannels * bytesPerSample;
+
+            const channelData = [];
+            for (let channel = 0; channel < numberOfChannels; channel++) {
+                channelData.push(audioBuffer.getChannelData(channel));
+            }
+
+            const dataLength = audioBuffer.length * numberOfChannels * bytesPerSample;
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            const writeFloat32 = (offset, value) => {
+                view.setFloat32(offset, value, true);
+            };
+
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, format, true);
+            view.setUint16(22, numberOfChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * blockAlign, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitDepth, true);
+            writeString(36, 'data');
+            view.setUint32(40, dataLength, true);
+
+            let offset = 44;
+            const volume = 0.8;
+            for (let i = 0; i < audioBuffer.length; i++) {
+                for (let channel = 0; channel < numberOfChannels; channel++) {
+                    let sample = Math.max(-1, Math.min(1, channelData[channel][i])) * volume;
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(offset, sample, true);
+                    offset += 2;
+                }
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Drag & drop
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files).filter(f => 
+                ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/flac'].includes(f.type)
+            );
+            if (files.length) {
+                document.getElementById('audioInput').files = e.dataTransfer.files;
+                document.getElementById('audioInput').dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Mobile nav
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+            document.body.classList.toggle('nav-active');
+        });
+
+        document.querySelectorAll('.tool-search').forEach(search => {
+            search.addEventListener('input', function(e) {
+                const query = this.value.toLowerCase();
+                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
+                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

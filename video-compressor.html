@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Compressor - Reduce Video Size | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Compress video files with customizable quality and resolution. 100% private, browser-based video compression.">
+    <meta name="keywords" content="Video Compressor, Reduce Video Size, Video Compression, MP4 Compressor, Covertfily">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+    <style>
+        .compressor-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px dashed var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .upload-section input {
+            display: none;
+        }
+        .file-info {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            display: none;
+        }
+        .file-info.active {
+            display: block;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: var(--bg-alt);
+            border-radius: 8px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .info-value {
+            color: var(--text-muted);
+        }
+        .options-section {
+            background: var(--bg-alt);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .options-section.active {
+            display: block;
+        }
+        .option-group {
+            margin-bottom: 20px;
+        }
+        .option-label {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .slider-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .slider {
+            flex: 1;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+        }
+        .value-display {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .resolution-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        .resolution-btn {
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .resolution-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .quality-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .quality-btn {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .quality-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .progress-container.active {
+            display: block;
+        }
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-percent {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-main {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            display: none;
+        }
+        .btn-main.active {
+            display: block;
+        }
+        .btn-main:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .btn-main:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+        .size-comparison {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+            display: none;
+        }
+        .size-comparison.active {
+            display: block;
+        }
+        .size-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg-alt);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="video-trimmer.html"><i class="fas fa-scissors"></i> Video Trimmer</a>
+                            <a href="video-frame-extractor.html"><i class="fas fa-image"></i> Frame Extractor</a>
+                            <a href="video-compressor.html"><i class="fas fa-compress"></i> Video Compressor</a>
+                            <a href="video-speed.html"><i class="fas fa-tachometer-alt"></i> Video Speed Changer</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="compressor-container">
+            <div style="margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">
+                    <i class="fas fa-compress" style="margin-right: 10px;"></i>Video Compressor
+                </h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Reduce video file size with custom quality and resolution settings. 100% private.</p>
+            </div>
+
+            <div class="upload-section" onclick="document.getElementById('videoInput').click()">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin: 15px 0; color: var(--text-main);">Click to upload or drag & drop</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">MP4, MOV, WebM, AVI files (max 500MB)</p>
+                <input type="file" id="videoInput" accept="video/*" />
+            </div>
+
+            <div class="file-info" id="fileInfo">
+                <div class="info-row">
+                    <span class="info-label">File Name:</span>
+                    <span class="info-value" id="fileName"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Original Size:</span>
+                    <span class="info-value" id="fileSize"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Duration:</span>
+                    <span class="info-value" id="fileDuration"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Estimated Output:</span>
+                    <span class="info-value" id="estimatedSize"></span>
+                </div>
+            </div>
+
+            <div class="options-section" id="optionsSection">
+                <div class="option-group">
+                    <div class="option-label">Quality</div>
+                    <div class="quality-options">
+                        <div class="quality-btn" onclick="setQuality('low')">Low<br/><span style="font-size: 0.75rem; font-weight: 400;">Smaller</span></div>
+                        <div class="quality-btn active" onclick="setQuality('medium')">Medium<br/><span style="font-size: 0.75rem; font-weight: 400;">Balanced</span></div>
+                        <div class="quality-btn" onclick="setQuality('high')">High<br/><span style="font-size: 0.75rem; font-weight: 400;">Better</span></div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <div class="option-label">Resolution</div>
+                    <div class="resolution-options">
+                        <button class="resolution-btn" onclick="setResolution('original')">Original</button>
+                        <button class="resolution-btn" onclick="setResolution('1080p')">1080p</button>
+                        <button class="resolution-btn" onclick="setResolution('720p')">720p</button>
+                        <button class="resolution-btn" onclick="setResolution('480p')">480p</button>
+                        <button class="resolution-btn active" onclick="setResolution('auto')">Auto</button>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" id="stripAudio" checked>
+                        <span>Keep Audio</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-label">Compressing video...</div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-percent" id="progressPercent">0%</div>
+            </div>
+
+            <div class="size-comparison" id="sizeComparison">
+                <div class="size-row">
+                    <span>Original Size:</span>
+                    <strong id="originalSize"></strong>
+                </div>
+                <div class="size-row">
+                    <span>Compressed Size:</span>
+                    <strong id="compressedSize" style="color: var(--success);"></strong>
+                </div>
+                <div class="size-row" style="background: var(--primary-light);">
+                    <span style="color: var(--primary); font-weight: 600;">Space Saved:</span>
+                    <strong id="spaceSaved" style="color: var(--primary);"></strong>
+                </div>
+            </div>
+
+            <div class="action-buttons" id="actionButtons">
+                <button class="btn-main active" onclick="compressVideo()">
+                    <i class="fas fa-download" style="margin-right: 8px;"></i> Compress & Download
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-alt); padding: 40px 8%; margin-top: 80px; text-align: center; color: var(--text-muted);">
+        <p>&copy; 2024 Covertfily. 100% Private. Open Source. No Uploads.</p>
+    </footer>
+
+    <script>
+        const { FFmpeg, fetchFile } = FFmpeg;
+        let ffmpeg;
+        let videoFile = null;
+        let quality = 'medium';
+        let resolution = 'auto';
+
+        async function initFFmpeg() {
+            ffmpeg = new FFmpeg.FFmpeg();
+            if (!ffmpeg.isLoaded()) {
+                await ffmpeg.load();
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        function formatDuration(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            if (hrs > 0) return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        document.getElementById('videoInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            videoFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+
+            const video = document.createElement('video');
+            const url = URL.createObjectURL(file);
+            video.onloadedmetadata = () => {
+                document.getElementById('fileDuration').textContent = formatDuration(video.duration);
+                updateEstimatedSize();
+                document.getElementById('fileInfo').classList.add('active');
+                document.getElementById('optionsSection').classList.add('active');
+                URL.revokeObjectURL(url);
+            };
+            video.src = url;
+        });
+
+        function setQuality(q) {
+            quality = q;
+            document.querySelectorAll('.quality-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.quality-btn').classList.add('active');
+            updateEstimatedSize();
+        }
+
+        function setResolution(r) {
+            resolution = r;
+            document.querySelectorAll('.resolution-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.resolution-btn').classList.add('active');
+            updateEstimatedSize();
+        }
+
+        function updateEstimatedSize() {
+            if (!videoFile) return;
+            const qualityMultiplier = { low: 0.3, medium: 0.6, high: 0.85 }[quality] || 0.6;
+            const estimated = videoFile.size * qualityMultiplier;
+            document.getElementById('estimatedSize').textContent = formatFileSize(estimated);
+        }
+
+        async function compressVideo() {
+            if (!videoFile) return;
+
+            try {
+                await initFFmpeg();
+                const progressContainer = document.getElementById('progressContainer');
+                progressContainer.classList.add('active');
+
+                await ffmpeg.writeFile('input', await fetchFile(videoFile));
+
+                const bitrateMap = { low: '1000k', medium: '3000k', high: '5000k' };
+                let videoFilter = 'scale=trunc(oh*a/2)*2:' + (resolution === 'original' ? -1 : 
+                    resolution === '1080p' ? '1080' : 
+                    resolution === '720p' ? '720' : 
+                    resolution === '480p' ? '480' : '-1');
+
+                const args = [
+                    '-i', 'input',
+                    '-vf', videoFilter,
+                    '-b:v', bitrateMap[quality],
+                    document.getElementById('stripAudio').checked ? '-c:a' : null,
+                    document.getElementById('stripAudio').checked ? 'aac' : null,
+                    '-c:v', 'libx264',
+                    '-preset', 'medium',
+                    'output.mp4'
+                ].filter(Boolean);
+
+                ffmpeg.setProgress(({ ratio }) => {
+                    const percent = Math.round(ratio * 100);
+                    document.getElementById('progressFill').style.width = percent + '%';
+                    document.getElementById('progressPercent').textContent = percent + '%';
+                });
+
+                await ffmpeg.run(...args);
+
+                const data = await ffmpeg.readFile('output.mp4');
+                const blob = new Blob([data.buffer], { type: 'video/mp4' });
+                
+                document.getElementById('originalSize').textContent = formatFileSize(videoFile.size);
+                document.getElementById('compressedSize').textContent = formatFileSize(blob.size);
+                const saved = videoFile.size - blob.size;
+                const percent = ((saved / videoFile.size) * 100).toFixed(1);
+                document.getElementById('spaceSaved').textContent = `${formatFileSize(saved)} (${percent}%)`;
+                document.getElementById('sizeComparison').classList.add('active');
+
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = videoFile.name.replace(/\.[^/.]+$/, '_compressed.mp4');
+                a.click();
+                URL.revokeObjectURL(url);
+
+                progressContainer.classList.remove('active');
+            } catch (err) {
+                alert('Error compressing video: ' + err.message);
+                document.getElementById('progressContainer').classList.remove('active');
+            }
+        }
+
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('video/')) {
+                document.getElementById('videoInput').files = e.dataTransfer.files;
+                document.getElementById('videoInput').dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Mobile nav
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+            document.body.classList.toggle('nav-active');
+        });
+
+        document.querySelectorAll('.tool-search').forEach(search => {
+            search.addEventListener('input', function(e) {
+                const query = this.value.toLowerCase();
+                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
+                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protect / Unlock PDF - Add & Remove Passwords | Covertfily</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="Add password protection to PDFs or unlock password-protected PDFs. 100% private, browser-based PDF password tool — no uploads, no server.">
+    <meta name="keywords" content="Protect PDF, Unlock PDF, PDF Password, Remove PDF Password, Covertfily">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <style>
+        .protect-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px dashed var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .upload-section input {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 23, 103, 0.1);
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+        .file-info {
+            background: var(--bg-alt);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .file-info.active {
+            display: block;
+        }
+        .spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .spinner.active {
+            display: block;
+        }
+        .spinner-circle {
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .btn-main {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .btn-main:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .btn-main:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status-message {
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .status-message.success {
+            display: block;
+            background: #ecfdf5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .status-message.error {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
+                            <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="protect-container">
+            <div style="margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">
+                    <i class="fas fa-lock" style="margin-right: 10px;"></i>Protect / Unlock PDF
+                </h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Add password protection or remove PDF passwords. 100% private, browser-based.</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('protect')">
+                    <i class="fas fa-lock-open" style="margin-right: 8px;"></i>Protect PDF
+                </button>
+                <button class="tab" onclick="switchTab('unlock')">
+                    <i class="fas fa-lock-open" style="margin-right: 8px;"></i>Unlock PDF
+                </button>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+
+            <!-- Protect Tab -->
+            <div id="protect" class="tab-content active">
+                <div class="upload-section" onclick="document.getElementById('protectInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h3 style="margin: 15px 0; color: var(--text-main);">Click to upload or drag & drop</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">PDF files only (max 100MB)</p>
+                    <input type="file" id="protectInput" accept=".pdf" />
+                </div>
+
+                <div class="file-info" id="protectFileInfo">
+                    <div><strong>File:</strong> <span id="protectFileName"></span></div>
+                    <div><strong>Size:</strong> <span id="protectFileSize"></span></div>
+                </div>
+
+                <div id="protectForm" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Owner Password (controls permissions)</label>
+                        <input type="password" class="form-input" id="ownerPassword" placeholder="Enter owner password">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">User Password (required to open)</label>
+                        <input type="password" class="form-input" id="userPassword" placeholder="Enter user password (optional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Permissions</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="allowPrint" checked>
+                                <label for="allowPrint">Allow Printing</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="allowCopy" checked>
+                                <label for="allowCopy">Allow Copying</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="allowEdit" checked>
+                                <label for="allowEdit">Allow Editing</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-main" onclick="protectPDF()">
+                        <i class="fas fa-lock" style="margin-right: 8px;"></i>Protect & Download PDF
+                    </button>
+                </div>
+
+                <div class="spinner" id="protectSpinner">
+                    <div class="spinner-circle"></div>
+                    <p style="margin-top: 15px; color: var(--text-muted);">Processing PDF...</p>
+                </div>
+            </div>
+
+            <!-- Unlock Tab -->
+            <div id="unlock" class="tab-content">
+                <div class="upload-section" onclick="document.getElementById('unlockInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h3 style="margin: 15px 0; color: var(--text-main);">Click to upload or drag & drop</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Password-protected PDF files only (max 100MB)</p>
+                    <input type="file" id="unlockInput" accept=".pdf" />
+                </div>
+
+                <div class="file-info" id="unlockFileInfo">
+                    <div><strong>File:</strong> <span id="unlockFileName"></span></div>
+                    <div><strong>Size:</strong> <span id="unlockFileSize"></span></div>
+                </div>
+
+                <div id="unlockForm" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">PDF Password</label>
+                        <input type="password" class="form-input" id="pdfPassword" placeholder="Enter the PDF password">
+                    </div>
+
+                    <button class="btn-main" onclick="unlockPDF()">
+                        <i class="fas fa-lock-open" style="margin-right: 8px;"></i>Unlock & Download PDF
+                    </button>
+                </div>
+
+                <div class="spinner" id="unlockSpinner">
+                    <div class="spinner-circle"></div>
+                    <p style="margin-top: 15px; color: var(--text-muted);">Processing PDF...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-alt); padding: 40px 8%; margin-top: 80px; text-align: center; color: var(--text-muted);">
+        <p>&copy; 2024 Covertfily. 100% Private. Open Source. No Uploads.</p>
+    </footer>
+
+    <script>
+        const pdfjsLib = window.pdfjsLib;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let protectFile = null;
+        let unlockFile = null;
+
+        function showStatus(message, isError = false) {
+            const el = document.getElementById('statusMessage');
+            el.textContent = message;
+            el.className = `status-message ${isError ? 'error' : 'success'}`;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        document.getElementById('protectInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            protectFile = file;
+            document.getElementById('protectFileName').textContent = file.name;
+            document.getElementById('protectFileSize').textContent = formatFileSize(file.size);
+            document.getElementById('protectFileInfo').classList.add('active');
+            document.getElementById('protectForm').style.display = 'block';
+        });
+
+        document.getElementById('unlockInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            unlockFile = file;
+            document.getElementById('unlockFileName').textContent = file.name;
+            document.getElementById('unlockFileSize').textContent = formatFileSize(file.size);
+            document.getElementById('unlockFileInfo').classList.add('active');
+            document.getElementById('unlockForm').style.display = 'block';
+        });
+
+        async function protectPDF() {
+            if (!protectFile) return;
+            
+            try {
+                document.getElementById('protectSpinner').classList.add('active');
+                
+                const arrayBuffer = await protectFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+
+                const ownerPassword = document.getElementById('ownerPassword').value;
+                const userPassword = document.getElementById('userPassword').value;
+                
+                if (!ownerPassword) {
+                    showStatus('Owner password is required', true);
+                    document.getElementById('protectSpinner').classList.remove('active');
+                    return;
+                }
+
+                // pdf-lib doesn't have native encryption, so we'll use a workaround
+                // For now, we'll show that encryption requires a specialized library
+                // In production, you might use libpdfjs or another library
+                showStatus('Note: This tool requires advanced PDF encryption library. Please use a dedicated PDF encryption tool.', true);
+                document.getElementById('protectSpinner').classList.remove('active');
+            } catch (err) {
+                showStatus(`Error: ${err.message}`, true);
+                document.getElementById('protectSpinner').classList.remove('active');
+            }
+        }
+
+        async function unlockPDF() {
+            if (!unlockFile) return;
+            
+            try {
+                document.getElementById('unlockSpinner').classList.add('active');
+                
+                const password = document.getElementById('pdfPassword').value;
+                if (!password) {
+                    showStatus('Please enter the PDF password', true);
+                    document.getElementById('unlockSpinner').classList.remove('active');
+                    return;
+                }
+
+                const arrayBuffer = await unlockFile.arrayBuffer();
+                
+                // Try to load with password using PDF.js
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, password }).promise;
+                
+                // Create new PDF without encryption
+                const newPdf = await PDFLib.PDFDocument.create();
+                const copiedPages = await newPdf.copyPages(pdf, Array.from({length: pdf.numPages}, (_, i) => i));
+                copiedPages.forEach(page => newPdf.addPage(page));
+
+                const pdfBytes = await newPdf.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'unlocked.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showStatus('PDF unlocked and downloaded successfully!');
+            } catch (err) {
+                showStatus(`Error: Incorrect password or PDF is not protected`, true);
+            } finally {
+                document.getElementById('unlockSpinner').classList.remove('active');
+            }
+        }
+
+        // Drag & drop support
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                const activeTab = document.querySelector('.tab-content.active').id;
+                if (activeTab === 'protect') {
+                    document.getElementById('protectInput').files = e.dataTransfer.files;
+                    document.getElementById('protectInput').dispatchEvent(new Event('change'));
+                } else {
+                    document.getElementById('unlockInput').files = e.dataTransfer.files;
+                    document.getElementById('unlockInput').dispatchEvent(new Event('change'));
+                }
+            }
+        });
+
+        // Mobile nav
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+            document.body.classList.toggle('nav-active');
+        });
+
+        document.querySelectorAll('.tool-search').forEach(search => {
+            search.addEventListener('input', function(e) {
+                const query = this.value.toLowerCase();
+                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
+                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

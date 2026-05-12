@@ -4,7 +4,7 @@
 
 - **Serve locally:** `npx serve .` — static site, no build; `file://` blocks CDN scripts
 - **Regenerate converters:** `node generator.js` after editing `BASIC_MAPPING` in `generator.js`
-- Keep `BASIC_MAPPING` (generator.js) and `formatMapping` (main.js) in sync — `formatMapping` includes `svg` but `BASIC_MAPPING` does not
+- Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync — `formatMapping` includes `svg` (hand-managed) but `BASIC_MAPPING` does not (generator doesn't create svg converters)
 - Conversion pages generated from `png-to-jpg.html` template — edit template for UI changes
 - Generator skips `png-to-jpg.html` (hand-crafted) and skips `pdf-to-docx.html` template generation because a hand-crafted `pdf-to-word.html` already exists (uses mammoth.js + PDF.js + docx.js)
 - Hand-crafted tool pages (watermark, merge-pdf, compress-pdf, ocr, image-resizer, etc.) NOT generated — see nav in index.html for full list; also `documents.html` and `image-tools.html` are hand-crafted landing pages
