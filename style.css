@@ -2337,7 +2337,7 @@ body, main, section {
 
 @media (max-width: 768px) {
     .hero {
-        padding: 2rem 1rem;
+        padding: 70px 1rem 2rem; /* Match navbar height (70px) on top */
         grid-template-columns: 1fr;
         gap: 2rem;
         align-items: stretch;
@@ -2411,7 +2411,7 @@ body, main, section {
 
 @media (max-width: 480px) {
     .hero {
-        padding: 1.5rem 1rem;
+        padding: 64px 1rem 1.5rem; /* Match small mobile navbar height (64px) on top */
         gap: 1.5rem;
     }
 
