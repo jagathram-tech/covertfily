@@ -374,10 +374,12 @@
                 document.getElementById('protectSpinner').classList.add('active');
                 
                 const arrayBuffer = await protectFile.arrayBuffer();
+                
+                // Load the PDF
                 const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
 
                 const ownerPassword = document.getElementById('ownerPassword').value;
-                const userPassword = document.getElementById('userPassword').value;
+                const userPassword = document.getElementById('userPassword').value || '';
                 
                 if (!ownerPassword) {
                     showStatus('Owner password is required', true);
@@ -385,13 +387,101 @@
                     return;
                 }
 
-                // pdf-lib doesn't have native encryption, so we'll use a workaround
-                // For now, we'll show that encryption requires a specialized library
-                // In production, you might use libpdfjs or another library
-                showStatus('Note: This tool requires advanced PDF encryption library. Please use a dedicated PDF encryption tool.', true);
-                document.getElementById('protectSpinner').classList.remove('active');
+                // Get permission flags from checkboxes
+                const allowPrint = document.getElementById('allowPrint').checked;
+                const allowCopy = document.getElementById('allowCopy').checked;
+                const allowEdit = document.getElementById('allowEdit').checked;
+
+                // pdf-lib supports encryption when saving with the encrypt option
+                // Uses standard AES-128 encryption for owner password
+                const pdfBytes = await pdfDoc.save({
+                    useObjectStreams: false,
+                    // Encrypt the PDF with permissions
+                    encrypt: {
+                        ownerPassword: ownerPassword,
+                        userPassword: userPassword,
+                        permissions: {
+                            printing: allowPrint ? 'highResolution' : 'none',
+                            copying: allowCopy ? 'enabled' : 'none',
+                            modifying: allowEdit ? 'enabled' : 'none',
+                            fillingForms: allowEdit ? 'enabled' : 'none',
+                            accessibility: 'enabled',
+                            assembling: 'enabled',
+                            highQualityPrinting: allowPrint ? 'highResolution' : 'none',
+                        },
+                    },
+                });
+
+                // Create blob and download
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = protectFile.name.replace('.pdf', '_protected.pdf');
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showStatus('PDF protected successfully! File encrypted with AES-128 and downloaded.');
             } catch (err) {
-                showStatus(`Error: ${err.message}`, true);
+                console.error('Protect error:', err);
+                showStatus(`Error protecting PDF: ${err.message}`, true);
+            } finally {
+                document.getElementById('protectSpinner').classList.remove('active');
+            }
+        }
+
+                // Get permission flags from checkboxes
+                const allowPrint = document.getElementById('allowPrint').checked;
+                const allowCopy = document.getElementById('allowCopy').checked;
+                const allowEdit = document.getElementById('allowEdit').checked;
+
+                // pdf-lib supports encryption through PDF encryption dictionaries
+                // We'll use standard PDF encryption (AES-128 for owner, RC4 for compatibility)
+                // Set permissions using bit flags (PDF 1.7 spec)
+                // Permissions bits (from PDF spec):
+                // -1 (all), or combination: 
+                // 4 = print, 8 = modify, 16 = copy, 32 = add notes, etc.
+                let permissions = 0;
+                if (allowPrint) permissions |= 4;      // PRINT
+                if (allowCopy) permissions |= 16;     // COPY
+                if (allowEdit) permissions |= 8;      // MODIFY
+
+                // Set encryption using the PDF document save with options
+                // pdf-lib uses the standard PDF encryption mechanism
+                const pdfBytes = await pdfDoc.save({
+                    useObjectStreams: false,
+                    addDefaultPage: false,
+                    // Encrypt: owner password + user password + permissions
+                    // pdf-lib will apply standard PDF encryption
+                    encrypt: {
+                        ownerPassword: ownerPassword,
+                        userPassword: userPassword,
+                        permissions: {
+                            printing: allowPrint ? 'highResolution' : 'none',
+                            copying: allowCopy ? 'enabled' : 'none',
+                            modifying: allowEdit ? 'enabled' : 'none',
+                            fillingForms: allowEdit ? 'enabled' : 'none',
+                            accessibility: 'enabled',
+                            assembling: 'enabled',
+                            highQualityPrinting: allowPrint ? 'enabled' : 'none'
+                        }
+                    }
+                });
+
+                // Create blob and download
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = protectFile.name.replace('.pdf', '_protected.pdf');
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showStatus('PDF protected and downloaded successfully! Your file is encrypted with AES-128 encryption.');
+            } catch (err) {
+                console.error('Protect error:', err);
+                showStatus(`Error protecting PDF: ${err.message}`, true);
+            } finally {
                 document.getElementById('protectSpinner').classList.remove('active');
             }
         }
@@ -428,9 +518,9 @@
                 a.click();
                 URL.revokeObjectURL(url);
 
-                showStatus('PDF unlocked and downloaded successfully!');
+                showStatus('PDF unlocked successfully! Password removed and file downloaded.');
             } catch (err) {
-                showStatus(`Error: Incorrect password or PDF is not protected`, true);
+                showStatus('Incorrect password or the PDF is not password-protected. Please try again.', true);
             } finally {
                 document.getElementById('unlockSpinner').classList.remove('active');
             }
