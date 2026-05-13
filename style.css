@@ -2088,22 +2088,7 @@ body, main, section {
          background: rgba(0, 0, 0, 0.05);
      }
 
-    /* Mobile backdrop */
-     .nav-backdrop {
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         min-height: 100dvh;
-         background: rgba(0, 0, 0, 0.5);
-         z-index: 1000;
-         display: none;
-     }
 
-    .nav-backdrop.active {
-        display: block;
-    }
 
     /* Hide GitHub button on mobile nav */
     .nav-actions {
@@ -2327,15 +2312,11 @@ body, main, section {
         height: 48px;
     }
 
-    .nav-links.mobile-open,
-    .dropdown-content {
-        top: 64px;  /* fallback — overridden dynamically by main.js */
-    }
-
-    .nav-backdrop.active {
-        top: 64px;
-    }
-}
+     .nav-links.mobile-open,
+     .dropdown-content {
+         top: 64px;  /* fallback — overridden dynamically by main.js */
+     }
+ }
 
 /* ============================================================================
    2.5 DESKTOP TOOLS DROPDOWN (ensure desktop still shows flat list)

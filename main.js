@@ -1536,11 +1536,6 @@ function downloadFile(url, filename) {
     const fullHeader = document.querySelector('header') || document.querySelector('nav');
     if (!menuToggle || !fullHeader) return;
 
-    // Create backdrop
-    const backdrop = document.createElement('div');
-    backdrop.className = 'nav-backdrop';
-    document.body.appendChild(backdrop);
-
     let isOpen = false;
 
     function openMenu() {
@@ -1549,7 +1544,6 @@ function downloadFile(url, filename) {
       navLinks.style.top = headerBottom + 'px';
       navLinks.style.height = (window.innerHeight - headerBottom) + 'px';
       navLinks.classList.add('mobile-open');
-      backdrop.classList.add('active');
       document.body.style.overflow = 'hidden';
       menuToggle.setAttribute('aria-expanded', 'true');
     }
@@ -1557,7 +1551,6 @@ function downloadFile(url, filename) {
     function closeMenu() {
       isOpen = false;
       navLinks.classList.remove('mobile-open');
-      backdrop.classList.remove('active');
       document.body.style.overflow = '';
       menuToggle.setAttribute('aria-expanded', 'false');
     }
@@ -1566,8 +1559,6 @@ function downloadFile(url, filename) {
       e.stopPropagation();
       isOpen ? closeMenu() : openMenu();
     });
-
-    backdrop.addEventListener('click', closeMenu);
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && isOpen) closeMenu();
@@ -1732,17 +1723,17 @@ function downloadFile(url, filename) {
     }
   }, 300));
 
-   // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
-  const viewportHeight = window.innerHeight;
-  window.addEventListener('resize', debounce(function() {
-    const newHeight = window.innerHeight;
-    if (newHeight < viewportHeight * 0.75) {
-      // Virtual keyboard is shown - collapse non-essential UI
-      document.querySelectorAll('.nav-backdrop.active, .dropdown-content.active').forEach(el => {
-        el.style.display = 'none';
-      });
-    }
-  }, 200));
+    // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
+   const viewportHeight = window.innerHeight;
+   window.addEventListener('resize', debounce(function() {
+     const newHeight = window.innerHeight;
+     if (newHeight < viewportHeight * 0.75) {
+       // Virtual keyboard is shown - collapse non-essential UI
+       document.querySelectorAll('.dropdown-content.active').forEach(el => {
+         el.style.display = 'none';
+       });
+     }
+   }, 200));
 
   // 10. MOBILE TOOLS DROPDOWN - Collapsible categories
   function setupMobileToolsDropdown() {
@@ -1799,12 +1790,10 @@ function downloadFile(url, filename) {
     document.querySelectorAll('.mobile-category-items a').forEach(link => {
       link.addEventListener('click', function() {
         const navLinks = document.querySelector('.nav-links');
-        const backdrop = document.querySelector('.nav-backdrop');
         const menuToggle = document.querySelector('.menu-toggle');
         
         // Close drawer
         if (navLinks) navLinks.classList.remove('mobile-open');
-        if (backdrop) backdrop.classList.remove('active');
         if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
         
         document.body.style.overflow = '';
@@ -1813,20 +1802,6 @@ function downloadFile(url, filename) {
       });
     });
 
-    // Close mobile menu when clicking outside on backdrop
-    const backdrop = document.querySelector('.nav-backdrop');
-    if (backdrop) {
-      backdrop.addEventListener('click', function() {
-        const navLinks = document.querySelector('.nav-links');
-        if (navLinks && navLinks.classList.contains('mobile-open')) {
-          navLinks.classList.remove('mobile-open');
-          dropdown.classList.remove('has-open');
-          toolsToggle.setAttribute('aria-expanded', 'false');
-          backdrop.classList.remove('active');
-          document.body.style.overflow = '';
-        }
-      });
-    }
   }
 
   // Initialize mobile tools dropdown
