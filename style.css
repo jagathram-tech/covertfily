@@ -2030,21 +2030,19 @@ body, main, section {
         display: none;
     }
 
-    .nav-links.mobile-open {
-        display: flex;
-        position: fixed;
-        top: 70px;  /* fallback — overridden dynamically by main.js */
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1001;
-        flex-direction: column;
-        background: white;
-        gap: 0;
-        max-width: 100vw;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+     .nav-links.mobile-open {
+         display: flex;
+         position: fixed;
+         left: 0;
+         right: 0;
+         z-index: 1001;
+         flex-direction: column;
+         background: white;
+         gap: 0;
+         max-width: 100vw;
+         overflow-y: auto;
+         -webkit-overflow-scrolling: touch;
+     }
 
     .nav-links.mobile-open li {
         width: 100%;
@@ -2059,16 +2057,13 @@ body, main, section {
     }
 
     /* Mobile backdrop */
-    .nav-backdrop {
-        position: fixed;
-        top: 70px;  /* fallback — overridden dynamically by main.js */
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: none;
-        z-index: 1000;
-    }
+     .nav-backdrop {
+         position: fixed;
+         inset: 0;
+         background: rgba(0, 0, 0, 0.5);
+         display: none;
+         z-index: 1000;
+     }
 
     .nav-backdrop.active {
         display: block;

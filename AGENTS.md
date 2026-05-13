@@ -9,37 +9,37 @@
 ## Critical Sync Rules
 
 - Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync — `formatMapping` includes `svg` (hand-managed), `BASIC_MAPPING` does not
-- Generator skips `png-to-jpg.html` (hand-crafted) and `pdf-to-docx.html` (hand-crafted as `pdf-to-word.html`) — do not auto-generate these
+- Generator skips `png→jpg` (template itself) and `pdf→docx` (hand-crafted as `pdf-to-word.html`) — do not auto-generate these
 - All other `*-to-*.html` converters are generated from the `png-to-jpg.html` template — edit the template for shared UI changes
-- **FFmpeg.wasm version mismatch:** hand-crafted video tools (video-compressor.html, video-speed.html) use v0.11.6; main.js loadFFmpeg() uses v0.12.10 core / v0.12.6. Prefer the main.js pattern unless legacy compatibility is required
+- **FFmpeg.wasm versions:** Both `main.js` and hand-crafted video tools use `ffmpeg@0.12.10` with `core@0.12.6`. Keep these aligned when updating.
 
 ## Main.js Global API (Do Not Rename)
 
 These are attached to `window` and referenced inline in HTML:
-`FORMAT_MAPPING`, `FORMAT_LABELS`, `updateProgress`, `hideProgress`, `setConversionProgress`, `processFile`, `handleFiles`, `updateTargetDropdown`, `selectFromFormat`, `selectToFormat`, `toggleDropdown`, `filterFormats`
+`FORMAT_MAPPING`, `FORMAT_LABELS`, `updateProgress`, `hideProgress`, `setConversionProgress`, `processFile`, `handleFiles`, `updateTargetDropdown`, `selectFromFormat`, `selectToFormat`, `toggleDropdown`, `filterFormats`, `downloadFile`
 
 ## Required DOM IDs (Core UI)
 
-`#dropzone`, `#formatFromContainer`, `#formatToContainer`, `.progress-bar-fill` — used by main.js event handlers; changing these breaks all converters
+`#dropzone`, `#formatFromContainer`, `#formatToContainer`, `.progress-bar-fill`, `#downloadBtn`, `#loading`, `#downloadContainer` — references in main.js and page scripts; changing these breaks converters.
 
 ## Homepage Converter Dependency
 
-The dropzone on `index.html` calls `goToDedicatedPage()` — this function is injected by `generator.js`. If regenerating index.html manually, ensure it exists or the dropzone click fails.
+The dropzone on `index.html` calls `goToDedicatedPage()` — this function is injected by `generator.js`. If manually editing index.html, keep it present or the dropzone click fails.
 
 ## PDF Worker Configuration
 
-When using PDF.js on any page, set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly. `main.js` sets it globally, but hand-crafted PDF pages may need inline configuration (see `pdf-to-word.html:29`).
+When using PDF.js on any page, set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly. `main.js` sets it globally (main.js:293), but hand-crafted PDF pages may need inline configuration (see `pdf-to-word.html:29`).
 
 ## Download Behavior
 
-`downloadFile()` sets `#downloadBtn` href only — does not auto-trigger. Previous blob URLs are revoked. Ensure `#resultArea`/`#downloadContainer` is visible to reveal the button.
+`downloadFile()` sets `#downloadBtn` href and revokes previous blob URLs — does not auto-trigger. Ensure `#downloadContainer` is visible to reveal the button.
 
 ## Mobile Navigation
 
 - Hamburger is auto-created by main.js if missing
-- Main.js `initializeMobileNav()` sets mobile drawer top offset dynamically using `nav.getBoundingClientRect().bottom` to account for announcement bars and variable header heights — never hardcode `top` for `.nav-links.mobile-open` or `.nav-backdrop`
+- `initializeMobileNav()` sets mobile drawer top offset dynamically using `nav.getBoundingClientRect().bottom` — never hardcode `top` for `.nav-links.mobile-open` or `.nav-backdrop`
 - Drawer uses `z-index: 1001`; keep above `.nav-actions` (1001) and other bars
-- Two event listeners exist: legacy toggles `body.nav-active`, newer toggles `.mobile-open` classes. Both run on mobile; be cautious when modifying nav behavior.
+- Two event listeners exist: legacy toggles `body.nav-active`, newer toggles `.mobile-open` classes. Both run on mobile; be cautious.
 - `.nav-backdrop` is injected by JS and must follow same top offset
 
 ## Tool List Search
@@ -52,9 +52,10 @@ CSS uses `:root` custom properties (`--primary`, `--secondary`, `--bg-alt`, `--b
 
 ## Important Nuances
 
-- **Google Analytics** — `gtag.js` injected on hand-crafted tool pages (`merge-pdf.html`, `pdf-to-word.html`, `image-tools.html`, etc.) but NOT on `index.html` or generated `*-to-*.html` converters. Contradicts "100% private" claim; do not remove without project discussion.
+- **Google Analytics** — `gtag.js` injected on hand-crafted tool pages (`merge-pdf.html`, `pdf-to-word.html`, `image-tools.html`, etc.) but NOT on `index.html` or generated `*-to-*.html` converters. Do not remove without project discussion.
 - **PDF library split** — `jsPDF` used for image→PDF and DOCX→PDF (simple writes); `pdf-lib` used for merge-pdf, reorder-pdf, protect-pdf (complex manipulation). Check page `<script>` tags when editing.
 - **OCR** — uses Tesseract.js v5 from CDN; language packs download on demand.
-- **Media conversion** — FFmpeg.wasm loaded dynamically in `loadFFmpeg()` (main.js:887) with hardcoded CDN URLs. Different versions exist across hand-crafted pages; prefer the pattern in `main.js` (0.12.10 core 0.12.6).
+- **Media conversion** — FFmpeg.wasm loaded dynamically in `loadFFmpeg()` (main.js:914) with versions `ffmpeg@0.12.10` and `core@0.12.6`. Hand-crafted video tools follow the same pattern.
 - **Character corruption fix** — `fix_nav_and_charset.ps1` repairs Windows-1252 mojibake (`â€¢` → `•`, `â€”` → `—`) and enforces UTF-8 `<meta charset="UTF-8">`.
 - **Navbar order** — enforced by maintenance script: Home → Tools dropdown → Blog. Pages deviating will be corrected.
+- **Duplicate ID checker** — run `node check-ids.js` to detect duplicate `id=` attributes across HTML files.

@@ -1533,68 +1533,43 @@ function downloadFile(url, filename) {
   function initializeMobileNav() {
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-    const navActions = document.querySelector('.nav-actions');
-    
-    if (!menuToggle) return;
+    const nav = document.querySelector('nav');
 
     // Create backdrop
     const backdrop = document.createElement('div');
     backdrop.className = 'nav-backdrop';
     document.body.appendChild(backdrop);
 
-    menuToggle.setAttribute('aria-label', 'Toggle navigation menu');
-    menuToggle.setAttribute('aria-expanded', 'false');
+    let isOpen = false;
+
+    function openMenu() {
+      isOpen = true;
+      const navBottom = nav.getBoundingClientRect().bottom;
+      navLinks.style.top = navBottom + 'px';
+      navLinks.style.height = `calc(100vh - ${navBottom}px)`;
+      navLinks.classList.add('mobile-open');
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      menuToggle.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      navLinks.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
 
     menuToggle.addEventListener('click', function(e) {
       e.stopPropagation();
-      
-      // Dynamically calculate correct top offset
-      const nav = document.querySelector('nav');
-      if (!nav) return;
-      const navRect = nav.getBoundingClientRect();
-      const navBottom = navRect.bottom;   // for fixed drawer & backdrop
-      const navHeight = navRect.height;   // for absolute nav-actions
-      
-      navLinks.style.top = navBottom + 'px';
-      if (navActions) navActions.style.top = navHeight + 'px';
-      backdrop.style.top = navBottom + 'px';
-      
-      const isOpen = navLinks.classList.toggle('mobile-open');
-      if (navActions) navActions.classList.toggle('mobile-open');
-      backdrop.classList.toggle('active');
-      menuToggle.setAttribute('aria-expanded', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+      isOpen ? closeMenu() : openMenu();
     });
 
-    // Close menu when clicking backdrop
-    backdrop.addEventListener('click', function() {
-      navLinks.classList.remove('mobile-open');
-      if (navActions) navActions.classList.remove('mobile-open');
-      backdrop.classList.remove('active');
-      menuToggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    });
+    backdrop.addEventListener('click', closeMenu);
 
-    // Close menu when clicking a link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', function() {
-        navLinks.classList.remove('mobile-open');
-        if (navActions) navActions.classList.remove('mobile-open');
-        backdrop.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      });
-    });
-
-    // Close menu on ESC key
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && navLinks.classList.contains('mobile-open')) {
-        navLinks.classList.remove('mobile-open');
-        if (navActions) navActions.classList.remove('mobile-open');
-        backdrop.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      }
+      if (e.key === 'Escape' && isOpen) closeMenu();
     });
   }
 
