@@ -2049,12 +2049,44 @@ body, main, section {
         border-bottom: 1px solid var(--border);
     }
 
-    .nav-links.mobile-open a {
-        display: block;
-        padding: 16px 1.5rem;
-        width: 100%;
-        text-align: left;
-    }
+     .nav-links.mobile-open a {
+         display: block;
+         padding: 16px 20px;
+         width: 100%;
+         box-sizing: border-box;
+         text-align: left;
+     }
+
+     /* Mobile nav touch optimizations — remove tap highlight, make rows fully clickable */
+     .nav-links.mobile-open a,
+     .nav-links.mobile-open li,
+     .nav-links .nav-item,
+     .mobile-nav-item,
+     .tools-submenu a {
+         -webkit-tap-highlight-color: transparent;
+         user-select: none;
+         -webkit-touch-callout: none;
+     }
+
+     .nav-links.mobile-open a,
+     .nav-links .nav-item {
+         display: block;
+         width: 100%;
+         padding: 16px 20px;
+         box-sizing: border-box;
+     }
+
+     .nav-links.mobile-open li {
+         width: 100%;
+         list-style: none;
+         margin: 0;
+         padding: 0;
+     }
+
+     .nav-links.mobile-open a:active,
+     .nav-links .nav-item:active {
+         background: rgba(0, 0, 0, 0.05);
+     }
 
     /* Mobile backdrop */
      .nav-backdrop {
