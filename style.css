@@ -1990,11 +1990,12 @@ body, main, section {
    ============================================================================ */
 
 @media (max-width: 768px) {
-    nav {
-        padding: 0 1rem; /* Reduce padding on mobile */
-        height: 70px; /* Shorter on mobile */
-        justify-content: space-between;
-    }
+     nav {
+         padding: 0 1rem; /* Reduce padding on mobile */
+         height: 70px; /* Shorter on mobile */
+         justify-content: space-between;
+         z-index: 1100; /* keep nav above mobile drawer */
+     }
 
     .nav-left {
         gap: 20px; /* Reduce gap */
@@ -2007,18 +2008,23 @@ body, main, section {
         height: 32px; /* Smaller logo on mobile */
     }
 
-    /* Show hamburger menu */
-    .menu-toggle {
-        display: flex !important;
-        width: 44px; /* WCAG AA tap target */
-        height: 44px;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background: transparent;
-        border: none;
-        padding: 0;
-    }
+     /* Show hamburger menu */
+     .menu-toggle {
+         display: flex !important;
+         visibility: visible !important;
+         opacity: 1 !important;
+         z-index: 1100;
+         position: relative;
+         width: 44px; /* WCAG AA tap target */
+         height: 44px;
+         align-items: center;
+         justify-content: center;
+         cursor: pointer;
+         background: transparent;
+         border: none;
+         padding: 0;
+         color: #1a2e5a;
+     }
 
     .menu-toggle span {
         width: 24px;
