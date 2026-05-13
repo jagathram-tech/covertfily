@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Close menu when clicking outside
+  // Close mobile menu when clicking outside
   document.addEventListener("click", (e) => {
     if (document.body.classList.contains("nav-active")) {
       const navLinks = document.querySelector(".nav-links");
@@ -234,6 +234,17 @@ document.addEventListener("DOMContentLoaded", () => {
         !menuToggle.contains(e.target)
       ) {
         document.body.classList.remove("nav-active");
+      }
+    }
+  });
+
+  // Close desktop dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    const toolsDropdown = document.querySelector(".has-nested-menu");
+    if (toolsDropdown) {
+      const isClickInside = toolsDropdown.contains(e.target);
+      if (!isClickInside && toolsDropdown.classList.contains("has-open")) {
+        toolsDropdown.classList.remove("has-open");
       }
     }
   });
@@ -252,6 +263,22 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+
+  // Desktop dropdown hover class for click-outside detection
+  const toolsDropdown = document.querySelector(".has-nested-menu");
+  if (toolsDropdown) {
+    const dropdownContent = toolsDropdown.querySelector(".dropdown-content");
+    toolsDropdown.addEventListener("mouseenter", () => {
+      if (window.innerWidth >= 769) {
+        toolsDropdown.classList.add("has-open");
+      }
+    });
+    toolsDropdown.addEventListener("mouseleave", () => {
+      if (window.innerWidth >= 769) {
+        toolsDropdown.classList.remove("has-open");
+      }
+    });
+  }
 
   // Close menu on link click
   document

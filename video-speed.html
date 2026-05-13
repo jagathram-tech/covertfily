@@ -12,7 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+    <!-- FFmpeg.wasm -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
     <style>
         .speed-container {
             max-width: 1000px;
@@ -313,48 +315,75 @@
     </footer>
 
     <script>
-        const { FFmpeg, fetchFile } = FFmpeg;
-        let ffmpeg;
+        // FFmpeg singleton
+        let ffmpeg = null;
+        let ffmpegLoaded = false;
+
+        async function loadFFmpeg() {
+            if (ffmpegLoaded) return ffmpeg;
+            if (!window.FFmpeg) {
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+                });
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
+                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+                });
+            }
+            const { FFmpeg } = window.FFmpeg;
+            ffmpeg = new FFmpeg();
+            ffmpeg.on('log', ({ message }) => console.log(message));
+            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
+            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
+            await ffmpeg.load({ coreURL, wasmURL });
+            ffmpegLoaded = true;
+            return ffmpeg;
+        }
+
+        // DOM Elements
+        const videoInput = document.getElementById('videoInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const mainGrid = document.getElementById('mainGrid');
+        const keepAudio = document.getElementById('keepAudio');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const loadingText = document.getElementById('loadingText');
+
         let videoFile = null;
         let currentSpeed = 1;
 
-        async function initFFmpeg() {
-            ffmpeg = new FFmpeg.FFmpeg();
-            if (!ffmpeg.isLoaded()) {
-                await ffmpeg.load();
-            }
-        }
-
-        document.getElementById('videoInput').addEventListener('change', (e) => {
+        videoInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
             videoFile = file;
             const url = URL.createObjectURL(file);
-            document.getElementById('videoPlayer').src = url;
-            document.getElementById('mainGrid').style.display = 'grid';
+            videoPlayer.src = url;
+            mainGrid.style.display = 'grid';
         });
 
         function setSpeed(speed) {
             currentSpeed = speed;
             document.querySelectorAll('.speed-btn').forEach(btn => btn.classList.remove('active'));
             event.target.closest('.speed-btn').classList.add('active');
-            document.getElementById('videoPlayer').playbackRate = speed;
+            videoPlayer.playbackRate = speed;
             document.getElementById('speedDisplay').textContent = speed + 'x';
         }
 
         function playVideo() {
-            document.getElementById('videoPlayer').play();
+            videoPlayer.play();
         }
 
         function pauseVideo() {
-            document.getElementById('videoPlayer').pause();
+            videoPlayer.pause();
         }
 
         function resetVideo() {
-            const video = document.getElementById('videoPlayer');
-            video.currentTime = 0;
-            video.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.pause();
         }
 
         async function downloadSpeedVideo() {
@@ -364,50 +393,46 @@
             }
 
             try {
-                await initFFmpeg();
-                const progressContainer = document.getElementById('progressContainer');
+                const ff = await loadFFmpeg();
                 progressContainer.classList.add('active');
                 document.getElementById('downloadBtn').disabled = true;
 
-                await ffmpeg.writeFile('input', await fetchFile(videoFile));
+                const { fetchFile } = window.FFmpegUtil;
+                await ff.writeFile('input', await fetchFile(videoFile));
 
-                // FFmpeg setpts for changing speed
-                // For video: multiply the duration by (1/speed)
-                // For audio: use atempo filter
                 const speedFactor = 1 / currentSpeed;
-                const keepAudio = document.getElementById('keepAudio').checked;
+                const keep = keepAudio.checked;
 
                 let args = [
                     '-i', 'input',
                     '-filter:v', `setpts=${speedFactor}*PTS`,
                 ];
 
-                if (keepAudio) {
+                if (keep) {
                     args.push('-filter:a', `atempo=${currentSpeed}`);
                 }
 
                 args.push('-c:v', 'libx264', '-preset', 'medium', 'output.mp4');
 
-                ffmpeg.setProgress(({ ratio }) => {
-                    document.getElementById('progressFill').style.width = (ratio * 100) + '%';
+                ff.setProgress(({ ratio }) => {
+                    progressFill.style.width = (ratio * 100) + '%';
                 });
 
-                await ffmpeg.run(...args);
+                await ff.run(...args);
 
-                const data = await ffmpeg.readFile('output.mp4');
+                const data = await ff.readFile('output.mp4');
                 const blob = new Blob([data.buffer], { type: 'video/mp4' });
-
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = videoFile.name.replace(/\.[^/.]+$/, `_${currentSpeed}x.mp4`);
-                a.click();
-                URL.revokeObjectURL(url);
+
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = url;
+                dlBtn.download = videoFile.name.replace(/\.[^/.]+$/, `_${currentSpeed}x.mp4`);
 
                 progressContainer.classList.remove('active');
-                document.getElementById('downloadBtn').disabled = false;
-            } catch (err) {
-                alert('Error processing video: ' + err.message);
+                dlBtn.disabled = false;
+            } catch (error) {
+                console.error('FFmpeg Conversion Error:', error);
+                alert('Conversion failed: ' + error.message);
                 progressContainer.classList.remove('active');
                 document.getElementById('downloadBtn').disabled = false;
             }
@@ -421,8 +446,8 @@
             e.preventDefault();
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('video/')) {
-                document.getElementById('videoInput').files = e.dataTransfer.files;
-                document.getElementById('videoInput').dispatchEvent(new Event('change'));
+                videoInput.files = e.dataTransfer.files;
+                videoInput.dispatchEvent(new Event('change'));
             }
         });
 
@@ -439,6 +464,6 @@
                 });
             });
         });
-    </script>
+        </script>
 </body>
 </html>
