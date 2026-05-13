@@ -1533,7 +1533,8 @@ function downloadFile(url, filename) {
   function initializeMobileNav() {
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-    const nav = document.querySelector('nav');
+    const fullHeader = document.querySelector('header') || document.querySelector('nav');
+    if (!menuToggle || !fullHeader) return;
 
     // Create backdrop
     const backdrop = document.createElement('div');
@@ -1544,9 +1545,9 @@ function downloadFile(url, filename) {
 
     function openMenu() {
       isOpen = true;
-      const navBottom = nav.getBoundingClientRect().bottom;
-      navLinks.style.top = navBottom + 'px';
-      navLinks.style.height = `calc(100vh - ${navBottom}px)`;
+      const headerBottom = fullHeader.getBoundingClientRect().bottom;
+      navLinks.style.top = headerBottom + 'px';
+      navLinks.style.height = (window.innerHeight - headerBottom) + 'px';
       navLinks.classList.add('mobile-open');
       backdrop.classList.add('active');
       document.body.style.overflow = 'hidden';
