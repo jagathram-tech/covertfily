@@ -11,6 +11,7 @@
 - Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync — `formatMapping` includes `svg` (hand-managed), `BASIC_MAPPING` does not
 - Generator skips `png-to-jpg.html` (hand-crafted) and `pdf-to-docx.html` (hand-crafted as `pdf-to-word.html`) — do not auto-generate these
 - All other `*-to-*.html` converters are generated from the `png-to-jpg.html` template — edit the template for shared UI changes
+- **FFmpeg.wasm version mismatch:** hand-crafted video tools (video-compressor.html, video-speed.html) use v0.11.6; main.js loadFFmpeg() uses v0.12.10 core / v0.12.6. Prefer the main.js pattern unless legacy compatibility is required
 
 ## Main.js Global API (Do Not Rename)
 
@@ -35,7 +36,11 @@ When using PDF.js on any page, set `pdfjsLib.GlobalWorkerOptions.workerSrc` expl
 
 ## Mobile Navigation
 
-Main.js creates `.menu-toggle` hamburger if missing. Toggles `nav-active` class on `<body>`. Dropdowns in mobile require `.dropdown-toggle` click handler.
+- Hamburger is auto-created by main.js if missing
+- Main.js `initializeMobileNav()` sets mobile drawer top offset dynamically using `nav.getBoundingClientRect().bottom` to account for announcement bars and variable header heights — never hardcode `top` for `.nav-links.mobile-open` or `.nav-backdrop`
+- Drawer uses `z-index: 1001`; keep above `.nav-actions` (1001) and other bars
+- Two event listeners exist: legacy toggles `body.nav-active`, newer toggles `.mobile-open` classes. Both run on mobile; be cautious when modifying nav behavior.
+- `.nav-backdrop` is injected by JS and must follow same top offset
 
 ## Tool List Search
 

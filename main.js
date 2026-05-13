@@ -1547,6 +1547,18 @@ function downloadFile(url, filename) {
 
     menuToggle.addEventListener('click', function(e) {
       e.stopPropagation();
+      
+      // Dynamically calculate correct top offset
+      const nav = document.querySelector('nav');
+      if (!nav) return;
+      const navRect = nav.getBoundingClientRect();
+      const navBottom = navRect.bottom;   // for fixed drawer & backdrop
+      const navHeight = navRect.height;   // for absolute nav-actions
+      
+      navLinks.style.top = navBottom + 'px';
+      if (navActions) navActions.style.top = navHeight + 'px';
+      backdrop.style.top = navBottom + 'px';
+      
       const isOpen = navLinks.classList.toggle('mobile-open');
       if (navActions) navActions.classList.toggle('mobile-open');
       backdrop.classList.toggle('active');

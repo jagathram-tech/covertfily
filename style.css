@@ -1649,7 +1649,7 @@ footer {
     body.nav-active .nav-links {
         display: flex !important;
         position: fixed;
-        top: 70px;
+        top: 70px;  /* fallback — overridden dynamically by main.js */
         left: 0;
         right: 0;
         bottom: 0;
@@ -1659,7 +1659,7 @@ footer {
         flex-direction: column;
         padding: 40px 20px;
         gap: 12px;
-        z-index: 1000;
+        z-index: 1001;
         animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         overflow-y: auto;
     }
@@ -2033,11 +2033,11 @@ body, main, section {
     .nav-links.mobile-open {
         display: flex;
         position: fixed;
-        top: 70px;
+        top: 70px;  /* fallback — overridden dynamically by main.js */
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 999;
+        z-index: 1001;
         flex-direction: column;
         background: white;
         gap: 0;
@@ -2061,13 +2061,13 @@ body, main, section {
     /* Mobile backdrop */
     .nav-backdrop {
         position: fixed;
-        top: 70px;
+        top: 70px;  /* fallback — overridden dynamically by main.js */
         left: 0;
         right: 0;
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         display: none;
-        z-index: 998;
+        z-index: 1000;
     }
 
     .nav-backdrop.active {
@@ -2079,16 +2079,16 @@ body, main, section {
         display: none;
     }
 
-    .nav-actions.mobile-open {
-        display: flex;
-        position: absolute;
-        top: 70px;
-        right: 0;
-        padding: 1rem;
-        background: white;
-        border-bottom: 1px solid var(--border);
-        width: 100%;
-    }
+     .nav-actions.mobile-open {
+         display: flex;
+         position: absolute;
+         top: 70px;  /* fallback — overridden dynamically by main.js */
+         right: 0;
+         padding: 1rem;
+         background: white;
+         border-bottom: 1px solid var(--border);
+         width: 100%;
+     }
 
     .nav-actions .btn-primary {
         width: 100%;
@@ -2298,7 +2298,7 @@ body, main, section {
 
     .nav-links.mobile-open,
     .dropdown-content {
-        top: 64px !important;
+        top: 64px;  /* fallback — overridden dynamically by main.js */
     }
 
     .nav-backdrop.active {
