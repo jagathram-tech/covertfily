@@ -284,12 +284,53 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Mobile: collapsible tool-category headers ──────────────────────────────
-  document.querySelectorAll(".mobile-category-header").forEach((header) => {
-    header.addEventListener("click", () => {
-      if (window.innerWidth <= 768) {
-        header.closest(".mobile-category").classList.toggle("expanded");
+  // ── Mobile: collapsible tool-category headers (accordion) ─────────────────
+  const allCategoryHeaders = document.querySelectorAll(".mobile-category-header");
+
+  function closeAllCategories() {
+    document.querySelectorAll(".mobile-category.expanded").forEach((cat) => {
+      cat.classList.remove("expanded");
+      const icon = cat.querySelector(".mobile-category-header i");
+      if (icon) icon.style.transform = "";
+    });
+  }
+
+  allCategoryHeaders.forEach((header) => {
+    header.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      const category = header.closest(".mobile-category");
+      const icon = header.querySelector("i");
+      const isAlreadyOpen = category.classList.contains("expanded");
+
+      // Close all open categories first (accordion behaviour)
+      closeAllCategories();
+
+      // If this one was closed, open it now
+      if (!isAlreadyOpen) {
+        category.classList.add("expanded");
+        if (icon) icon.style.transform = "rotate(90deg)";
       }
+      // (if it was already open, closeAllCategories already closed it)
+    });
+  });
+
+  // When a tool link inside a category is tapped: close everything and navigate
+  document.querySelectorAll(".mobile-category-items a").forEach((link) => {
+    link.addEventListener("click", () => {
+      // Close all categories
+      closeAllCategories();
+      // Collapse the Tools dropdown
+      document.querySelectorAll(".dropdown.active").forEach((d) => {
+        d.classList.remove("active");
+        const t = d.querySelector(".dropdown-toggle");
+        if (t) t.setAttribute("aria-expanded", "false");
+      });
+      // Close the main mobile nav drawer
+      document.body.classList.remove("nav-active");
+      if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+      restoreScroll();
+      // Navigation proceeds normally (no preventDefault)
     });
   });
 

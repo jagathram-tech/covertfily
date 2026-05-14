@@ -68,9 +68,16 @@ Static HTML site with no build system, no package manager, no tests, no CI, no l
 
 ## Mobile Navigation
 
-- Hamburger auto-created by main.js if missing
-- `initializeMobileNav()` computes mobile drawer `top` from `nav.getBoundingClientRect().bottom` — do not hardcode
-- Drawer `z-index: 1001`; `.nav-backdrop` injected by JS
+- **Breakpoint:** `≤ 768px`. Desktop styles are untouched below `769px`.
+- **Navbar:** `position: fixed` on mobile — always visible at top. Height `60px` (`56px` at `≤ 480px`). Pure white background, no backdrop-filter.
+- **Hamburger button (`.menu-toggle`):** Auto-created by `main.js` as a `<button>` (with `aria-label` + `aria-expanded`) if absent in HTML. Three `<span>` bars morph into an X via CSS transforms on `body.nav-active`. Always 44×44px tap target.
+- **Drawer:** Toggled by adding/removing `body.nav-active` class. The drawer (`body.nav-active .nav-links`) is `position: fixed; top: 60px` and slides in via `@keyframes mobileDrawerIn`. No backdrop or overlay — page is visible behind the drawer.
+- **Scroll freeze:** When the drawer opens, `main.js` sets `body.style.overflow/position/width` to freeze the page. Restored (`''`) on every close path: X button tap, nav link tap, Escape key, and tool link tap.
+- **Tools dropdown accordion (`.dropdown`):** Clicking `.dropdown-toggle` on mobile toggles `.active` on the parent `.dropdown` `<li>`. Only one `.dropdown` open at a time (others closed first). CSS rule `.nav-links .dropdown.active .dropdown-content` shows the submenu inline (not `position: fixed`).
+- **Category accordion (`.mobile-category`):** Each category header (`.mobile-category-header`) toggles `.expanded` on its `.mobile-category` parent. Only one category open at a time. Chevron icon (`fa-chevron-right`) rotated 90° via `element.style.transform` when open. Managed by `closeAllCategories()` helper in `main.js`.
+- **Tool link tap (`.mobile-category-items a`):** Closes all categories + collapses Tools dropdown + closes main drawer + restores scroll. Navigation proceeds normally (no `preventDefault`).
+- **Desktop:** Tools dropdown shown via CSS `:hover` / `.has-open` class (mouseenter/mouseleave). Category accordions do not activate on desktop (`.mobile-categories` is CSS-hidden at `≥ 769px`).
+- **No `initializeMobileNav()`, no `.nav-backdrop`, no `body.nav-active { overflow: hidden }` in CSS** — scroll freeze is handled exclusively in JS.
 
 ## Tool List Search
 
