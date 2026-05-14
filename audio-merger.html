@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -230,7 +230,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li class="dropdown">
+                <li class="dropdown has-nested-menu">
                     <a href="#" class="dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <div class="tool-search-wrapper">
@@ -377,7 +377,7 @@
                         </div>
                         <div class="file-details">
                             <div class="file-name">${audio.name}</div>
-                            <div class="file-meta">${formatFileSize(audio.size)} • ${formatDuration(audio.duration)}</div>
+                            <div class="file-meta">${formatFileSize(audio.size)} â€¢ ${formatDuration(audio.duration)}</div>
                         </div>
                     </div>
                     <button class="file-remove" onclick="removeFile(${index})">
@@ -552,3 +552,4 @@
     </script>
 </body>
 </html>
+
