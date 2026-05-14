@@ -217,11 +217,29 @@ document.addEventListener("DOMContentLoaded", () => {
     (navLeft || nav).appendChild(menuToggle);
   }
 
+  // ── Scroll freeze/restore helpers ──────────────────────────────────────────
+  function freezeScroll() {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  }
+  function restoreScroll() {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+  }
+
+  // ── Mobile nav: hamburger toggle ──────────────────────────────────────────
   if (menuToggle) {
     menuToggle.addEventListener("click", (e) => {
       e.stopPropagation();
       const isOpen = document.body.classList.toggle("nav-active");
       menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      if (isOpen) {
+        freezeScroll();
+      } else {
+        restoreScroll();
+      }
     });
   }
 
@@ -230,7 +248,17 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", () => {
       document.body.classList.remove("nav-active");
       if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+      restoreScroll();
     });
+  });
+
+  // Close drawer on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.body.classList.contains("nav-active")) {
+      document.body.classList.remove("nav-active");
+      if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+      restoreScroll();
+    }
   });
 
   // ── Mobile: Tools dropdown accordion ──────────────────────────────────────
@@ -241,8 +269,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.innerWidth <= 768) {
         e.preventDefault();
         e.stopPropagation();
-        dropdown.classList.toggle("active");
-        const isExpanded = dropdown.classList.contains("active");
+        // Close all OTHER open dropdowns first (accordion behaviour)
+        document.querySelectorAll(".dropdown.active").forEach((other) => {
+          if (other !== dropdown) {
+            other.classList.remove("active");
+            const otherToggle = other.querySelector(".dropdown-toggle");
+            if (otherToggle) otherToggle.setAttribute("aria-expanded", "false");
+          }
+        });
+        // Now toggle this one
+        const isExpanded = dropdown.classList.toggle("active");
         toggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
       }
     });
