@@ -201,119 +201,127 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Tools dropdown tap on mobile
-  const dropdowns = document.querySelectorAll(".dropdown");
-  dropdowns.forEach((dropdown) => {
-    const toggle = dropdown.querySelector(".dropdown-toggle");
-    const searchInput = dropdown.querySelector(".nav-tool-search");
-    const toolLinks = dropdown.querySelectorAll(".tool-list a");
-    const categoryLabels = dropdown.querySelectorAll(".category-label");
-    
-    if (toggle) {
-      toggle.addEventListener("click", (e) => {
-        if (window.innerWidth <= 768) {
-          e.preventDefault();
-          e.stopPropagation();
-          dropdown.classList.toggle("active");
-          
-          if (dropdown.classList.contains("active") && searchInput) {
-            setTimeout(() => searchInput.focus(), 50);
-          } else {
-            resetDropdownSearch();
-          }
-        }
-      });
-    }
+  // Mobile navigation handled via persistent header; hamburger removed
+  }
 
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        if (window.innerWidth <= 768) {
-          const query = e.target.value.toLowerCase();
-          
-          let currentCategoryLabel = null;
-          let visibleLinksInCategory = 0;
-
-          const children = dropdown.querySelector('.tool-list').children;
-          for (let i = 0; i < children.length; i++) {
-            const child = children[i];
-            
-            if (child.classList.contains('category-label')) {
-              if (currentCategoryLabel) {
-                if (visibleLinksInCategory === 0) {
-                  currentCategoryLabel.classList.add("hidden");
-                } else {
-                  currentCategoryLabel.classList.remove("hidden");
-                }
-              }
-              currentCategoryLabel = child;
-              visibleLinksInCategory = 0;
-            } else if (child.tagName.toLowerCase() === 'A') {
-              if (child.textContent.toLowerCase().includes(query)) {
-                child.classList.remove("hidden");
-                visibleLinksInCategory++;
-              } else {
-                child.classList.add("hidden");
-              }
-            }
-          }
-          
-          if (currentCategoryLabel) {
-            if (visibleLinksInCategory === 0) {
-              currentCategoryLabel.classList.add("hidden");
-            } else {
-              currentCategoryLabel.classList.remove("hidden");
-            }
-          }
-        }
-      });
-    }
-
-    toolLinks.forEach(link => {
-      link.addEventListener("click", () => {
-        if (window.innerWidth <= 768) {
-          dropdown.classList.remove("active");
-          resetDropdownSearch();
-        }
-      });
-    });
-
-    function resetDropdownSearch() {
-      if (searchInput) searchInput.value = "";
-      toolLinks.forEach(link => link.classList.remove("hidden"));
-      categoryLabels.forEach(label => label.classList.remove("hidden"));
+  // Close mobile menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (document.body.classList.contains("nav-active")) {
+      const navLinks = document.querySelector(".nav-links");
+      const menuToggle = document.querySelector(".menu-toggle");
+      if (
+        navLinks &&
+        !navLinks.contains(e.target) &&
+        !menuToggle.contains(e.target)
+      ) {
+        document.body.classList.remove("nav-active");
+      }
     }
   });
 
-  // Close dropdown when clicking outside
+  // Close desktop dropdown when clicking outside
   document.addEventListener("click", (e) => {
     const toolsDropdown = document.querySelector(".has-nested-menu");
     if (toolsDropdown) {
       const isClickInside = toolsDropdown.contains(e.target);
-      
-      // Desktop
       if (!isClickInside && toolsDropdown.classList.contains("has-open")) {
         toolsDropdown.classList.remove("has-open");
       }
-      
-      // Mobile
-      if (window.innerWidth <= 768 && !isClickInside && toolsDropdown.classList.contains("active")) {
-        toolsDropdown.classList.remove("active");
-        
-        const searchInput = toolsDropdown.querySelector(".nav-tool-search");
-        if (searchInput) searchInput.value = "";
-        
-        const toolLinks = toolsDropdown.querySelectorAll(".tool-list a");
-        toolLinks.forEach(link => link.classList.remove("hidden"));
-        
-        const categoryLabels = toolsDropdown.querySelectorAll(".category-label");
-        categoryLabels.forEach(label => label.classList.remove("hidden"));
-      }
     }
+  });
+
+  // Handle Dropdowns in Mobile Menu
+  // Mobile Tools dropdown handling with search and auto‑close
+  const dropdowns = document.querySelectorAll('.dropdown');
+  dropdowns.forEach((dropdown) => {
+    const toggle = dropdown.querySelector('.dropdown-toggle');
+    if (!toggle) return;
+
+    // Open / close on tap
+    toggle.addEventListener('click', (e) => {
+      if (window.innerWidth > 768) return; // only mobile
+      e.preventDefault();
+      e.stopPropagation();
+      const isNowOpen = dropdown.classList.toggle('active');
+      const searchInput = dropdown.querySelector('.tool-search, .nav-tool-search');
+      if (isNowOpen) {
+        // focus after short delay to allow DOM update
+        setTimeout(() => {
+          if (searchInput) searchInput.focus();
+        }, 50);
+      } else {
+        clearDropdown(dropdown);
+      }
+    });
+
+    // Close when a tool link is clicked
+    dropdown.addEventListener('click', (e) => {
+      if (e.target.tagName.toLowerCase() === 'a') {
+        dropdown.classList.remove('active');
+        clearDropdown(dropdown);
+      }
+    });
+  });
+
+  // Click outside the dropdown to close it (mobile only)
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth > 768) return;
+    const openDropdown = document.querySelector('.dropdown.active');
+    if (!openDropdown) return;
+    if (!openDropdown.contains(e.target) && !e.target.closest('.dropdown-toggle')) {
+      openDropdown.classList.remove('active');
+      clearDropdown(openDropdown);
+    }
+  });
+
+  // Helper: reset search and visibility
+  function clearDropdown(dropdown) {
+    const searchInput = dropdown.querySelector('.tool-search, .nav-tool-search');
+    if (searchInput) searchInput.value = '';
+    // Show all links again
+    dropdown.querySelectorAll('a').forEach(link => {
+      link.style.display = '';
+    });
+    // Show category labels / headers
+    dropdown.querySelectorAll('.category-label, .mobile-category-header, .mobile-category').forEach(el => {
+      el.style.display = '';
+    });
+  }
+
+  // Real‑time filtering for the Tools dropdown search input
+  document.addEventListener('input', (e) => {
+    if (!e.target.classList.contains('tool-search') && !e.target.classList.contains('nav-tool-search')) return;
+    const query = e.target.value.toLowerCase();
+    const dropdown = e.target.closest('.dropdown');
+    if (!dropdown) return;
+    // Filter all tool links
+    const links = dropdown.querySelectorAll('a');
+    links.forEach(link => {
+      const matches = link.textContent.toLowerCase().includes(query);
+      link.style.display = matches ? '' : 'none';
+    });
+    // Hide category sections when empty
+    // Desktop categories – label followed by links
+    dropdown.querySelectorAll('.category-label').forEach(label => {
+      let sibling = label.nextElementSibling;
+      let anyVisible = false;
+      while (sibling && !sibling.classList.contains('category-label')) {
+        if (sibling.matches('a') && sibling.style.display !== 'none') anyVisible = true;
+        sibling = sibling.nextElementSibling;
+      }
+      label.style.display = anyVisible ? '' : 'none';
+    });
+    // Mobile categories – .mobile-category contains header + items
+    dropdown.querySelectorAll('.mobile-category').forEach(cat => {
+      const anyVisible = Array.from(cat.querySelectorAll('a')).some(a => a.style.display !== 'none');
+      cat.style.display = anyVisible ? '' : 'none';
+    });
   });
 
   // Desktop dropdown hover class for click-outside detection
   const toolsDropdown = document.querySelector(".has-nested-menu");
   if (toolsDropdown) {
+    const dropdownContent = toolsDropdown.querySelector(".dropdown-content");
     toolsDropdown.addEventListener("mouseenter", () => {
       if (window.innerWidth >= 769) {
         toolsDropdown.classList.add("has-open");
@@ -325,6 +333,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Close menu on link click
+  document
+    .querySelectorAll(".nav-links a:not(.dropdown-toggle)")
+    .forEach((link) => {
+      link.addEventListener("click", () => {
+        document.body.classList.remove("nav-active");
+      });
+    });
 
   if (typeof pdfjsLib !== "undefined") {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -1558,7 +1575,7 @@ function downloadFile(url, filename) {
   // 1. MOBILE NAVIGATION SETUP
   if (isMobile) {
     document.addEventListener('DOMContentLoaded', function() {
-      initializeMobileNav();
+
       setupFormatSwapper();
       setupTouchOptimizations();
       setupAccordions();
@@ -1567,64 +1584,6 @@ function downloadFile(url, filename) {
   }
 
   // Initialize mobile navigation drawer
-  function initializeMobileNav() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
-    const fullHeader = document.querySelector('header') || document.querySelector('nav');
-    if (!menuToggle || !fullHeader) return;
-
-    let isOpen = false;
-    let backdrop = document.getElementById('nav-backdrop');
-
-    if (!backdrop) {
-      backdrop = document.createElement('div');
-      backdrop.id = 'nav-backdrop';
-      backdrop.className = 'nav-backdrop';
-      document.body.appendChild(backdrop);
-    }
-
-    function openMenu() {
-      isOpen = true;
-      const headerBottom = fullHeader.getBoundingClientRect().bottom;
-      navLinks.style.top = headerBottom + 'px';
-      navLinks.style.height = (window.innerHeight - headerBottom) + 'px';
-      navLinks.classList.add('mobile-open');
-      backdrop.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      document.body.classList.add('nav-active');
-      menuToggle.setAttribute('aria-expanded', 'true');
-    }
-
-    function closeMenu() {
-      isOpen = false;
-      navLinks.classList.remove('mobile-open');
-      backdrop.classList.remove('active');
-      document.body.style.overflow = '';
-      document.body.classList.remove('nav-active');
-      menuToggle.setAttribute('aria-expanded', 'false');
-    }
-
-    menuToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      isOpen ? closeMenu() : openMenu();
-    });
-
-    backdrop.addEventListener('click', function() {
-      if (isOpen) closeMenu();
-    });
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && isOpen) closeMenu();
-    });
-
-    window.addEventListener('resize', function() {
-      if (isOpen) {
-        const headerBottom = fullHeader.getBoundingClientRect().bottom;
-        navLinks.style.top = headerBottom + 'px';
-        navLinks.style.height = (window.innerHeight - headerBottom) + 'px';
-      }
-    });
-  }
 
   // 2. FORMAT SWAPPER - Swap from/to on mobile
   function setupFormatSwapper() {

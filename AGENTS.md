@@ -13,9 +13,9 @@ Static HTML site with no build system, no package manager, no tests, no CI, no l
 
 ## Critical Sync Rules
 
-- Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync — `formatMapping` includes `svg` (hand-managed), `BASIC_MAPPING` does not
-- Generator skips `png→jpg` (template itself) and `pdf→docx` (hand-crafted as `pdf-to-word.html`) — do not auto-generate these
-- All other `*-to-*.html` converters are generated from the `png-to-jpg.html` template — edit the template for shared UI changes
+- Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync — `formatMapping` includes `svg` (hand-managed), `BASIC_MAPPING` does not. When adding formats, update both mappings and their label tables (`BASIC_LABELS` in generator.js, `FORMAT_LABELS` in main.js).
+- Generator skips `png→jpg` (template itself) and `pdf→docx` (hand-crafted as `pdf-to-word.html`) — do not auto-generate these.
+- All other `*-to-*.html` converters are generated from the `png-to-jpg.html` template — edit the template for shared UI changes.
 - **FFmpeg.wasm versions:** Both `main.js` and hand-crafted video tools use `ffmpeg@0.12.10` with `core@0.12.6`. Keep these aligned when updating.
 - **PDF.js worker version:** All pages use `pdf.js@3.11.174` — set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly on every page that imports PDF.js.
 
@@ -40,16 +40,17 @@ Static HTML site with no build system, no package manager, no tests, no CI, no l
 - **Font Awesome:** 6.4.0 (cdnjs)
 - **Google Fonts:** Inter wght@400–800
 - **SheetJS (xlsx):** 0.20.1
-- **PDF.js:** 3.11.174 (requires explicit worker config on every page)
-- **pdf-lib:** Used by merge/reorder/protect pages via unpkg
+- **PDF.js:** 3.11.174 (requires explicit `workerSrc` on every page)
+- **pdf-lib:** Used by merge/reorder/protect/watermark/compress via unpkg
 - **jspdf:** 2.5.1 (cdnjs)
 - **mammoth:** 1.6.0
 - **docx:** 7.1.1
-- **marked / turndown:** Markdown HTML conversion
+- **marked / turndown:** Markdown/HTML conversion
 - **jszip:** 3.10.1
-- **FFmpeg.wasm:** 0.12.10 (ffmpeg) + 0.12.6 (core), plus util@0.12.1 — hand-crafted video tools only
+- **FFmpeg.wasm:** ffmpeg@0.12.10 + core@0.12.6 + util@0.12.1 — hand-crafted video tools only
 - **SortableJS:** 1.15.0 (reorder-pdf, audio-merger)
 - **Tesseract.js:** v5 (ocr.html)
+- **UTIF:** 3.1.0 (loaded inline for EPS/TIFF handling)
 
 ## Hand-Crafted Tool Library Patterns
 
@@ -82,7 +83,30 @@ CSS uses `:root` custom properties (`--primary`, `--secondary`, `--bg-alt`, `--b
 
 ## Google Analytics Policy
 
-`gtag.js` (ID: `G-4Z6LTJ67E2`) is injected ONLY on hand-crafted tool pages. NEVER add to `index.html` or auto-generated converter pages. The current list of pages with GA: `merge-pdf.html`, `compress-pdf.html`, `reorder-pdf.html`, `protect-pdf.html`, `watermark.html`, `pdf-to-word.html`, `ocr.html`, `image-tools.html`, `video-trimmer.html`, `video-frame-extractor.html`, `audio-trimmer.html`, `video-compressor.html`, `video-speed.html`, `audio-merger.html`, `word-counter.html`, `lorem-ipsum.html`, `collage-maker.html`, `stereogram.html`, `steganography.html`, `brightness-map.html`, `image-to-json.html`, `pixel-art.html`, `metadata-stripper.html`, `exif-reader.html`, `image-to-base64.html`, `eyedropper.html`, `color-palette-extractor.html`, `qr-code-generator.html`, `barcode-generator.html`, `file-hash-checker.html`.
+Add `gtag.js` (ID: `G-4Z6LTJ67E2`) ONLY on hand-crafted tool pages with substantial custom logic. NEVER add to `index.html` or auto-generated `*-to-*.html` converter pages.
+
+Hand-crafted pages currently using GA:
+- merge-pdf.html
+- compress-pdf.html
+- watermark.html
+- pdf-to-word.html
+- ocr.html
+- image-tools.html
+- qr-code-generator.html
+- file-hash-checker.html
+- image-to-json.html
+- image-to-base64.html
+- exif-reader.html
+- metadata-stripper.html
+- color-palette-extractor.html
+- eyedropper.html
+- pixel-art.html
+- stereogram.html
+- steganography.html
+- brightness-map.html
+- collage-maker.html
+
+When creating a new hand-crafted tool, include the standard GA snippet in the `<head>` as seen in existing tools above.
 
 ## Testing & Validation
 
@@ -98,4 +122,5 @@ CSS uses `:root` custom properties (`--primary`, `--secondary`, `--bg-alt`, `--b
 - Mismatched FFmpeg.wasm versions → `loadFFmpeg()` fails to initialize.
 - Changing required DOM IDs without updating main.js and page scripts.
 - Adding GA to generated converters — violates privacy policy and will be reverted.
+- Copy-pasting HTML blocks with `id` attributes can create duplicate IDs across files — run `check-ids.js` to catch.
 - `fix_nav_and_charset.ps1` overwrites all `.html` files with UTF-8 encoding — run after manual edits, not before.
