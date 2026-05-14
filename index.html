@@ -143,19 +143,163 @@
     <div class="nav-left">
         <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
         <ul class="nav-links">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>Covertfily - 100% Private Browser-Based File Converter</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description" content="100% private, browser-based file conversion. Convert PDF, Images, Video, and Audio locally with MIT-licensed power. Secure merged PDF, compression, and watermarking tools.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Libraries for Client-Side Conversion -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.1.1/build/index.js"></script>
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://covertfily.com/#webapp",
+        "name": "Covertfily",
+        "url": "https://covertfily.com",
+        "description": "Covertfily is a privacy-first, browser-based file converter that allows users to convert images, PDFs, documents, audio, and video files directly in their browser without uploading them to any server. 100% client-side processing ensures your files never leave your device.",
+        "applicationCategory": "UtilitiesApplication",
+        "applicationSubCategory": "File Converter",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires a modern web browser with JavaScript enabled (Chrome, Firefox, Edge, Safari)",
+        "featureList": [
+          "100% client-side file processing",
+          "No file uploads to servers",
+          "Privacy-first architecture",
+          "Image conversion (JPG, PNG, WebP, BMP, GIF, AVIF, TIFF, HEIC)",
+          "PDF tools (merge, compress, convert)",
+          "OCR - Image to Text extraction",
+          "Document conversion (DOCX, TXT, MD, HTML)",
+          "Audio conversion (MP3, WAV, OGG, AAC, FLAC)",
+          "Video conversion (MP4, WebM, AVI, MOV, MKV)",
+          "Works offline after initial page load",
+          "Open source (MIT Licensed)"
+        ],
+        "screenshot": "https://covertfily.com/logo.png",
+        "softwareVersion": "1.0",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "description": "Free forever, no registration required, no file upload limits"
+        },
+        "isAccessibleForFree": true,
+        "license": "https://opensource.org/licenses/MIT",
+        "keywords": "file converter, pdf converter, image converter, privacy-first converter, no upload converter, browser-based converter, OCR tool, merge PDF, compress PDF",
+        "inLanguage": "en",
+        "provider": {
+          "@id": "https://covertfily.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "UseAction",
+          "target": "https://covertfily.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://covertfily.com/#organization",
+        "name": "Covertfily",
+        "url": "https://covertfily.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://covertfily.com/logo.png"
+        },
+        "description": "Open source privacy-first file conversion tools built entirely in the browser. No servers, no uploads, no tracking.",
+        "foundingDate": "2024",
+        "sameAs": [
+          "https://github.com/jagathram-tech/covertfily"
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://covertfily.com/#website",
+        "name": "Covertfily",
+        "url": "https://covertfily.com",
+        "description": "100% private, browser-based file conversion. Convert PDF, Images, Video, and Audio locally with zero uploads, zero tracking.",
+        "publisher": {
+          "@id": "https://covertfily.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://covertfily.com/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        },
+        "inLanguage": "en"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my files safe on Covertfily?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, absolutely. Covertfily processes your files entirely within your web browser. Your data is never uploaded to any server, making it 100% private."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need an internet connection to use Covertfily?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Only to load the website initially. Once the page is loaded, the conversion logic runs locally on your computer. You could disconnect from the internet and conversions would still work."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Covertfily really free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Covertfily is an open-source project licensed under MIT. It is free to use for everyone, forever, without any hidden costs or subscriptions."
+            }
+          }
+        ]
+      }
+    ]
+    </script>
+</head>
+<body>
+                    <nav>
+    <div class="nav-left">
+        <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+        <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li class="dropdown has-nested-menu">
                 <button class="dropdown-toggle" type="button" id="tools-toggle" aria-label="Tools menu" aria-expanded="false">
                     Tools <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="dropdown-content">
-                    <div class="tool-search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" class="tool-search" placeholder="Search tools...">
+                    <div class="nav-search-wrapper">
+                        <input type="text" class="nav-tool-search" placeholder="Search tools..." autocomplete="off" />
                     </div>
                     
-                    <!-- Desktop: mega-menu grid with categories -->
-                    <div class="tool-list desktop-only">
+                    <!-- Unified tool list for desktop and mobile -->
+                    <div class="tool-list">
                         <div class="category-label">PDF Tools</div>
                         <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
                         <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
@@ -201,93 +345,9 @@
                         <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
                     </div>
 
-                    <!-- Mobile: grouped tools with collapsible categories -->
-                    <div class="mobile-categories">
-                        <div class="mobile-category">
-                            <div class="mobile-category-header" data-category="pdf">
-                                PDF Tools <i class="fas fa-chevron-right"></i>
-                            </div>
-                            <div class="mobile-category-items">
-                                <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
-                                <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
-                                <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
-                                <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
-                                <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
-                            </div>
-                        </div>
 
-                        <div class="mobile-category">
-                            <div class="mobile-category-header" data-category="image">
-                                Image Tools <i class="fas fa-chevron-right"></i>
-                            </div>
-                            <div class="mobile-category-items">
-                                <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
-                                <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
-                                <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
-                                <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
-                                <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
-                                <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
-                                <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
-                                <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
-                                <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
-                                <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
-                                <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
-                                <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
-                                <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
-                                <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
-                                <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
-                                <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-category">
-                            <div class="mobile-category-header" data-category="video">
-                                Video Tools <i class="fas fa-chevron-right"></i>
-                            </div>
-                            <div class="mobile-category-items">
-                                <a href="video-trimmer.html"><i class="fas fa-scissors"></i> Video Trimmer</a>
-                                <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
-                                <a href="video-compressor.html"><i class="fas fa-compress"></i> Video Compressor</a>
-                                <a href="video-speed.html"><i class="fas fa-tachometer-alt"></i> Video Speed Changer</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-category">
-                            <div class="mobile-category-header" data-category="audio">
-                                Audio Tools <i class="fas fa-chevron-right"></i>
-                            </div>
-                            <div class="mobile-category-items">
-                                <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
-                                <a href="audio-merger.html"><i class="fas fa-object-group"></i> Audio Merger</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-category">
-                            <div class="mobile-category-header" data-category="generate">
-                                Generate <i class="fas fa-chevron-right"></i>
-                            </div>
-                            <div class="mobile-category-items">
-                                <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
-                                <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
-                                <a href="lorem-ipsum.html"><i class="fas fa-align-left"></i> Lorem Ipsum Generator</a>
-                                <a href="word-counter.html"><i class="fas fa-spell-check"></i> Word & Character Counter</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-category">
-                            <div class="mobile-category-header" data-category="utilities">
-                                Utilities <i class="fas fa-chevron-right"></i>
-                            </div>
-                            <div class="mobile-category-items">
-                                <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </li>
-        <li><a href="blog.html">Blog</a></li>
-            </ul>
-    </div>
 </nav>
 
     <main>

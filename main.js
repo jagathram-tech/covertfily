@@ -201,29 +201,113 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Close dropdown when clicking outside
-  document.addEventListener("click", (e) => {
-    const toolsDropdown = document.querySelector(".has-nested-menu");
-    if (toolsDropdown) {
-      const isClickInside = toolsDropdown.contains(e.target);
-      if (!isClickInside && toolsDropdown.classList.contains("has-open")) {
-        toolsDropdown.classList.remove("has-open");
-      }
-    }
-  });
-
   // Handle Tools dropdown tap on mobile
   const dropdowns = document.querySelectorAll(".dropdown");
   dropdowns.forEach((dropdown) => {
     const toggle = dropdown.querySelector(".dropdown-toggle");
+    const searchInput = dropdown.querySelector(".nav-tool-search");
+    const toolLinks = dropdown.querySelectorAll(".tool-list a");
+    const categoryLabels = dropdown.querySelectorAll(".category-label");
+    
     if (toggle) {
       toggle.addEventListener("click", (e) => {
         if (window.innerWidth <= 768) {
           e.preventDefault();
           e.stopPropagation();
           dropdown.classList.toggle("active");
+          
+          if (dropdown.classList.contains("active") && searchInput) {
+            setTimeout(() => searchInput.focus(), 50);
+          } else {
+            resetDropdownSearch();
+          }
         }
       });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        if (window.innerWidth <= 768) {
+          const query = e.target.value.toLowerCase();
+          
+          let currentCategoryLabel = null;
+          let visibleLinksInCategory = 0;
+
+          const children = dropdown.querySelector('.tool-list').children;
+          for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            
+            if (child.classList.contains('category-label')) {
+              if (currentCategoryLabel) {
+                if (visibleLinksInCategory === 0) {
+                  currentCategoryLabel.classList.add("hidden");
+                } else {
+                  currentCategoryLabel.classList.remove("hidden");
+                }
+              }
+              currentCategoryLabel = child;
+              visibleLinksInCategory = 0;
+            } else if (child.tagName.toLowerCase() === 'A') {
+              if (child.textContent.toLowerCase().includes(query)) {
+                child.classList.remove("hidden");
+                visibleLinksInCategory++;
+              } else {
+                child.classList.add("hidden");
+              }
+            }
+          }
+          
+          if (currentCategoryLabel) {
+            if (visibleLinksInCategory === 0) {
+              currentCategoryLabel.classList.add("hidden");
+            } else {
+              currentCategoryLabel.classList.remove("hidden");
+            }
+          }
+        }
+      });
+    }
+
+    toolLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 768) {
+          dropdown.classList.remove("active");
+          resetDropdownSearch();
+        }
+      });
+    });
+
+    function resetDropdownSearch() {
+      if (searchInput) searchInput.value = "";
+      toolLinks.forEach(link => link.classList.remove("hidden"));
+      categoryLabels.forEach(label => label.classList.remove("hidden"));
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    const toolsDropdown = document.querySelector(".has-nested-menu");
+    if (toolsDropdown) {
+      const isClickInside = toolsDropdown.contains(e.target);
+      
+      // Desktop
+      if (!isClickInside && toolsDropdown.classList.contains("has-open")) {
+        toolsDropdown.classList.remove("has-open");
+      }
+      
+      // Mobile
+      if (window.innerWidth <= 768 && !isClickInside && toolsDropdown.classList.contains("active")) {
+        toolsDropdown.classList.remove("active");
+        
+        const searchInput = toolsDropdown.querySelector(".nav-tool-search");
+        if (searchInput) searchInput.value = "";
+        
+        const toolLinks = toolsDropdown.querySelectorAll(".tool-list a");
+        toolLinks.forEach(link => link.classList.remove("hidden"));
+        
+        const categoryLabels = toolsDropdown.querySelectorAll(".category-label");
+        categoryLabels.forEach(label => label.classList.remove("hidden"));
+      }
     }
   });
 
