@@ -201,156 +201,93 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ── Mobile nav: hamburger toggle ──────────────────────────────────────────
+  // Mobile Menu Handling
   const nav = document.querySelector("nav");
   let menuToggle = document.querySelector(".menu-toggle");
 
-  // Auto-create hamburger if missing (for pages without it in HTML)
   if (nav && !menuToggle) {
-    menuToggle = document.createElement("button");
+    menuToggle = document.createElement("div");
     menuToggle.className = "menu-toggle";
-    menuToggle.setAttribute("aria-label", "Toggle navigation menu");
-    menuToggle.setAttribute("aria-expanded", "false");
     menuToggle.innerHTML = "<span></span><span></span><span></span>";
-    // Insert at end of .nav-left, or fallback to nav itself
-    const navLeft = nav.querySelector(".nav-left");
-    (navLeft || nav).appendChild(menuToggle);
+    nav.appendChild(menuToggle);
   }
 
-  // ── Scroll freeze/restore helpers ──────────────────────────────────────────
-  function freezeScroll() {
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-  }
-  function restoreScroll() {
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.width = '';
-  }
-
-  // ── Mobile nav: hamburger toggle ──────────────────────────────────────────
   if (menuToggle) {
     menuToggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      const isOpen = document.body.classList.toggle("nav-active");
-      menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      if (isOpen) {
-        freezeScroll();
-      } else {
-        restoreScroll();
-      }
+      document.body.classList.toggle("nav-active");
+      console.log(
+        "Menu toggled, nav-active:",
+        document.body.classList.contains("nav-active"),
+      );
     });
   }
 
-  // Close drawer when a nav link (non-toggle) is tapped
-  document.querySelectorAll(".nav-links a:not(.dropdown-toggle)").forEach((link) => {
-    link.addEventListener("click", () => {
-      document.body.classList.remove("nav-active");
-      if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
-      restoreScroll();
-    });
-  });
-
-  // Close drawer on Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && document.body.classList.contains("nav-active")) {
-      document.body.classList.remove("nav-active");
-      if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
-      restoreScroll();
+  // Close mobile menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (document.body.classList.contains("nav-active")) {
+      const navLinks = document.querySelector(".nav-links");
+      const menuToggle = document.querySelector(".menu-toggle");
+      if (
+        navLinks &&
+        !navLinks.contains(e.target) &&
+        !menuToggle.contains(e.target)
+      ) {
+        document.body.classList.remove("nav-active");
+      }
     }
   });
-
-  // ── Mobile: Tools dropdown accordion ──────────────────────────────────────
-  document.querySelectorAll(".dropdown").forEach((dropdown) => {
-    const toggle = dropdown.querySelector(".dropdown-toggle");
-    if (!toggle) return;
-    toggle.addEventListener("click", (e) => {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        e.stopPropagation();
-        // Close all OTHER open dropdowns first (accordion behaviour)
-        document.querySelectorAll(".dropdown.active").forEach((other) => {
-          if (other !== dropdown) {
-            other.classList.remove("active");
-            const otherToggle = other.querySelector(".dropdown-toggle");
-            if (otherToggle) otherToggle.setAttribute("aria-expanded", "false");
-          }
-        });
-        // Now toggle this one
-        const isExpanded = dropdown.classList.toggle("active");
-        toggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
-      }
-    });
-  });
-
-  // ── Mobile: collapsible tool-category headers (accordion) ─────────────────
-  const allCategoryHeaders = document.querySelectorAll(".mobile-category-header");
-
-  function closeAllCategories() {
-    document.querySelectorAll(".mobile-category.expanded").forEach((cat) => {
-      cat.classList.remove("expanded");
-      const icon = cat.querySelector(".mobile-category-header i");
-      if (icon) icon.style.transform = "";
-    });
-  }
-
-  allCategoryHeaders.forEach((header) => {
-    header.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      const category = header.closest(".mobile-category");
-      const icon = header.querySelector("i");
-      const isAlreadyOpen = category.classList.contains("expanded");
-
-      // Close all open categories first (accordion behaviour)
-      closeAllCategories();
-
-      // If this one was closed, open it now
-      if (!isAlreadyOpen) {
-        category.classList.add("expanded");
-        if (icon) icon.style.transform = "rotate(90deg)";
-      }
-      // (if it was already open, closeAllCategories already closed it)
-    });
-  });
-
-  // When a tool link inside a category is tapped: close everything and navigate
-  document.querySelectorAll(".mobile-category-items a").forEach((link) => {
-    link.addEventListener("click", () => {
-      // Close all categories
-      closeAllCategories();
-      // Collapse the Tools dropdown
-      document.querySelectorAll(".dropdown.active").forEach((d) => {
-        d.classList.remove("active");
-        const t = d.querySelector(".dropdown-toggle");
-        if (t) t.setAttribute("aria-expanded", "false");
-      });
-      // Close the main mobile nav drawer
-      document.body.classList.remove("nav-active");
-      if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
-      restoreScroll();
-      // Navigation proceeds normally (no preventDefault)
-    });
-  });
-
-  // ── Desktop: Tools dropdown via hover ─────────────────────────────────────
-  const toolsDropdown = document.querySelector(".has-nested-menu");
-  if (toolsDropdown) {
-    toolsDropdown.addEventListener("mouseenter", () => {
-      if (window.innerWidth >= 769) toolsDropdown.classList.add("has-open");
-    });
-    toolsDropdown.addEventListener("mouseleave", () => {
-      if (window.innerWidth >= 769) toolsDropdown.classList.remove("has-open");
-    });
-  }
 
   // Close desktop dropdown when clicking outside
   document.addEventListener("click", (e) => {
-    if (toolsDropdown && !toolsDropdown.contains(e.target)) {
-      toolsDropdown.classList.remove("has-open");
+    const toolsDropdown = document.querySelector(".has-nested-menu");
+    if (toolsDropdown) {
+      const isClickInside = toolsDropdown.contains(e.target);
+      if (!isClickInside && toolsDropdown.classList.contains("has-open")) {
+        toolsDropdown.classList.remove("has-open");
+      }
     }
   });
+
+  // Handle Dropdowns in Mobile Menu
+  const dropdowns = document.querySelectorAll(".dropdown");
+  dropdowns.forEach((dropdown) => {
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropdown.classList.toggle("active");
+        }
+      });
+    }
+  });
+
+  // Desktop dropdown hover class for click-outside detection
+  const toolsDropdown = document.querySelector(".has-nested-menu");
+  if (toolsDropdown) {
+    const dropdownContent = toolsDropdown.querySelector(".dropdown-content");
+    toolsDropdown.addEventListener("mouseenter", () => {
+      if (window.innerWidth >= 769) {
+        toolsDropdown.classList.add("has-open");
+      }
+    });
+    toolsDropdown.addEventListener("mouseleave", () => {
+      if (window.innerWidth >= 769) {
+        toolsDropdown.classList.remove("has-open");
+      }
+    });
+  }
+
+  // Close menu on link click
+  document
+    .querySelectorAll(".nav-links a:not(.dropdown-toggle)")
+    .forEach((link) => {
+      link.addEventListener("click", () => {
+        document.body.classList.remove("nav-active");
+      });
+    });
 
   if (typeof pdfjsLib !== "undefined") {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
