@@ -1694,14 +1694,14 @@ function downloadFile(url, filename) {
 
     // Initialize state
     toolsToggle.setAttribute('aria-expanded', 'false');
-    dropdown.classList.remove('has-open');
+    dropdown.classList.remove('open');
 
     // Handle Tools button click (expand/collapse entire dropdown)
     toolsToggle.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       
-      const isOpen = dropdown.classList.toggle('has-open');
+      const isOpen = dropdown.classList.toggle('open');
       toolsToggle.setAttribute('aria-expanded', isOpen);
       
       // Close other categories if opening
@@ -1767,8 +1767,8 @@ function downloadFile(url, filename) {
     const dropdown = document.querySelector('.has-nested-menu');
     if (!dropdown) return;
     const isInside = dropdown.contains(e.target);
-    if (!isInside && dropdown.classList.contains('has-open')) {
-      dropdown.classList.remove('has-open');
+    if (!isInside && dropdown.classList.contains('open')) {
+      dropdown.classList.remove('open');
       const toggle = document.getElementById('tools-toggle');
       if (toggle) toggle.setAttribute('aria-expanded', 'false');
     }
