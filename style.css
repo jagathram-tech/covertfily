@@ -3573,3 +3573,56 @@ a:visited {
         grid-template-columns: repeat(4, 1fr);
     }
 }
+
+/* ===== NAV FIX: dropdown-toggle button visibility ===== */
+.dropdown-toggle {
+    font-weight: 500;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    transition: color 0.2s, background 0.2s;
+}
+
+.dropdown-toggle:hover {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+/* nav-links li must be flex so dropdown-align works */
+.nav-links > li {
+    display: flex;
+    align-items: center;
+}
+
+/* Desktop: click on button toggles dropdown */
+.has-nested-menu .dropdown-toggle {
+    cursor: pointer;
+}
+
+.has-nested-menu.has-open .dropdown-content {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* tool-list grid layout on desktop */
+.tool-list.desktop-only {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 8px;
+}
+
+.tool-list.desktop-only .category-label {
+    grid-column: 1 / -1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 12px 4px;
+}

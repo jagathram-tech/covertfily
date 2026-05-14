@@ -1757,11 +1757,21 @@ function downloadFile(url, filename) {
 
   }
 
-  // Initialize mobile tools dropdown
-  if (isMobile) {
-    document.addEventListener('DOMContentLoaded', function() {
-      setupMobileToolsDropdown();
-    });
-  }
+  // Initialize tools dropdown (all screen sizes)
+  document.addEventListener('DOMContentLoaded', function() {
+    setupMobileToolsDropdown();
+  });
+
+  // Click-outside closes the dropdown
+  document.addEventListener('click', function(e) {
+    const dropdown = document.querySelector('.has-nested-menu');
+    if (!dropdown) return;
+    const isInside = dropdown.contains(e.target);
+    if (!isInside && dropdown.classList.contains('has-open')) {
+      dropdown.classList.remove('has-open');
+      const toggle = document.getElementById('tools-toggle');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
 
 })();
