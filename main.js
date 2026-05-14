@@ -201,44 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Mobile Menu Handling
-  const nav = document.querySelector("nav");
-  let menuToggle = document.querySelector(".menu-toggle");
-
-  if (nav && !menuToggle) {
-    menuToggle = document.createElement("div");
-    menuToggle.className = "menu-toggle";
-    menuToggle.innerHTML = "<span></span><span></span><span></span>";
-    nav.appendChild(menuToggle);
-  }
-
-  if (menuToggle) {
-    menuToggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      document.body.classList.toggle("nav-active");
-      console.log(
-        "Menu toggled, nav-active:",
-        document.body.classList.contains("nav-active"),
-      );
-    });
-  }
-
-  // Close mobile menu when clicking outside
-  document.addEventListener("click", (e) => {
-    if (document.body.classList.contains("nav-active")) {
-      const navLinks = document.querySelector(".nav-links");
-      const menuToggle = document.querySelector(".menu-toggle");
-      if (
-        navLinks &&
-        !navLinks.contains(e.target) &&
-        !menuToggle.contains(e.target)
-      ) {
-        document.body.classList.remove("nav-active");
-      }
-    }
-  });
-
-  // Close desktop dropdown when clicking outside
+  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     const toolsDropdown = document.querySelector(".has-nested-menu");
     if (toolsDropdown) {
@@ -249,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Dropdowns in Mobile Menu
+  // Handle Tools dropdown tap on mobile
   const dropdowns = document.querySelectorAll(".dropdown");
   dropdowns.forEach((dropdown) => {
     const toggle = dropdown.querySelector(".dropdown-toggle");
@@ -267,7 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Desktop dropdown hover class for click-outside detection
   const toolsDropdown = document.querySelector(".has-nested-menu");
   if (toolsDropdown) {
-    const dropdownContent = toolsDropdown.querySelector(".dropdown-content");
     toolsDropdown.addEventListener("mouseenter", () => {
       if (window.innerWidth >= 769) {
         toolsDropdown.classList.add("has-open");
@@ -279,15 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-  // Close menu on link click
-  document
-    .querySelectorAll(".nav-links a:not(.dropdown-toggle)")
-    .forEach((link) => {
-      link.addEventListener("click", () => {
-        document.body.classList.remove("nav-active");
-      });
-    });
 
   if (typeof pdfjsLib !== "undefined") {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
