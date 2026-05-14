@@ -1685,92 +1685,48 @@ function downloadFile(url, filename) {
      }
    }, 200));
 
-  // 10. MOBILE TOOLS DROPDOWN - Collapsible categories
-  function setupMobileToolsDropdown() {
+  // 10. TOOLS DROPDOWN - Toggle open/closed
+  function setupToolsDropdown() {
     const toolsToggle = document.getElementById('tools-toggle');
-    const dropdown = document.querySelector('.has-nested-menu');
-    
+    const dropdown = document.getElementById('tools-dropdown');
+
     if (!toolsToggle || !dropdown) return;
 
-    // Initialize state
     toolsToggle.setAttribute('aria-expanded', 'false');
     dropdown.classList.remove('open');
 
-    // Handle Tools button click (expand/collapse entire dropdown)
     toolsToggle.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      
+
       const isOpen = dropdown.classList.toggle('open');
       toolsToggle.setAttribute('aria-expanded', isOpen);
-      
-      // Close other categories if opening
-      if (isOpen) {
-        document.querySelectorAll('.mobile-category.expanded').forEach(cat => {
-          if (cat !== dropdown) cat.classList.remove('expanded');
-        });
-      }
     });
 
-    // Mobile category accordion
-    document.querySelectorAll('.mobile-category-header').forEach(header => {
-      header.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const category = this.parentElement;
-        const isExpanded = category.classList.toggle('expanded');
-        
-        // Update ARIA
-        this.setAttribute('aria-expanded', isExpanded);
-        
-        // Close siblings (accordion behavior)
-        if (isExpanded) {
-          document.querySelectorAll('.mobile-category.expanded').forEach(sibling => {
-            if (sibling !== category) {
-              sibling.classList.remove('expanded');
-              sibling.querySelector('.mobile-category-header').setAttribute('aria-expanded', 'false');
-            }
-          });
-        }
-      });
-    });
-
-    // Tool link click - close drawer and navigate
-    document.querySelectorAll('.mobile-category-items a').forEach(link => {
+    // Tool link click - close dropdown
+    dropdown.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function() {
-        const navLinks = document.querySelector('.nav-links');
-        const menuToggle = document.querySelector('.menu-toggle');
-        const backdrop = document.getElementById('nav-backdrop');
-        
-        // Close drawer
-        if (navLinks) navLinks.classList.remove('mobile-open');
-        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
-        if (backdrop) backdrop.classList.remove('active');
-        
-        document.body.style.overflow = '';
-        document.body.classList.remove('nav-active');
-        
-        // Navigate to the link (default behavior - no preventDefault)
+        dropdown.classList.remove('open');
+        toolsToggle.setAttribute('aria-expanded', 'false');
       });
     });
-
   }
 
   // Initialize tools dropdown (all screen sizes)
   document.addEventListener('DOMContentLoaded', function() {
-    setupMobileToolsDropdown();
+    setupToolsDropdown();
   });
 
   // Click-outside closes the dropdown
   document.addEventListener('click', function(e) {
-    const dropdown = document.querySelector('.has-nested-menu');
+    const dropdown = document.getElementById('tools-dropdown');
+    const toolsToggle = document.getElementById('tools-toggle');
     if (!dropdown) return;
-    const isInside = dropdown.contains(e.target);
-    if (!isInside && dropdown.classList.contains('open')) {
+    const isInsideDropdown = dropdown.contains(e.target);
+    const isInsideToggle = toolsToggle && toolsToggle.contains(e.target);
+    if (!isInsideDropdown && !isInsideToggle && dropdown.classList.contains('open')) {
       dropdown.classList.remove('open');
-      const toggle = document.getElementById('tools-toggle');
-      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      if (toolsToggle) toolsToggle.setAttribute('aria-expanded', 'false');
     }
   });
 

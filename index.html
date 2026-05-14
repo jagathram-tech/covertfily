@@ -139,70 +139,77 @@
     </script>
 </head>
 <body>
-                    <nav>
-    <div class="nav-left">
-        <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
-<ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li class="dropdown has-nested-menu">
-                <button class="dropdown-toggle" type="button" id="tools-toggle" aria-label="Tools menu" aria-expanded="false">
-                    Tools <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <div class="tool-search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" class="tool-search" placeholder="Search tools...">
-                    </div>
-                    <div class="tool-list">
-                        <div class="category-label">PDF Tools</div>
-                        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
-                        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
-                        <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
-                        <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
-                        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
-
-                        <div class="category-label">Image Tools</div>
-                        <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
-                        <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
-                        <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
-                        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
-                        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
-                        <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
-                        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
-                        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
-                        <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
-                        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
-                        <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
-                        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
-                        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
-                        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
-                        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
-                        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
-
-                        <div class="category-label">Video Tools</div>
-                        <a href="video-trimmer.html"><i class="fas fa-scissors"></i> Video Trimmer</a>
-                        <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
-                        <a href="video-compressor.html"><i class="fas fa-compress"></i> Video Compressor</a>
-                        <a href="video-speed.html"><i class="fas fa-tachometer-alt"></i> Video Speed Changer</a>
-
-                        <div class="category-label">Audio Tools</div>
-                        <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
-                        <a href="audio-merger.html"><i class="fas fa-object-group"></i> Audio Merger</a>
-
-                        <div class="category-label">Generate</div>
-                        <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
-                        <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
-                        <a href="lorem-ipsum.html"><i class="fas fa-align-left"></i> Lorem Ipsum Generator</a>
-                        <a href="word-counter.html"><i class="fas fa-spell-check"></i> Word & Character Counter</a>
-
-                        <div class="category-label">Utilities</div>
-                        <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
-                    </div>
-                </div>
-            </li>
-        </ul>
+<nav>
+    <div class="nav-inner">
+        <div class="nav-left">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown has-nested-menu">
+                    <button class="dropdown-toggle" type="button" id="tools-toggle" aria-label="Tools menu" aria-expanded="false">
+                        Tools <i class="fas fa-chevron-down"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-actions">
+            <a href="https://github.com/jagathram-tech/covertfily" target="_blank" class="btn-primary">Open Source</a>
+        </div>
     </div>
 </nav>
+
+<!-- Dropdown outside nav — pushes page content down -->
+<div class="dropdown-content" id="tools-dropdown">
+    <div class="tool-search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" class="tool-search" placeholder="Search tools...">
+    </div>
+    <div class="tool-list">
+        <div class="category-label">PDF Tools</div>
+        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+        <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
+        <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
+        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+
+        <div class="category-label">Image Tools</div>
+        <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+        <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+        <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+        <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
+        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+        <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
+        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+        <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+
+        <div class="category-label">Video Tools</div>
+        <a href="video-trimmer.html"><i class="fas fa-scissors"></i> Video Trimmer</a>
+        <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
+        <a href="video-compressor.html"><i class="fas fa-compress"></i> Video Compressor</a>
+        <a href="video-speed.html"><i class="fas fa-tachometer-alt"></i> Video Speed Changer</a>
+
+        <div class="category-label">Audio Tools</div>
+        <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
+        <a href="audio-merger.html"><i class="fas fa-object-group"></i> Audio Merger</a>
+
+        <div class="category-label">Generate</div>
+        <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+        <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+        <a href="lorem-ipsum.html"><i class="fas fa-align-left"></i> Lorem Ipsum Generator</a>
+        <a href="word-counter.html"><i class="fas fa-spell-check"></i> Word & Character Counter</a>
+
+        <div class="category-label">Utilities</div>
+        <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
+    </div>
+</div>
 
     <main>
         <!-- Hero Section -->
