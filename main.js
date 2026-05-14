@@ -201,93 +201,79 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Mobile Menu Handling
+  // ── Mobile nav: hamburger toggle ──────────────────────────────────────────
   const nav = document.querySelector("nav");
   let menuToggle = document.querySelector(".menu-toggle");
 
+  // Auto-create hamburger if missing (for pages without it in HTML)
   if (nav && !menuToggle) {
-    menuToggle = document.createElement("div");
+    menuToggle = document.createElement("button");
     menuToggle.className = "menu-toggle";
+    menuToggle.setAttribute("aria-label", "Toggle navigation menu");
+    menuToggle.setAttribute("aria-expanded", "false");
     menuToggle.innerHTML = "<span></span><span></span><span></span>";
-    nav.appendChild(menuToggle);
+    // Insert at end of .nav-left, or fallback to nav itself
+    const navLeft = nav.querySelector(".nav-left");
+    (navLeft || nav).appendChild(menuToggle);
   }
 
   if (menuToggle) {
     menuToggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      document.body.classList.toggle("nav-active");
-      console.log(
-        "Menu toggled, nav-active:",
-        document.body.classList.contains("nav-active"),
-      );
+      const isOpen = document.body.classList.toggle("nav-active");
+      menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
   }
 
-  // Close mobile menu when clicking outside
-  document.addEventListener("click", (e) => {
-    if (document.body.classList.contains("nav-active")) {
-      const navLinks = document.querySelector(".nav-links");
-      const menuToggle = document.querySelector(".menu-toggle");
-      if (
-        navLinks &&
-        !navLinks.contains(e.target) &&
-        !menuToggle.contains(e.target)
-      ) {
-        document.body.classList.remove("nav-active");
-      }
-    }
+  // Close drawer when a nav link (non-toggle) is tapped
+  document.querySelectorAll(".nav-links a:not(.dropdown-toggle)").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.body.classList.remove("nav-active");
+      if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+    });
   });
+
+  // ── Mobile: Tools dropdown accordion ──────────────────────────────────────
+  document.querySelectorAll(".dropdown").forEach((dropdown) => {
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+    if (!toggle) return;
+    toggle.addEventListener("click", (e) => {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropdown.classList.toggle("active");
+        const isExpanded = dropdown.classList.contains("active");
+        toggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+      }
+    });
+  });
+
+  // ── Mobile: collapsible tool-category headers ──────────────────────────────
+  document.querySelectorAll(".mobile-category-header").forEach((header) => {
+    header.addEventListener("click", () => {
+      if (window.innerWidth <= 768) {
+        header.closest(".mobile-category").classList.toggle("expanded");
+      }
+    });
+  });
+
+  // ── Desktop: Tools dropdown via hover ─────────────────────────────────────
+  const toolsDropdown = document.querySelector(".has-nested-menu");
+  if (toolsDropdown) {
+    toolsDropdown.addEventListener("mouseenter", () => {
+      if (window.innerWidth >= 769) toolsDropdown.classList.add("has-open");
+    });
+    toolsDropdown.addEventListener("mouseleave", () => {
+      if (window.innerWidth >= 769) toolsDropdown.classList.remove("has-open");
+    });
+  }
 
   // Close desktop dropdown when clicking outside
   document.addEventListener("click", (e) => {
-    const toolsDropdown = document.querySelector(".has-nested-menu");
-    if (toolsDropdown) {
-      const isClickInside = toolsDropdown.contains(e.target);
-      if (!isClickInside && toolsDropdown.classList.contains("has-open")) {
-        toolsDropdown.classList.remove("has-open");
-      }
+    if (toolsDropdown && !toolsDropdown.contains(e.target)) {
+      toolsDropdown.classList.remove("has-open");
     }
   });
-
-  // Handle Dropdowns in Mobile Menu
-  const dropdowns = document.querySelectorAll(".dropdown");
-  dropdowns.forEach((dropdown) => {
-    const toggle = dropdown.querySelector(".dropdown-toggle");
-    if (toggle) {
-      toggle.addEventListener("click", (e) => {
-        if (window.innerWidth <= 768) {
-          e.preventDefault();
-          e.stopPropagation();
-          dropdown.classList.toggle("active");
-        }
-      });
-    }
-  });
-
-  // Desktop dropdown hover class for click-outside detection
-  const toolsDropdown = document.querySelector(".has-nested-menu");
-  if (toolsDropdown) {
-    const dropdownContent = toolsDropdown.querySelector(".dropdown-content");
-    toolsDropdown.addEventListener("mouseenter", () => {
-      if (window.innerWidth >= 769) {
-        toolsDropdown.classList.add("has-open");
-      }
-    });
-    toolsDropdown.addEventListener("mouseleave", () => {
-      if (window.innerWidth >= 769) {
-        toolsDropdown.classList.remove("has-open");
-      }
-    });
-  }
-
-  // Close menu on link click
-  document
-    .querySelectorAll(".nav-links a:not(.dropdown-toggle)")
-    .forEach((link) => {
-      link.addEventListener("click", () => {
-        document.body.classList.remove("nav-active");
-      });
-    });
 
   if (typeof pdfjsLib !== "undefined") {
     pdfjsLib.GlobalWorkerOptions.workerSrc =

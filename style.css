@@ -1613,112 +1613,128 @@ footer {
 }
 
 @media (max-width: 768px) {
-    /* Navbar Mobile Menu */
-    .nav-links, .nav-actions {
-        display: none; /* Hidden by default on mobile */
+    /* Typography Scaling */
+    html { font-size: 15px; }
+
+    h1 {
+        font-size: 1.75rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.75rem !important;
     }
 
-    nav {
-        height: 70px;
-        padding: 0 20px;
+    h2 {
+        font-size: 1.45rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.75rem !important;
     }
 
-    .nav-left { width: 100%; justify-content: space-between; }
+    h3 { font-size: 1.2rem !important; }
+    p { font-size: 0.9rem !important; line-height: 1.5 !important; }
 
-    .menu-toggle {
-        display: flex !important;
-        flex-direction: column;
-        gap: 5px;
-        cursor: pointer;
-        z-index: 1001;
-        width: 30px;
+    section { padding: 30px 16px !important; }
+
+    .hero {
+        padding: 30px 16px !important;
+        text-align: center;
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
     }
 
-    .menu-toggle span {
-        width: 100%;
-        height: 3px;
-        background: var(--primary);
-        border-radius: 10px;
-        transition: 0.3s;
+    .badge-pill {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
     }
 
-    /* Mobile Menu Active State */
-    body.nav-active { overflow: hidden; }
-    
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    body.nav-active .nav-links {
-        display: flex !important;
-        position: fixed;
-        top: 70px;  /* fallback — overridden dynamically by main.js */
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        flex-direction: column;
-        padding: 40px 20px;
-        gap: 12px;
-        z-index: 1001;
-        animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        overflow-y: auto;
-    }
-
-    /* Mobile Dropdown Logic */
-    .nav-links .dropdown-content {
-        display: none !important;
-        position: static !important;
-        transform: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+    /* Interactive Elements */
+    .btn-primary, .btn-secondary, .btn-action, button {
+        min-height: 52px;
         width: 100% !important;
-        pointer-events: auto !important;
-        background: #f8fafc !important;
-        border: none !important;
+        justify-content: center !important;
+        font-size: 1rem !important;
+    }
+
+    /* Form Selectors */
+    .format-selectors { gap: 10px !important; }
+    .format-connector { font-size: 1.2rem !important; margin: 5px 0 !important; }
+    .dropdown-trigger { height: 56px !important; }
+
+    /* Layout Components */
+    .split-grid, .tool-grid, .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+    }
+
+    .card { padding: 24px !important; }
+    .card-icon {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 1.2rem !important;
+    }
+
+    /* Tool Workspace */
+    .preview-pane { min-height: 300px !important; padding: 15px !important; }
+    canvas { max-width: 100% !important; height: auto !important; }
+    .dropzone { padding: 40px 20px !important; }
+
+    /* Comparison Table */
+    .comparison-table td, .comparison-table th {
+        padding: 12px 10px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Performance */
+    * { -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; overflow-x: hidden; position: relative; }
+    .hero-visual, [style*="position: absolute"] { max-width: 100vw; }
+
+    .comparison-table-wrapper {
+        margin: 20px -20px;
+        padding: 0 20px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .comparison-table { min-width: 500px; }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+    }
+
+    .stat-item { flex-direction: column; text-align: center; gap: 5px; }
+    .stat-icon { margin: 0 auto; width: 48px !important; height: 48px !important; font-size: 1.1rem !important; }
+    .stat-value { font-size: 1.2rem !important; }
+
+    .btn-primary, .btn-secondary, .btn-action, button:not(.accordion-header) {
+        min-height: 50px;
+        width: 100% !important;
+        justify-content: center !important;
+        font-size: 1rem !important;
         border-radius: 12px !important;
-        margin-top: 10px !important;
     }
 
-    .nav-links .dropdown.active .dropdown-content {
-        display: flex !important;
+    .format-selectors {
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100%;
     }
 
-    .nav-links .dropdown.active .dropdown-toggle i {
-        transform: rotate(180deg);
+    .format-select { width: 100% !important; }
+
+    .format-connector {
+        transform: rotate(90deg);
+        margin: 5px 0 !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 
-    .nav-links .tool-list {
-        max-height: none !important;
+    .split-grid, .tool-grid, .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
     }
-
-    body.nav-active .nav-links a {
-        font-size: 1.1rem;
-        padding: 12px 15px;
-        border-bottom: 1px solid var(--border);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    body.nav-active .nav-actions {
-        display: flex !important;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 20px;
-        background: white;
-        border-top: 1px solid var(--border);
-        z-index: 1001;
-        justify-content: center;
-    }
+}
 
     /* Typography Scaling - Improved for "out zoom" feel */
     html {
@@ -2014,369 +2030,352 @@ body, main, section {
    2. NAVIGATION / HEADER - MOBILE FIRST
    ============================================================================ */
 
+/* ── Mobile nav: clean, no backdrop, no scroll lock ── */
 @media (max-width: 768px) {
-     nav {
-         padding: 0 1rem; /* Reduce padding on mobile */
-         height: 70px; /* Shorter on mobile */
-         justify-content: space-between;
-         z-index: 1100; /* keep nav above mobile drawer */
-     }
 
-    .nav-left {
-        gap: 20px; /* Reduce gap */
-        width: 100%;
-        justify-content: space-between;
+    /* 1. Navbar bar — always fixed on top, full white, subtle shadow */
+    nav {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        padding: 0 1rem;
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        display: flex;
         align-items: center;
+        justify-content: space-between;
+        z-index: 1100;
+        transition: none;
     }
 
+    /* Push page content below fixed nav */
+    body {
+        padding-top: 60px;
+    }
+
+    /* 2. Nav-left stretches full width: logo left, hamburger right */
+    .nav-left {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0;
+    }
+
+    /* 3. Logo */
     .logo img {
-        height: 32px; /* Smaller logo on mobile */
+        height: 30px;
     }
 
-     /* Show hamburger menu */
-     .menu-toggle {
-         display: flex !important;
-         flex-direction: column;
-         gap: 5px;
-         visibility: visible !important;
-         opacity: 1 !important;
-         z-index: 1100;
-         position: relative;
-         width: 44px; /* WCAG AA tap target */
-         height: 44px;
-         align-items: center;
-         justify-content: center;
-         cursor: pointer;
-         background: transparent;
-         border: none;
-         padding: 0;
-         color: var(--primary);
-     }
-
-    .menu-toggle span {
-        width: 24px;
-        height: 2.5px;
-        background-color: var(--primary);
-        border-radius: 2px;
-        transition: all 0.3s ease;
-    }
-
-    body.nav-active .menu-toggle span:nth-child(1) {
-        transform: translateY(7.5px) rotate(45deg);
-    }
-    
-    body.nav-active .menu-toggle span:nth-child(2) {
-        opacity: 0;
-    }
-    
-    body.nav-active .menu-toggle span:nth-child(3) {
-        transform: translateY(-7.5px) rotate(-45deg);
-    }
-
-    /* Hide desktop nav on mobile */
+    /* 4. Hide desktop nav-links and nav-actions by default */
     .nav-links {
         display: none;
     }
 
-body.nav-active .nav-links {
-          display: flex;
-          position: fixed;
-          left: 0;
-          right: 0;
-          z-index: 1001;
-          flex-direction: column;
-          background: #ffffff !important;
-          gap: 0;
-          max-width: 100vw;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-          animation: mobileNavSlideIn 0.3s ease forwards;
-      }
-
-      @keyframes mobileNavSlideIn {
-          from {
-              opacity: 0;
-              transform: translateY(-10px);
-          }
-          to {
-              opacity: 1;
-              transform: translateY(0);
-          }
-      }
-
-    body.nav-active .nav-links li {
-        width: 100%;
-        border-bottom: 1px solid var(--border);
-    }
-
-     body.nav-active .nav-links a {
-         display: block;
-         padding: 16px 20px;
-         width: 100%;
-         box-sizing: border-box;
-         text-align: left;
-     }
-
-     /* Mobile nav touch optimizations — remove tap highlight, make rows fully clickable */
-     body.nav-active .nav-links a,
-     body.nav-active .nav-links li,
-     .nav-links .nav-item,
-     .mobile-nav-item,
-     .tools-submenu a {
-         -webkit-tap-highlight-color: transparent;
-         user-select: none;
-         -webkit-touch-callout: none;
-     }
-
-     body.nav-active .nav-links a,
-     .nav-links .nav-item {
-         display: block;
-         width: 100%;
-         padding: 16px 20px;
-         box-sizing: border-box;
-     }
-
-     body.nav-active .nav-links li {
-         width: 100%;
-         list-style: none;
-         margin: 0;
-         padding: 0;
-     }
-
-     body.nav-active .nav-links a:active,
-     .nav-links .nav-item:active {
-         background: rgba(0, 0, 0, 0.05);
-     }
-
-
-
-    /* Hide GitHub button on mobile nav */
     .nav-actions {
         display: none;
     }
 
-     body.nav-active .nav-actions {
-         display: flex;
-         position: absolute;
-         top: 70px;  /* fallback — overridden dynamically by main.js */
-         right: 0;
-         padding: 1rem;
-         background: white;
-         border-bottom: 1px solid var(--border);
-         width: 100%;
-     }
-
-    .nav-actions .btn-primary {
-        width: 100%;
-        padding: 12px 1rem;
-    }
-
-    /* Tools dropdown for mobile */
-    .dropdown-content {
-        position: fixed !important;
-        top: 70px !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        transform: none !important;
-        max-width: 100vw !important;
-        width: 100% !important;
-        border-radius: 0 !important;
-        max-height: 100vh !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
-        margin: 0 !important;
-        z-index: 1001;
-    }
-
-    .tool-list {
-        display: flex;
+    /* 5. Hamburger button — always visible top-right, 44×44px tap target */
+    .menu-toggle {
+        display: flex !important;
         flex-direction: column;
-        gap: 0;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0;
+        margin: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        z-index: 1200;
+        position: relative;
+        flex-shrink: 0;
     }
 
-    .tool-list a {
+    /* Three bars */
+    .menu-toggle span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--primary);
+        border-radius: 2px;
+        transition: transform 0.25s ease, opacity 0.2s ease, width 0.25s ease;
+        transform-origin: center;
+    }
+
+    /* X state when menu is open */
+    body.nav-active .menu-toggle span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+    body.nav-active .menu-toggle span:nth-child(2) {
+        opacity: 0;
+        width: 0;
+    }
+    body.nav-active .menu-toggle span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* 6. Drawer — slides down from below navbar */
+    body.nav-active .nav-links {
+        display: flex !important;
+        position: fixed;
+        top: 60px; /* sits immediately below the 60px navbar */
+        left: 0;
+        right: 0;
+        /* no bottom: auto-height based on content */
+        flex-direction: column;
+        background: #ffffff;
+        z-index: 1090;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0;
+        margin: 0;
+        gap: 0;
+        list-style: none;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        /* slide-down animation */
+        animation: mobileDrawerIn 0.22s ease forwards;
+    }
+
+    @keyframes mobileDrawerIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 7. Each top-level <li> — full-width row with divider */
+    body.nav-active .nav-links > li {
+        width: 100%;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    body.nav-active .nav-links > li:last-child {
+        border-bottom: none;
+    }
+
+    /* 8. Top-level nav links — full-width, easy-tap */
+    body.nav-active .nav-links > li > a {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 16px 1.5rem;
         width: 100%;
-        border-bottom: 1px solid var(--border);
-        font-weight: 500;
+        padding: 15px 20px;
+        font-size: 0.975rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        background: transparent;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        box-sizing: border-box;
+        border-radius: 0;
+        box-shadow: none;
+        transition: background 0.12s ease;
+    }
+    body.nav-active .nav-links > li > a:active {
+        background: #f5f5f5;
     }
 
-    .tool-list a:hover {
-        background: var(--primary-light);
-    }
-
-    .tool-search-wrapper {
-        position: sticky;
-        top: 0;
-        background: white;
-        padding: 1rem;
-        border-bottom: 1px solid var(--border);
-        z-index: 1002;
-    }
-
-    .tool-search {
-        width: 100%;
-        padding: 12px 16px;
-        font-size: 16px; /* Prevent auto-zoom on iOS */
-    }
-
-    /* Mobile Tools Dropdown - Collapsible Categories */
-    .dropdown-toggle {
+    /* 9. "Tools" toggle button inside nav — same row style */
+    body.nav-active .dropdown-toggle {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        padding: 16px 1.5rem;
-        background: white;
-        border: none;
-        border-bottom: 1px solid var(--border);
-        font-size: 1rem;
+        padding: 15px 20px;
+        font-size: 0.975rem;
         font-weight: 600;
-        color: var(--text-main);
+        color: var(--primary);
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
         cursor: pointer;
         text-align: left;
-        transition: background 0.2s;
-        min-height: 56px; /* WCAG touch target */
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        box-sizing: border-box;
+        transition: background 0.12s ease;
+        min-height: unset;
+    }
+    body.nav-active .dropdown-toggle:active {
+        background: #f5f5f5;
     }
 
-    .dropdown-toggle:hover {
-        background: var(--bg-alt);
+    /* Chevron rotation when open */
+    .dropdown-toggle i.fa-chevron-down {
+        transition: transform 0.22s ease;
+        font-size: 0.75rem;
+        color: var(--text-muted);
     }
-
-    .dropdown-toggle i.chevron {
-        transition: transform 0.3s ease;
-    }
-
-    .dropdown-toggle[aria-expanded="true"] i.chevron {
+    .nav-links .dropdown.active .dropdown-toggle i.fa-chevron-down {
         transform: rotate(180deg);
     }
 
-    .has-nested-menu .dropdown-content {
+    /* 10. Tools dropdown submenu — inline below the toggle, no position:fixed */
+    .nav-links .dropdown-content {
         display: none;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fafafa !important;
+        overflow: visible !important;
+        z-index: auto !important;
+    }
+    .nav-links .dropdown.active .dropdown-content {
+        display: block !important;
     }
 
-    .has-nested-menu.has-open .dropdown-content {
-        display: block;
-    }
-
-    /* Hide desktop-only list on mobile */
-    .desktop-only {
+    /* Hide the desktop-only flat tool list; show mobile categories */
+    .nav-links .dropdown-content .desktop-only {
         display: none !important;
     }
-
-    /* Mobile categories container */
-    .mobile-categories {
+    .nav-links .dropdown-content .mobile-categories {
         display: block;
     }
 
-    /* Mobile category section */
-    .mobile-category {
-        border-bottom: 1px solid var(--border);
-    }
-
-    .mobile-category:last-child {
-        border-bottom: none;
-    }
-
+    /* 11. Mobile category headers — slightly indented, smaller, uppercase */
     .mobile-category-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 1.5rem;
-        background: var(--bg-alt);
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--primary);
-        cursor: pointer;
-        min-height: 48px;
-        transition: background 0.2s;
-        border: none;
         width: 100%;
-        text-align: left;
+        padding: 11px 20px 11px 32px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        background: #f5f5f5;
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.06);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        box-sizing: border-box;
+        min-height: 40px;
+        transition: background 0.12s ease;
     }
-
-    .mobile-category-header:hover,
-    .mobile-category-header:focus {
-        background: var(--border);
-        outline: none;
+    .mobile-category-header:active {
+        background: #ededed;
     }
-
-    .mobile-category-header:focus-visible {
-        outline: 3px solid var(--primary);
-        outline-offset: -3px;
-    }
-
     .mobile-category-header i {
-        font-size: 0.8rem;
-        transition: transform 0.2s;
+        font-size: 0.65rem;
+        transition: transform 0.2s ease;
     }
-
-    /* Expand icon rotation */
     .mobile-category.expanded > .mobile-category-header i {
         transform: rotate(90deg);
     }
 
-    /* Category items list */
+    /* 12. Submenu tool links — indented, smaller font, clear hierarchy */
     .mobile-category-items {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease;
-        background: white;
+        transition: max-height 0.28s ease;
+        background: #fafafa;
     }
-
     .mobile-category.expanded > .mobile-category-items {
-        max-height: 1500px;
+        max-height: 2000px;
     }
 
     .mobile-category-items a {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 14px 1.5rem 14px 2.5rem;
-        border-bottom: 1px solid var(--border);
-        font-size: 0.95rem;
-        transition: background 0.2s;
+        gap: 10px;
+        width: 100%;
+        padding: 11px 20px 11px 40px; /* deeper indent = clear hierarchy */
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-main);
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        box-sizing: border-box;
+        border-radius: 0;
+        box-shadow: none;
+        background: transparent;
+        transition: background 0.1s ease;
     }
-
     .mobile-category-items a:last-child {
         border-bottom: none;
     }
-
-    .mobile-category-items a:hover {
-        background: var(--primary-light);
+    .mobile-category-items a:active {
+        background: #efefef;
+    }
+    .mobile-category-items a i {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        width: 16px;
+        text-align: center;
+        flex-shrink: 0;
     }
 
-    /* Hide search on mobile inside mobile drawer */
-    .dropdown-content .tool-search-wrapper {
+    /* 13. Hide tool search wrapper inside mobile drawer */
+    .nav-links .dropdown-content .tool-search-wrapper {
         display: none;
+    }
+
+    /* 14. No backdrop, no overlay — removed completely */
+    .nav-backdrop {
+        display: none !important;
+    }
+
+    /* 15. Do NOT lock body scroll */
+    body.nav-active {
+        overflow: auto !important;
+    }
+
+    /* 16. Remove border-radius and box-shadow on nav items (flat design) */
+    body.nav-active .nav-links a,
+    body.nav-active .dropdown-toggle,
+    .mobile-category-items a {
+        border-radius: 0 !important;
+        box-shadow: none !important;
     }
 }
 
+/* ── 480px tweaks for the nav bar height only ── */
 @media (max-width: 480px) {
     nav {
-        height: 64px;
+        height: 56px;
     }
-
+    body {
+        padding-top: 56px;
+    }
+    body.nav-active .nav-links {
+        top: 56px;
+    }
     .logo img {
-        height: 28px;
+        height: 26px;
     }
+}
 
-    .menu-toggle {
-        width: 48px;
-        height: 48px;
-    }
-
-     body.nav-active .nav-links,
-     .dropdown-content {
-         top: 64px;  /* fallback — overridden dynamically by main.js */
-     }
- }
 
 /* ============================================================================
    2.5 DESKTOP TOOLS DROPDOWN (ensure desktop still shows flat list)
