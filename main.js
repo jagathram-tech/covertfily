@@ -231,91 +231,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Handle Dropdowns in Mobile Menu
-  // Mobile Tools dropdown handling with search and auto‑close
-  const dropdowns = document.querySelectorAll('.dropdown');
+  const dropdowns = document.querySelectorAll(".dropdown");
   dropdowns.forEach((dropdown) => {
-    const toggle = dropdown.querySelector('.dropdown-toggle');
-    if (!toggle) return;
-
-    // Open / close on tap
-    toggle.addEventListener('click', (e) => {
-      if (window.innerWidth > 768) return; // only mobile
-      e.preventDefault();
-      e.stopPropagation();
-      const isNowOpen = dropdown.classList.toggle('active');
-      const searchInput = dropdown.querySelector('.tool-search, .nav-tool-search');
-      if (isNowOpen) {
-        // focus after short delay to allow DOM update
-        setTimeout(() => {
-          if (searchInput) searchInput.focus();
-        }, 50);
-      } else {
-        clearDropdown(dropdown);
-      }
-    });
-
-    // Close when a tool link is clicked
-    dropdown.addEventListener('click', (e) => {
-      if (e.target.tagName.toLowerCase() === 'a') {
-        dropdown.classList.remove('active');
-        clearDropdown(dropdown);
-      }
-    });
-  });
-
-  // Click outside the dropdown to close it (mobile only)
-  document.addEventListener('click', (e) => {
-    if (window.innerWidth > 768) return;
-    const openDropdown = document.querySelector('.dropdown.active');
-    if (!openDropdown) return;
-    if (!openDropdown.contains(e.target) && !e.target.closest('.dropdown-toggle')) {
-      openDropdown.classList.remove('active');
-      clearDropdown(openDropdown);
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropdown.classList.toggle("active");
+        }
+      });
     }
-  });
-
-  // Helper: reset search and visibility
-  function clearDropdown(dropdown) {
-    const searchInput = dropdown.querySelector('.tool-search, .nav-tool-search');
-    if (searchInput) searchInput.value = '';
-    // Show all links again
-    dropdown.querySelectorAll('a').forEach(link => {
-      link.style.display = '';
-    });
-    // Show category labels / headers
-    dropdown.querySelectorAll('.category-label, .mobile-category-header, .mobile-category').forEach(el => {
-      el.style.display = '';
-    });
-  }
-
-  // Real‑time filtering for the Tools dropdown search input
-  document.addEventListener('input', (e) => {
-    if (!e.target.classList.contains('tool-search') && !e.target.classList.contains('nav-tool-search')) return;
-    const query = e.target.value.toLowerCase();
-    const dropdown = e.target.closest('.dropdown');
-    if (!dropdown) return;
-    // Filter all tool links
-    const links = dropdown.querySelectorAll('a');
-    links.forEach(link => {
-      const matches = link.textContent.toLowerCase().includes(query);
-      link.style.display = matches ? '' : 'none';
-    });
-    // Hide category sections when empty
-    // Desktop categories – label followed by links
-    dropdown.querySelectorAll('.category-label').forEach(label => {
-      let sibling = label.nextElementSibling;
-      let anyVisible = false;
-      while (sibling && !sibling.classList.contains('category-label')) {
-        if (sibling.matches('a') && sibling.style.display !== 'none') anyVisible = true;
-        sibling = sibling.nextElementSibling;
-      }
-      label.style.display = anyVisible ? '' : 'none';
-    });
-    // Mobile categories – .mobile-category contains header + items
-    dropdown.querySelectorAll('.mobile-category').forEach(cat => {
-      const anyVisible = Array.from(cat.querySelectorAll('a')).some(a => a.style.display !== 'none');
-      cat.style.display = anyVisible ? '' : 'none';
-    });
   });
 
   // Desktop dropdown hover class for click-outside detection
