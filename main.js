@@ -1537,6 +1537,14 @@ function downloadFile(url, filename) {
     if (!menuToggle || !fullHeader) return;
 
     let isOpen = false;
+    let backdrop = document.getElementById('nav-backdrop');
+
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'nav-backdrop';
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+    }
 
     function openMenu() {
       isOpen = true;
@@ -1544,14 +1552,18 @@ function downloadFile(url, filename) {
       navLinks.style.top = headerBottom + 'px';
       navLinks.style.height = (window.innerHeight - headerBottom) + 'px';
       navLinks.classList.add('mobile-open');
+      backdrop.classList.add('active');
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('nav-active');
       menuToggle.setAttribute('aria-expanded', 'true');
     }
 
     function closeMenu() {
       isOpen = false;
       navLinks.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
       document.body.style.overflow = '';
+      document.body.classList.remove('nav-active');
       menuToggle.setAttribute('aria-expanded', 'false');
     }
 
@@ -1560,8 +1572,20 @@ function downloadFile(url, filename) {
       isOpen ? closeMenu() : openMenu();
     });
 
+    backdrop.addEventListener('click', function() {
+      if (isOpen) closeMenu();
+    });
+
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+
+    window.addEventListener('resize', function() {
+      if (isOpen) {
+        const headerBottom = fullHeader.getBoundingClientRect().bottom;
+        navLinks.style.top = headerBottom + 'px';
+        navLinks.style.height = (window.innerHeight - headerBottom) + 'px';
+      }
     });
   }
 
@@ -1791,12 +1815,15 @@ function downloadFile(url, filename) {
       link.addEventListener('click', function() {
         const navLinks = document.querySelector('.nav-links');
         const menuToggle = document.querySelector('.menu-toggle');
+        const backdrop = document.getElementById('nav-backdrop');
         
         // Close drawer
         if (navLinks) navLinks.classList.remove('mobile-open');
         if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        if (backdrop) backdrop.classList.remove('active');
         
         document.body.style.overflow = '';
+        document.body.classList.remove('nav-active');
         
         // Navigate to the link (default behavior - no preventDefault)
       });

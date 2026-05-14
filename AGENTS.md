@@ -1,10 +1,15 @@
 # AGENTS.md
 
+## Architecture
+
+Static HTML site with no build system, no package manager, no tests, no CI, no linting. All conversion logic runs client-side via CDN-loaded libraries. Node.js is used only for two utility scripts (`generator.js`, `check-ids.js`).
+
 ## Quick Start
 
-- **Serve locally:** `npx serve .` — static site needs HTTP; `file://` blocks CDN scripts
-- **Regenerate converters:** `node generator.js` after editing `BASIC_MAPPING` in `generator.js`
-- **Update navbar/charset across all HTML:** `.\fix_nav_and_charset.ps1` (PowerShell)
+- **Serve locally:** `npx serve .` — static site requires HTTP; `file://` blocks CDN scripts
+- **Regenerate converters:** `node generator.js` — reads `png-to-jpg.html` template, writes all `*-to-*.html` + updates `index.html`
+- **Update navbar/charset sitewide:** `.\fix_nav_and_charset.ps1` — enforces UTF-8 `<meta charset>` and ensures nav order is Home → Tools → Blog
+- **Check duplicate IDs:** `node check-ids.js` — scans all `.html` files for non-unique `id=` attributes
 
 ## Critical Sync Rules
 
@@ -12,23 +17,50 @@
 - Generator skips `png→jpg` (template itself) and `pdf→docx` (hand-crafted as `pdf-to-word.html`) — do not auto-generate these
 - All other `*-to-*.html` converters are generated from the `png-to-jpg.html` template — edit the template for shared UI changes
 - **FFmpeg.wasm versions:** Both `main.js` and hand-crafted video tools use `ffmpeg@0.12.10` with `core@0.12.6`. Keep these aligned when updating.
+- **PDF.js worker version:** All pages use `pdf.js@3.11.174` — set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly on every page that imports PDF.js.
+
+## Generator Behavior & Scope
+
+- `generator.js` reads **only** `png-to-jpg.html` as the template — this file is the *single source of truth* for all auto-generated converters.
+- `generator.js` **overwrites** every `*-to-*.html` file (except `png-to-jpg.html` itself and `pdf-to-word.html`) on each run — never edit generated files directly.
+- `generator.js` also **overwrites** `index.html` — confine manual edits to the Tools dropdown (`<div class="tool-list">`) and Popular Converters section. See `INDEX_UPDATE_REFERENCE.md` for exact boundaries.
+- `png-to-jpg.html` serves dual purpose: it's a working converter *and* the generator template — changes here affect all generated pages when `node generator.js` runs.
+- `pdf-to-word.html` is hand-crafted (uses `mammoth`) and never auto-generated.
 
 ## Main.js Global API (Do Not Rename)
 
-These are attached to `window` and referenced inline in HTML:
-`FORMAT_MAPPING`, `FORMAT_LABELS`, `updateProgress`, `hideProgress`, `setConversionProgress`, `processFile`, `handleFiles`, `updateTargetDropdown`, `selectFromFormat`, `selectToFormat`, `toggleDropdown`, `filterFormats`, `downloadFile`
+`FORMAT_MAPPING`, `FORMAT_LABELS`, `updateProgress`, `hideProgress`, `setConversionProgress`, `processFile`, `handleFiles`, `updateTargetDropdown`, `selectFromFormat`, `selectToFormat`, `toggleDropdown`, `filterFormats`, `downloadFile` — all attached to `window` and referenced inline in HTML.
 
 ## Required DOM IDs (Core UI)
 
-`#dropzone`, `#formatFromContainer`, `#formatToContainer`, `.progress-bar-fill`, `#downloadBtn`, `#loading`, `#downloadContainer` — references in main.js and page scripts; changing these breaks converters.
+`#dropzone`, `#formatFromContainer`, `#formatToContainer`, `.progress-bar-fill`, `#downloadBtn`, `#loading`, `#downloadContainer` — referenced throughout main.js and page scripts; renaming breaks converters.
 
-## Homepage Converter Dependency
+## External Dependencies (CDN Locked)
 
-The dropzone on `index.html` calls `goToDedicatedPage()` — this function is injected by `generator.js`. If manually editing index.html, keep it present or the dropzone click fails.
+- **Font Awesome:** 6.4.0 (cdnjs)
+- **Google Fonts:** Inter wght@400–800
+- **SheetJS (xlsx):** 0.20.1
+- **PDF.js:** 3.11.174 (requires explicit worker config on every page)
+- **pdf-lib:** Used by merge/reorder/protect pages via unpkg
+- **jspdf:** 2.5.1 (cdnjs)
+- **mammoth:** 1.6.0
+- **docx:** 7.1.1
+- **marked / turndown:** Markdown HTML conversion
+- **jszip:** 3.10.1
+- **FFmpeg.wasm:** 0.12.10 (ffmpeg) + 0.12.6 (core), plus util@0.12.1 — hand-crafted video tools only
+- **SortableJS:** 1.15.0 (reorder-pdf, audio-merger)
+- **Tesseract.js:** v5 (ocr.html)
 
-## PDF Worker Configuration
+## Hand-Crafted Tool Library Patterns
 
-When using PDF.js on any page, set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly. `main.js` sets it globally (main.js:293), but hand-crafted PDF pages may need inline configuration (see `pdf-to-word.html:29`).
+- **PDF manipulation (merge/reorder/protect/watermark/compress):** Uses `pdf-lib` for complex operations; must set `pdfjsLib.GlobalWorkerOptions.workerSrc` inline before PDF.js load.
+- **Image→PDF / DOCX→PDF:** Uses `jspdf` (simple writes) — no `pdf-lib` needed.
+- **Video tools (compressor/speed):** Load FFmpeg.wasm inline and delegate to shared `loadFFmpeg()` in main.js for actual conversion. Both expect versions above.
+- **Audio merger:** Uses Web Audio API + SortableJS, no external encoding library (outputs WAV).
+
+## Homepage Dropzone Behavior
+
+`index.html` dropzone calls `goToDedicatedPage()` — injected by `generator.js`. Removing this function breaks dropzone navigation.
 
 ## Download Behavior
 
@@ -36,11 +68,9 @@ When using PDF.js on any page, set `pdfjsLib.GlobalWorkerOptions.workerSrc` expl
 
 ## Mobile Navigation
 
-- Hamburger is auto-created by main.js if missing
-- `initializeMobileNav()` sets mobile drawer top offset dynamically using `nav.getBoundingClientRect().bottom` — never hardcode `top` for `.nav-links.mobile-open` or `.nav-backdrop`
-- Drawer uses `z-index: 1001`; keep above `.nav-actions` (1001) and other bars
-- Two event listeners exist: legacy toggles `body.nav-active`, newer toggles `.mobile-open` classes. Both run on mobile; be cautious.
-- `.nav-backdrop` is injected by JS and must follow same top offset
+- Hamburger auto-created by main.js if missing
+- `initializeMobileNav()` computes mobile drawer `top` from `nav.getBoundingClientRect().bottom` — do not hardcode
+- Drawer `z-index: 1001`; `.nav-backdrop` injected by JS
 
 ## Tool List Search
 
@@ -48,14 +78,24 @@ When using PDF.js on any page, set `pdfjsLib.GlobalWorkerOptions.workerSrc` expl
 
 ## Styling
 
-CSS uses `:root` custom properties (`--primary`, `--secondary`, `--bg-alt`, `--border`, etc.). Do not hardcode colors. Styles depend on Font Awesome 6 Free and Google Fonts (Inter) from CDN.
+CSS uses `:root` custom properties (`--primary`, `--secondary`, `--bg-alt`, `--border`, etc.). Do not hardcode colors. Site depends on Font Awesome 6 Free and Inter from CDN.
 
-## Important Nuances
+## Google Analytics Policy
 
-- **Google Analytics** — `gtag.js` injected on hand-crafted tool pages (`merge-pdf.html`, `pdf-to-word.html`, `image-tools.html`, etc.) but NOT on `index.html` or generated `*-to-*.html` converters. Do not remove without project discussion.
-- **PDF library split** — `jsPDF` used for image→PDF and DOCX→PDF (simple writes); `pdf-lib` used for merge-pdf, reorder-pdf, protect-pdf (complex manipulation). Check page `<script>` tags when editing.
-- **OCR** — uses Tesseract.js v5 from CDN; language packs download on demand.
-- **Media conversion** — FFmpeg.wasm loaded dynamically in `loadFFmpeg()` (main.js:914) with versions `ffmpeg@0.12.10` and `core@0.12.6`. Hand-crafted video tools follow the same pattern.
-- **Character corruption fix** — `fix_nav_and_charset.ps1` repairs Windows-1252 mojibake (`â€¢` → `•`, `â€”` → `—`) and enforces UTF-8 `<meta charset="UTF-8">`.
-- **Navbar order** — enforced by maintenance script: Home → Tools dropdown → Blog. Pages deviating will be corrected.
-- **Duplicate ID checker** — run `node check-ids.js` to detect duplicate `id=` attributes across HTML files.
+`gtag.js` (ID: `G-4Z6LTJ67E2`) is injected ONLY on hand-crafted tool pages. NEVER add to `index.html` or auto-generated converter pages. The current list of pages with GA: `merge-pdf.html`, `compress-pdf.html`, `reorder-pdf.html`, `protect-pdf.html`, `watermark.html`, `pdf-to-word.html`, `ocr.html`, `image-tools.html`, `video-trimmer.html`, `video-frame-extractor.html`, `audio-trimmer.html`, `video-compressor.html`, `video-speed.html`, `audio-merger.html`, `word-counter.html`, `lorem-ipsum.html`, `collage-maker.html`, `stereogram.html`, `steganography.html`, `brightness-map.html`, `image-to-json.html`, `pixel-art.html`, `metadata-stripper.html`, `exif-reader.html`, `image-to-base64.html`, `eyedropper.html`, `color-palette-extractor.html`, `qr-code-generator.html`, `barcode-generator.html`, `file-hash-checker.html`.
+
+## Testing & Validation
+
+- Run `node check-ids.js` before committing to catch duplicate `id=` attributes across all HTML files.
+- Verify locally with `npx serve .` — all CDN scripts must load over HTTP(S), not `file://`.
+- Test both desktop and mobile layouts after CSS changes; some breakpoints defined in `MOBILE_OPTIMIZATION_GUIDE.md`.
+
+## Common Pitfalls
+
+- Opening HTML directly in browser (`file://`) blocks CDN scripts and fetch requests.
+- Editing generated `*-to-*.html` files directly — changes will be overwritten by `generator.js`.
+- Forgetting PDF.js worker config on hand-crafted PDF pages → silent failure.
+- Mismatched FFmpeg.wasm versions → `loadFFmpeg()` fails to initialize.
+- Changing required DOM IDs without updating main.js and page scripts.
+- Adding GA to generated converters — violates privacy policy and will be reverted.
+- `fix_nav_and_charset.ps1` overwrites all `.html` files with UTF-8 encoding — run after manual edits, not before.
