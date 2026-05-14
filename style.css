@@ -1679,22 +1679,48 @@ footer {
         visibility: visible !important;
         width: 100% !important;
         pointer-events: auto !important;
-        background: #f8fafc !important;
-        border: none !important;
+        background: white !important;
+        border: 1px solid var(--border) !important;
         border-radius: 12px !important;
-        margin-top: 10px !important;
+        margin-top: 8px !important;
     }
 
-    .nav-links .dropdown.active .dropdown-content {
-        display: flex !important;
+    .nav-links .has-nested-menu.open .dropdown-content {
+        display: block !important;
     }
 
-    .nav-links .dropdown.active .dropdown-toggle i {
+    .nav-links .has-nested-menu.open .dropdown-toggle i {
         transform: rotate(180deg);
     }
 
     .nav-links .tool-list {
-        max-height: none !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        padding: 8px;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .nav-links .tool-search-wrapper {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-links .tool-list .category-label {
+        font-size: 0.65rem;
+        padding: 10px 8px 2px;
+    }
+
+    .nav-links .tool-list a {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .nav-links .tool-list a i {
+        width: 22px;
+        height: 22px;
+        font-size: 0.7rem;
     }
 
     body.nav-active .nav-links a {
@@ -2236,19 +2262,7 @@ body, main, section {
         gap: 0;
     }
 
-    .tool-list a {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 16px 1.5rem;
-        width: 100%;
-        border-bottom: 1px solid var(--border);
-        font-weight: 500;
-    }
-
-    .tool-list a:hover {
-        background: var(--primary-light);
-    }
+    
 
     .tool-search-wrapper {
         position: sticky;
@@ -2301,15 +2315,9 @@ body, main, section {
         display: none;
     }
 
-    .has-nested-menu.has-open .dropdown-content,
-    .dropdown.has-open > .dropdown-content,
-    .dropdown.active > .dropdown-content {
+    .has-nested-menu.open .dropdown-content,
+    .dropdown.open > .dropdown-content {
         display: block;
-    }
-
-    /* Hide desktop-only list on mobile */
-    .desktop-only {
-        display: none !important;
     }
 
     /* Mobile categories container */
@@ -3636,7 +3644,7 @@ a:visited {
   transform: rotate(180deg);
 }
 
-/* Desktop dropdown: show categorized grid on .open */
+/* Desktop dropdown: full tool list on .open */
 .has-nested-menu {
   position: relative;
 }
@@ -3649,12 +3657,12 @@ a:visited {
   transform: translateX(-50%);
   background: white;
   border-radius: 16px;
-  padding: 16px;
+  padding: 0;
   box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
   z-index: 2000;
   opacity: 0;
   pointer-events: none;
-  min-width: 600px;
+  min-width: 640px;
 }
 
 .has-nested-menu.open .dropdown-content {
@@ -3663,68 +3671,92 @@ a:visited {
   pointer-events: auto !important;
 }
 
-/* Desktop: show the same categorized layout as mobile */
-.desktop-only { display: none !important; }
-
-.mobile-categories {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.mobile-category-header {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-main);
-  padding: 10px 12px;
-  background: var(--bg-alt);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.mobile-category-header:hover {
-  background: var(--border);
-}
-
-.mobile-category-items {
-  display: none;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 0;
-}
-
-.mobile-category.expanded .mobile-category-items {
-  display: flex;
-}
-
-.mobile-category-items a {
+/* Search box in dropdown */
+.tool-search-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  color: var(--text-main);
-  transition: background 0.2s;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
 }
 
-.mobile-category-items a:hover {
+.tool-search-wrapper i {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tool-search {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background: transparent;
+}
+
+.tool-search::placeholder {
+  color: var(--text-muted);
+}
+
+/* Full tool list grid (shown on both desktop and mobile) */
+.tool-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 8px 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.tool-list .category-label {
+  grid-column: 1 / -1;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 12px 16px 4px;
+  pointer-events: none;
+}
+
+.tool-list a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-main);
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tool-list a:hover {
   background: var(--primary-light);
   color: var(--primary);
 }
 
-.mobile-category-items a i {
-  width: 24px;
-  height: 24px;
+.tool-list a i {
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f1f5f9;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--primary);
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tool-list a:hover i {
+  background: var(--primary);
+  color: white;
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 769px) {
+  .menu-toggle { display: none !important; }
 }
