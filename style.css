@@ -1613,7 +1613,9 @@ footer {
 @media (max-width: 768px) {
     /* Navbar Mobile Menu */
     .nav-links, .nav-actions {
-        display: none; /* Hidden by default on mobile */
+        display: flex !important;
+        visibility: visible;
+        opacity: 1;
     }
 
     nav {
@@ -2300,7 +2302,8 @@ body, main, section {
     }
 
     .has-nested-menu.has-open .dropdown-content,
-    .dropdown.has-open > .dropdown-content {
+    .dropdown.has-open > .dropdown-content,
+    .dropdown.active > .dropdown-content {
         display: block;
     }
 
