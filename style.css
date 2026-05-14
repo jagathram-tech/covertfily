@@ -3576,11 +3576,33 @@ a:visited {
 
 /* ===== DESKTOP NAV FIX ===== */
 
-/* Fix nav-links list items visibility */
+/* Nav links: always visible inline on desktop */
+.nav-links {
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .nav-links li {
   display: flex;
   align-items: center;
-  list-style: none;
+}
+
+.nav-links a {
+  font-weight: 500;
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--primary);
+  background: var(--primary-light);
 }
 
 /* Fix invisible Tools button on desktop */
@@ -3588,7 +3610,7 @@ a:visited {
   background: none !important;
   border: none !important;
   font-family: 'Inter', system-ui, sans-serif !important;
-  font-size: 1rem !important;
+  font-size: 0.95rem !important;
   font-weight: 500 !important;
   color: var(--text-main) !important;
   padding: 8px 12px !important;
@@ -3605,7 +3627,16 @@ a:visited {
   background: var(--primary-light) !important;
 }
 
-/* Desktop mega-menu: show on .open class */
+.dropdown-toggle i {
+  font-size: 0.75em;
+  transition: transform 0.2s;
+}
+
+.has-nested-menu.open > .dropdown-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Desktop dropdown: show categorized grid on .open */
 .has-nested-menu {
   position: relative;
 }
@@ -3613,19 +3644,17 @@ a:visited {
 .has-nested-menu .dropdown-content {
   display: none;
   position: absolute;
-  top: calc(100% + 8px);
-  left: -20px;
-  transform: none;
-  min-width: 720px;
-  max-height: 70vh;
-  overflow-y: auto;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
   z-index: 2000;
-  pointer-events: none;
   opacity: 0;
+  pointer-events: none;
+  min-width: 600px;
 }
 
 .has-nested-menu.open .dropdown-content {
@@ -3634,26 +3663,68 @@ a:visited {
   pointer-events: auto !important;
 }
 
-/* Desktop tool list: 3-column grid */
-.tool-list.desktop-only {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
+/* Desktop: show the same categorized layout as mobile */
+.desktop-only { display: none !important; }
+
+.mobile-categories {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
-.tool-list.desktop-only .category-label {
-  grid-column: 1 / -1;
-  font-size: 0.7rem;
+.mobile-category-header {
+  font-size: 0.85rem;
   font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  padding: 12px 10px 4px;
-  pointer-events: none;
+  color: var(--text-main);
+  padding: 10px 12px;
+  background: var(--bg-alt);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-/* Hide mobile categories on desktop */
-@media (min-width: 769px) {
-  .mobile-categories { display: none !important; }
-  .menu-toggle { display: none !important; }
+.mobile-category-header:hover {
+  background: var(--border);
+}
+
+.mobile-category-items {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+}
+
+.mobile-category.expanded .mobile-category-items {
+  display: flex;
+}
+
+.mobile-category-items a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  transition: background 0.2s;
+}
+
+.mobile-category-items a:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.mobile-category-items a i {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--primary);
 }
