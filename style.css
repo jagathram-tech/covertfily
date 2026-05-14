@@ -3584,24 +3584,40 @@ a:visited {
   transform: rotate(180deg);
 }
 
-/* Tools Dropdown — pushed below nav, pushes page content down */
-#tools-dropdown {
-  display: none;
-  background: white;
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+/* Tools Dropdown — hover to open, float below nav */
+.has-nested-menu {
+  position: relative;
 }
 
-#tools-dropdown.open {
+#tools-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+  min-width: 640px;
+  z-index: 99999;
+}
+
+/* Show on hover — add invisible bridge so hover doesn't break */
+.has-nested-menu::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.has-nested-menu:hover #tools-dropdown {
   display: block;
 }
 
-.dropdown-toggle i {
-  font-size: 0.75em;
-  transition: transform 0.2s;
-}
-
-.has-nested-menu.open .dropdown-toggle i {
+.has-nested-menu:hover .dropdown-toggle i {
   transform: rotate(180deg);
 }
 
@@ -3633,13 +3649,13 @@ a:visited {
   color: var(--text-muted);
 }
 
-/* Tool list grid — 3 columns on desktop */
+/* Tool list grid — 3 columns */
 .tool-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   padding: 8px 16px 16px;
-  max-height: 50vh;
+  max-height: 55vh;
   overflow-y: auto;
 }
 
@@ -3690,11 +3706,21 @@ a:visited {
   color: white;
 }
 
-/* Mobile: full width, 2 columns, dropdown pushes content down */
+/* Mobile: full width, 2 columns */
 @media (max-width: 768px) {
   #tools-dropdown {
-    border-bottom: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    position: fixed;
+    top: 80px !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    min-width: 100vw;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .tool-list {
@@ -3720,7 +3746,21 @@ a:visited {
   }
 
   .tool-search-wrapper {
-    padding: 10px 12px;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+  }
+
+  /* Mobile: click to toggle instead of hover */
+  .has-nested-menu::after { display: none; }
+
+  #tools-dropdown {
+    display: none;
+  }
+
+  .has-nested-menu.open #tools-dropdown {
+    display: block;
   }
 }
 

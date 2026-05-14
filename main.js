@@ -1685,49 +1685,44 @@ function downloadFile(url, filename) {
      }
    }, 200));
 
-  // 10. TOOLS DROPDOWN - Toggle open/closed
+  // 10. TOOLS DROPDOWN - Mobile click toggle only
+  // Desktop uses CSS :hover (no JS needed)
   function setupToolsDropdown() {
     const toolsToggle = document.getElementById('tools-toggle');
     const dropdown = document.getElementById('tools-dropdown');
+    const hasNestedMenu = document.querySelector('.has-nested-menu');
 
-    if (!toolsToggle || !dropdown) return;
+    if (!toolsToggle || !dropdown || !hasNestedMenu) return;
 
     toolsToggle.setAttribute('aria-expanded', 'false');
-    dropdown.classList.remove('open');
 
-    toolsToggle.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const isOpen = dropdown.classList.toggle('open');
-      toolsToggle.setAttribute('aria-expanded', isOpen);
-    });
-
-    // Tool link click - close dropdown
-    dropdown.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', function() {
-        dropdown.classList.remove('open');
-        toolsToggle.setAttribute('aria-expanded', 'false');
+    // Mobile only: click to toggle
+    if (window.innerWidth < 769) {
+      toolsToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = hasNestedMenu.classList.toggle('open');
+        toolsToggle.setAttribute('aria-expanded', isOpen);
       });
-    });
+
+      // Click-outside closes on mobile
+      document.addEventListener('click', function(e) {
+        if (!hasNestedMenu.contains(e.target) && !dropdown.contains(e.target)) {
+          hasNestedMenu.classList.remove('open');
+          toolsToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Tool link click closes dropdown
+      dropdown.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+          hasNestedMenu.classList.remove('open');
+          toolsToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
   }
 
-  // Initialize tools dropdown (all screen sizes)
-  document.addEventListener('DOMContentLoaded', function() {
-    setupToolsDropdown();
-  });
-
-  // Click-outside closes the dropdown
-  document.addEventListener('click', function(e) {
-    const dropdown = document.getElementById('tools-dropdown');
-    const toolsToggle = document.getElementById('tools-toggle');
-    if (!dropdown) return;
-    const isInsideDropdown = dropdown.contains(e.target);
-    const isInsideToggle = toolsToggle && toolsToggle.contains(e.target);
-    if (!isInsideDropdown && !isInsideToggle && dropdown.classList.contains('open')) {
-      dropdown.classList.remove('open');
-      if (toolsToggle) toolsToggle.setAttribute('aria-expanded', 'false');
-    }
-  });
+  document.addEventListener('DOMContentLoaded', setupToolsDropdown);
 
 })();
