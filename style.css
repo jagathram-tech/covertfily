@@ -3440,7 +3440,7 @@ a:visited {
 
 .first-screen {
     display: grid;
-    grid-template-rows: auto 1fr 1fr;
+    grid-template-rows: auto 5fr 1fr;
     height: 100dvh;
     overflow: hidden;
 }
@@ -3454,7 +3454,7 @@ a:visited {
 .first-screen-content {
     grid-row: 2 / span 2;
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 5fr 1fr;
     overflow: hidden;
 }
 
