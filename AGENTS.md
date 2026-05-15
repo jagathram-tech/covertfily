@@ -27,7 +27,7 @@ Static HTML site, no build system, no package manager, no tests, no CI, no linti
 ## Hand-Crafted vs Generated Pages
 
 - **Auto-generated:** lowercase `<!doctype html>`, no keywords `<meta>`, no GA, rely on main.js for all logic.
-- **Hand-crafted:** uppercase `<!DOCTYPE html>` (or `<!doctype html>` for video tools), have keywords meta, some include GA. `pdf-to-word.html` is hand-crafted (uses mammoth) despite being an `x-to-y` converter.
+- **Hand-crafted:** uppercase `<!DOCTYPE html>`, have keywords meta, some include GA. `pdf-to-word.html` is hand-crafted (uses mammoth) despite being an `x-to-y` converter.
 
 ## Global JS API (Do Not Rename)
 
