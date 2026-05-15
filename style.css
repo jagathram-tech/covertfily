@@ -201,7 +201,7 @@ nav .nav-inner {
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 180px 80px 100px;
+    padding: 180px 80px 120px;
 }
 
 .hero-content {
@@ -3351,7 +3351,7 @@ a:visited {
 /* Mobile */
 @media (max-width: 768px) {
     .hero {
-        padding: 100px 20px 60px;
+        padding: 100px 20px 80px;
     }
 
     .hero-inner {
@@ -3403,7 +3403,7 @@ a:visited {
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .hero {
-        padding: 160px 4% 120px !important;
+        padding: 160px 4% 140px !important;
     }
 }
 
