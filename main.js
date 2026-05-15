@@ -202,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Mobile navigation handled via persistent header; hamburger removed
-  }
 
   // Close mobile menu when clicking outside
   document.addEventListener("click", (e) => {
@@ -1445,6 +1444,76 @@ function downloadFile(url, filename) {
     const fill = document.querySelector(".progress-bar-fill");
     if (fill) fill.style.width = "0%";
   };
+
+  // Sticky nav scroll listener
+  (function() {
+    const stickyNav = document.getElementById("stickyNav");
+    if (!stickyNav) return;
+    function onScroll() {
+      if (window.scrollY > window.innerHeight * 0.8) {
+        stickyNav.classList.add("scrolled");
+      } else {
+        stickyNav.classList.remove("scrolled");
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // CTA smooth scroll
+  document.querySelectorAll(".hero-cta").forEach((btn) => {
+    btn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const href = this.getAttribute("href");
+      if (!href) return;
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+
+  // Tools dropdown toggle & search
+  (function() {
+    const btn = document.getElementById("toolsDropdownBtn");
+    const wrap = btn ? btn.closest(".tools-dropdown-wrap") : null;
+    const dropdown = document.getElementById("toolsDropdown");
+    const search = document.getElementById("toolsDropdownSearch");
+    if (!btn || !wrap || !dropdown) return;
+
+    btn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      wrap.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) {
+        wrap.classList.remove("active");
+        if (search) {
+          search.value = "";
+          search.dispatchEvent(new Event("input"));
+        }
+      }
+    });
+
+    if (search) {
+      search.addEventListener("input", function() {
+        const query = this.value.toLowerCase().trim();
+        const groups = dropdown.querySelectorAll(".tools-group");
+        groups.forEach((group) => {
+          const links = group.querySelectorAll("a");
+          const label = group.querySelector(".tools-group-label");
+          let anyVisible = false;
+          links.forEach((link) => {
+            const match = !query || link.textContent.toLowerCase().includes(query);
+            link.style.display = match ? "block" : "none";
+            if (match) anyVisible = true;
+          });
+          if (label) label.style.display = anyVisible ? "block" : "none";
+        });
+      });
+    }
+  })();
 });
 
 /* ============================================================================

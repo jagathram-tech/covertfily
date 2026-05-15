@@ -21,7 +21,7 @@ Static HTML site, no build system, no package manager, no tests, no CI, no linti
 ## Sync Rules
 
 - Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync. `formatMapping` includes `svg` (hand-managed); `BASIC_MAPPING` does not. When adding formats, update both plus their label tables (`BASIC_LABELS` / `FORMAT_LABELS`).
-- FFmpeg.wasm versions: always `ffmpeg@0.12.10` + `core@0.12.6` in both main.js and hand-crafted video tools.
+- FFmpeg.wasm versions: always `ffmpeg@0.12.10` + `util@0.12.1` + `core@0.12.6` in both main.js and hand-crafted video tools.
 - PDF.js: `3.11.174` everywhere. Set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly on every page that imports PDF.js.
 
 ## Hand-Crafted vs Generated Pages
@@ -65,7 +65,7 @@ Currently on: merge-pdf, compress-pdf, watermark, pdf-to-word, ocr, image-tools,
 
 ## Mobile Nav
 
-- Hamburger auto-created by main.js if missing (`.menu-toggle` with 3 `<span>` children).
+- Hamburger lives in static HTML (`.menu-toggle` with 3 `<span>` children); main.js no longer injects it.
 - Mobile nav uses `body.nav-active` + `.nav-links.mobile-open`. Drawer `top` dynamic; `z-index: 1001`.
 - `.nav-backdrop` injected by JS.
 
