@@ -3393,14 +3393,19 @@ a:visited {
     .trusted-by-logos {
         display: flex;
         flex-wrap: nowrap;
-        justify-content: center;
-        gap: 12px;
-        overflow-x: auto;
+        gap: 20px;
+        overflow: hidden;
+        animation: marquee-scroll 20s linear infinite;
     }
     .trusted-by-logos img {
         height: 22px;
         flex-shrink: 0;
     }
+}
+
+@keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 @media (min-width: 769px) {
