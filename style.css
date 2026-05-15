@@ -3348,12 +3348,6 @@ a:visited {
 
 .trusted-by-logos img {
     height: 28px;
-    filter: grayscale(100%) opacity(0.5);
-    transition: filter 0.3s ease;
-}
-
-.trusted-by-logos img:hover {
-    filter: grayscale(0%) opacity(1);
 }
 
 /* Mobile */
