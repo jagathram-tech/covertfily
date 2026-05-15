@@ -3325,6 +3325,8 @@ a:visited {
     background: #ffffff;
     padding: 53px 125px;
     text-align: center;
+    border-top: 1px solid #eef0f6;
+    border-bottom: 1px solid #eef0f6;
 }
 
 .trusted-by-label {
