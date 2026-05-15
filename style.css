@@ -3391,9 +3391,15 @@ a:visited {
     }
 
     .trusted-by-logos {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 12px;
+        overflow-x: auto;
+    }
+    .trusted-by-logos img {
+        height: 22px;
+        flex-shrink: 0;
     }
 }
 
