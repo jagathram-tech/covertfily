@@ -65,9 +65,8 @@ Currently on: merge-pdf, compress-pdf, watermark, pdf-to-word, ocr, image-tools,
 
 ## Mobile Nav
 
-- Hamburger lives in static HTML (`.menu-toggle` with 3 `<span>` children); main.js no longer injects it.
-- Mobile nav uses `body.nav-active` + `.nav-links.mobile-open`. Drawer `top` dynamic; `z-index: 1001`.
-- `.nav-backdrop` injected by JS.
+- Hamburger was removed; mobile nav is now handled via persistent header structure. `main.js` no longer injects it.
+- `.nav-backdrop` is injected by JS where needed.
 
 ## PowerScript Nav Fix
 
