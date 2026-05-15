@@ -3392,20 +3392,20 @@ a:visited {
 
     .trusted-by-logos {
         display: flex;
-        flex-wrap: nowrap;
-        gap: 20px;
-        overflow: hidden;
-        animation: marquee-scroll 20s linear infinite;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
     }
     .trusted-by-logos img {
-        height: 22px;
+        height: 24px;
         flex-shrink: 0;
     }
-}
-
-@keyframes marquee-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-33.333%); }
+    .trusted-by-logos img:nth-child(1),
+    .trusted-by-logos img:nth-child(2),
+    .trusted-by-logos img:nth-child(4),
+    .trusted-by-logos img:nth-child(6) {
+        display: none;
+    }
 }
 
 @media (min-width: 769px) {
