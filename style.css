@@ -223,7 +223,7 @@ nav .nav-inner {
 
 /* Hero Section */
 .hero {
-    padding: 80px 8% 60px;
+    padding: 80px 8%;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     gap: 60px;
@@ -312,27 +312,7 @@ nav .nav-inner {
     font-size: 2rem;
 }
 
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background: #f1f5f9;
-    border-radius: 100px;
-    overflow: hidden;
-    margin-top: 30px;
-}
 
-.progress-fill {
-    width: 70%;
-    height: 100%;
-    background: linear-gradient(90deg, #818cf8, #34d399);
-    border-radius: 100px;
-    animation: progress 2s infinite ease-in-out;
-}
-
-@keyframes progress {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(150%); }
-}
 
 .check-badge {
     position: absolute;
@@ -354,7 +334,7 @@ nav .nav-inner {
 
 /* Stats Row */
 .stats-row {
-    padding: 60px 8%;
+    padding: 80px 8%;
     background: #fcfcfd;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -1052,14 +1032,17 @@ footer {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 8px 14px;
     background: white;
-    border: 1px solid var(--border);
-    border-radius: 100px;
+    border: 1px solid rgba(0, 23, 103, 0.2);
+    border-radius: 8px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--text-main);
-    box-shadow: var(--shadow-sm);
+    color: var(--primary);
+}
+
+.hero-badges {
+    gap: 12px;
 }
 
 .badge-tag {
@@ -1075,31 +1058,89 @@ footer {
     margin-bottom: 1rem;
 }
 
+/* Section Headings */
+.section-heading {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+    .section-heading {
+        font-size: 1.5rem;
+    }
+}
+
+/* Converter Section Spacing */
+.converter-section {
+    padding: 80px 8%;
+}
+
+/* Nav Outlined Button */
+.btn-outline {
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: white;
+    border: 1.5px solid var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+}
+
 /* Comparison Table */
 .comparison-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background: white;
     border-radius: var(--radius-md);
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
 }
 
-.comparison-table th, .comparison-table td {
-    padding: 16px 24px;
+.comparison-table thead tr {
+    background: var(--primary);
+    color: white;
+}
+
+.comparison-table th {
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 700;
+    border: none;
+}
+
+.comparison-table td {
+    padding: 14px 20px;
     text-align: left;
     border-bottom: 1px solid var(--border);
 }
 
-.comparison-table th {
-    background: #fcfcfd;
-    font-weight: 700;
-    color: var(--text-main);
+.comparison-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.comparison-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .comparison-table td:first-child {
     font-weight: 500;
     color: var(--text-muted);
+}
+
+.comparison-table td:nth-child(2),
+.comparison-table td:nth-child(3) {
+    text-align: center;
 }
 
 .comparison-table i.fa-check { color: #10b981; }
@@ -1299,6 +1340,60 @@ footer {
     .canvas-wrapper {
         min-height: 300px !important;
     }
+}
+
+/* Testimonials */
+.testimonials-section {
+    padding: 80px 8%;
+    background: var(--bg-alt);
+}
+
+.testimonials-section .section-heading {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.testimonial-card {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.testimonial-stars {
+    color: #f59e0b;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+}
+
+.testimonial-quote {
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.testimonial-author {
+    margin-top: auto;
+}
+
+.testimonial-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.testimonial-role {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
 }
 
 /* Blog & Content Styles */

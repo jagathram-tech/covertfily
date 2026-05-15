@@ -149,67 +149,65 @@
                     <button class="dropdown-toggle" type="button" id="tools-toggle" aria-label="Tools menu" aria-expanded="false">
                         Tools <i class="fas fa-chevron-down"></i>
                     </button>
+                    <div id="tools-dropdown">
+                        <div class="tool-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="tool-search" placeholder="Search tools...">
+                        </div>
+                        <div class="tool-list">
+                            <div class="category-label">PDF Tools</div>
+                            <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
+                            <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
+                            <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
+                            <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
+                            <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
+
+                            <div class="category-label">Image Tools</div>
+                            <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
+                            <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
+                            <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
+                            <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
+                            <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
+                            <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
+                            <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
+                            <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
+                            <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
+                            <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
+                            <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
+                            <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
+                            <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
+                            <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
+                            <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
+                            <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
+
+                            <div class="category-label">Video Tools</div>
+                            <a href="video-trimmer.html"><i class="fas fa-scissors"></i> Video Trimmer</a>
+                            <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
+                            <a href="video-compressor.html"><i class="fas fa-compress"></i> Video Compressor</a>
+                            <a href="video-speed.html"><i class="fas fa-tachometer-alt"></i> Video Speed Changer</a>
+
+                            <div class="category-label">Audio Tools</div>
+                            <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
+                            <a href="audio-merger.html"><i class="fas fa-object-group"></i> Audio Merger</a>
+
+                            <div class="category-label">Generate</div>
+                            <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
+                            <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
+                            <a href="lorem-ipsum.html"><i class="fas fa-align-left"></i> Lorem Ipsum Generator</a>
+                            <a href="word-counter.html"><i class="fas fa-spell-check"></i> Word & Character Counter</a>
+
+                            <div class="category-label">Utilities</div>
+                            <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
         <div class="nav-actions">
-            <a href="https://github.com/jagathram-tech/covertfily" target="_blank" class="btn-primary">Open Source</a>
+            <a href="https://github.com/jagathram-tech/covertfily" target="_blank" class="btn-outline">Open Source</a>
         </div>
     </div>
 </nav>
-
-<!-- Dropdown outside nav — pushes page content down -->
-<div class="dropdown-content" id="tools-dropdown">
-    <div class="tool-search-wrapper">
-        <i class="fas fa-search"></i>
-        <input type="text" class="tool-search" placeholder="Search tools...">
-    </div>
-    <div class="tool-list">
-        <div class="category-label">PDF Tools</div>
-        <a href="merge-pdf.html"><i class="fas fa-object-group"></i> Merge PDF</a>
-        <a href="compress-pdf.html"><i class="fas fa-compress"></i> Compress PDF</a>
-        <a href="reorder-pdf.html"><i class="fas fa-arrows-alt-v"></i> Reorder PDF Pages</a>
-        <a href="protect-pdf.html"><i class="fas fa-lock"></i> Protect / Unlock PDF</a>
-        <a href="watermark.html"><i class="fas fa-water"></i> Watermark</a>
-
-        <div class="category-label">Image Tools</div>
-        <a href="image-resizer.html"><i class="fas fa-expand-arrows-alt"></i> Image Resizer</a>
-        <a href="image-rounder.html"><i class="fas fa-circle-notch"></i> Image Rounder</a>
-        <a href="image-blur.html"><i class="fas fa-droplet"></i> Image Blur</a>
-        <a href="face-blur.html"><i class="fas fa-user-slash"></i> Face Blur</a>
-        <a href="color-palette-extractor.html"><i class="fas fa-palette"></i> Color Palette</a>
-        <a href="eyedropper.html"><i class="fas fa-eye-dropper"></i> EyeDropper</a>
-        <a href="image-to-base64.html"><i class="fas fa-code"></i> Image to Base64</a>
-        <a href="exif-reader.html"><i class="fas fa-camera"></i> EXIF Reader</a>
-        <a href="metadata-stripper.html"><i class="fas fa-eraser"></i> Metadata Stripper</a>
-        <a href="pixel-art.html"><i class="fas fa-gamepad"></i> Pixel Art</a>
-        <a href="image-to-json.html"><i class="fas fa-file-code"></i> Image to JSON</a>
-        <a href="brightness-map.html"><i class="fas fa-sun"></i> Brightness Map</a>
-        <a href="stereogram.html"><i class="fas fa-eye"></i> Stereogram</a>
-        <a href="steganography.html"><i class="fas fa-user-secret"></i> Steganography</a>
-        <a href="collage-maker.html"><i class="fas fa-th-large"></i> Collage Maker</a>
-        <a href="ocr.html"><i class="fas fa-file-alt"></i> Image to Text (OCR)</a>
-
-        <div class="category-label">Video Tools</div>
-        <a href="video-trimmer.html"><i class="fas fa-scissors"></i> Video Trimmer</a>
-        <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
-        <a href="video-compressor.html"><i class="fas fa-compress"></i> Video Compressor</a>
-        <a href="video-speed.html"><i class="fas fa-tachometer-alt"></i> Video Speed Changer</a>
-
-        <div class="category-label">Audio Tools</div>
-        <a href="audio-trimmer.html"><i class="fas fa-scissors"></i> Audio Trimmer</a>
-        <a href="audio-merger.html"><i class="fas fa-object-group"></i> Audio Merger</a>
-
-        <div class="category-label">Generate</div>
-        <a href="qr-code-generator.html"><i class="fas fa-qrcode"></i> QR Code Generator</a>
-        <a href="barcode-generator.html"><i class="fas fa-barcode"></i> Barcode Generator</a>
-        <a href="lorem-ipsum.html"><i class="fas fa-align-left"></i> Lorem Ipsum Generator</a>
-        <a href="word-counter.html"><i class="fas fa-spell-check"></i> Word & Character Counter</a>
-
-        <div class="category-label">Utilities</div>
-        <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
-    </div>
-</div>
 
     <main>
         <!-- Hero Section -->
@@ -238,9 +236,6 @@
                         <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
                         <i class="fas fa-arrow-right connector"></i>
                         <div class="file-icon word"><i class="fas fa-file-word"></i></div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
                     </div>
                 </div>
                 <div class="check-badge"><i class="fas fa-check"></i></div>
@@ -498,7 +493,7 @@
         <!-- Popular Converters -->
         <section style="padding: 100px 8%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;">
-                <h2 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em;">Popular Converters</h2>
+                <h2 class="section-heading">Popular Converters</h2>
                 <a href="#" style="color: #3b82f6; font-weight: 600; display: flex; align-items: center; gap: 8px;">View all tools <i class="fas fa-arrow-right"></i></a>
             </div>
             
@@ -583,7 +578,7 @@
 
         <!-- How It Works -->
         <section style="padding: 100px 8%; background: #fcfcfd;">
-            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 60px;">How It Works</h2>
+            <h2 class="section-heading" style="text-align: center; margin-bottom: 60px;">How It Works</h2>
             <div style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;">
                 <div style="text-align: center; max-width: 250px;">
                     <div style="width: 80px; height: 80px; background: #eff6ff; color: #3b82f6; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;"><i class="fas fa-upload"></i></div>
@@ -614,79 +609,40 @@
             </div>
         </section>
 
-        <!-- Trust & Social Proof Section -->
-        <section style="padding: 60px 8%; background: white;">
-            <div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; text-align: center;">
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">50,000+</div>
-                    <div style="color: var(--text-muted); font-weight: 500;">Files Processed Monthly</div>
-                </div>
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">100%</div>
-                    <div style="color: var(--text-muted); font-weight: 500;">Private & Local</div>
-                </div>
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">4.9/5</div>
-                    <div style="color: var(--text-muted); font-weight: 500;">User Rating</div>
-                </div>
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">Free</div>
-                    <div style="color: var(--text-muted); font-weight: 500;">Forever Open Source</div>
-                </div>
-            </div>
-            
-            <div style="margin-top: 80px; text-align: center;">
-                <p style="text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 700; font-size: 0.8rem; margin-bottom: 30px;">Featured & Recommended By</p>
-                <div style="display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; opacity: 0.5; filter: grayscale(1);">
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #64748b;"><i class="fab fa-github"></i> GitHub</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #64748b;"><i class="fab fa-product-hunt"></i> ProductHunt</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #64748b;"><i class="fab fa-reddit"></i> Reddit</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #64748b;"><i class="fas fa-code-branch"></i> Dev.to</div>
-                </div>
-            </div>
-        </section>
+
 
         <!-- Testimonials -->
-        <section style="padding: 100px 8%; background: var(--bg-alt);">
-            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 60px;">What Our Users Say</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                <div style="background: white; padding: 40px; border-radius: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
-                    <div style="color: #f59e0b; margin-bottom: 20px;">
+        <section class="testimonials-section">
+            <h2 class="section-heading">What Our Users Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <p style="font-style: italic; color: var(--text-muted); margin-bottom: 25px;">"I handle sensitive legal documents and I was always worried about uploading them to online converters. Covertfily is a game changer. Knowing the conversion happens in my browser is a huge relief."</p>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800;">JD</div>
-                        <div>
-                            <div style="font-weight: 700;">James D.</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">Legal Consultant</div>
-                        </div>
+                    <p class="testimonial-quote">"I handle sensitive legal documents and I was always worried about uploading them to online converters. Covertfily is a game changer. Knowing the conversion happens in my browser is a huge relief."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-name">James D.</div>
+                        <div class="testimonial-role">Legal Consultant</div>
                     </div>
                 </div>
-                <div style="background: white; padding: 40px; border-radius: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
-                    <div style="color: #f59e0b; margin-bottom: 20px;">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <p style="font-style: italic; color: var(--text-muted); margin-bottom: 25px;">"Fast, simple, and actually free. Most 'free' converters limit you after 2 files or add watermarks. This is the real deal. The OCR tool is incredibly accurate too!"</p>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800;">SA</div>
-                        <div>
-                            <div style="font-weight: 700;">Sarah A.</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">Content Creator</div>
-                        </div>
+                    <p class="testimonial-quote">"Fast, simple, and actually free. Most 'free' converters limit you after 2 files or add watermarks. This is the real deal. The OCR tool is incredibly accurate too!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-name">Sarah A.</div>
+                        <div class="testimonial-role">Content Creator</div>
                     </div>
                 </div>
-                <div style="background: white; padding: 40px; border-radius: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
-                    <div style="color: #f59e0b; margin-bottom: 20px;">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <p style="font-style: italic; color: var(--text-muted); margin-bottom: 25px;">"As a developer, I love that it's open source. I can see exactly how my data is being handled. The speed is surprisingly fast for client-side processing."</p>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; border-radius: 50%; background: #8b5cf6; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800;">MK</div>
-                        <div>
-                            <div style="font-weight: 700;">Michael K.</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">Software Engineer</div>
-                        </div>
+                    <p class="testimonial-quote">"As a developer, I love that it's open source. I can see exactly how my data is being handled. The speed is surprisingly fast for client-side processing."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-name">Michael K.</div>
+                        <div class="testimonial-role">Software Engineer</div>
                     </div>
                 </div>
             </div>
@@ -695,7 +651,7 @@
         <!-- Why Choose & Comparison -->
         <section class="split-grid" style="padding: 80px 8%;">
             <div>
-                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 30px;">Why Choose Covertfily?</h2>
+                <h2 class="section-heading" style="margin-bottom: 30px;">Why Choose Covertfily?</h2>
                 <ul style="list-style: none;">
                     <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
                         <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
@@ -767,7 +723,7 @@
         <!-- FAQ Section -->
         <section id="faq" style="padding: 100px 8%; background: #fcfcfd;">
             <div style="display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto 50px;">
-                <h2 style="font-size: 2.5rem; font-weight: 800;">Frequently Asked Questions</h2>
+                <h2 class="section-heading">Frequently Asked Questions</h2>
                 <a href="#" style="color: #3b82f6; font-weight: 600;">View all FAQs <i class="fas fa-arrow-right"></i></a>
             </div>
             
@@ -805,7 +761,7 @@
         <!-- Blog Section -->
         <section style="padding: 100px 8%; background: white;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;">
-                <h2 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em;">Latest from the Blog</h2>
+                <h2 class="section-heading">Latest from the Blog</h2>
                 <a href="blog.html" style="color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px;">View all posts <i class="fas fa-arrow-right"></i></a>
             </div>
 
