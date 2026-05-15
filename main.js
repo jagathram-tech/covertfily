@@ -230,43 +230,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Dropdowns in Menu
-  const dropdowns = document.querySelectorAll(".dropdown");
-  dropdowns.forEach((dropdown) => {
-    const toggle = dropdown.querySelector(".dropdown-toggle");
-    if (toggle) {
-      toggle.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropdown.classList.toggle("active");
-      });
-    }
-  });
-
-  // Desktop dropdown hover class for click-outside detection
-  const toolsDropdown = document.querySelector(".has-nested-menu");
-  if (toolsDropdown) {
-    const dropdownContent = toolsDropdown.querySelector(".dropdown-content");
-    toolsDropdown.addEventListener("mouseenter", () => {
-      toolsDropdown.classList.add("has-open");
-    });
-    toolsDropdown.addEventListener("mouseleave", () => {
-      toolsDropdown.classList.remove("has-open");
-    });
-  }
-
-  // Close dropdowns when clicking outside
-  document.addEventListener("click", (e) => {
-    document.querySelectorAll(".dropdown.active").forEach((dropdown) => {
-      if (!dropdown.contains(e.target)) {
-        dropdown.classList.remove("active");
-      }
-    });
-  });
-
   // Close menu on link click
   document
-    .querySelectorAll(".nav-links a:not(.dropdown-toggle)")
+    .querySelectorAll(".nav-links a")
     .forEach((link) => {
       link.addEventListener("click", () => {
         document.body.classList.remove("nav-active");
@@ -304,19 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
         noResults.style.display = visibleCount === 0 ? "block" : "none";
     }
   });
-
-  // Tools Search Filtering
-  const toolsSearch = document.querySelector(".tool-search");
-  if (toolsSearch) {
-    toolsSearch.addEventListener("input", (e) => {
-      const query = e.target.value.toLowerCase();
-      const tools = document.querySelectorAll(".tool-list a");
-      tools.forEach((tool) => {
-        const text = tool.textContent.toLowerCase();
-        tool.classList.toggle("hidden", !text.includes(query));
-      });
-    });
-  }
 
   // Click handler moved to inline in index.html to prevent double-firing
   // dropzone.addEventListener('click', () => { ... });
@@ -1674,55 +1627,4 @@ function downloadFile(url, filename) {
   }, 300));
 
     // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
-   const viewportHeight = window.innerHeight;
-   window.addEventListener('resize', debounce(function() {
-     const newHeight = window.innerHeight;
-     if (newHeight < viewportHeight * 0.75) {
-       // Virtual keyboard is shown - collapse non-essential UI
-       document.querySelectorAll('.dropdown-content.active').forEach(el => {
-         el.style.display = 'none';
-       });
-     }
-   }, 200));
-
-  // 10. TOOLS DROPDOWN - Mobile click toggle only
-  // Desktop uses CSS :hover (no JS needed)
-  function setupToolsDropdown() {
-    const toolsToggle = document.getElementById('tools-toggle');
-    const dropdown = document.getElementById('tools-dropdown');
-    const hasNestedMenu = document.querySelector('.has-nested-menu');
-
-    if (!toolsToggle || !dropdown || !hasNestedMenu) return;
-
-    toolsToggle.setAttribute('aria-expanded', 'false');
-
-    // Mobile only: click to toggle
-    if (window.innerWidth < 769) {
-      toolsToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const isOpen = hasNestedMenu.classList.toggle('open');
-        toolsToggle.setAttribute('aria-expanded', isOpen);
-      });
-
-      // Click-outside closes on mobile
-      document.addEventListener('click', function(e) {
-        if (!hasNestedMenu.contains(e.target) && !dropdown.contains(e.target)) {
-          hasNestedMenu.classList.remove('open');
-          toolsToggle.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // Tool link click closes dropdown
-      dropdown.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function() {
-          hasNestedMenu.classList.remove('open');
-          toolsToggle.setAttribute('aria-expanded', 'false');
-        });
-      });
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', setupToolsDropdown);
-
 })();
