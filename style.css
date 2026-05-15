@@ -3405,12 +3405,12 @@ a:visited {
 
 @media (min-width: 769px) {
     .hero {
-        padding: 140px 100px 100px !important;
+        padding: 150px 110px 110px !important;
     }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .hero {
-        padding: 140px 4% 100px !important;
+        padding: 150px 4% 110px !important;
     }
 }
