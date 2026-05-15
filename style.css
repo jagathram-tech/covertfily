@@ -201,7 +201,7 @@ nav .nav-inner {
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 110px 80px 60px;
+    padding: 140px 80px 100px;
 }
 
 .hero-content {
@@ -3359,7 +3359,7 @@ a:visited {
 /* Mobile */
 @media (max-width: 768px) {
     .hero {
-        padding: 90px 20px 60px;
+        padding: 100px 20px 60px;
     }
 
     .hero-inner {
@@ -3400,5 +3400,17 @@ a:visited {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 24px;
+    }
+}
+
+@media (min-width: 769px) {
+    .hero {
+        padding: 120px 80px 80px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero {
+        padding: 120px 4% 80px !important;
     }
 }
