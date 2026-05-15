@@ -3052,7 +3052,7 @@ a:visited {
 }
 
 .hero-title {
-    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-size: clamp(3.2rem, 5.5vw, 5rem);
     font-weight: 900;
     color: #0d1f4e;
     line-height: 1.1;
@@ -3373,7 +3373,7 @@ a:visited {
     }
 
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.6rem;
     }
 
     .hero-actions {
