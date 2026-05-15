@@ -3353,7 +3353,7 @@ a:visited {
 /* Mobile */
 @media (max-width: 768px) {
     .hero {
-        padding: 100px 20px 80px;
+        padding: 120px 20px 100px;
     }
 
     .hero-inner {
