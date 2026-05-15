@@ -3322,7 +3322,7 @@ a:visited {
 
 /* Trusted By */
 .trusted-by {
-    background: #f8f9fc;
+    background: #ffffff;
     padding: 28px 80px;
     text-align: center;
     border-top: 1px solid #eef0f6;
@@ -3412,5 +3412,14 @@ a:visited {
 @media (min-width: 769px) and (max-width: 1024px) {
     .hero {
         padding: 160px 4% 120px !important;
+    }
+}
+
+@media (min-width: 769px) {
+    body {
+        padding-top: 80px;
+    }
+    .hero {
+        padding-top: 120px !important;
     }
 }
