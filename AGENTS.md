@@ -44,7 +44,7 @@ Font Awesome 6.4.0 (cdnjs) · Inter wght@400-800 (Google Fonts) · SheetJS 0.20.
 
 ## Tool Library Patterns
 
-- **PDF manipulation (merge/reorder/protect/watermark/compress):** pdf-lib via unpkg; must set `workerSrc` before PDF.js load.
+- **PDF manipulation (merge/reorder/protect/watermark/compress):** pdf-lib via unpkg; must set `workerSrc` before PDF.js load. Local `pdf-worker.js` wraps the CDN worker.
 - **Image→PDF / DOCX→PDF:** jspdf (simple writes), no pdf-lib.
 - **Video tools (compressor/speed/trimmer/extractor):** load FFmpeg.wasm inline, delegate to shared `loadFFmpeg()` in main.js.
 - **Audio merger:** Web Audio API + SortableJS, outputs WAV (no external encoding lib).
