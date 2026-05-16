@@ -142,8 +142,10 @@ nav .nav-inner {
 .nav-tools-dropdown {
     position: fixed;
     top: 80px;
-    left: 0;
+    left: auto;
     right: 0;
+    width: 40%;
+    min-width: 320px;
     z-index: 2000;
     background: #ffffff;
     border-radius: 0 0 16px 16px;
