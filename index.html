@@ -232,12 +232,16 @@
         @media (max-width: 768px) {
             .hero-new { padding: 80px 6% 80px; }
             .hero-pixels { display: none; }
+            .hero-new-inner {
+                grid-template-columns: 1fr;
+            }
             .hero-new-left { 
                 text-align: center; 
                 align-items: center; 
                 justify-content: center;
                 margin: 0 auto;
                 gap: 14px;
+                grid-column: 1 / -1;
             }
             .hero-new-badge { margin: 0 auto 16px; }
             .hero-new-title { 
