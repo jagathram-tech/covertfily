@@ -3556,7 +3556,7 @@ a:visited {
 }
 
 .first-screen .hero-new-title {
-    font-size: clamp(22px, 3.5vh, 48px);
+    font-size: clamp(22px, 9vh, 48px);
     margin: 0;
 }
 
@@ -3623,5 +3623,25 @@ a:visited {
 
     .first-screen .hero-new-left {
         align-items: center;
+    }
+
+    .hero-new-pills {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .hero-new-pill {
+        white-space: nowrap;
+    }
+
+    .hero-new-cta {
+        width: auto;
+        min-width: 200px;
+        white-space: nowrap;
+        text-align: center;
+        padding: 14px 36px;
     }
 }
