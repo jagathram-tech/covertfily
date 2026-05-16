@@ -232,9 +232,21 @@
         @media (max-width: 768px) {
             .hero-new { padding: 80px 6% 80px; }
             .hero-pixels { display: none; }
-            .hero-new-left { text-align: center; align-items: center; }
+            .hero-new-left { 
+                text-align: center; 
+                align-items: center; 
+                justify-content: center;
+                margin: 0 auto;
+                gap: 14px;
+            }
             .hero-new-badge { margin: 0 auto 16px; }
-            .hero-new-title { text-align: center; }
+            .hero-new-title { 
+                text-align: center;
+                font-size: clamp(2.8rem, 8vw, 3.8rem);
+                font-weight: 900;
+                line-height: 1.1;
+                letter-spacing: -0.03em;
+            }
             .hero-new-desc { text-align: center; margin: 0 auto; }
             .hero-new-pills { justify-content: center; }
             .hero-new-footnote { justify-content: center; }
