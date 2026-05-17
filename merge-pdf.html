@@ -78,6 +78,72 @@
             background: var(--primary-hover); transform: translateY(-2px);
         }
         .btn-merge:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .reorder-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-style: italic;
+            user-select: none;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+            transition: all 0.15s ease;
+            background: white;
+            cursor: default;
+        }
+        .file-item:last-child { border-bottom: none; }
+        .file-item.dragging {
+            opacity: 0.45;
+            background: #f1f5f9;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .file-item.drag-over {
+            border-top: 3px solid var(--primary);
+            background: #eff6ff;
+            transform: translateY(2px);
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #94a3b8;
+            padding: 4px 6px;
+            margin-right: 2px;
+            user-select: none;
+            font-size: 1.1rem;
+            line-height: 1;
+            border-radius: 4px;
+            transition: color 0.15s, background 0.15s;
+        }
+        .drag-handle:hover {
+            color: var(--primary);
+            background: #f1f5f9;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .order-badge {
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-right: 6px;
+        }
     </style>
     <!-- Schema.org JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -282,6 +348,8 @@
             renderFileList();
         }
 
+        let dragSrcIndex = null;
+
         function renderFileList() {
             if (filesToMerge.length === 0) {
                 fileList.style.display = 'none';
@@ -291,17 +359,79 @@
 
             fileList.style.display = 'block';
             mergeBtn.disabled = filesToMerge.length < 2;
-            
-            fileList.innerHTML = filesToMerge.map((file, index) => `
-                <div class="file-item">
-                    <div class="file-info">
-                        <i class="fas fa-file-pdf" style="color: #ef4444;"></i>
-                        <span>${file.name}</span>
-                        <small style="color: var(--text-muted)">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+
+            const hint = filesToMerge.length >= 2
+                ? '<div class="reorder-hint"><i class="fas fa-arrows-alt-v" style="margin-right:6px;"></i>Drag to reorder</div>'
+                : '';
+
+            fileList.innerHTML = hint + filesToMerge.map((file, index) => `
+                <div class="file-item" draggable="true" data-index="${index}">
+                    <div class="file-info" style="flex:1; min-width:0; overflow:hidden;">
+                        <span class="drag-handle" title="Drag to reorder"><i class="fas fa-grip-lines"></i></span>
+                        <span class="order-badge">${index + 1}</span>
+                        <i class="fas fa-file-pdf" style="color: #ef4444; flex-shrink:0;"></i>
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${file.name}</span>
+                        <small style="color: var(--text-muted); flex-shrink:0;">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
                     </div>
                     <i class="fas fa-times btn-remove" onclick="removeFile(${index})"></i>
                 </div>
             `).join('');
+
+            attachDragHandlers();
+        }
+
+        function attachDragHandlers() {
+            const items = fileList.querySelectorAll('.file-item');
+            items.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragenter', handleDragEnter);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('dragleave', handleDragLeave);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        function handleDragStart(e) {
+            dragSrcIndex = parseInt(this.dataset.index);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', dragSrcIndex);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if (this.classList.contains('dragging')) return;
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            const srcIndex = dragSrcIndex;
+            const targetIndex = parseInt(this.dataset.index);
+            if (srcIndex === null || isNaN(targetIndex) || srcIndex === targetIndex) return;
+
+            const [moved] = filesToMerge.splice(srcIndex, 1);
+            filesToMerge.splice(targetIndex, 0, moved);
+            dragSrcIndex = null;
+            renderFileList();
+        }
+
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            fileList.querySelectorAll('.file-item').forEach(item => item.classList.remove('drag-over'));
         }
 
         window.removeFile = (index) => {
@@ -342,15 +472,6 @@
             }
         };
 
-        // Tools search filtering
-        document.querySelector('.tools-search').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const tools = document.querySelectorAll('.tools-list a');
-            tools.forEach(tool => {
-                const text = tool.textContent.toLowerCase();
-                tool.classList.toggle('hidden', !text.includes(query));
-            });
-        });
     </script>
     <script src="main.js"></script>
 </body>
