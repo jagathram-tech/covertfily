@@ -3,14 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Covertfily Blog - Privacy, Security & File Tools</title>
-    <meta name="description" content="Stay updated with the latest in browser-based file tools, data privacy, and secure file processing on the Covertfily blog.">
+    <title>Covertfily Blog - Guides, Tips & Privacy Resources</title>
+    <meta name="description" content="Explore step-by-step guides, privacy tips, and file conversion tutorials on the Covertfily blog. All tools run locally in your browser with zero uploads.">
+    <meta name="keywords" content="file conversion guide, pdf tutorial, image converter tips, privacy, browser based tools, covertfily blog">
+    <meta property="og:title" content="Covertfily Blog - Guides, Tips & Privacy Resources">
+    <meta property="og:description" content="Explore step-by-step guides, privacy tips, and file conversion tutorials on the Covertfily blog.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://covertfily.com/blog.html">
+    <meta property="og:site_name" content="Covertfily">
+    <link rel="canonical" href="https://covertfily.com/blog.html">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .blog-index { max-width: 1100px; margin: 0 auto; padding: 2rem 20px 4rem; }
+        .blog-header { text-align: center; padding: 3rem 0 2rem; }
+        .blog-header h1 { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; }
+        .blog-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .blog-card-link { text-decoration: none; color: inherit; display: block; }
+        .blog-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+        .blog-card-img {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        }
+        .blog-card-content { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+        .blog-card-content .badge-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 0.75rem;
+            width: fit-content;
+        }
+        .blog-card-content h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 0.75rem;
+            line-height: 1.35;
+        }
+        .blog-card-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0 0 1rem;
+            flex: 1;
+        }
+        .blog-card-content .read-more {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .blog-card:hover .read-more { color: var(--primary-hover); }
+        .featured-blogs { margin-bottom: 2rem; }
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            padding-left: 4px;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -83,29 +169,109 @@
     <main class="blog-index">
         <header class="blog-header">
             <h1>Covertfily Blog</h1>
-            <p>Insights on privacy, security, and the future of browser-based tools.</p>
+            <p>Step-by-step guides, privacy tips, and tutorials to help you work smarter with files. Every tool runs locally in your browser with zero uploads.</p>
         </header>
 
-        <div class="blog-list">
-            <a href="blog-local-vs-cloud.html" class="blog-card">
-                <div class="blog-card-img"><i class="fas fa-user-shield"></i></div>
-                <div class="blog-card-content">
-                    <span class="badge-tag">Security</span>
-                    <h2>Why Local File Processing is Safer than Cloud Uploads</h2>
-                    <p>Discover the hidden risks of traditional online converters and why browser-based processing is the new gold standard for privacy.</p>
-                    <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
-                </div>
-            </a>
+        <div class="featured-blogs">
+            <div class="section-label">Featured</div>
+            <div class="blog-grid">
+                <a href="blog-local-vs-cloud.html" class="blog-card-link">
+                    <div class="blog-card">
+                        <div class="blog-card-img" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);"><i class="fas fa-user-shield"></i></div>
+                        <div class="blog-card-content">
+                            <span class="badge-tag">Security</span>
+                            <h2>Why Local File Processing is Safer than Cloud Uploads</h2>
+                            <p>Discover the hidden risks of traditional online converters and why browser-based processing is the new gold standard for privacy.</p>
+                            <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
 
-            <a href="blog-best-ocr-2026.html" class="blog-card">
-                <div class="blog-card-img"><i class="fas fa-magic"></i></div>
-                <div class="blog-card-content">
-                    <span class="badge-tag">Reviews</span>
-                    <h2>Best Free OCR Tools in 2026</h2>
-                    <p>Compare the top image-to-text tools of the year. We look at accuracy, speed, and most importantly, your data privacy.</p>
-                    <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
-                </div>
-            </a>
+                <a href="blog-best-ocr-2026.html" class="blog-card-link">
+                    <div class="blog-card">
+                        <div class="blog-card-img" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);"><i class="fas fa-magic"></i></div>
+                        <div class="blog-card-content">
+                            <span class="badge-tag">Reviews</span>
+                            <h2>Best Free OCR Tools in 2026</h2>
+                            <p>Compare the top image-to-text tools of the year. We look at accuracy, speed, and most importantly, your data privacy.</p>
+                            <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section-label">All Guides</div>
+        <div class="blog-grid">
+            <a href="how-to-convert-pdf-to-word.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-word"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Convert PDF to Word Without Losing Formatting</h2><p>Learn how to convert PDF documents to editable Word files quickly and privately using only your browser.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-compress-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-compress"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Compress a PDF Without Losing Quality</h2><p>Reduce PDF file sizes for email and storage while keeping every page crisp and readable.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-merge-pdfs.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-object-group"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Merge Multiple PDFs Into One File</h2><p>Combine several PDF documents into a single file in seconds with our drag-and-drop merge tool.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-jpg-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert JPG to PDF in Seconds</h2><p>Turn your photos and scanned images into professional PDF documents instantly online.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-png-to-jpg.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert PNG to JPG Online for Free</h2><p>Switch between PNG and JPG formats quickly for smaller file sizes and wider compatibility.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-split-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-cut"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Split a PDF Into Multiple Files</h2><p>Extract individual pages or sections from a PDF to create smaller, focused documents.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-excel-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-excel"></i></div><div class="blog-card-content"><span class="badge-tag">Document</span><h2>How to Convert Excel to PDF Without Any Software</h2><p>Transform your spreadsheets into shareable PDF documents directly in your web browser.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-remove-password-from-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-lock-open"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Remove a Password From a PDF</h2><p>Unlock protected PDF files and remove password restrictions safely without uploading anything.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-word-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-pdf"></i></div><div class="blog-card-content"><span class="badge-tag">Document</span><h2>How to Convert Word to PDF on Any Device</h2><p>Create universal PDFs from Word documents on Windows, Mac, phones, or tablets with ease.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-compress-images.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-image"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Compress Images Without Losing Quality</h2><p>Shrink image file sizes for faster websites and easier sharing while keeping them sharp.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-pdf-to-jpg.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Convert PDF to JPG in One Click</h2><p>Extract pages from PDF documents and save them as high-quality JPG images in seconds.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-rotate-pages-in-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-sync-alt"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Rotate Pages in a PDF</h2><p>Fix upside-down or sideways pages in any PDF with a simple, private browser-based tool.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-ppt-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-powerpoint"></i></div><div class="blog-card-content"><span class="badge-tag">Document</span><h2>How to Convert PowerPoint to PDF</h2><p>Share your presentations as reliable PDFs that look perfect on every device and platform.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-extract-pages-from-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-copy"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Extract Pages From a PDF</h2><p>Pull out specific pages from a PDF to create new documents without needing any desktop app.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-webp-to-png-or-jpg.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert WebP to PNG or JPG</h2><p>Make modern WebP images compatible with older software by converting them to PNG or JPG.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-reduce-pdf-file-size-for-email.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-envelope"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Reduce PDF File Size for Email</h2><p>Get your PDFs small enough to attach to emails while keeping every word perfectly readable.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-html-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-code"></i></div><div class="blog-card-content"><span class="badge-tag">Document</span><h2>How to Convert HTML to PDF</h2><p>Save web pages and HTML documents as printable PDF files with formatting preserved.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-pdf-to-png.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Convert PDF to PNG</h2><p>Turn PDF pages into transparent-friendly PNG images for editing and design projects.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-add-watermark-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-water"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Add a Watermark to a PDF</h2><p>Protect your documents by adding text or image watermarks directly inside your browser.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-csv-to-excel.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-csv"></i></div><div class="blog-card-content"><span class="badge-tag">Document</span><h2>How to Convert CSV to Excel</h2><p>Turn plain CSV data into formatted Excel spreadsheets with proper columns and styling.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-heic-to-jpg.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-mobile-alt"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert HEIC to JPG on Windows and Mac</h2><p>Open iPhone photos on any computer by converting HEIC files to universally supported JPG.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-pdf-to-excel.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-excel"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Convert PDF to Excel</h2><p>Extract tables and data from PDFs into editable Excel spreadsheets for analysis.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-crop-pdf-page.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-crop"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Crop a PDF Page Online</h2><p>Trim margins and remove unwanted edges from PDF pages for a cleaner, more focused look.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-gif-to-mp4.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-video"></i></div><div class="blog-card-content"><span class="badge-tag">Video</span><h2>How to Convert GIF to MP4</h2><p>Turn animated GIFs into MP4 videos for better quality and much smaller file sizes.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-mp4-to-gif.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-video"></i></div><div class="blog-card-content"><span class="badge-tag">Video</span><h2>How to Convert MP4 to GIF</h2><p>Create shareable animated GIFs from any video clip using our browser-based converter.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-batch-convert-images.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-images"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Batch Convert Images Online</h2><p>Convert multiple images at once to save time and keep your workflow moving smoothly.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-svg-to-png.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-vector-square"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert SVG to PNG</h2><p>Make vector graphics usable everywhere by converting SVG files to universal PNG images.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-make-pdf-smaller.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-compress-arrows-alt"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Make a PDF Smaller Without Adobe</h2><p>Shrink PDFs for free without buying expensive software or uploading files to the cloud.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-json-to-csv.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-database"></i></div><div class="blog-card-content"><span class="badge-tag">Data</span><h2>How to Convert JSON to CSV</h2><p>Transform JSON data into simple CSV format for spreadsheets and data analysis tools.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-markdown-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-alt"></i></div><div class="blog-card-content"><span class="badge-tag">Document</span><h2>How to Convert Markdown to PDF</h2><p>Export your Markdown notes and documentation as polished PDFs ready to share.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-remove-pages-from-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-trash-alt"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Remove Pages From a PDF</h2><p>Delete unwanted pages from any PDF to create a cleaner, shorter document in seconds.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-bmp-to-png.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert BMP to PNG</h2><p>Upgrade old BMP images to modern PNG format for smaller sizes and transparency support.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-pdf-to-markdown.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-code"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Convert PDF to Markdown</h2><p>Extract text from PDFs into clean Markdown for editing in note-taking apps and wikis.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-unlock-pdf-online.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-unlock"></i></div><div class="blog-card-content"><span class="badge-tag">PDF</span><h2>How to Unlock a PDF File Online for Free</h2><p>Remove passwords and restrictions from PDFs you own without paying or installing software.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
+
+            <a href="how-to-convert-tiff-to-pdf.html" class="blog-card-link"><div class="blog-card"><div class="blog-card-img"><i class="fas fa-file-image"></i></div><div class="blog-card-content"><span class="badge-tag">Image</span><h2>How to Convert TIFF to PDF</h2><p>Package high-quality TIFF scans and images into convenient PDF documents for easy sharing.</p><span class="read-more">Read More <i class="fas fa-arrow-right"></i></span></div></div></a>
         </div>
     </main>
 
@@ -113,17 +279,40 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="logo"><img src="logo.png" alt="Covertfily"></div>
-                <p>Private file tools. No tracking. Open source.</p>
+                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Convert</a></li>
+                    <li><a href="image-resizer.html">Image Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Covertfily. MIT Licensed.</p>
+            <div class="footer-social">
+                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
             </div>
         </div>
     </footer>
     <script src="main.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
