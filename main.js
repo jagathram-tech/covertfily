@@ -734,6 +734,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Merge multiple files into a single PDF via jsPDF
   async function mergeToPDF(files, sourceFormat) {
+    if (typeof window.jspdf === "undefined") {
+      alert("PDF library failed to load. Please refresh the page and try again.");
+      return;
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     let addedPages = 0;
