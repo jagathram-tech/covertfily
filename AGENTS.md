@@ -16,7 +16,8 @@ Static HTML site, no build system, no package manager, no tests, no CI, no linti
 - `generator.js` reads **only** `png-to-jpg.html` as template. `png-to-jpg.html` serves dual purpose: working converter *and* generator template.
 - **Never edit generated `*-to-*.html` directly** — they are overwritten on each generator run.
 - Generator skips `png→jpg` (the template itself) and `pdf→docx` (hand-crafted as `pdf-to-word.html`).
-- `index.html` is also overwritten. Confine manual edits to `<div class="tool-list">` and Popular Converters section. See `INDEX_UPDATE_REFERENCE.md` for exact boundaries.
+- `index.html` is read-modify-written by the generator (not templated), but its dropzone onclick handler and file-input markup are overwritten by regex replacements. Confine persistent manual edits to `<div class="tool-list">` and the Popular Converters section. See `INDEX_UPDATE_REFERENCE.md` for exact boundaries.
+- After editing `png-to-jpg.html`, run `node generator.js` to propagate changes to all converter pages.
 
 ## Sync Rules
 
