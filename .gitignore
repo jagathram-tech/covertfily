@@ -1,0 +1,6 @@
+# Working directories
+.bob/
+.kilo/
+
+# Temporary scripts
+update_navbar.ps1
