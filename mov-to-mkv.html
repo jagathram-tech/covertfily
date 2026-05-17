@@ -27,6 +27,90 @@
                 padding: 0 20px;
                 text-align: center;
             }
+            /* Multi-upload thumbnail grid */
+            .thumbnail-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+                margin-top: 20px;
+            }
+            .thumbnail-card {
+                position: relative;
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 8px;
+                cursor: grab;
+                transition: all 0.2s;
+                user-select: none;
+            }
+            .thumbnail-card.dragging {
+                opacity: 0.4;
+            }
+            .thumbnail-card.drag-over {
+                border-top: 3px solid var(--primary);
+            }
+            .thumbnail-card img {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 8px;
+                pointer-events: none;
+            }
+            .thumbnail-card .file-name {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+                margin-top: 6px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: center;
+            }
+            .thumbnail-card .remove-btn {
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                background: #ef4444;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                cursor: pointer;
+                font-size: 0.7rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2;
+            }
+            .thumbnail-card .remove-btn:hover {
+                background: #dc2626;
+            }
+            .drag-handle {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                color: #94a3b8;
+                cursor: grab;
+                font-size: 0.85rem;
+                z-index: 2;
+            }
+            .image-counter {
+                font-size: 0.9rem;
+                color: #64748b;
+                margin-top: 16px;
+                margin-bottom: 4px;
+                text-align: center;
+            }
+            .drag-hint {
+                font-size: 0.8rem;
+                color: #94a3b8;
+                margin-bottom: 12px;
+                text-align: center;
+            }
+            .generate-pdf-btn {
+                margin-top: 20px;
+            }
             .tool-container .dropzone {
                 margin-top: 40px;
                 cursor: pointer;
@@ -252,9 +336,23 @@
     type="file"
     id="fileInputEl"
     hidden
+    multiple
     onchange="handleToolFile(this.files)"
   />
                 </div>
+
+                <!-- Multi-upload thumbnail grid (hidden unless image-to-PDF) -->
+                <div id="thumbnailContainer" class="thumbnail-grid" style="display: none"></div>
+                <div id="imageCounter" class="image-counter" style="display: none"></div>
+                <div id="dragHint" class="drag-hint" style="display: none">Drag to reorder</div>
+                <button
+                    id="generatePdfBtn"
+                    class="btn-main generate-pdf-btn"
+                    style="display: none"
+                    onclick="generatePDF()"
+                >
+                    <i class="fas fa-file-pdf"></i> Generate PDF
+                </button>
 
                 <!-- Loading / Progress -->
                 <div id="loading" class="loading-block" style="display: none">
@@ -398,32 +496,43 @@
             const initialDropzoneSubtitle =
                 document.getElementById("dropzoneSubtitle").textContent;
 
+            const thumbnailContainer = document.getElementById("thumbnailContainer");
+            const imageCounter = document.getElementById("imageCounter");
+            const dragHint = document.getElementById("dragHint");
+            const generatePdfBtn = document.getElementById("generatePdfBtn");
+
+            let selectedFiles = [];
+            let draggedIndex = null;
+
+            function isImageToPdf() {
+                const page = window.location.pathname.split('/').pop();
+                return /^(png|jpg|jpeg|webp|bmp|gif|svg|avif|tiff|heic)-to-pdf\.html$/i.test(page);
+            }
+
             // Prevent file input click from bubbling to dropzone
-fileInput.addEventListener("click", function (e) {
-                 e.stopPropagation();
-             });
-             // Handle file selection via change event without causing navigation
-             fileInput.addEventListener('change', async function(e) {
-                 e.stopPropagation();
-                 await handleToolFile(e.target.files);
-             });
+            fileInput.addEventListener("click", function (e) {
+                e.stopPropagation();
+            });
+
+            // Handle file selection via change event without causing navigation
+            fileInput.addEventListener('change', async function(e) {
+                e.stopPropagation();
+                await handleToolFile(e.target.files);
+            });
 
             // Make dropzone clickable to trigger file input
-            document
-                .getElementById("dropzone")
-                .addEventListener("click", function (e) {
-                    // Don't trigger if clicking the file input itself
-                    if (
-                        e.target === fileInput ||
-                        e.target.closest("#fileInputEl")
-                    ) {
-                        return;
-                    }
-                    fileInput.click();
-                });
+            const dropzone = document.getElementById("dropzone");
+            dropzone.addEventListener("click", function (e) {
+                if (
+                    e.target === fileInput ||
+                    e.target.closest("#fileInputEl")
+                ) {
+                    return;
+                }
+                fileInput.click();
+            });
 
             // Handle drag and drop
-            const dropzone = document.getElementById("dropzone");
             dropzone.addEventListener("dragover", function (e) {
                 e.preventDefault();
                 dropzone.style.borderColor = "var(--primary-hover)";
@@ -444,9 +553,16 @@ fileInput.addEventListener("click", function (e) {
 
             async function handleToolFile(files) {
                 if (!files.length) return;
-                const file = files[0];
 
-                // Update dropzone to show selected file (don't overwrite innerHTML!)
+                if (isImageToPdf()) {
+                    await handleMultiImageUpload(files);
+                } else {
+                    await handleSingleFile(files[0]);
+                }
+            }
+
+            async function handleSingleFile(file) {
+                // Update dropzone to show selected file
                 document.getElementById("dropzoneIcon").innerHTML =
                     '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
                 document.getElementById("dropzoneTitle").textContent =
@@ -454,7 +570,6 @@ fileInput.addEventListener("click", function (e) {
                 document.getElementById("dropzoneSubtitle").textContent =
                     file.name;
 
-                // Brief pause to show confirmation
                 await new Promise((resolve) => setTimeout(resolve, 800));
 
                 const loading = document.getElementById("loading");
@@ -480,13 +595,146 @@ fileInput.addEventListener("click", function (e) {
                 } catch (err) {
                     console.error(err);
                     alert("Conversion failed: " + err.message);
-                    // Reset UI so user can try again
                     resetConverter();
                 }
             }
 
+            async function handleMultiImageUpload(files) {
+                const imageFiles = Array.from(files).filter(f =>
+                    f.type.startsWith('image/') ||
+                    /\.(jpg|jpeg|png|webp|bmp|gif|svg|avif|tiff|heic)$/i.test(f.name)
+                );
+
+                if (imageFiles.length === 0) {
+                    alert("Please upload image files only.");
+                    return;
+                }
+
+                selectedFiles = selectedFiles.concat(imageFiles);
+
+                dropzone.style.display = "block";
+                document.getElementById("dropzoneIcon").innerHTML =
+                    '<i class="fas fa-plus-circle" style="color: var(--primary);"></i>';
+                document.getElementById("dropzoneTitle").textContent =
+                    "Add More Images";
+                document.getElementById("dropzoneSubtitle").textContent =
+                    "Drag & drop or click to add more";
+
+                thumbnailContainer.style.display = "grid";
+                imageCounter.style.display = "block";
+                dragHint.style.display = "block";
+                generatePdfBtn.style.display = "inline-flex";
+
+                renderThumbnails();
+            }
+
+            function renderThumbnails() {
+                thumbnailContainer.innerHTML = '';
+
+                selectedFiles.forEach((file, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'thumbnail-card';
+                    card.draggable = true;
+                    card.dataset.index = index;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        card.innerHTML = `
+                            <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
+                            <button class="remove-btn" onclick="window.removeImage(${index})" title="Remove"><i class="fas fa-times"></i></button>
+                            <img src="${e.target.result}" alt="${file.name}">
+                            <div class="file-name" title="${file.name}">${file.name}</div>
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+
+                    card.addEventListener('dragstart', (e) => {
+                        card.classList.add('dragging');
+                        draggedIndex = index;
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('text/plain', index);
+                    });
+
+                    card.addEventListener('dragend', () => {
+                        card.classList.remove('dragging');
+                        document.querySelectorAll('.thumbnail-card').forEach(c => c.classList.remove('drag-over'));
+                        draggedIndex = null;
+                    });
+
+                    card.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        if (draggedIndex !== null && draggedIndex !== index) {
+                            card.classList.add('drag-over');
+                        }
+                    });
+
+                    card.addEventListener('dragleave', () => {
+                        card.classList.remove('drag-over');
+                    });
+
+                    card.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        card.classList.remove('drag-over');
+                        const fromIndex = draggedIndex;
+                        if (fromIndex !== null && fromIndex !== index) {
+                            const item = selectedFiles.splice(fromIndex, 1)[0];
+                            selectedFiles.splice(index, 0, item);
+                            renderThumbnails();
+                        }
+                    });
+
+                    thumbnailContainer.appendChild(card);
+                });
+
+                imageCounter.textContent = selectedFiles.length + (selectedFiles.length === 1 ? ' image selected' : ' images selected');
+            }
+
+            window.removeImage = function(index) {
+                selectedFiles.splice(index, 1);
+                if (selectedFiles.length === 0) {
+                    resetConverter();
+                } else {
+                    renderThumbnails();
+                }
+            };
+
+            window.generatePDF = async function() {
+                if (selectedFiles.length === 0) return;
+
+                const pageName = window.location.pathname.split('/').pop().replace('.html', '');
+                const sourceFormat = pageName.split('-to-')[0];
+
+                dropzone.style.display = "none";
+                thumbnailContainer.style.display = "none";
+                imageCounter.style.display = "none";
+                dragHint.style.display = "none";
+                generatePdfBtn.style.display = "none";
+
+                const loading = document.getElementById("loading");
+                const progressContainer = document.getElementById("progressContainer");
+                const resultArea = document.getElementById("resultArea");
+                const loadingText = document.getElementById("loadingText");
+
+                loading.style.display = "block";
+                if (progressContainer) progressContainer.style.display = "block";
+                loadingText.textContent = "Generating PDF with " + selectedFiles.length + " pages...";
+
+                try {
+                    await window.mergeToPDF(selectedFiles, sourceFormat);
+                    loading.style.display = "none";
+                    if (progressContainer) progressContainer.style.display = "none";
+                    resultArea.style.display = "block";
+                    document.getElementById("fileNameDisplay").textContent =
+                        selectedFiles.length + " images → PDF";
+                } catch (err) {
+                    console.error(err);
+                    alert("PDF generation failed: " + err.message);
+                    resetConverter();
+                }
+            };
+
             function resetConverter() {
-                // Reset all UI elements to initial state
+                selectedFiles = [];
                 document.getElementById("dropzone").style.display = "";
                 document.getElementById("dropzoneIcon").innerHTML =
                     initialDropzoneIcon;
@@ -498,7 +746,11 @@ fileInput.addEventListener("click", function (e) {
                 document.getElementById("progressContainer").style.display =
                     "none";
                 document.getElementById("resultArea").style.display = "none";
-                // Reset file input so same file can be re-selected
+                thumbnailContainer.innerHTML = '';
+                thumbnailContainer.style.display = "none";
+                imageCounter.style.display = "none";
+                dragHint.style.display = "none";
+                generatePdfBtn.style.display = "none";
                 fileInput.value = "";
             }
         </script>
