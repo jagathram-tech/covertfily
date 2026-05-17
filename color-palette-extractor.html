@@ -14,20 +14,122 @@
     <title>Color Palette Extractor Tool - Secure & Private Online | Covertfily</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <meta name="description" content="Extract dominant color palettes from any image. Get hex codes, RGB values, and color names instantly — all processed locally in your browser, no uploads.">
-                        
-                                <a href="video-trimmer.html"><i class="fas fa-cut"></i> Video Trimmer</a>
-                                <a href="video-frame-extractor.html"><i class="fas fa-images"></i> Frame Extractor</a>
-                                <a href="file-hash-checker.html"><i class="fas fa-fingerprint"></i> File Hash Checker</a>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tool-container { max-width: 900px; margin: 0 auto; padding: 1.5rem 20px 3rem; text-align: center; }
+        .section-title { margin-bottom: 2rem; }
+        .section-title h1 { margin: 0.5rem 0; }
+        .section-title p { margin: 0; }
+        .dropzone {
+            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 16px;
+            background: white; cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dropzone:hover { border-color: var(--primary-hover); background: var(--bg-alt); }
+        .dropzone-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+        .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        .image-editor { display: none; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem; align-items: start; }
+        .preview-pane {
+            background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem; text-align: center; min-height: 300px;
+        }
+        .preview-pane img { max-width: 100%; max-height: 400px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .palette-pane { background: white; padding: 24px; border-radius: 20px; border: 1px solid var(--border); text-align: left; }
+        .controls-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .controls-row h3 { margin: 0; font-size: 1.1rem; }
+        .colors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+        .color-card { background: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .color-swatch { height: 80px; width: 100%; }
+        .color-info { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .color-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 600; }
+        .color-val { font-family: monospace; font-size: 0.85rem; color: var(--text); }
+        .copy-btn {
+            background: transparent; border: 1px solid var(--border); border-radius: 6px;
+            padding: 4px 8px; cursor: pointer; color: var(--text-muted); font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+        @media (max-width: 768px) {
+            .image-editor { grid-template-columns: 1fr; }
+            .colors-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-left">
+                <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
+            </div>
+            <div class="nav-right">
+                <a href="index.html">Home</a>
+                <button class="nav-tools-btn" id="navToolsBtn" type="button">Tools <span class="nav-caret">▾</span></button>
+                <div class="nav-tools-dropdown" id="navToolsDropdown">
+                    <input type="text" class="tools-dropdown-search" id="navToolsDropdownSearch" placeholder="Search tools...">
+                    <div class="tools-dropdown-scroll">
+                        <div class="tools-group">
+                            <div class="tools-group-label">PDF Tools</div>
+                            <a href="merge-pdf.html">Merge PDF</a>
+                            <a href="compress-pdf.html">Compress PDF</a>
+                            <a href="reorder-pdf.html">Reorder PDF Pages</a>
+                            <a href="protect-pdf.html">Protect/Unlock PDF</a>
+                            <a href="watermark.html">Watermark</a>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label">Image Tools</div>
+                            <a href="image-resizer.html">Image Resizer</a>
+                            <a href="image-rounder.html">Image Rounder</a>
+                            <a href="image-blur.html">Image Blur</a>
+                            <a href="face-blur.html">Face Blur</a>
+                            <a href="color-palette-extractor.html">Color Palette</a>
+                            <a href="eyedropper.html">EyeDropper</a>
+                            <a href="image-to-base64.html">Image to Base64</a>
+                            <a href="exif-reader.html">EXIF Reader</a>
+                            <a href="metadata-stripper.html">Metadata Stripper</a>
+                            <a href="pixel-art.html">Pixel Art</a>
+                            <a href="image-to-json.html">Image to JSON</a>
+                            <a href="brightness-map.html">Brightness Map</a>
+                            <a href="stereogram.html">Stereogram</a>
+                            <a href="steganography.html">Steganography</a>
+                            <a href="collage-maker.html">Collage Maker</a>
+                            <a href="ocr.html">Image to Text (OCR)</a>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label">Video Tools</div>
+                            <a href="video-trimmer.html">Video Trimmer</a>
+                            <a href="video-frame-extractor.html">Frame Extractor</a>
+                            <a href="video-compressor.html">Video Compressor</a>
+                            <a href="video-speed.html">Video Speed Changer</a>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label">Audio Tools</div>
+                            <a href="audio-trimmer.html">Audio Trimmer</a>
+                            <a href="audio-merger.html">Audio Merger</a>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label">Generate</div>
+                            <a href="qr-code-generator.html">QR Code Generator</a>
+                            <a href="barcode-generator.html">Barcode Generator</a>
+                            <a href="lorem-ipsum.html">Lorem Ipsum Generator</a>
+                            <a href="word-counter.html">Word & Character Counter</a>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label">Utilities</div>
+                            <a href="file-hash-checker.html">File Hash Checker</a>
+                        </div>
                     </div>
                 </div>
-            </li>
-        <li><a href="blog.html">Blog</a></li>
-            </ul>
-    </div>
-    <div class="nav-actions">
-        <a href="https://github.com/jagathram-tech/covertfily" class="btn-primary"><i class="fas fa-rocket"></i> <span>Open Source</span></a>
-    </div>
-</nav>
+            </div>
+        </div>
+    </nav>
 
     <main>
         <div class="tool-container">
@@ -76,7 +178,7 @@
         </div>
     </main>
 
-                    <footer>
+    <footer>
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="logo"><img src="logo.png" alt="Covertfily"></div>
@@ -86,7 +188,6 @@
                 <h4>Product</h4>
                 <ul>
                     <li><a href="index.html">Home</a></li>
-                
                     <li><a href="image-resizer.html">Image Tools</a></li>
                 </ul>
             </div>
@@ -261,7 +362,6 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // Downscale for performance
             const maxDim = 150;
             let w = currentImage.naturalWidth;
             let h = currentImage.naturalHeight;
@@ -277,9 +377,8 @@
             const buckets = {};
             
             for (let i = 0; i < imageData.length; i += 4) {
-                if (imageData[i+3] < 128) continue; // Skip transparent
+                if (imageData[i+3] < 128) continue;
                 
-                // Group colors into coarse buckets
                 const r = Math.round(imageData[i] / 24) * 24;
                 const g = Math.round(imageData[i+1] / 24) * 24;
                 const b = Math.round(imageData[i+2] / 24) * 24;
@@ -295,7 +394,6 @@
             const sorted = Object.values(buckets).sort((a,b) => b.count - a.count);
             const colors = [];
             
-            // Threshold for colors being "too similar" based on count request
             const distThreshold = count <= 5 ? 50 : 35;
             
             for (const b of sorted) {
@@ -303,7 +401,6 @@
                 const avgG = Math.round(b.g / b.count);
                 const avgB = Math.round(b.b / b.count);
                 
-                // Filter out colors too similar to existing
                 let tooSimilar = false;
                 for (const c of colors) {
                     const dist = Math.sqrt(Math.pow(c.r-avgR,2) + Math.pow(c.g-avgG,2) + Math.pow(c.b-avgB,2));
@@ -318,19 +415,7 @@
             
             renderColors(colors);
         }
-
-        // Tools search
-        document.querySelector('.tool-search').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.tool-list a').forEach(a => {
-                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        });
     </script>
     <script src="main.js"></script>
 </body>
 </html>
-
-
-
-
