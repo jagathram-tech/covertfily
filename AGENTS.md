@@ -7,21 +7,21 @@ Static HTML site, no build system, no package manager, no tests, no CI, no linti
 ## Commands
 
 - **Serve locally:** `npx serve .` — `file://` blocks CDN scripts
-- **Regenerate converters:** `node generator.js` — reads `png-to-jpg.html` template, writes all `*-to-*.html` + updates `index.html`
-- **Nav/charset fix:** `.\fix_nav_and_charset.ps1` — enforces UTF-8 `<meta charset>`, fixes Home→Tools→Blog nav order, repairs broken Unicode
+- **Regenerate converters:** `node generator.js` — reads `png-to-jpg.html` template, writes all `*-to-*.html`. Generator's `index.html` regex replacements are currently stale/no-op because `index.html` structure has drifted; it still safely regenerates converter pages.
+- **Nav/charset fix:** `.\fix_nav_and_charset.ps1` — enforces UTF-8 `<meta charset>`, repairs broken Unicode (â€¢ → •, â€” → —). Run **after** manual edits. Its nav-reorder regex is currently a no-op (nav structure no longer uses `<ul><li>`). `.\fix_nav_only.ps1` skips Unicode repair.
 - **Check duplicate IDs:** `node check-ids.js` — scans all `.html` for non-unique `id=` attributes
 
 ## Generator Rules
 
-- `generator.js` reads **only** `png-to-jpg.html` as template. `png-to-jpg.html` serves dual purpose: working converter *and* generator template.
+- `generator.js` reads **only** `png-to-jpg.html` as template. That file serves dual purpose: working converter *and* generator template.
 - **Never edit generated `*-to-*.html` directly** — they are overwritten on each generator run.
 - Generator skips `png→jpg` (the template itself) and `pdf→docx` (hand-crafted as `pdf-to-word.html`).
-- `index.html` is read-modify-written by the generator (not templated), but its dropzone onclick handler and file-input markup are overwritten by regex replacements. Confine persistent manual edits to `<div class="tool-list">` and the Popular Converters section. See `INDEX_UPDATE_REFERENCE.md` for exact boundaries.
 - After editing `png-to-jpg.html`, run `node generator.js` to propagate changes to all converter pages.
 
 ## Sync Rules
 
 - Keep `BASIC_MAPPING` (generator.js:3) and `formatMapping` (main.js:2) in sync. `formatMapping` includes `svg` (hand-managed); `BASIC_MAPPING` does not. When adding formats, update both plus their label tables (`BASIC_LABELS` / `FORMAT_LABELS`).
+- `index.html` contains an **inline** `FORMAT_MAPPING` + `FORMAT_LABELS` + `selectFromFormat` / `selectToFormat` / `filterDropdownItems` in its own `<script>` block. These shadow the versions in `main.js`. The inline mapping is also missing several formats present in `main.js` (`docx`, `xml`, `zip`, `xls`, `ods`). If you change homepage dropdown behavior or add formats, update all three copies.
 - FFmpeg.wasm versions: always `ffmpeg@0.12.10` + `util@0.12.1` + `core@0.12.6` in both main.js and hand-crafted video tools.
 - PDF.js: `3.11.174` everywhere. Set `pdfjsLib.GlobalWorkerOptions.workerSrc` explicitly on every page that imports PDF.js.
 
@@ -62,16 +62,12 @@ Currently on: merge-pdf, compress-pdf, watermark, pdf-to-word, ocr, image-tools,
 
 ## Homepage Dropzone
 
-`index.html` dropzone calls `goToDedicatedPage()` — function injected by `generator.js`. Removing it breaks dropzone navigation.
+`index.html` dropzone calls `goToDedicatedPage()` — function defined inline in `index.html`. Removing it breaks dropzone navigation.
 
 ## Mobile Nav
 
 - Hamburger was removed; mobile nav is now handled via persistent header structure. `main.js` no longer injects it.
 - `.nav-backdrop` is injected by JS where needed.
-
-## PowerScript Nav Fix
-
-`fix_nav_and_charset.ps1` overwrites all `.html` files with UTF-8 encoding — run **after** manual edits, not before. Only `fix_nav_and_charset.ps1` has Unicode repair; `fix_nav_only.ps1` skips it.
 
 ## Validation
 
