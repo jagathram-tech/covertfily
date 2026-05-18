@@ -6,10 +6,10 @@ Static HTML site, no build system, no package manager, no tests, no CI, no linti
 
 ## Commands
 
-- **Serve locally:** `npx serve .` — `file://` blocks CDN scripts
-- **Regenerate converters:** `node generator.js` — reads `png-to-jpg.html` template, writes all `*-to-*.html`. Generator's `index.html` regex replacements are currently stale/no-op because `index.html` structure has drifted; it still safely regenerates converter pages.
-- **Nav/charset fix:** `.\fix_nav_and_charset.ps1` — enforces UTF-8 `<meta charset>`, repairs broken Unicode (â€¢ → •, â€” → —). Run **after** manual edits. Its nav-reorder regex is currently a no-op (nav structure no longer uses `<ul><li>`). `.\fix_nav_only.ps1` skips Unicode repair.
-- **Check duplicate IDs:** `node check-ids.js` — scans all `.html` for non-unique `id=` attributes
+- **Serve locally:** `npx serve .` — `file://` blocks CDN scripts.
+- **Regenerate converters:** `node generator.js` — reads `png-to-jpg.html` as template, writes all `*-to-*.html`. Generator's `index.html` regex replacements are currently stale/no-op (index.html structure has drifted); it still safely regenerates converter pages.
+- **Nav/charset fix:** `.ix_nav_and_charset.ps1` — enforces UTF-8 `<meta charset>`, repairs broken Unicode (â€¢ → •, â€” → —). Run **after** manual edits. `.ix_nav_only.ps1` skips Unicode repair. The nav-reorder regex is currently a no-op.
+- **Check duplicate IDs:** `node check-ids.js` — scans all `.html` for non-unique `id=` attributes.
 
 ## Generator Rules
 
@@ -52,22 +52,13 @@ Font Awesome 6.4.0 (cdnjs) · Inter wght@400-800 (Google Fonts) · SheetJS 0.20.
 
 ## Google Analytics Policy
 
-Add `gtag.js` (ID: `G-4Z6LTJ67E2`) ONLY on hand-crafted tool pages with substantial custom logic. NEVER add to `index.html` or auto-generated converters.
+Add `gtag.js` (ID: `G-4Z6LTJ67E2`) **only** on hand-crafted tool pages with substantial custom logic. **Never** add to `index.html` or auto-generated converters.
 
 Currently on: merge-pdf, compress-pdf, watermark, pdf-to-word, ocr, image-tools, qr-code-generator, file-hash-checker, image-to-json, image-to-base64, exif-reader, metadata-stripper, color-palette-extractor, eyedropper, pixel-art, stereogram, steganography, brightness-map, collage-maker.
-
-## Download Behavior
-
-`downloadFile()` sets `#downloadBtn` href and revokes previous blob URLs — does not auto-trigger. `#downloadContainer` must be visible to reveal button.
 
 ## Homepage Dropzone
 
 `index.html` dropzone calls `goToDedicatedPage()` — function defined inline in `index.html`. Removing it breaks dropzone navigation.
-
-## Mobile Nav
-
-- Hamburger was removed; mobile nav is now handled via persistent header structure. `main.js` no longer injects it.
-- `.nav-backdrop` is injected by JS where needed.
 
 ## Validation
 
