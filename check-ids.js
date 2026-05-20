@@ -1,16 +1,18 @@
 const fs = require('fs');
-const ids = {};
+let hasDuplicates = false;
 for (const file of fs.readdirSync('.').filter(f => f.endsWith('.html'))) {
   const content = fs.readFileSync(file, 'utf8');
   const matches = content.matchAll(/id="([^"]+)"/g);
+  const fileIds = new Set();
   for (const m of matches) {
     const id = m[1];
-    if (!ids[id]) ids[id] = [];
-    ids[id].push(file);
+    if (fileIds.has(id)) {
+      console.log(`Duplicate ID: ${id} in file ${file}`);
+      hasDuplicates = true;
+    }
+    fileIds.add(id);
   }
 }
-for (const [id, files] of Object.entries(ids)) {
-  if (files.length > 1) {
-    console.log('Duplicate ID: ' + id + ' in: ' + files.join(', '));
-  }
+if (hasDuplicates) {
+  process.exit(1);
 }
