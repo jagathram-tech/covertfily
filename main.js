@@ -1508,19 +1508,32 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // Cache DOM elements and text content upfront for search filtering
+      const groups = dropdown.querySelectorAll(".tools-group");
+      const cachedGroups = Array.from(groups).map((group) => {
+        const links = group.querySelectorAll("a");
+        const label = group.querySelector(".tools-group-label");
+        return {
+          labelElement: label,
+          links: Array.from(links).map((link) => ({
+            element: link,
+            text: link.textContent.toLowerCase(),
+          })),
+        };
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+        cachedGroups.forEach((groupData) => {
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          groupData.links.forEach((linkData) => {
+            const match = !query || linkData.text.includes(query);
+            linkData.element.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (groupData.labelElement) {
+            groupData.labelElement.style.display = anyVisible ? "block" : "none";
+          }
         });
       });
     }
