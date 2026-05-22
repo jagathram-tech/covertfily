@@ -3533,11 +3533,15 @@ body.elevra-theme nav {
     top: auto !important;
     left: auto !important;
     right: auto !important;
-    z-index: 50 !important;
+    z-index: 1000 !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
+}
+
+.nav-tools-dropdown {
+    z-index: 1010 !important;
 }
 
 /* Elevra Workspace Container - Liquid Glass on Black Backdrop */
