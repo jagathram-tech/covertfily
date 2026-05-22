@@ -3543,14 +3543,14 @@ body.elevra-theme {
     color: #1e293b;
     padding: 24px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
 }
 
 @media (max-width: 768px) {
     body.elevra-theme {
-        padding: 12px;
+        padding: 16px;
     }
 }
 
@@ -3586,6 +3586,8 @@ body.elevra-theme nav {
     display: flex;
     flex-direction: column;
     gap: 60px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 @media (max-width: 768px) {
@@ -4336,4 +4338,13 @@ body.elevra-theme .elevra-workspace .testimonial-stars {
         grid-template-columns: 1fr !important;
     }
 }
+
+/* Mobile Drawer Transitions */
+#mobileMenuDrawer {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+#mobileMenuBackdrop {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 

@@ -1547,6 +1547,51 @@ function downloadFile(url, filename) {
   }
 
   // Initialize mobile navigation drawer
+  function setupMobileNav() {
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    const closeBtn = document.getElementById('mobileMenuClose');
+    const backdrop = document.getElementById('mobileMenuBackdrop');
+    const drawer = document.getElementById('mobileMenuDrawer');
+
+    if (!toggleBtn || !drawer) return;
+
+    function openMenu() {
+      drawer.classList.remove('translate-x-full');
+      drawer.classList.add('translate-x-0');
+      drawer.style.pointerEvents = 'auto';
+      if (backdrop) {
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop.classList.add('opacity-100');
+        backdrop.style.pointerEvents = 'auto';
+      }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      drawer.classList.remove('translate-x-0');
+      drawer.classList.add('translate-x-full');
+      drawer.style.pointerEvents = 'none';
+      if (backdrop) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+        backdrop.style.pointerEvents = 'none';
+      }
+      document.body.style.overflow = '';
+    }
+
+    toggleBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (backdrop) backdrop.addEventListener('click', closeMenu);
+
+    // Close menu when clicking on any link inside the drawer
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+  }
+
+  // Run setupMobileNav on DOMContentLoaded (works for both mobile detection and desktop orientation/resizes)
+  document.addEventListener('DOMContentLoaded', setupMobileNav);
+
 
   // 2. FORMAT SWAPPER - Swap from/to on mobile
   function setupFormatSwapper() {
