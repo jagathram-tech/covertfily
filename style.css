@@ -4347,4 +4347,27 @@ body.elevra-theme .elevra-workspace .testimonial-stars {
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
+/* Ensure mobile menu toggle button has fixed size and doesn't expand due to JS padding */
+#mobileMenuToggle {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+}
 
+#mobileMenuToggle i {
+    font-size: 1.1rem !important;
+    line-height: 1 !important;
+}
+
+/* Make logo text slightly smaller on mobile to prevent layout crowding */
+@media (max-width: 768px) {
+    nav a.text-3xl {
+        font-size: 1.5rem !important; /* Equivalent to text-2xl */
+    }
+}
