@@ -544,7 +544,7 @@
                     </div>
 
                     <!-- Dropzone Action Pill / Block -->
-                    <div class="dropzone w-full bg-white/50 hover:bg-white/80 active:scale-[0.99] border-2 border-dashed border-white/90 hover:border-slate-800/20 rounded-3xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group shadow-sm" id="dropzone" onclick="goToDedicatedPage()">
+                    <div class="dropzone w-full bg-white/50 hover:bg-white/80 active:scale-[0.99] border-2 border-dashed border-white/90 hover:border-slate-800/20 rounded-3xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group shadow-sm" id="dropzone" role="button" tabindex="0" aria-label="Open Dedicated Converter" onclick="goToDedicatedPage()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); goToDedicatedPage(); }">
                         <div class="w-16 h-16 bg-blue-600 group-hover:bg-slate-800 text-white rounded-2xl flex items-center justify-center text-xl mb-4 shadow-[0_8px_20px_rgba(37,99,235,0.25)] group-hover:shadow-none transition-all duration-300" id="dropzoneIcon">
                             <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </div>

@@ -262,7 +262,7 @@
                     </div>
 
                     <!-- Upload Dropzone -->
-                    <div class="w-full bg-white/45 backdrop-blur-[30px] border-2 border-dashed border-white/60 hover:border-blue-500/50 hover:bg-white/65 rounded-[32px] p-12 flex flex-col items-center justify-center gap-6 cursor-pointer group transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01),0_12px_40px_rgba(0,0,0,0.02)]" id="dropzone">
+                    <div class="w-full bg-white/45 backdrop-blur-[30px] border-2 border-dashed border-white/60 hover:border-blue-500/50 hover:bg-white/65 rounded-[32px] p-12 flex flex-col items-center justify-center gap-6 cursor-pointer group transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01),0_12px_40px_rgba(0,0,0,0.02)]" id="dropzone" role="button" tabindex="0" aria-label="Upload file">
                         <div class="w-20 h-20 bg-white/80 border border-white/80 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-blue-500/10 transition-all duration-300" id="dropzoneIcon">
                             <i class="fas fa-cloud-upload-alt text-3xl text-gradient bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"></i>
                         </div>
@@ -478,6 +478,14 @@
                     return;
                 }
                 fileInput.click();
+            });
+
+            // Handle keyboard activation (Enter or Space)
+            dropzone.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    dropzone.click();
+                }
             });
 
             // Handle drag and drop
