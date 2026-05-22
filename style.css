@@ -139,32 +139,6 @@ nav .nav-inner {
     transform: rotate(180deg);
 }
 
-.nav-tools-dropdown {
-    position: fixed;
-    top: 80px;
-    left: auto;
-    right: 0;
-    width: 40%;
-    min-width: 320px;
-    z-index: 2000;
-    background: #ffffff;
-    border-radius: 0 0 16px 16px;
-    border: 1px solid #eef0f6;
-    box-shadow: 0 20px 40px rgba(13, 31, 78, 0.1);
-    padding: 16px;
-    max-height: 70vh;
-    overflow-y: auto;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: all 0.2s ease;
-}
-
-.nav-right.active .nav-tools-dropdown {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
 
 .btn-primary {
     background: var(--primary);
@@ -3383,10 +3357,6 @@ a:visited {
     background: #ffffff;
 }
 
-.tools-dropdown-scroll {
-    display: flex;
-    flex-direction: column;
-}
 
 .tools-group {
     display: flex;
