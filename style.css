@@ -1690,6 +1690,7 @@ footer {
         }
     }
 
+@media (max-width: 768px) {
     section {
         padding: 30px 16px !important;
     }
@@ -3505,145 +3506,811 @@ a:visited {
 }
 
 /* ============================================================================
-   FIRST SCREEN LAYOUT — Navbar + Hero + Trusted-by = 100dvh
+   ELEVRA-STYLE LIQUID GLASS LAYOUT
    ============================================================================ */
 
-.home-first-screen {
-    padding-top: 0 !important;
-}
-
-.first-screen {
-    display: grid;
-    grid-template-rows: auto 5fr 1fr;
-    height: 100dvh;
-    overflow: hidden;
-}
-
-.first-screen > nav {
-    position: relative;
-    grid-row: 1;
-    height: 80px;
-}
-
-.first-screen-content {
-    grid-row: 2 / span 2;
-    display: grid;
-    grid-template-rows: 5fr 1fr;
-    overflow: hidden;
-}
-
-.first-screen-content > .hero-new {
-    grid-row: 4;
+body.elevra-theme {
+    background-color: #000000 !important;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 23, 103, 0.45) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(246, 197, 0, 0.25) 0%, transparent 55%) !important;
+    background-attachment: fixed !important;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+    padding: 24px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    overflow: hidden;
-    min-height: 0;
-    padding: clamp(12px, 2vh, 24px) 4%;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.first-screen-content > .trusted-by {
-    grid-row: 5;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    min-height: 0;
-    padding: clamp(12px, 2vh, 24px) 4%;
-}
-
-/* Scale down content to fit constrained viewport */
-.first-screen .hero-new-inner {
-    gap: clamp(12px, 1.5vh, 24px);
-}
-
-.first-screen .hero-new-title {
-    font-size: clamp(22px, 9vh, 48px);
-    margin: 0;
-}
-
-.first-screen .hero-new-desc {
-    font-size: clamp(12px, 1.6vh, 16px);
-    margin: 0;
-}
-
-.first-screen .hero-new-pills {
-    gap: clamp(6px, 1vh, 10px);
-    margin: 0;
-}
-
-.first-screen .hero-new-pill {
-    font-size: clamp(10px, 1.4vh, 13px);
-    padding: clamp(4px, 0.8vh, 8px) clamp(8px, 1.5vh, 14px);
-}
-
-.first-screen .hero-new-cta {
-    font-size: clamp(13px, 1.8vh, 16px);
-    padding: clamp(10px, 1.5vh, 14px) clamp(20px, 2vh, 32px);
-    margin: 0;
-}
-
-.first-screen .hero-new-footnote {
-    font-size: clamp(11px, 1.4vh, 13px);
-    margin: 0;
-}
-
-.first-screen .hero-new-badge {
-    font-size: clamp(12px, 1.6vh, 14px);
-    padding: clamp(4px, 1vh, 8px) clamp(10px, 1.5vh, 16px);
-    margin: 0;
-}
-
-.first-screen .trusted-by-label {
-    font-size: clamp(9px, 1.4vh, 12px);
-    margin: 0 0 clamp(8px, 1vh, 16px);
-}
-
-.first-screen .trusted-by-logos {
-    gap: clamp(16px, 3vw, 48px);
-}
-
-.first-screen .trusted-by-logos img {
-    height: clamp(18px, 3vh, 28px);
-}
-
-/* Mobile tweaks for single-viewport fit */
 @media (max-width: 768px) {
-    .first-screen-content > .hero-new {
-        padding: 12px 4%;
-    }
-
-    .first-screen .hero-new-right {
-        display: none !important;
-    }
-
-    .first-screen .hero-new-inner {
-        flex-direction: column;
-        text-align: center;
-        align-items: center;
-    }
-
-    .first-screen .hero-new-left {
-        align-items: center;
-    }
-
-    .hero-new-pills {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .hero-new-pill {
-        white-space: nowrap;
-    }
-
-    .hero-new-cta {
-        width: auto;
-        min-width: 200px;
-        white-space: nowrap;
-        text-align: center;
-        padding: 14px 36px;
+    body.elevra-theme {
+        padding: 12px;
     }
 }
+
+/* Uniform Transparent Navbar for Elevra Theme */
+body.elevra-theme nav {
+    position: relative !important;
+    height: auto !important;
+    background: transparent !important;
+    border-bottom: none !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 50 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* Elevra Workspace Container - Liquid Glass on Black Backdrop */
+.elevra-workspace {
+    width: 100% !important;
+    max-width: 100% !important;
+    background: rgba(255, 255, 255, 0.68) !important;
+    backdrop-filter: blur(40px) saturate(225%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(225%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+    border-radius: 32px !important;
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8) !important;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+@media (max-width: 768px) {
+    .elevra-workspace {
+        padding: 24px 16px;
+        border-radius: 24px !important;
+        gap: 40px;
+    }
+}
+
+/* Make all sections inside elevra-workspace transparent, universal, and compact */
+body.elevra-theme .elevra-workspace section,
+body.elevra-theme .elevra-workspace .stats-row,
+body.elevra-theme .elevra-workspace .dashboard-section,
+body.elevra-theme .elevra-workspace .testimonials-section,
+body.elevra-theme .elevra-workspace .faq,
+body.elevra-theme .elevra-workspace .split-grid {
+    background: transparent !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
+    padding: 32px 0 !important;
+}
+
+body.elevra-theme .elevra-workspace .section-heading,
+body.elevra-theme .elevra-workspace h2.section-heading {
+    margin-bottom: 24px !important;
+}
+
+/* Glass Card styling - Edgy but glassy */
+body.elevra-theme .elevra-workspace #convert,
+body.elevra-theme .elevra-workspace .max-w-3xl,
+body.elevra-theme .elevra-workspace .glass-card-amber,
+body.elevra-theme .elevra-workspace .glass-card-emerald {
+    background: rgba(255, 255, 255, 0.42) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: none !important;
+}
+
+/* Dropzone Styling - Sharp and Clean Glass */
+body.elevra-theme .elevra-workspace .dropzone {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 2px dashed rgba(0, 23, 103, 0.45) !important;
+    transition: all 0.3s ease !important;
+}
+body.elevra-theme .elevra-workspace .dropzone:hover {
+    background: rgba(255, 255, 255, 0.38) !important;
+    border-color: #f6c500 !important;
+}
+
+/* Dropdowns & Selectors */
+body.elevra-theme .elevra-workspace .dropdown-trigger {
+    background: rgba(255, 255, 255, 0.42) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+}
+body.elevra-theme .elevra-workspace .dropdown-menu {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+}
+
+/* Center nav pill styling override */
+body.elevra-theme .elevra-workspace nav div.bg-white\/40 {
+    background: rgba(255, 255, 255, 0.35) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+}
+body.elevra-theme .elevra-workspace nav div.bg-white\/40 a.bg-white\/70 {
+    background: rgba(255, 255, 255, 0.6) !important;
+    color: #0f172a !important;
+    border: none !important;
+}
+
+/* CTA & other brand-colored buttons */
+body.elevra-theme .elevra-workspace a[href*="#convert"],
+body.elevra-theme .elevra-workspace a[href*="index.html#tools-dashboard"],
+body.elevra-theme .elevra-workspace a.bg-white\/50,
+body.elevra-theme .elevra-workspace a[href*="explore"],
+body.elevra-theme .elevra-workspace button.bg-blue-600,
+body.elevra-theme .elevra-workspace .btn-action,
+body.elevra-theme .elevra-workspace .btn-primary,
+body.elevra-theme .elevra-workspace #downloadBtn {
+    background: #001767 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #001767 !important;
+    transition: all 0.3s ease !important;
+}
+body.elevra-theme .elevra-workspace a[href*="#convert"]:hover,
+body.elevra-theme .elevra-workspace a[href*="index.html#tools-dashboard"]:hover,
+body.elevra-theme .elevra-workspace button.bg-blue-600:hover,
+body.elevra-theme .elevra-workspace .btn-action:hover,
+body.elevra-theme .elevra-workspace .btn-primary:hover,
+body.elevra-theme .elevra-workspace #downloadBtn:hover {
+    background: #f6c500 !important;
+    color: #001767 !important;
+    border-color: #f6c500 !important;
+}
+
+/* Progress bar fill - brand gradient */
+body.elevra-theme .elevra-workspace .progress-bar-fill {
+    background: linear-gradient(90deg, #001767, #f6c500) !important;
+}
+
+/* Transparent footer inside the glass workspace */
+body.elevra-theme .elevra-workspace footer {
+    background: transparent !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+    margin-top: 40px !important;
+    padding: 60px 0 0 0 !important;
+}
+
+/* ==========================================================================
+   HOMEPAGE DASHBOARD SECTION & GLASSMORPHIC CARDS
+   ========================================================================== */
+
+/* ==========================================================================
+   HOMEPAGE DASHBOARD SECTION & LIQUID GLASSMORPHIC CARDS
+   ========================================================================== */
+
+.dashboard-section {
+    position: relative;
+    padding: 100px 8%;
+    background: #f8fafc;
+    overflow: hidden;
+}
+
+/* Background Fluid Blobs */
+.dashboard-background-blobs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(130px);
+    opacity: 0.5;
+    animation: float-blob 22s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.5) 0%, rgba(139, 92, 246, 0.05) 75%);
+    top: -150px;
+    left: -150px;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    width: 650px;
+    height: 650px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(34, 197, 94, 0.05) 75%);
+    bottom: -250px;
+    right: -150px;
+    animation-delay: 5s;
+}
+
+.blob-3 {
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.4) 0%, rgba(236, 72, 153, 0.05) 75%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 11s;
+    animation-duration: 28s;
+}
+
+@keyframes float-blob {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(80px, -60px) scale(1.15);
+    }
+    66% {
+        transform: translate(-60px, 70px) scale(0.85);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-heading-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 45px;
+    gap: 24px;
+}
+
+.dashboard-title-area {
+    max-width: 600px;
+}
+
+.dashboard-title-area h2 {
+    font-size: clamp(2.2rem, 4vw, 2.8rem);
+    font-weight: 900;
+    color: #0f172a;
+    margin-bottom: 12px;
+    letter-spacing: -1.2px;
+}
+
+.dashboard-title-area p {
+    color: #475569;
+    font-size: 1.08rem;
+    line-height: 1.6;
+}
+/* Dashboard Controls Dock Wrapper (Apple News+ style floating dock) */
+.dashboard-controls-dock-wrapper {
+    width: 100%;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-controls-dock {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    max-width: 100%;
+}
+
+/* Main Tab Dock */
+.dock-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(40px) saturate(210%);
+    -webkit-backdrop-filter: blur(40px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 9999px;
+    padding: 10px 24px;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.05), 
+        inset 0 1px 2px rgba(255, 255, 255, 0.8),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.01);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 18px;
+    gap: 6px;
+    color: #475569;
+    font-family: inherit;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 24px;
+}
+
+.dock-tab-icon {
+    font-size: 1.3rem;
+    color: #1e293b;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-tab-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: -0.1px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #475569;
+    transition: all 0.25s ease;
+}
+
+.dock-tab:hover {
+    transform: translateY(-2px);
+    color: #0f172a;
+}
+
+.dock-tab:hover .dock-tab-icon {
+    color: #0f172a;
+    transform: scale(1.1);
+}
+
+/* Tab Badge inside Dock */
+.tab-badge {
+    background: rgba(100, 116, 139, 0.1);
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 999px;
+    transition: all 0.25s;
+    line-height: 12px;
+}
+
+.dock-tab:hover .tab-badge {
+    background: rgba(100, 116, 139, 0.2);
+    color: #0f172a;
+}
+
+/* Active Tabs styling */
+.dock-tab.active {
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.dock-tab.active .dock-tab-icon {
+    transform: scale(1.05);
+}
+
+/* Active States styling with custom colors matching categories */
+.dock-tab.active[data-category="all"] { color: var(--primary); }
+.dock-tab.active[data-category="all"] .dock-tab-icon { color: var(--primary); }
+
+.dock-tab.active[data-category="pdf"] { color: #f43f5e; background: rgba(244, 63, 94, 0.06); }
+.dock-tab.active[data-category="pdf"] .dock-tab-icon { color: #f43f5e; }
+
+.dock-tab.active[data-category="image"] { color: #10b981; background: rgba(16, 185, 129, 0.06); }
+.dock-tab.active[data-category="image"] .dock-tab-icon { color: #10b981; }
+
+.dock-tab.active[data-category="video"] { color: #8b5cf6; background: rgba(139, 92, 246, 0.06); }
+.dock-tab.active[data-category="video"] .dock-tab-icon { color: #8b5cf6; }
+
+.dock-tab.active[data-category="audio"] { color: #0ea5e9; background: rgba(14, 165, 233, 0.06); }
+.dock-tab.active[data-category="audio"] .dock-tab-icon { color: #0ea5e9; }
+
+.dock-tab.active[data-category="generate"] { color: #f97316; background: rgba(249, 115, 22, 0.06); }
+.dock-tab.active[data-category="generate"] .dock-tab-icon { color: #f97316; }
+
+.dock-tab.active .tab-badge {
+    background: rgba(0, 0, 0, 0.08);
+    color: inherit;
+}
+
+/* Apple-style separate search circle that expands */
+.search-dock-wrapper {
+    position: relative;
+    width: 74px;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(40px) saturate(210%);
+    -webkit-backdrop-filter: blur(40px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 37px;
+    padding: 0;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.05), 
+        inset 0 1px 2px rgba(255, 255, 255, 0.8),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.01);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.search-input-container {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-dock-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #0f172a;
+    padding: 0;
+}
+
+.search-dock-input::placeholder {
+    color: #94a3b8;
+}
+
+.search-circle-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.search-inner-icon-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px; /* Squircle style! */
+    background: #ff2d55; /* News+ pink/red */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 12px rgba(255, 45, 85, 0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-inner-icon-btn i {
+    transition: transform 0.3s ease;
+}
+
+/* Expanded/Active Search Dock Styling */
+.search-dock-wrapper.search-active {
+    width: 380px;
+    padding: 0 12px 0 24px;
+    justify-content: flex-end;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.search-dock-wrapper.search-active .search-input-container {
+    width: 100%;
+    opacity: 1;
+    pointer-events: auto;
+    margin-right: 12px;
+}
+
+.search-dock-wrapper.search-active .search-inner-icon-btn {
+    background: #475569; /* Slate grey when active/close mode */
+    box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+}
+
+.search-dock-wrapper.search-active .search-inner-icon-btn i {
+    transform: rotate(90deg);
+}
+
+/* Glow colors inside search squircle on hover */
+.search-circle-btn:hover .search-inner-icon-btn {
+    transform: scale(1.05);
+}
+
+/* Grid & Cards */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+    transition: opacity 0.25s ease;
+}
+
+/* Apple Liquid Glass Card */
+.dashboard-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.18) 100%);
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 24px;
+    padding: 32px 26px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 
+        0 10px 30px -10px rgba(0, 0, 0, 0.03), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.75), 
+        inset 0 -1px 2px rgba(0, 0, 0, 0.01);
+}
+
+.dashboard-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dashboard-card h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 10px;
+    line-height: 1.35;
+}
+
+.dashboard-card p {
+    color: #475569;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.dashboard-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 750;
+    color: var(--primary);
+    transition: gap 0.25s;
+}
+
+.dashboard-card-footer i {
+    font-size: 0.8rem;
+    transition: transform 0.25s;
+}
+
+/* Hover Liquid Glass & Glowing Border Effects */
+.dashboard-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.35) 100%);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard-card:hover .dashboard-card-icon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.dashboard-card:hover .dashboard-card-footer {
+    gap: 12px;
+}
+
+.dashboard-card:hover .dashboard-card-footer i {
+    transform: translateX(3px);
+}
+
+/* Glow styles per category */
+.dashboard-card[data-category="pdf"]:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(244, 63, 94, 0.25), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    border-color: rgba(244, 63, 94, 0.4);
+}
+.dashboard-card[data-category="pdf"] .dashboard-card-footer { color: #f43f5e; }
+
+.dashboard-card[data-category="image"]:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(16, 185, 129, 0.25), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+.dashboard-card[data-category="image"] .dashboard-card-footer { color: #10b981; }
+
+.dashboard-card[data-category="video"]:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(139, 92, 246, 0.25), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    border-color: rgba(139, 92, 246, 0.4);
+}
+.dashboard-card[data-category="video"] .dashboard-card-footer { color: #8b5cf6; }
+
+.dashboard-card[data-category="audio"]:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(14, 165, 233, 0.25), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    border-color: rgba(14, 165, 233, 0.4);
+}
+.dashboard-card[data-category="audio"] .dashboard-card-footer { color: #0ea5e9; }
+
+.dashboard-card[data-category="generate"]:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(249, 115, 22, 0.25), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    border-color: rgba(249, 115, 22, 0.4);
+}
+.dashboard-card[data-category="generate"] .dashboard-card-footer { color: #f97316; }
+
+.dashboard-card[data-category="utility"]:hover {
+    box-shadow: 
+        0 25px 50px -12px rgba(100, 116, 139, 0.25), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    border-color: rgba(100, 116, 139, 0.4);
+}
+.dashboard-card[data-category="utility"] .dashboard-card-footer { color: #64748b; }
+
+/* No results state */
+.dashboard-no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px dashed rgba(148, 163, 184, 0.4);
+    border-radius: 24px;
+    display: none;
+}
+
+.dashboard-no-results i {
+    font-size: 3.2rem;
+    color: #64748b;
+    margin-bottom: 18px;
+}
+
+.dashboard-no-results h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.dashboard-no-results p {
+    color: #475569;
+    font-size: 0.98rem;
+}
+
+/* Responsive Dashboard Layout */
+@media (max-width: 768px) {
+    .dashboard-section {
+        padding: 60px 4%;
+    }
+    
+    .dashboard-heading-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+    
+    .dashboard-controls-dock-wrapper {
+        margin-bottom: 35px;
+    }
+    
+    .dashboard-controls-dock {
+        width: 100%;
+        gap: 12px;
+    }
+    
+    .dock-pill {
+        flex-grow: 1;
+        padding: 8px 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .dock-pill::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .dock-tab {
+        padding: 6px 12px;
+        border-radius: 16px;
+    }
+    
+    .search-dock-wrapper {
+        width: 58px;
+        height: 58px;
+        padding: 0;
+        justify-content: center;
+    }
+    
+    .search-inner-icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 1rem;
+    }
+    
+    /* Overlay tabs completely on mobile when search is active */
+    .search-dock-wrapper.search-active {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        width: 100% !important;
+        height: 58px;
+        border-radius: 29px;
+        z-index: 10;
+        padding: 0 8px 0 20px;
+        justify-content: flex-end;
+    }
+    
+    .blob-1 { width: 350px; height: 350px; }
+    .blob-2 { width: 400px; height: 400px; }
+    .blob-3 { width: 300px; height: 300px; }
+}
+
+/* Custom Homepage Testimonials grid override for 5 columns and smaller size */
+body.elevra-theme .elevra-workspace .testimonials-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 16px !important;
+}
+
+body.elevra-theme .elevra-workspace .testimonial-card {
+    padding: 16px 20px !important;
+    background: rgba(255, 255, 255, 0.45) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+}
+
+body.elevra-theme .elevra-workspace .testimonial-quote {
+    font-size: 0.82rem !important;
+    margin-bottom: 12px !important;
+    line-height: 1.45 !important;
+    font-weight: 500 !important;
+    color: #475569 !important;
+}
+
+body.elevra-theme .elevra-workspace .testimonial-name {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+}
+
+body.elevra-theme .elevra-workspace .testimonial-role {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+}
+
+body.elevra-theme .elevra-workspace .testimonial-stars {
+    margin-bottom: 10px !important;
+    font-size: 0.78rem !important;
+}
+
+/* Responsiveness overrides for the 5-column testimonial grid */
+@media (max-width: 1200px) {
+    body.elevra-theme .elevra-workspace .testimonials-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+@media (max-width: 900px) {
+    body.elevra-theme .elevra-workspace .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+@media (max-width: 600px) {
+    body.elevra-theme .elevra-workspace .testimonials-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+

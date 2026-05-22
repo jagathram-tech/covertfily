@@ -12,21 +12,16 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet"
         />
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="style.css?v=1.0.1" />
+        <script src="https://cdn.tailwindcss.com"></script>
         <style>
-            .tool-container {
-                max-width: 800px;
-                margin: 60px auto;
-                padding: 0 20px;
-                text-align: center;
-            }
             /* Multi-upload thumbnail grid */
             .thumbnail-grid {
                 display: grid;
@@ -36,31 +31,34 @@
             }
             .thumbnail-card {
                 position: relative;
-                background: white;
-                border: 2px solid #e2e8f0;
-                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.65);
+                backdrop-filter: blur(10px);
+                border: 1.5px solid rgba(255, 255, 255, 0.8);
+                border-radius: 16px;
                 padding: 8px;
                 cursor: grab;
                 transition: all 0.2s;
                 user-select: none;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             }
             .thumbnail-card.dragging {
                 opacity: 0.4;
             }
             .thumbnail-card.drag-over {
-                border-top: 3px solid var(--primary);
+                border-top: 3px solid #4f46e5;
             }
             .thumbnail-card img {
                 width: 100%;
                 height: 100px;
                 object-fit: cover;
-                border-radius: 8px;
+                border-radius: 10px;
                 pointer-events: none;
             }
             .thumbnail-card .file-name {
-                font-size: 0.8rem;
-                color: var(--text-muted);
-                margin-top: 6px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #475569;
+                margin-top: 8px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -68,426 +66,323 @@
             }
             .thumbnail-card .remove-btn {
                 position: absolute;
-                top: 6px;
-                right: 6px;
-                background: #ef4444;
+                top: 10px;
+                right: 10px;
+                background: rgba(239, 68, 68, 0.9);
+                backdrop-filter: blur(4px);
                 color: white;
                 border: none;
                 border-radius: 50%;
-                width: 24px;
-                height: 24px;
+                width: 22px;
+                height: 22px;
                 cursor: pointer;
-                font-size: 0.7rem;
+                font-size: 0.75rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 z-index: 2;
+                transition: background 0.2s;
             }
             .thumbnail-card .remove-btn:hover {
-                background: #dc2626;
+                background: #ef4444;
             }
             .drag-handle {
                 position: absolute;
-                top: 6px;
-                left: 6px;
+                top: 10px;
+                left: 10px;
                 color: #94a3b8;
                 cursor: grab;
                 font-size: 0.85rem;
                 z-index: 2;
-            }
-            .image-counter {
-                font-size: 0.9rem;
-                color: #64748b;
-                margin-top: 16px;
-                margin-bottom: 4px;
-                text-align: center;
-            }
-            .drag-hint {
-                font-size: 0.8rem;
-                color: #94a3b8;
-                margin-bottom: 12px;
-                text-align: center;
-            }
-            .generate-pdf-btn {
-                margin-top: 20px;
-            }
-            .tool-container .dropzone {
-                margin-top: 40px;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
-            .tool-container .dropzone:hover {
-                border-color: var(--primary);
-                background: #f8fafc;
-            }
-            .seo-section {
-                max-width: 800px;
-                margin: 80px auto;
-                text-align: left;
-                line-height: 1.7;
-                color: var(--text-muted);
-            }
-            .seo-section h2 {
-                color: var(--text-main);
-                margin-top: 40px;
-                font-size: 1.5rem;
-                font-weight: 700;
-            }
-            .btn-main {
-                background: var(--primary);
-                color: white;
-                padding: 14px 28px;
-                border-radius: 12px;
-                font-weight: 700;
-                border: none;
-                cursor: pointer;
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-                transition: 0.2s;
-                text-decoration: none;
-                font-size: 1rem;
-                font-family: inherit;
-            }
-            .btn-main:hover {
-                background: var(--primary-hover);
-                transform: translateY(-2px);
-            }
-            .progress-container {
-                width: 100%;
-                max-width: 400px;
-                height: 8px;
-                background: #e2e8f0;
-                border-radius: 10px;
-                margin: 20px auto;
-                overflow: hidden;
-            }
-            .progress-bar-fill {
-                width: 0%;
-                height: 100%;
-                background: var(--primary);
-                border-radius: 10px;
-                transition: width 0.3s ease;
-            }
-            .loading-block {
-                margin-top: 40px;
-                padding: 3rem 2rem;
-                text-align: center;
-            }
-            .loading-block .spinner-icon {
-                font-size: 3rem;
-                color: var(--primary);
-                margin-bottom: 1rem;
-            }
-            .loading-block h2 {
-                font-size: 1.3rem;
-                color: var(--text-main);
-                margin-bottom: 0.5rem;
-            }
-            .loading-block p {
-                color: var(--text-muted);
-                font-size: 0.95rem;
-            }
-            .result-block {
-                margin-top: 40px;
-                padding: 3rem 2rem;
-                text-align: center;
-            }
-            .result-block .success-icon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 70px;
-                height: 70px;
-                background: #ecfdf5;
-                color: #10b981;
-                border-radius: 50%;
-                font-size: 2rem;
-                margin-bottom: 1rem;
-            }
-            .result-block h2 {
-                font-size: 1.5rem;
-                margin-bottom: 0.5rem;
-            }
-            .result-block .file-name {
-                font-weight: 600;
-                margin: 10px 0 24px;
-                color: var(--text-main);
-                word-break: break-all;
-            }
-            .result-block .actions {
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 4px;
+                width: 20px;
+                height: 20px;
                 display: flex;
+                align-items: center;
                 justify-content: center;
-                gap: 12px;
-                flex-wrap: wrap;
+                border: 1px solid rgba(0, 0, 0, 0.05);
             }
         </style>
     </head>
-    <body>
-         <nav>
-    <div class="nav-inner">
-        <div class="nav-left">
-            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
-        </div>
-        <div class="nav-right">
-            <a href="index.html">Home</a>
-            <button class="nav-tools-btn" id="navToolsBtn" type="button">Tools <span class="nav-caret">▾</span></button>
-            <div class="nav-tools-dropdown" id="navToolsDropdown">
-                <input type="text" class="tools-dropdown-search" id="navToolsDropdownSearch" placeholder="Search tools...">
-                <div class="tools-dropdown-scroll">
-                    <div class="tools-group">
-                        <div class="tools-group-label">PDF Tools</div>
-                        <a href="merge-pdf.html">Merge PDF</a>
-                        <a href="compress-pdf.html">Compress PDF</a>
-                        <a href="reorder-pdf.html">Reorder PDF Pages</a>
-                        <a href="protect-pdf.html">Protect/Unlock PDF</a>
-                        <a href="watermark.html">Watermark</a>
+    <body class="elevra-theme">
+        <div class="elevra-workspace w-full flex flex-col gap-16 relative overflow-hidden">
+            <!-- HEADER / NAVIGATION -->
+            <nav class="flex items-center justify-between py-2 w-full relative z-50">
+                <!-- Brand Logo -->
+                <a href="index.html" class="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2 hover:opacity-90 font-sans">
+                    covertfily
+                </a>
+
+                <!-- Floating Center Nav Pill -->
+                <div class="hidden md:flex items-center gap-1 bg-white/40 backdrop-blur-md border border-white/40 rounded-full px-2 py-1.5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_8px_32px_rgba(0,0,0,0.03)]">
+                    <a href="index.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Home</a>
+                    <button class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300 flex items-center gap-1.5" id="navToolsBtn" type="button">
+                        Tools <i class="fas fa-chevron-down text-[10px] opacity-70 transition-transform duration-300" id="navToolsCaret"></i>
+                    </button>
+                    <a href="blog.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Blog</a>
+                    <a href="documentation.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Docs</a>
+                </div>
+
+                <!-- Right CTA Buttons -->
+                <div class="flex items-center gap-2">
+                    <a href="index.html#tools-dashboard" class="bg-white/50 hover:bg-white/80 active:scale-95 border border-white/60 text-slate-800 text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-sm backdrop-blur-md transition-all duration-300 font-sans">
+                        Tools
+                    </a>
+                    <a href="index.html#convert" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-md transition-all duration-300 font-sans">
+                        Convert
+                    </a>
+                </div>
+
+                <!-- Dynamic Glass Tools Dropdown -->
+                <div class="nav-tools-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[640px] max-w-[90vw] z-50 bg-white/75 backdrop-blur-[35px] border border-white/60 rounded-[32px] p-6 shadow-2xl opacity-0 invisible pointer-events-none transition-all duration-300" id="navToolsDropdown">
+                    <!-- Dropdown Search -->
+                    <div class="relative mb-6">
+                        <input type="text" class="w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" id="navToolsDropdownSearch" placeholder="Search 32 offline tools...">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Image Tools</div>
-                        <a href="image-resizer.html">Image Resizer</a>
-                        <a href="image-rounder.html">Image Rounder</a>
-                        <a href="image-blur.html">Image Blur</a>
-<a href="color-palette-extractor.html">Color Palette</a>
-                        <a href="eyedropper.html">EyeDropper</a>
-                        <a href="image-to-base64.html">Image to Base64</a>
-                        <a href="exif-reader.html">EXIF Reader</a>
-                        <a href="metadata-stripper.html">Metadata Stripper</a>
-                        <a href="pixel-art.html">Pixel Art</a>
-                        <a href="image-to-json.html">Image to JSON</a>
-                        <a href="brightness-map.html">Brightness Map</a>
-                        <a href="stereogram.html">Stereogram</a>
-                        <a href="steganography.html">Steganography</a>
-                        <a href="collage-maker.html">Collage Maker</a>
-                        <a href="ocr.html">Image to Text (OCR)</a>
-                        <a href="string-art.html">String Art</a>
-                    </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Video Tools</div>
-                        <a href="video-trimmer.html">Video Trimmer</a>
-                        <a href="video-frame-extractor.html">Frame Extractor</a>
-                        <a href="video-compressor.html">Video Compressor</a>
-                        <a href="video-speed.html">Video Speed Changer</a>
-                    </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Audio Tools</div>
-                        <a href="audio-trimmer.html">Audio Trimmer</a>
-                        <a href="audio-merger.html">Audio Merger</a>
-                    </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Generate</div>
-                        <a href="qr-code-generator.html">QR Code Generator</a>
-                        <a href="barcode-generator.html">Barcode Generator</a>
-                        <a href="lorem-ipsum.html">Lorem Ipsum Generator</a>
-                        <a href="word-counter.html">Word & Character Counter</a>
-                    </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Utilities</div>
-                        <a href="file-hash-checker.html">File Hash Checker</a>
+                    <!-- Tools Categories Scroll -->
+                    <div class="tools-dropdown-scroll grid grid-cols-2 gap-6 max-h-[360px] overflow-y-auto pr-2" id="navToolsList">
+                        <div class="tools-group">
+                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="merge-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Merge PDF</a>
+                                <a href="compress-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Compress PDF</a>
+                                <a href="reorder-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Reorder PDF Pages</a>
+                                <a href="protect-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Protect/Unlock PDF</a>
+                                <a href="watermark.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Watermark</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="image-resizer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Resizer</a>
+                                <a href="image-rounder.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Rounder</a>
+                                <a href="image-blur.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Blur</a>
+                                <a href="color-palette-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Color Palette</a>
+                                <a href="eyedropper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EyeDropper</a>
+                                <a href="image-to-base64.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Base64</a>
+                                <a href="exif-reader.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EXIF Reader</a>
+                                <a href="metadata-stripper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Metadata Stripper</a>
+                                <a href="pixel-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Pixel Art</a>
+                                <a href="image-to-json.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to JSON</a>
+                                <a href="brightness-map.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Brightness Map</a>
+                                <a href="stereogram.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Stereogram</a>
+                                <a href="steganography.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Steganography</a>
+                                <a href="collage-maker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Collage Maker</a>
+                                <a href="ocr.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Text (OCR)</a>
+                                <a href="string-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">String Art</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="video-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Trimmer</a>
+                                <a href="video-frame-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Frame Extractor</a>
+                                <a href="video-compressor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Compressor</a>
+                                <a href="video-speed.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Speed</a>
+                                <a href="audio-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Trimmer</a>
+                                <a href="audio-merger.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Merger</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="qr-code-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">QR Code Generator</a>
+                                <a href="barcode-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Barcode Generator</a>
+                                <a href="lorem-ipsum.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Lorem Ipsum</a>
+                                <a href="word-counter.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Word Counter</a>
+                                <a href="file-hash-checker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">File Hash Checker</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</nav>
+            </nav>
 
-        <main>
-            <div class="tool-container">
-                <!-- Header -->
-                <div
-                    class="section-title"
-                    style="
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        text-align: center;
-                    "
-                >
-                    <i
-                        class="fas fa-file-image"
-                        style="
-                            color: var(--primary);
-                            font-size: 2.5rem;
-                            margin-bottom: 20px;
-                        "
-                    ></i>
-                    <h1>AVIF to JPG Converter</h1>
-                    <p
-                        style="
-                            color: var(--text-muted);
-                            font-size: 1.1rem;
-                            max-width: 600px;
-                        "
+            <main class="flex flex-col gap-12 relative z-10 w-full">
+                <!-- Main Content Container with Glassmorphism -->
+                <div class="max-w-3xl mx-auto w-full bg-white/35 backdrop-blur-[35px] border border-white/50 rounded-[40px] p-8 md:p-12 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,0.8)] relative overflow-hidden flex flex-col gap-10">
+                    <!-- Header Info -->
+                    <div class="flex flex-col items-center text-center gap-4">
+                        <div class="w-16 h-16 bg-white/70 rounded-2xl border border-white/80 shadow-md flex items-center justify-center mb-2">
+                            <i class="fas fa-file-image text-3xl text-indigo-600"></i>
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">AVIF to JPG Converter</h1>
+                        <p class="text-[16px] font-semibold text-slate-500 max-w-lg">
+                            convert AVIF files to JPG format locally in your browser.
+                        </p>
+                    </div>
+
+                    <!-- Upload Dropzone -->
+                    <div class="w-full bg-white/45 backdrop-blur-[30px] border-2 border-dashed border-white/60 hover:border-blue-500/50 hover:bg-white/65 rounded-[32px] p-12 flex flex-col items-center justify-center gap-6 cursor-pointer group transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01),0_12px_40px_rgba(0,0,0,0.02)]" id="dropzone">
+                        <div class="w-20 h-20 bg-white/80 border border-white/80 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-blue-500/10 transition-all duration-300" id="dropzoneIcon">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-gradient bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"></i>
+                        </div>
+                        <div class="text-center">
+                            <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight mb-1" id="dropzoneTitle">Upload AVIF</h2>
+                            <p class="text-[14px] font-semibold text-slate-500" id="dropzoneSubtitle">Drag and drop or click to upload</p>
+                        </div>
+                        <input
+                            type="file"
+                            id="fileInputEl"
+                            hidden
+                            multiple
+                            onchange="handleToolFile(this.files)"
+                        />
+                    </div>
+
+                    <!-- Multi-upload thumbnail grid (hidden unless image-to-PDF) -->
+                    <div id="thumbnailContainer" class="thumbnail-grid" style="display: none"></div>
+                    <div id="imageCounter" class="text-center font-bold text-slate-600 mt-6" style="display: none"></div>
+                    <div id="dragHint" class="text-center text-[13px] font-semibold text-slate-400 mt-1" style="display: none">Drag to reorder</div>
+                    <button
+                        id="generatePdfBtn"
+                        class="mx-auto mt-6 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-[15px] px-8 py-4 rounded-full shadow-lg flex items-center gap-2.5 transition-all"
+                        style="display: none"
+                        onclick="generatePDF()"
                     >
-                        convert AVIF files to JPG format locally in your browser.
-                    </p>
-                </div>
+                        <i class="fas fa-file-pdf"></i> Generate PDF
+                    </button>
 
-                <!-- Upload Dropzone -->
-                <div class="dropzone" id="dropzone">
-                    <div class="dropzone-icon" id="dropzoneIcon">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                    <!-- Loading / Progress -->
+                    <div id="loading" class="bg-white/40 border border-white/60 rounded-[32px] p-10 text-center shadow-lg" style="display: none">
+                        <div class="w-16 h-16 bg-white/80 border border-white/80 rounded-full flex items-center justify-center shadow-md mx-auto mb-6 animate-spin">
+                            <i class="fas fa-cog text-3xl text-indigo-600"></i>
+                        </div>
+                        <h2 id="loadingText" class="text-xl font-extrabold text-slate-800 tracking-tight mb-2">Processing...</h2>
+                        <p class="text-[14px] font-semibold text-slate-500 mb-6">Running 100% locally on your device.</p>
+                        <div class="w-full max-w-[320px] h-3 bg-slate-200/50 border border-slate-200/20 rounded-full mx-auto overflow-hidden shadow-inner" id="progressContainer">
+                            <div
+                                class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-300"
+                                id="progressBarFill"
+                                style="width: 0%;"
+                            ></div>
+                        </div>
                     </div>
-                    <h2 id="dropzoneTitle">Upload AVIF</h2>
-                    <p id="dropzoneSubtitle">
-                        Drag and drop or click to upload
-                    </p>
-  <input
-    type="file"
-    id="fileInputEl"
-    hidden
-    multiple
-    onchange="handleToolFile(this.files)"
-  />
-                </div>
 
-                <!-- Multi-upload thumbnail grid (hidden unless image-to-PDF) -->
-                <div id="thumbnailContainer" class="thumbnail-grid" style="display: none"></div>
-                <div id="imageCounter" class="image-counter" style="display: none"></div>
-                <div id="dragHint" class="drag-hint" style="display: none">Drag to reorder</div>
-                <button
-                    id="generatePdfBtn"
-                    class="btn-main generate-pdf-btn"
-                    style="display: none"
-                    onclick="generatePDF()"
-                >
-                    <i class="fas fa-file-pdf"></i> Generate PDF
-                </button>
-
-                <!-- Loading / Progress -->
-                <div id="loading" class="loading-block" style="display: none">
-                    <div class="spinner-icon">
-                        <i class="fas fa-cog fa-spin"></i>
-                    </div>
-                    <h2 id="loadingText">Processing...</h2>
-                    <p>Running 100% locally on your device.</p>
-                    <div class="progress-container" id="progressContainer">
-                        <div
-                            class="progress-bar-fill"
-                            id="progressBarFill"
-                        ></div>
-                    </div>
-                </div>
-
-                <!-- Result -->
-                <div id="resultArea" class="result-block" style="display: none">
-                    <div class="success-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h2>Conversion Complete!</h2>
-                    <p class="file-name" id="fileNameDisplay"></p>
-                    <div class="actions">
-                        <a
-                            id="downloadBtn"
-                            href="#"
-                            download
-                            class="btn-main"
-                            style="font-size: 1.1rem; padding: 16px 32px"
-                        >
-                            <i class="fas fa-download"></i> Download Converted
-                            File
-                        </a>
-                        <button
-                            id="convertAnotherBtn"
-                            onclick="resetConverter()"
-                            class="btn-main"
-                            style="background: #64748b"
-                        >
-                            <i class="fas fa-undo"></i> Convert Another
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="seo-section">
-                <h2>How to convert AVIF to JPG</h2>
-                <p>
-                    Covertfily provides a seamless, privacy-first way to convert
-                    your AVIF files to JPG. Unlike traditional online converters,
-                    our technology performs the conversion directly in your web
-                    browser. This means your data is never sent to our servers,
-                    keeping your sensitive information 100% private.
-                </p>
-
-                <h2>Why Choose Local Conversion?</h2>
-                <p>
-                    1. <strong>Privacy:</strong> No one else ever sees your
-                    files.<br />
-                    2. <strong>Speed:</strong> No wait times for uploading or
-                    downloading large files.<br />
-                    3. <strong>Security:</strong> Eliminate the risk of data
-                    breaches on cloud servers.
-                </p>
-
-                <h2>Frequently Asked Questions</h2>
-                <div style="margin-top: 20px">
-                    <strong>Is it free?</strong>
-                    <p>Yes, Covertfily is free and open-source.</p>
-                    <strong>What is the maximum file size?</strong>
-                    <p>
-                        Since it runs on your device, it depends on your
-                        browser's memory, but most files up to 100MB work
-                        perfectly.
-                    </p>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="logo">
-                        <img src="logo.png" alt="Covertfily" />
-                    </div>
-                    <p>
-                        100% private, browser-based file conversion. No uploads.
-                        No tracking. Open source.
-                    </p>
-                </div>
-                <div class="footer-col">
-                                    <h4>Product</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="merge-pdf.html">PDF Tools</a></li>
-                    <li><a href="image-resizer.html">Image Tools</a></li>
-                    <li><a href="video-trimmer.html">Video Tools</a></li>
-                    <li><a href="audio-trimmer.html">Audio Tools</a></li>
-                    <li><a href="qr-code-generator.html">Generators</a></li>
-                    <li><a href="file-hash-checker.html">Utilities</a></li>
-                </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li>
+                    <!-- Result -->
+                    <div id="resultArea" class="bg-white/40 border border-white/60 rounded-[32px] p-10 text-center shadow-lg" style="display: none">
+                        <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center shadow-sm mx-auto mb-6">
+                            <i class="fas fa-check-circle text-3xl text-emerald-500"></i>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight mb-2">Conversion Complete!</h2>
+                        <p class="text-[14px] font-bold text-slate-600 bg-white/50 border border-white/60 rounded-xl px-4 py-2.5 max-w-md mx-auto truncate mb-8" id="fileNameDisplay"></p>
+                        <div class="flex flex-wrap justify-center gap-4">
                             <a
-                                href="https://github.com/jagathram-tech/covertfily"
-                                >GitHub</a
+                                id="downloadBtn"
+                                href="#"
+                                download
+                                class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold text-[15px] px-8 py-4 rounded-full shadow-[0_10px_20px_rgba(37,99,235,0.25)] flex items-center gap-2.5 transition-all"
                             >
-                        </li>
-                        <li><a href="documentation.html">Documentation</a></li>
-                        <li><a href="index.html#faq">FAQ</a></li>
-                    </ul>
+                                <i class="fas fa-download"></i> Download Converted File
+                            </a>
+                            <button
+                                id="convertAnotherBtn"
+                                onclick="resetConverter()"
+                                class="bg-white/50 hover:bg-white/80 active:scale-95 border border-white/60 text-slate-700 font-bold text-[15px] px-8 py-4 rounded-full transition-all"
+                            >
+                                <i class="fas fa-undo"></i> Convert Another
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Use</a></li>
-                    </ul>
+
+                <!-- SEO Information Section -->
+                <div class="max-w-3xl mx-auto w-full bg-white/20 backdrop-blur-[15px] border border-white/30 rounded-[32px] p-8 md:p-10 shadow-sm flex flex-col gap-6 text-left">
+                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">How to convert AVIF to JPG</h2>
+                    <p class="text-[15px] text-slate-600 leading-relaxed font-semibold">
+                        Covertfily provides a seamless, privacy-first way to convert
+                        your AVIF files to JPG. Unlike traditional online converters,
+                        our technology performs the conversion directly in your web
+                        browser. This means your data is never sent to our servers,
+                        keeping your sensitive information 100% private.
+                    </p>
+
+                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight mt-4">Why Choose Local Conversion?</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white/40 border border-white/50 rounded-2xl p-5 shadow-sm">
+                            <div class="text-indigo-600 font-bold mb-1">1. Privacy</div>
+                            <p class="text-[13px] text-slate-500 font-semibold leading-relaxed">No one else ever sees your files.</p>
+                        </div>
+                        <div class="bg-white/40 border border-white/50 rounded-2xl p-5 shadow-sm">
+                            <div class="text-indigo-600 font-bold mb-1">2. Speed</div>
+                            <p class="text-[13px] text-slate-500 font-semibold leading-relaxed">No wait times for uploading or downloading large files.</p>
+                        </div>
+                        <div class="bg-white/40 border border-white/50 rounded-2xl p-5 shadow-sm">
+                            <div class="text-indigo-600 font-bold mb-1">3. Security</div>
+                            <p class="text-[13px] text-slate-500 font-semibold leading-relaxed">Eliminate risk of data breaches on cloud servers.</p>
+                        </div>
+                    </div>
+
+                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight mt-4">Frequently Asked Questions</h2>
+                    <div class="flex flex-col gap-4">
+                        <div class="border-b border-white/30 pb-4">
+                            <strong class="text-[15px] font-bold text-slate-800 block mb-1">Is it free?</strong>
+                            <p class="text-[14px] text-slate-500 font-semibold leading-relaxed">Yes, Covertfily is free and open-source.</p>
+                        </div>
+                        <div>
+                            <strong class="text-[15px] font-bold text-slate-800 block mb-1">What is the maximum file size?</strong>
+                            <p class="text-[14px] text-slate-500 font-semibold leading-relaxed">
+                                Since it runs on your device, it depends on your
+                                browser's memory, but most files up to 100MB work
+                                perfectly.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Covertfily. MIT Licensed.</p>
-                <div class="footer-social">
-                    <a href="https://github.com/jagathram-tech/covertfily"
-                        ><i class="fab fa-github"></i
-                    ></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fas fa-envelope"></i></a>
+            </main>
+
+            <footer>
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <img src="logo.png" alt="Covertfily" />
+                        </div>
+                        <p>
+                            100% private, browser-based file conversion. No uploads.
+                            No tracking. Open source.
+                        </p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="merge-pdf.html">PDF Tools</a></li>
+                            <li><a href="image-resizer.html">Image Tools</a></li>
+                            <li><a href="video-trimmer.html">Video Tools</a></li>
+                            <li><a href="audio-trimmer.html">Audio Tools</a></li>
+                            <li><a href="qr-code-generator.html">Generators</a></li>
+                            <li><a href="file-hash-checker.html">Utilities</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/jagathram-tech/covertfily">GitHub</a>
+                            </li>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="index.html#faq">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Use</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </footer>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Covertfily. MIT Licensed.</p>
+                    <div class="footer-social">
+                        <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </footer>
+        </div> <!-- Close .elevra-workspace -->
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="main.js"></script>
@@ -540,17 +435,11 @@
             // Handle drag and drop
             dropzone.addEventListener("dragover", function (e) {
                 e.preventDefault();
-                dropzone.style.borderColor = "var(--primary-hover)";
-                dropzone.style.background = "#f8fafc";
             });
             dropzone.addEventListener("dragleave", function () {
-                dropzone.style.borderColor = "var(--primary)";
-                dropzone.style.background = "white";
             });
             dropzone.addEventListener("drop", function (e) {
                 e.preventDefault();
-                dropzone.style.borderColor = "var(--primary)";
-                dropzone.style.background = "white";
                 if (e.dataTransfer.files.length) {
                     handleToolFile(e.dataTransfer.files);
                 }
@@ -761,6 +650,16 @@
         </script>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 

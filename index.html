@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +8,26 @@
     <meta name="description" content="100% private, browser-based file conversion. Convert PDF, Images, Video, and Audio locally with MIT-licensed power. Secure merged PDF, compression, and watermarking tools.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#2563eb',
+              success: '#10b981',
+              coral: '#ff2d55',
+            },
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="style.css?v=1.0.1">
     
     <!-- Libraries for Client-Side Conversion -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -24,249 +41,61 @@
     <script src="https://cdn.jsdelivr.net/npm/docx@7.1.1/build/index.js"></script>
 
     <style>
-        /* ── NEW HERO STYLES ── */
-        .hero-new {
-            background: #ffffff;
-            position: relative;
-            overflow: hidden;
-            padding: 90px 8% 80px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Pixel / Tetris decorative squares */
-        .hero-pixels {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .hero-pixels span {
-            position: absolute;
-            background: #111;
-            display: block;
-        }
-
-        .hero-new-inner {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr 1fr 1fr 1fr 1fr;
-            align-items: center;
-            gap: 0;
-        }
-
-        /* LEFT COLUMN */
-        .hero-new-left {
-            flex: 1;
-            max-width: 520px;
-            grid-column: 2 / 5;
-            padding-top: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 28px;
-        }
-
-        .hero-new-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #fff;
-            border: 1.5px solid #e2e6eb;
-            border-radius: 999px;
-            padding: 7px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #333;
-        }
-        .hero-new-badge i { color: #2563EB; font-size: 13px; }
-
-        .hero-new-title {
-            font-size: clamp(42px, 5vw, 64px);
-            font-weight: 900;
-            line-height: 1.08;
-            color: #0f172a;
-            margin: 0;
-            letter-spacing: -1.5px;
-        }
-        .hero-new-title-accent { color: #2563EB; }
-
-        .hero-new-desc {
-            font-size: 17px;
-            color: #64748b;
-            line-height: 1.65;
-            margin: 0;
-        }
-
-        .hero-new-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .hero-new-pill {
-            background: #fff;
-            border: 1.5px solid #e2e6eb;
-            border-radius: 999px;
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-            white-space: nowrap;
-        }
-
-        .hero-new-footnote {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        .hero-new-footnote span { display: flex; align-items: center; gap: 5px; }
-        .hero-new-footnote .sep { color: #cbd5e1; }
-
-        /* RIGHT COLUMN — card */
-        .hero-new-right {
-            flex: 1;
-            max-width: 460px;
-            grid-column: 6 / 9;
-        }
-
-        .hero-new-card {
-            background: linear-gradient(#fff, #fff) padding-box,
-                        linear-gradient(135deg, #e5e7eb 0%, #9ca3af 33%, #374151 66%, #111827 100%) border-box;
-            border-radius: 22px;
-            border: 2px solid transparent;
-            padding: 42px 38px 36px;
-        }
-
-        .hero-new-card-files {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 22px;
-            margin-bottom: 26px;
-        }
-        .hero-new-file-icon {
-            width: 76px;
-            height: 90px;
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 800;
-            gap: 7px;
-            letter-spacing: 0.5px;
-        }
-        .hero-new-file-icon i { font-size: 30px; }
-        .hero-new-file-icon.purple { background: #7C3AED; }
-        .hero-new-file-icon.green  { background: #16A34A; }
-        .hero-new-card-arrow {
-            font-size: 22px;
-            color: #94a3b8;
-        }
-
-        .hero-new-card-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 0 0 10px;
-        }
-        .hero-new-card-subtitle {
-            text-align: center;
-            font-size: 14px;
-            color: #64748b;
-            line-height: 1.65;
-            margin: 0 0 30px;
-        }
-
-        .hero-new-trust-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-        .hero-new-trust-item {
-            text-align: center;
-        }
-        .hero-new-trust-icon {
-            font-size: 22px;
-            margin-bottom: 7px;
-            line-height: 1;
-        }
-        .hero-new-trust-label {
-            font-size: 12.5px;
-            font-weight: 700;
+        /* Custom styles for the Elevra Liquid Glass Theme */
+        body {
+            background-image: url('background_digital.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
             color: #1e293b;
-            margin-bottom: 3px;
-        }
-        .hero-new-trust-sub {
-            font-size: 11.5px;
-            color: #94a3b8;
         }
 
-        .hero-new-trust-badge {
-            background: #f0fdf4;
-            border-radius: 999px;
-            padding: 13px 20px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: #166534;
-            border: 1.5px solid #bbf7d0;
+        .glass-workspace {
+            background: rgba(255, 255, 255, 0.40);
+            backdrop-filter: blur(40px) saturate(220%);
+            -webkit-backdrop-filter: blur(40px) saturate(220%);
+            border: 1.5px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 
+                0 40px 100px -20px rgba(0, 0, 0, 0.12),
+                inset 0 1px 2px rgba(255, 255, 255, 0.8),
+                inset 0 -1px 3px rgba(0, 0, 0, 0.02);
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .hero-new-inner { flex-direction: column; }
-            .hero-new-left, .hero-new-right { max-width: 100%; }
-            .hero-new-card { padding: 32px 24px 28px; }
-        }
-        @media (max-width: 768px) {
-            .hero-new { padding: 80px 6% 80px; }
-            .hero-pixels { display: none; }
-            .hero-new-inner {
-                grid-template-columns: 1fr;
-            }
-            .hero-new-left { 
-                text-align: center; 
-                align-items: center; 
-                justify-content: center;
-                margin: 0 auto;
-                gap: 14px;
-                grid-column: 1 / -1;
-            }
-            .hero-new-badge { margin: 0 auto 16px; }
-            .hero-new-title { 
-                text-align: center;
-                font-size: clamp(2.8rem, 8vw, 3.8rem);
-                font-weight: 900;
-                line-height: 1.1;
-                letter-spacing: -0.03em;
-            }
-            .hero-new-desc { text-align: center; margin: 0 auto; }
-            .hero-new-pills { justify-content: center; }
-            .hero-new-footnote { justify-content: center; }
-        }
-        @media (max-width: 480px) {
-            .hero-new { padding: 80px 6% 80px; }
-            .hero-new-title { font-size: 38px; }
-            .hero-new-right { display: none; }
+        .glass-card-amber {
+            background: rgba(253, 230, 138, 0.35); /* translucent amber */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 
+                0 15px 35px -5px rgba(251, 191, 36, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8);
         }
 
-        @media (min-width: 768px) {
-            .button-17 {
-                font-size: 16px;
-                min-width: 160px;
-            }
+        .glass-card-emerald {
+            background: rgba(167, 243, 208, 0.35); /* translucent emerald */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 
+                0 15px 35px -5px rgba(52, 211, 153, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Customize scrollbars for the glass dropdown */
+        .tools-dropdown-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .tools-dropdown-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .tools-dropdown-scroll::-webkit-scrollbar-thumb {
+            background: rgba(15, 23, 42, 0.15);
+            border-radius: 99px;
+        }
+        .tools-dropdown-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(15, 23, 42, 0.3);
         }
     </style>
 
@@ -387,305 +216,339 @@
     ]
     </script>
 </head>
-<body class="home-first-screen">
-<div class="first-screen">
-<nav>
-    <div class="nav-inner">
-        <div class="nav-left">
-            <div class="logo"><a href="index.html"><img src="logo.png" alt="Covertfily"></a></div>
-        </div>
-        <div class="nav-right">
-            <a href="index.html">Home</a>
-            <button class="nav-tools-btn" id="navToolsBtn" type="button">Tools <span class="nav-caret">▾</span></button>
-            <div class="nav-tools-dropdown" id="navToolsDropdown">
-                <input type="text" class="tools-dropdown-search" id="navToolsDropdownSearch" placeholder="Search tools...">
-                <div class="tools-dropdown-scroll">
+<body class="elevra-theme flex items-center justify-center min-h-screen">
+    <div class="elevra-workspace w-full flex flex-col gap-16 relative overflow-hidden">
+        <!-- HEADER / NAVIGATION -->
+        <nav class="flex items-center justify-between py-2 w-full relative z-50">
+            <!-- Brand Logo -->
+            <a href="index.html" class="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2 hover:opacity-90 font-sans">
+                covertfily
+            </a>
+
+            <!-- Floating Center Nav Pill -->
+            <div class="hidden md:flex items-center gap-1 bg-white/40 backdrop-blur-md border border-white/40 rounded-full px-2 py-1.5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_8px_32px_rgba(0,0,0,0.03)]">
+                <a href="index.html" class="px-5 py-2 text-[14px] font-semibold text-slate-800 bg-white/70 shadow-sm border border-white/60 rounded-full transition-all duration-300">Home</a>
+                <button class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300 flex items-center gap-1.5" id="navToolsBtn" type="button">
+                    Tools <i class="fas fa-chevron-down text-[10px] opacity-70 transition-transform duration-300" id="navToolsCaret"></i>
+                </button>
+                <a href="blog.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Blog</a>
+                <a href="documentation.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Docs</a>
+            </div>
+
+            <!-- Right CTA Buttons -->
+            <div class="flex items-center gap-2">
+                <a href="#tools-dashboard" class="bg-white/50 hover:bg-white/80 active:scale-95 border border-white/60 text-slate-800 text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-sm backdrop-blur-md transition-all duration-300 font-sans">
+                    Tools
+                </a>
+                <a href="#convert" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-md transition-all duration-300 font-sans">
+                    Convert
+                </a>
+            </div>
+
+            <!-- Dynamic Glass Tools Dropdown -->
+            <div class="nav-tools-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[640px] max-w-[90vw] z-50 bg-white/75 backdrop-blur-[35px] border border-white/60 rounded-[32px] p-6 shadow-2xl opacity-0 invisible pointer-events-none transition-all duration-300" id="navToolsDropdown">
+                <!-- Dropdown Search -->
+                <div class="relative mb-6">
+                    <input type="text" class="w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" id="navToolsDropdownSearch" placeholder="Search 32 offline tools...">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                </div>
+                <!-- Tools Categories Scroll -->
+                <div class="tools-dropdown-scroll grid grid-cols-2 gap-6 max-h-[360px] overflow-y-auto pr-2" id="navToolsList">
                     <div class="tools-group">
-                        <div class="tools-group-label">PDF Tools</div>
-                        <a href="merge-pdf.html">Merge PDF</a>
-                        <a href="compress-pdf.html">Compress PDF</a>
-                        <a href="reorder-pdf.html">Reorder PDF Pages</a>
-                        <a href="protect-pdf.html">Protect/Unlock PDF</a>
-                        <a href="watermark.html">Watermark</a>
+                        <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
+                        <div class="flex flex-col gap-2">
+                            <a href="merge-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Merge PDF</a>
+                            <a href="compress-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Compress PDF</a>
+                            <a href="reorder-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Reorder PDF Pages</a>
+                            <a href="protect-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Protect/Unlock PDF</a>
+                            <a href="watermark.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Watermark</a>
+                        </div>
                     </div>
                     <div class="tools-group">
-                        <div class="tools-group-label">Image Tools</div>
-                        <a href="image-resizer.html">Image Resizer</a>
-                        <a href="image-rounder.html">Image Rounder</a>
-                        <a href="image-blur.html">Image Blur</a>
-<a href="color-palette-extractor.html">Color Palette</a>
-                        <a href="eyedropper.html">EyeDropper</a>
-                        <a href="image-to-base64.html">Image to Base64</a>
-                        <a href="exif-reader.html">EXIF Reader</a>
-                        <a href="metadata-stripper.html">Metadata Stripper</a>
-                        <a href="pixel-art.html">Pixel Art</a>
-                        <a href="image-to-json.html">Image to JSON</a>
-                        <a href="brightness-map.html">Brightness Map</a>
-                        <a href="stereogram.html">Stereogram</a>
-                        <a href="steganography.html">Steganography</a>
-                        <a href="collage-maker.html">Collage Maker</a>
-                        <a href="ocr.html">Image to Text (OCR)</a>
-                        <a href="string-art.html">String Art</a>
+                        <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
+                        <div class="flex flex-col gap-2">
+                            <a href="image-resizer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Resizer</a>
+                            <a href="image-rounder.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Rounder</a>
+                            <a href="image-blur.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Blur</a>
+                            <a href="color-palette-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Color Palette</a>
+                            <a href="eyedropper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EyeDropper</a>
+                            <a href="image-to-base64.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Base64</a>
+                            <a href="exif-reader.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EXIF Reader</a>
+                            <a href="metadata-stripper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Metadata Stripper</a>
+                            <a href="pixel-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Pixel Art</a>
+                            <a href="image-to-json.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to JSON</a>
+                            <a href="brightness-map.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Brightness Map</a>
+                            <a href="stereogram.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Stereogram</a>
+                            <a href="steganography.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Steganography</a>
+                            <a href="collage-maker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Collage Maker</a>
+                            <a href="ocr.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Text (OCR)</a>
+                            <a href="string-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">String Art</a>
+                        </div>
                     </div>
                     <div class="tools-group">
-                        <div class="tools-group-label">Video Tools</div>
-                        <a href="video-trimmer.html">Video Trimmer</a>
-                        <a href="video-frame-extractor.html">Frame Extractor</a>
-                        <a href="video-compressor.html">Video Compressor</a>
-                        <a href="video-speed.html">Video Speed Changer</a>
+                        <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
+                        <div class="flex flex-col gap-2">
+                            <a href="video-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Trimmer</a>
+                            <a href="video-frame-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Frame Extractor</a>
+                            <a href="video-compressor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Compressor</a>
+                            <a href="video-speed.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Speed</a>
+                            <a href="audio-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Trimmer</a>
+                            <a href="audio-merger.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Merger</a>
+                        </div>
                     </div>
                     <div class="tools-group">
-                        <div class="tools-group-label">Audio Tools</div>
-                        <a href="audio-trimmer.html">Audio Trimmer</a>
-                        <a href="audio-merger.html">Audio Merger</a>
-                    </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Generate</div>
-                        <a href="qr-code-generator.html">QR Code Generator</a>
-                        <a href="barcode-generator.html">Barcode Generator</a>
-                        <a href="lorem-ipsum.html">Lorem Ipsum Generator</a>
-                        <a href="word-counter.html">Word & Character Counter</a>
-                    </div>
-                    <div class="tools-group">
-                        <div class="tools-group-label">Utilities</div>
-                        <a href="file-hash-checker.html">File Hash Checker</a>
+                        <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
+                        <div class="flex flex-col gap-2">
+                            <a href="qr-code-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">QR Code Generator</a>
+                            <a href="barcode-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Barcode Generator</a>
+                            <a href="lorem-ipsum.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Lorem Ipsum</a>
+                            <a href="word-counter.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Word Counter</a>
+                            <a href="file-hash-checker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">File Hash Checker</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</nav>
+        </nav>
 
-    <div class="first-screen-content">
-
-        <!-- ═══════════════════════════════════════════════
-             HERO SECTION — redesigned to match screenshot
-             ═══════════════════════════════════════════════ -->
-        <section class="hero-new" id="hero">
-
-            <!-- Tetris / pixel decorative blocks -->
-            <div class="hero-pixels">
-                <!-- top-center cluster -->
-                <span style="top:0;   left:49%; width:44px; height:44px;"></span>
-                <span style="top:46px;left:52%; width:22px; height:22px;"></span>
-                <span style="top:70px;left:47%; width:32px; height:32px;"></span>
-                <!-- top-right cluster -->
-                <span style="top:10px; right:4%;  width:52px; height:52px;"></span>
-                <span style="top:64px; right:7%;  width:26px; height:26px;"></span>
-                <span style="top:100px;right:10%; width:38px; height:38px;"></span>
-                <span style="top:140px;right:3%;  width:20px; height:20px;"></span>
-                <!-- bottom-left cluster -->
-                <span style="bottom:90px; left:3%;  width:40px; height:40px;"></span>
-                <span style="bottom:48px; left:6%;  width:22px; height:22px;"></span>
-                <span style="bottom:70px; left:10%; width:28px; height:28px;"></span>
-                <!-- bottom-right cluster -->
-                <span style="bottom:50px; right:2%; width:50px; height:50px;"></span>
-                <span style="bottom:104px;right:5%; width:24px; height:24px;"></span>
-                <span style="bottom:80px; right:9%; width:18px; height:18px;"></span>
-            </div>
-
-            <div class="hero-new-inner">
-
-                <!-- ── LEFT COLUMN ── -->
-                <div class="hero-new-left">
-
-                    <!-- Badge -->
-                    <div class="hero-new-badge">
-                        <i class="fas fa-shield-alt"></i>
-                        100% Private &bull; Open Source
-                    </div>
-
-                    <!-- Headline -->
-                    <h1 class="hero-new-title">
-                        Convert Files<br>
-                        <span class="hero-new-title-accent">Privately</span>
-                    </h1>
-
-                    <!-- Subtext -->
-                    <p class="hero-new-desc">
-                        Zero uploads. Zero tracking.<br>
-                        Everything runs in your browser.
-                    </p>
-
-                    <!-- Feature pills -->
-                    <div class="hero-new-pills">
-                        <span class="hero-new-pill">🔒 Zero Uploads</span>
-                        <span class="hero-new-pill">⚡ Instant</span>
-                        <span class="hero-new-pill">🌐 Works Offline</span>
-                        <span class="hero-new-pill">📂 30+ Tools</span>
-                    </div>
-
-                    <!-- CTA -->
-                    <a href="#convert" class="button-17" role="button">Start Converting →</a>
-
-                    <!-- Footnote -->
-                    <div class="hero-new-footnote">
-                        <span><i class="fas fa-shield-alt"></i> No account needed</span>
-                        <span class="sep">•</span>
-                        <span><i class="fas fa-wifi"></i> Works offline</span>
-                        <span class="sep">•</span>
-                        <span><i class="fas fa-code"></i> MIT licensed</span>
-                    </div>
+        <!-- HERO SECTION -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center relative z-10 w-full" id="hero">
+            <!-- Left Grid (Headline & Description & CTAs) -->
+            <div class="lg:col-span-7 flex flex-col items-start gap-6">
+                <!-- Private & Open Badge -->
+                <div class="inline-flex items-center gap-2 bg-[#f1f3f7] px-4 py-2 rounded-full text-[13px] font-bold text-slate-700 shadow-sm">
+                    🔒 100% Client-Side • MIT Licensed
                 </div>
-
-                <!-- ── RIGHT COLUMN — Privacy Card ── -->
-                <div class="hero-new-right">
-                    <div class="hero-new-card">
-
-                        <!-- File icons -->
-                        <div class="hero-new-card-files">
-                            <div class="hero-new-file-icon purple">
-                                <i class="fas fa-file-pdf"></i>
-                                PDF
-                            </div>
-                            <i class="fas fa-arrow-right hero-new-card-arrow"></i>
-                            <div class="hero-new-file-icon green">
-                                <i class="fas fa-file-word"></i>
-                                DOCX
-                            </div>
-                        </div>
-
-                        <!-- Card heading -->
-                        <h3 class="hero-new-card-title">Your Privacy. Our Priority.</h3>
-                        <p class="hero-new-card-subtitle">
-                            All conversions happen locally in your browser.<br>
-                            Your files never leave your device.
-                        </p>
-
-                        <!-- 3-column trust icons -->
-                        <div class="hero-new-trust-grid">
-                            <div class="hero-new-trust-item">
-                                <div class="hero-new-trust-icon">🔒</div>
-                                <div class="hero-new-trust-label">100% Private</div>
-                                <div class="hero-new-trust-sub">Zero uploads</div>
-                            </div>
-                            <div class="hero-new-trust-item">
-                                <div class="hero-new-trust-icon">🛡️</div>
-                                <div class="hero-new-trust-label">Secure by Design</div>
-                                <div class="hero-new-trust-sub">Built with privacy</div>
-                            </div>
-                            <div class="hero-new-trust-item">
-                                <div class="hero-new-trust-icon" style="font-family:monospace;font-size:18px;font-weight:800;color:#f97316;">&lt;/&gt;</div>
-                                <div class="hero-new-trust-label">Open Source</div>
-                                <div class="hero-new-trust-sub">Transparent &amp; trusted</div>
-                            </div>
-                        </div>
-
-                        <!-- Trust badge -->
-                        <div class="hero-new-trust-badge">
-                            ✅ Trusted by 10,000+ users worldwide
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </section>
-        <!-- ═══════════════════════════════════════════════
-             END HERO SECTION
-             ═══════════════════════════════════════════════ -->
-
-        <section class="trusted-by">
-            <p class="trusted-by-label">RECOMMENDED AS THE MOST SECURE FILE CONVERTER BY</p>
-            <div class="trusted-by-logos">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" height="28">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Claude_AI_logo.svg" alt="Claude" height="28">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" alt="Gemini" height="28">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/DeepSeek_logo.svg" alt="DeepSeek" height="28">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg" alt="Perplexity" height="28">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Grok-feb-2025-logo.svg" alt="Grok" height="28">
-            </div>
-        </section>
-    </div></div>
-
-    <main>
-
-        <section class="converter-section" id="convert">
-            <div class="converter-container">
-                <h2 class="converter-title">Convert Your Files Now</h2>
-                <p class="converter-subtitle">Select your formats and jump straight into the dedicated converter page.</p>
-
-                <div class="format-selectors">
-                    <div class="custom-dropdown format-select" id="formatFromContainer" data-value="">
-                        <button class="dropdown-trigger" type="button">
-                            <span class="dropdown-value">From: Select format...</span>
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                            <input type="text" class="dropdown-search" placeholder="Search formats..." oninput="filterDropdownItems(this, 'fromItems')">
-                            <div class="dropdown-items" id="fromItems">
-                                <div class="dropdown-group-label">Images</div>
-                                <div class="dropdown-item" data-value="jpg" onclick="selectFromFormat('jpg','JPG/JPEG')">JPG/JPEG</div>
-                                <div class="dropdown-item" data-value="png" onclick="selectFromFormat('png','PNG')">PNG</div>
-                                <div class="dropdown-item" data-value="webp" onclick="selectFromFormat('webp','WebP')">WebP</div>
-                                <div class="dropdown-item" data-value="gif" onclick="selectFromFormat('gif','GIF')">GIF</div>
-                                <div class="dropdown-item" data-value="bmp" onclick="selectFromFormat('bmp','BMP')">BMP</div>
-                                <div class="dropdown-item" data-value="svg" onclick="selectFromFormat('svg','SVG')">SVG</div>
-                                <div class="dropdown-item" data-value="avif" onclick="selectFromFormat('avif','AVIF')">AVIF</div>
-                                <div class="dropdown-item" data-value="tiff" onclick="selectFromFormat('tiff','TIFF')">TIFF</div>
-                                <div class="dropdown-item" data-value="heic" onclick="selectFromFormat('heic','HEIC/HEIF')">HEIC/HEIF</div>
-                                <div class="dropdown-group-label">Documents</div>
-                                <div class="dropdown-item" data-value="pdf" onclick="selectFromFormat('pdf','PDF')">PDF Document</div>
-                                <div class="dropdown-item" data-value="docx" onclick="selectFromFormat('docx','Word (DOCX)')">Word (DOCX)</div>
-                                <div class="dropdown-item" data-value="xlsx" onclick="selectFromFormat('xlsx','Excel')">Excel (XLSX)</div>
-                                <div class="dropdown-item" data-value="csv" onclick="selectFromFormat('csv','CSV')">CSV Data</div>
-                                <div class="dropdown-item" data-value="md" onclick="selectFromFormat('md','Markdown')">Markdown (MD)</div>
-                                <div class="dropdown-item" data-value="html" onclick="selectFromFormat('html','HTML')">HTML Page</div>
-                                <div class="dropdown-item" data-value="txt" onclick="selectFromFormat('txt','Text')">Plain Text (TXT)</div>
-                                <div class="dropdown-group-label">Media</div>
-                                <div class="dropdown-item" data-value="mp4" onclick="selectFromFormat('mp4','MP4')">MP4 Video</div>
-                                <div class="dropdown-item" data-value="webm" onclick="selectFromFormat('webm','WebM')">WebM Video</div>
-                                <div class="dropdown-item" data-value="mov" onclick="selectFromFormat('mov','MOV')">MOV Video</div>
-                                <div class="dropdown-item" data-value="avi" onclick="selectFromFormat('avi','AVI')">AVI Video</div>
-                                <div class="dropdown-item" data-value="mkv" onclick="selectFromFormat('mkv','MKV')">MKV Video</div>
-                                <div class="dropdown-item" data-value="mp3" onclick="selectFromFormat('mp3','MP3')">MP3 Audio</div>
-                                <div class="dropdown-item" data-value="wav" onclick="selectFromFormat('wav','WAV')">WAV Audio</div>
-                                <div class="dropdown-item" data-value="ogg" onclick="selectFromFormat('ogg','OGG')">OGG Audio</div>
-                                <div class="dropdown-item" data-value="flac" onclick="selectFromFormat('flac','FLAC')">FLAC Audio</div>
-                            </div>
-                            <div class="no-results">No matching formats</div>
-                        </div>
-                    </div>
-
-                    <div class="format-connector">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-
-                    <div class="custom-dropdown format-select" id="formatToContainer" data-value="">
-                        <button class="dropdown-trigger" type="button" disabled>
-                            <span class="dropdown-value">To: Select output...</span>
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                            <input type="text" class="dropdown-search" placeholder="Search formats..." oninput="filterDropdownItems(this, 'toItems')">
-                            <div class="dropdown-items" id="toItems">
-                                <div class="dropdown-placeholder" style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.9rem;">Select input format first</div>
-                            </div>
-                            <div class="no-results">No matching formats</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dropzone" id="dropzone" onclick="goToDedicatedPage()">
-                    <div class="dropzone-icon" id="dropzoneIcon">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    <h2 id="dropzoneTitle">Open Dedicated Converter</h2>
-                    <p id="dropzoneSubtitle">No upload dialog here. Pick formats first, then continue.</p>
-                </div>
-
-                <div class="loading" id="loading" style="display:none;">
-                    <i class="fas fa-cog fa-spin" style="font-size:3rem;color:var(--primary);"></i>
-                    <p id="loadingText">Converting...</p>
-                </div>
-
-                <div id="downloadContainer" style="display:none;margin-top:30px;">
-                    <a id="downloadBtn" href="#" class="btn-main" style="background:var(--primary);color:white;padding:16px 40px;border-radius:14px;font-weight:700;font-size:1.1rem;display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
-                        <i class="fas fa-download"></i> Download Converted File
+                <!-- Headline -->
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[70px] font-extrabold tracking-tight text-slate-900 leading-[1.08] font-sans">
+                    Conversions<br>
+                    That Drive<br>
+                    <span class="text-gradient bg-gradient-to-r from-blue-600 via-indigo-500 to-indigo-600 bg-clip-text text-transparent">Privacy.</span>
+                </h1>
+                <!-- Subtitle -->
+                <p class="text-[17px] text-slate-600 font-medium leading-relaxed max-w-lg">
+                    Convert, edit, and generate files locally in your browser. Your data never leaves your device.
+                </p>
+                <!-- CTAs -->
+                <div class="flex flex-wrap items-center gap-6 w-full">
+                    <a href="#convert" class="bg-black hover:bg-zinc-800 text-white font-extrabold text-[15px] px-8 py-4 rounded-full flex items-center gap-2 shadow-sm transition-all duration-300">
+                        Start Converting <i class="fas fa-arrow-right text-[12px]"></i>
                     </a>
-                    <button onclick="location.reload()" style="margin-left:12px;padding:16px 30px;border-radius:14px;border:2px solid var(--border);background:white;font-weight:600;cursor:pointer;font-size:1rem;color:var(--text-muted);">
-                        <i class="fas fa-redo"></i> Convert Another
-                    </button>
+                    <a href="#tools-dashboard" class="text-slate-800 font-extrabold text-[15px] px-4 py-4 flex items-center gap-2 hover:underline transition-all duration-300">
+                        Explore Tools <i class="fas fa-arrow-right text-[12px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Grid (Descriptive text & Lock Card) -->
+            <div class="lg:col-span-5 flex items-center justify-center w-full">
+                <div class="bg-[#f5f6f8] border border-slate-200/50 rounded-[32px] p-12 flex flex-col items-center justify-center text-center gap-6 w-full min-h-[360px]">
+                    <div style="font-size: 54px; opacity: 0.85; color: #000;">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-[22px] font-extrabold text-slate-900 mb-2">Your Data. Your Control.</h3>
+                        <p class="text-[15px] text-slate-500 font-semibold leading-relaxed">
+                            Everything runs offline.<br>Nothing is uploaded.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom features row / Trusted by AI row -->
+            <div class="lg:col-span-12 flex flex-col items-center gap-6 w-full py-8 border-t border-slate-200/60 mt-12">
+                <!-- Header -->
+                <div class="flex flex-col items-center text-center gap-1">
+                    <div class="flex items-center gap-2 text-slate-800 font-extrabold text-[15px]">
+                        <i class="fa-solid fa-shield-halved text-slate-700 text-[14px]"></i> The Most Secure File Conversion Platform
+                    </div>
+                    <div class="text-[13px] text-slate-500 font-bold">Trusted by the world's leading AI</div>
+                </div>
+
+                <!-- Logos Row -->
+                <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 md:gap-x-12 w-full mt-2">
+                    <!-- Claude -->
+                    <div class="flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                        <span class="text-[#cc6b49] text-xl flex items-center justify-center">
+                            <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z"></path></svg>
+                        </span>
+                        Claude
+                    </div>
+                    <div class="h-4 w-px bg-slate-300/80 hidden md:block"></div>
+
+                    <!-- ChatGPT -->
+                    <div class="flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                        <span class="text-[#10a37f] text-xl flex items-center justify-center">
+                            <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z"></path></svg>
+                        </span>
+                        ChatGPT
+                    </div>
+                    <div class="h-4 w-px bg-slate-300/80 hidden md:block"></div>
+
+                    <!-- Gemini -->
+                    <div class="flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                        <span class="text-[#4285f4] text-xl flex items-center justify-center">
+                            <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z"></path></svg>
+                        </span>
+                        Gemini
+                    </div>
+                    <div class="h-4 w-px bg-slate-300/80 hidden md:block"></div>
+
+                    <!-- DeepSeek -->
+                    <div class="flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                        <span class="text-[#1c75ff] text-xl flex items-center justify-center">
+                            <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z"></path></svg>
+                        </span>
+                        DeepSeek
+                    </div>
+                    <div class="h-4 w-px bg-slate-300/80 hidden md:block"></div>
+
+                    <!-- Grok -->
+                    <div class="flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                        <span class="text-slate-900 text-xl flex items-center justify-center">
+                            <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M9.27 15.29l7.978-5.897c.391-.29.95-.177 1.137.272.98 2.369.542 5.215-1.41 7.169-1.951 1.954-4.667 2.382-7.149 1.406l-2.711 1.257c3.889 2.661 8.611 2.003 11.562-.953 2.341-2.344 3.066-5.539 2.388-8.42l.006.007c-.983-4.232.242-5.924 2.75-9.383.06-.082.12-.164.179-.248l-3.301 3.305v-.01L9.267 15.292M7.623 16.723c-2.792-2.67-2.31-6.801.071-9.184 1.761-1.763 4.647-2.483 7.166-1.425l2.705-1.25a7.808 7.808 0 00-1.829-1A8.975 8.975 0 005.984 5.83c-2.533 2.536-3.33 6.436-1.962 9.764 1.022 2.487-.653 4.246-2.34 6.022-.599.63-1.199 1.259-1.682 1.925l7.62-6.815"></path></svg>
+                        </span>
+                        Grok
+                    </div>
+                    <div class="h-4 w-px bg-slate-300/80 hidden md:block"></div>
+
+                    <!-- Perplexity -->
+                    <div class="flex items-center gap-2 text-[15px] font-bold text-slate-700">
+                        <span class="text-[#22a3a3] text-xl flex items-center justify-center">
+                            <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M19.785 0v7.272H22.5V17.62h-2.935V24l-7.037-6.194v6.145h-1.091v-6.152L4.392 24v-6.465H1.5V7.188h2.884V0l7.053 6.494V.19h1.09v6.49L19.786 0zm-7.257 9.044v7.319l5.946 5.234V14.44l-5.946-5.397zm-1.099-.08l-5.946 5.398v7.235l5.946-5.234V8.965zm8.136 7.58h1.844V8.349H13.46l6.105 5.54v2.655zm-8.982-8.28H2.59v8.195h1.8v-2.576l6.192-5.62zM5.475 2.476v4.71h5.115l-5.115-4.71zm13.219 0l-5.115 4.71h5.115v-4.71z"></path></svg>
+                        </span>
+                        Perplexity
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONVERTER INTERACTION ZONE -->
+        <section class="w-full bg-white/30 backdrop-blur-lg border border-white/40 rounded-[32px] p-8 md:p-12 shadow-lg relative z-10" id="convert">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-stretch">
+                <!-- Left Column (Converter Selection & Action) -->
+                <div class="lg:col-span-7 flex flex-col justify-center w-full">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2 font-sans">Convert Your Files Now</h2>
+                    <p class="text-[14px] text-slate-500 font-semibold mb-8">Select your formats below to open the dedicated converter page.</p>
+
+                    <!-- Format Selection Grid -->
+                    <div class="flex flex-col sm:flex-row items-center gap-4 w-full mb-8">
+                        <!-- FROM SELECTOR -->
+                        <div class="custom-dropdown format-select w-full sm:w-80" id="formatFromContainer" data-value="">
+                            <button class="dropdown-trigger w-full bg-white/60 hover:bg-white/80 active:scale-[0.99] border border-white/70 rounded-2xl px-5 py-4 flex items-center justify-between text-[15px] font-bold text-slate-700 shadow-sm transition-all" type="button">
+                                <span class="dropdown-value text-slate-700">From: Select format...</span>
+                                <i class="fas fa-chevron-down chevron text-[12px] opacity-75"></i>
+                            </button>
+                            <div class="dropdown-menu absolute mt-2 w-full bg-white/90 backdrop-blur-xl border border-white/60 rounded-2xl p-4 shadow-xl z-30 opacity-0 invisible transition-all duration-250">
+                                <input type="text" class="dropdown-search w-full bg-white/70 border border-white/60 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-slate-800 placeholder-slate-400 outline-none mb-3 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" placeholder="Search formats..." oninput="filterDropdownItems(this, 'fromItems')">
+                                <div class="dropdown-items max-h-60 overflow-y-auto flex flex-col gap-1 pr-1" id="fromItems">
+                                    <div class="dropdown-group-label text-[11px] font-extrabold text-slate-400 uppercase tracking-wider px-3 py-1 mt-2">Images</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="jpg" onclick="selectFromFormat('jpg','JPG/JPEG')">JPG/JPEG</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="png" onclick="selectFromFormat('png','PNG')">PNG</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="webp" onclick="selectFromFormat('webp','WebP')">WebP</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="gif" onclick="selectFromFormat('gif','GIF')">GIF</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="bmp" onclick="selectFromFormat('bmp','BMP')">BMP</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="svg" onclick="selectFromFormat('svg','SVG')">SVG</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="avif" onclick="selectFromFormat('avif','AVIF')">AVIF</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="tiff" onclick="selectFromFormat('tiff','TIFF')">TIFF</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="heic" onclick="selectFromFormat('heic','HEIC/HEIF')">HEIC/HEIF</div>
+                                    <div class="dropdown-group-label text-[11px] font-extrabold text-slate-400 uppercase tracking-wider px-3 py-1 mt-2">Documents</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="pdf" onclick="selectFromFormat('pdf','PDF')">PDF Document</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="docx" onclick="selectFromFormat('docx','Word (DOCX)')">Word (DOCX)</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="xlsx" onclick="selectFromFormat('xlsx','Excel')">Excel (XLSX)</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="csv" onclick="selectFromFormat('csv','CSV')">CSV Data</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="md" onclick="selectFromFormat('md','Markdown')">Markdown (MD)</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="html" onclick="selectFromFormat('html','HTML')">HTML Page</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="txt" onclick="selectFromFormat('txt','Text')">Plain Text (TXT)</div>
+                                    <div class="dropdown-group-label text-[11px] font-extrabold text-slate-400 uppercase tracking-wider px-3 py-1 mt-2">Media</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="mp4" onclick="selectFromFormat('mp4','MP4')">MP4 Video</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="webm" onclick="selectFromFormat('webm','WebM')">WebM Video</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="mov" onclick="selectFromFormat('mov','MOV')">MOV Video</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="avi" onclick="selectFromFormat('avi','AVI')">AVI Video</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="mkv" onclick="selectFromFormat('mkv','MKV')">MKV Video</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="mp3" onclick="selectFromFormat('mp3','MP3')">MP3 Audio</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="wav" onclick="selectFromFormat('wav','WAV')">WAV Audio</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="ogg" onclick="selectFromFormat('ogg','OGG')">OGG Audio</div>
+                                    <div class="dropdown-item px-3 py-2.5 rounded-lg text-[14px] font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors" data-value="flac" onclick="selectFromFormat('flac','FLAC')">FLAC Audio</div>
+                                </div>
+                                <div class="no-results hidden px-3 py-4 text-center text-[13px] text-slate-400 font-medium">No matching formats</div>
+                            </div>
+                        </div>
+
+                        <!-- CONNECTOR -->
+                        <div class="format-connector text-slate-400 flex items-center justify-center p-2">
+                            <i class="fas fa-arrow-right text-[18px]"></i>
+                        </div>
+
+                        <!-- TO SELECTOR -->
+                        <div class="custom-dropdown format-select w-full sm:w-80" id="formatToContainer" data-value="">
+                            <button class="dropdown-trigger w-full bg-white/40 opacity-70 border border-white/60 rounded-2xl px-5 py-4 flex items-center justify-between text-[15px] font-bold text-slate-700 shadow-sm transition-all" type="button" disabled>
+                                <span class="dropdown-value text-slate-600">To: Select output...</span>
+                                <i class="fas fa-chevron-down chevron text-[12px] opacity-75"></i>
+                            </button>
+                            <div class="dropdown-menu absolute mt-2 w-full bg-white/90 backdrop-blur-xl border border-white/60 rounded-2xl p-4 shadow-xl z-30 opacity-0 invisible transition-all duration-250">
+                                <input type="text" class="dropdown-search w-full bg-white/70 border border-white/60 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-slate-800 placeholder-slate-400 outline-none mb-3 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" placeholder="Search formats..." oninput="filterDropdownItems(this, 'toItems')">
+                                <div class="dropdown-items max-h-60 overflow-y-auto flex flex-col gap-1 pr-1" id="toItems">
+                                    <div class="dropdown-placeholder p-4 text-center text-slate-400 text-[13px] font-semibold">Select input format first</div>
+                                </div>
+                                <div class="no-results hidden px-3 py-4 text-center text-[13px] text-slate-400 font-medium">No matching formats</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropzone Action Pill / Block -->
+                    <div class="dropzone w-full bg-white/50 hover:bg-white/80 active:scale-[0.99] border-2 border-dashed border-white/90 hover:border-slate-800/20 rounded-3xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group shadow-sm" id="dropzone" onclick="goToDedicatedPage()">
+                        <div class="w-16 h-16 bg-blue-600 group-hover:bg-slate-800 text-white rounded-2xl flex items-center justify-center text-xl mb-4 shadow-[0_8px_20px_rgba(37,99,235,0.25)] group-hover:shadow-none transition-all duration-300" id="dropzoneIcon">
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-slate-800 group-hover:text-slate-900 transition-colors mb-1 font-sans" id="dropzoneTitle">Open Dedicated Converter</h3>
+                        <p class="text-[13px] text-slate-500 font-semibold" id="dropzoneSubtitle">No file upload dialog here. Pick formats first to open the workspace.</p>
+                    </div>
+
+                    <div class="loading flex flex-col items-center gap-3 py-8" id="loading" style="display:none;">
+                        <i class="fas fa-cog fa-spin text-4xl text-blue-600"></i>
+                        <p class="text-[14px] text-slate-600 font-bold" id="loadingText">Converting...</p>
+                    </div>
+
+                    <div id="downloadContainer" style="display:none;margin-top:30px;" class="flex flex-wrap items-center gap-4">
+                        <a id="downloadBtn" href="#" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[15px] font-extrabold px-8 py-4 rounded-full shadow-[0_10px_20px_rgba(37,99,235,0.25)] flex items-center gap-2.5 transition-all">
+                            <i class="fas fa-download"></i> Download Converted File
+                        </a>
+                        <button onclick="location.reload()" class="bg-white/50 hover:bg-white/80 border border-white/60 text-slate-700 font-bold text-[15px] px-8 py-4 rounded-full transition-all">
+                            <i class="fas fa-redo"></i> Convert Another
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column (Stats Column) -->
+                <div class="lg:col-span-5 flex flex-col gap-4 justify-between w-full">
+                    <div class="flex items-center gap-4 bg-white/40 border border-white/50 rounded-2xl p-5 md:p-6 shadow-sm flex-1">
+                        <div class="stat-icon blue flex-shrink-0"><i class="fas fa-cloud-download-alt"></i></div>
+                        <div>
+                            <div class="text-xl font-extrabold text-slate-850">10,000+</div>
+                            <div class="text-[13px] text-slate-500 font-semibold">Files Converted</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/40 border border-white/50 rounded-2xl p-5 md:p-6 shadow-sm flex-1">
+                        <div class="stat-icon green flex-shrink-0"><i class="fas fa-lock"></i></div>
+                        <div>
+                            <div class="text-xl font-extrabold text-slate-855">100%</div>
+                            <div class="text-[13px] text-slate-500 font-semibold">Private & Secure</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/40 border border-white/50 rounded-2xl p-5 md:p-6 shadow-sm flex-1">
+                        <div class="stat-icon pink flex-shrink-0"><i class="fas fa-code"></i></div>
+                        <div>
+                            <div class="text-xl font-extrabold text-slate-855">MIT</div>
+                            <div class="text-[13px] text-slate-500 font-semibold">Licensed</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/40 border border-white/50 rounded-2xl p-5 md:p-6 shadow-sm flex-1">
+                        <div class="stat-icon yellow flex-shrink-0"><i class="fas fa-star"></i></div>
+                        <div>
+                            <div class="text-xl font-extrabold text-slate-855">Open Source</div>
+                            <div class="text-[13px] text-slate-500 font-semibold">on GitHub</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -823,120 +686,418 @@
             });
         </script>
 
-        <!-- Stats Row -->
-        <section class="stats-row">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-icon blue"><i class="fas fa-cloud-download-alt"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">10,000+</div>
-                        <div class="stat-label">Files Converted</div>
+
+
+        <!-- Interactive Tools Dashboard -->
+        <section class="dashboard-section" id="tools-dashboard">
+            <!-- Apple-style Fluid Background Blobs -->
+            <div class="dashboard-background-blobs">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+                <div class="blob blob-3"></div>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-heading-wrap">
+                    <div class="dashboard-title-area">
+                        <h2>Explore Our Tools</h2>
+                        <p>Over 30 offline-first, client-side tools to convert, edit, and generate files without uploading a single byte to the cloud.</p>
                     </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-icon green"><i class="fas fa-lock"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">100%</div>
-                        <div class="stat-label">Private & Secure</div>
+
+                <div class="dashboard-controls-dock-wrapper">
+                    <div class="dashboard-controls-dock">
+                        <!-- Main Tab Dock -->
+                        <div class="dock-pill" role="tablist">
+                            <button class="dock-tab active" data-category="all" role="tab" aria-selected="true">
+                                <div class="dock-tab-icon"><i class="fas fa-layer-group"></i></div>
+                                <span class="dock-tab-label">All <span class="tab-badge" id="badge-all">32</span></span>
+                            </button>
+                            <button class="dock-tab" data-category="pdf" role="tab" aria-selected="false">
+                                <div class="dock-tab-icon"><i class="fas fa-file-pdf"></i></div>
+                                <span class="dock-tab-label">PDF <span class="tab-badge" id="badge-pdf">5</span></span>
+                            </button>
+                            <button class="dock-tab" data-category="image" role="tab" aria-selected="false">
+                                <div class="dock-tab-icon"><i class="fas fa-images"></i></div>
+                                <span class="dock-tab-label">Images <span class="tab-badge" id="badge-image">16</span></span>
+                            </button>
+                            <button class="dock-tab" data-category="video" role="tab" aria-selected="false">
+                                <div class="dock-tab-icon"><i class="fas fa-film"></i></div>
+                                <span class="dock-tab-label">Video <span class="tab-badge" id="badge-video">4</span></span>
+                            </button>
+                            <button class="dock-tab" data-category="audio" role="tab" aria-selected="false">
+                                <div class="dock-tab-icon"><i class="fas fa-headphones"></i></div>
+                                <span class="dock-tab-label">Audio <span class="tab-badge" id="badge-audio">2</span></span>
+                            </button>
+                            <button class="dock-tab" data-category="generate" role="tab" aria-selected="false">
+                                <div class="dock-tab-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                                <span class="dock-tab-label">Generators <span class="tab-badge" id="badge-generate">5</span></span>
+                            </button>
+                        </div>
+
+                        <!-- Separate Apple-style search pill -->
+                        <div class="search-dock-wrapper" id="search-dock-wrapper">
+                            <div class="search-input-container">
+                                <input type="text" class="search-dock-input" id="search-dock-input" placeholder="Search offline tools...">
+                            </div>
+                            <button class="search-circle-btn" id="search-dock-btn" aria-label="Toggle search">
+                                <div class="search-inner-icon-btn">
+                                    <i class="fas fa-search" id="search-icon-symbol"></i>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-icon pink"><i class="fas fa-code"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">MIT</div>
-                        <div class="stat-label">Licensed</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon yellow"><i class="fas fa-star"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">Open Source</div>
-                        <div class="stat-label">on GitHub</div>
+
+                <div class="dashboard-grid" id="dashboardGrid">
+                    <!-- PDF Tools -->
+                    <a href="merge-pdf.html" class="dashboard-card" data-category="pdf">
+                        <div class="dashboard-card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-object-group"></i></div>
+                        <h3>Merge PDF</h3>
+                        <p>Combine multiple PDF documents into a single PDF file locally in your browser.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="compress-pdf.html" class="dashboard-card" data-category="pdf">
+                        <div class="dashboard-card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-compress-arrows-alt"></i></div>
+                        <h3>Compress PDF</h3>
+                        <p>Reduce the file size of your PDF documents without cloud uploads.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="reorder-pdf.html" class="dashboard-card" data-category="pdf">
+                        <div class="dashboard-card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-arrows-alt-v"></i></div>
+                        <h3>Reorder PDF Pages</h3>
+                        <p>Drag, drop, and rearrange or delete individual pages in a PDF file.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="protect-pdf.html" class="dashboard-card" data-category="pdf">
+                        <div class="dashboard-card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-lock"></i></div>
+                        <h3>Protect / Unlock PDF</h3>
+                        <p>Encrypt PDF files with a secure password or remove passwords from protected PDFs.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="watermark.html" class="dashboard-card" data-category="pdf">
+                        <div class="dashboard-card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-water"></i></div>
+                        <h3>Watermark PDF</h3>
+                        <p>Add customizable image or text watermarks overlay onto PDF pages.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+
+                    <!-- Image Tools -->
+                    <a href="image-resizer.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-expand-arrows-alt"></i></div>
+                        <h3>Image Resizer</h3>
+                        <p>Resize image dimensions, crop, and convert output formats locally.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="image-rounder.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-circle-notch"></i></div>
+                        <h3>Image Rounder</h3>
+                        <p>Crop images into perfect circles or apply customizable corner rounding.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="image-blur.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-droplet"></i></div>
+                        <h3>Image Blur</h3>
+                        <p>Apply adjustable Gaussian blur filters to specific areas or entire images.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="color-palette-extractor.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-palette"></i></div>
+                        <h3>Color Palette</h3>
+                        <p>Extract prominent, harmonious color schemes directly from any photo.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="eyedropper.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-eye-dropper"></i></div>
+                        <h3>EyeDropper</h3>
+                        <p>Pick pixel-perfect hex, rgb, or hsl colors from uploaded images.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="image-to-base64.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-code"></i></div>
+                        <h3>Image to Base64</h3>
+                        <p>Convert images to Base64 data URI text strings for direct web embed code.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="exif-reader.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-camera"></i></div>
+                        <h3>EXIF Reader</h3>
+                        <p>Read camera model, settings, exposure values, and metadata from images.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="metadata-stripper.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-eraser"></i></div>
+                        <h3>Metadata Stripper</h3>
+                        <p>Remove private camera metadata, locations, and EXIF tags from photos.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="pixel-art.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-gamepad"></i></div>
+                        <h3>Pixel Art Converter</h3>
+                        <p>Convert details of regular photos into retro-styled pixel art graphics.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="image-to-json.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-file-code"></i></div>
+                        <h3>Image to JSON</h3>
+                        <p>Extract direct coordinate pixel colors and structure maps into JSON objects.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="brightness-map.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-sun"></i></div>
+                        <h3>Brightness Map</h3>
+                        <p>Analyze and render contrast levels and brightness distribution structures.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="stereogram.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-eye"></i></div>
+                        <h3>Stereogram Creator</h3>
+                        <p>Generate classic hidden-image 3D stereogram patterns locally.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="steganography.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-user-secret"></i></div>
+                        <h3>Steganography</h3>
+                        <p>Conceal secret messages inside image pixels or extract hidden text.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="collage-maker.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-th-large"></i></div>
+                        <h3>Collage Maker</h3>
+                        <p>Combine multiple photos into beautiful organized template grid collages.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="ocr.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-file-alt"></i></div>
+                        <h3>Image to Text (OCR)</h3>
+                        <p>Scan and extract readable character text layouts from images locally using OCR.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="string-art.html" class="dashboard-card" data-category="image">
+                        <div class="dashboard-card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-drafting-compass"></i></div>
+                        <h3>String Art Generator</h3>
+                        <p>Transform photo source guides into beautiful complex thread and string layouts.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+
+                    <!-- Video Tools -->
+                    <a href="video-trimmer.html" class="dashboard-card" data-category="video">
+                        <div class="dashboard-card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-scissors"></i></div>
+                        <h3>Video Trimmer</h3>
+                        <p>Trim, cut, and slice segments from video clips entirely offline.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="video-frame-extractor.html" class="dashboard-card" data-category="video">
+                        <div class="dashboard-card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-images"></i></div>
+                        <h3>Frame Extractor</h3>
+                        <p>Extract specific high-resolution frames out of your video files.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="video-compressor.html" class="dashboard-card" data-category="video">
+                        <div class="dashboard-card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-compress"></i></div>
+                        <h3>Video Compressor</h3>
+                        <p>Reduce MP4, WebM, and AVI video file sizes with quality slider adjustments.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="video-speed.html" class="dashboard-card" data-category="video">
+                        <div class="dashboard-card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-tachometer-alt"></i></div>
+                        <h3>Video Speed Changer</h3>
+                        <p>Adjust and encode video speeds (0.25x slow to 4x fast) locally.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+
+                    <!-- Audio Tools -->
+                    <a href="audio-trimmer.html" class="dashboard-card" data-category="audio">
+                        <div class="dashboard-card-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-cut"></i></div>
+                        <h3>Audio Trimmer</h3>
+                        <p>Trim MP3 and WAV audio clips to make ringtones or custom clips.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="audio-merger.html" class="dashboard-card" data-category="audio">
+                        <div class="dashboard-card-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-music"></i></div>
+                        <h3>Audio Merger</h3>
+                        <p>Combine multiple audio files into a single WAV/MP3 with customizable gaps.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+
+                    <!-- Generators & Utilities -->
+                    <a href="qr-code-generator.html" class="dashboard-card" data-category="generate">
+                        <div class="dashboard-card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-qrcode"></i></div>
+                        <h3>QR Code Generator</h3>
+                        <p>Generate high-quality vector QR codes for websites, contacts, or texts.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="barcode-generator.html" class="dashboard-card" data-category="generate">
+                        <div class="dashboard-card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-barcode"></i></div>
+                        <h3>Barcode Generator</h3>
+                        <p>Create standard linear barcodes like EAN, Code 128, and UPC layouts.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="lorem-ipsum.html" class="dashboard-card" data-category="generate">
+                        <div class="dashboard-card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-align-left"></i></div>
+                        <h3>Lorem Ipsum</h3>
+                        <p>Generate custom lengths of classic placeholder paragraphs, sentences, or words.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="word-counter.html" class="dashboard-card" data-category="generate">
+                        <div class="dashboard-card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-spell-check"></i></div>
+                        <h3>Word Counter</h3>
+                        <p>Analyze text in real-time to count words, characters, sentences, and density.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+                    <a href="file-hash-checker.html" class="dashboard-card" data-category="utility">
+                        <div class="dashboard-card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-fingerprint"></i></div>
+                        <h3>File Hash Checker</h3>
+                        <p>Generate cryptographic SHA-256, SHA-1, or MD5 checksums to verify files.</p>
+                        <div class="dashboard-card-footer">Open Tool <i class="fas fa-chevron-right"></i></div>
+                    </a>
+
+                    <!-- Fallback No Results -->
+                    <div class="dashboard-no-results" id="dashboardNoResults">
+                        <i class="fas fa-search"></i>
+                        <h3>No tools found</h3>
+                        <p>We couldn't find any tools matching your search criteria. Try a different search term or category.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Popular Converters -->
-        <section style="padding: 100px 8%;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;">
-                <h2 class="section-heading">Popular Converters</h2>
-                <a href="#" style="color: #3b82f6; font-weight: 600; display: flex; align-items: center; gap: 8px;">View all tools <i class="fas fa-arrow-right"></i></a>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
-                <a href="png-to-jpg.html" class="card">
-                    <div class="card-icon" style="background: #eef2ff; color: #6366f1;"><i class="fas fa-image"></i></div>
-                    <h3>PNG to JPG</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Convert PNG to JPG images</p>
-                </a>
-                <a href="jpg-to-webp.html" class="card">
-                    <div class="card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-file-image"></i></div>
-                    <h3>JPG to WEBP</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Convert JPG to WEBP</p>
-                </a>
-                <a href="pdf-to-png.html" class="card">
-                    <div class="card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-file-pdf"></i></div>
-                    <h3>PDF to PNG</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Convert PDF to images</p>
-                </a>
-                <a href="compress-pdf.html" class="card">
-                    <div class="card-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fas fa-compress-arrows-alt"></i></div>
-                    <h3>Compress PDF</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Reduce PDF size locally</p>
-                </a>
-                <a href="ocr.html" class="card">
-                    <div class="card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-search-plus"></i></div>
-                    <h3>OCR (Image to Text)</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Extract text from images</p>
-                </a>
-                    <a href="qr-code-generator.html" class="card">
-                        <div class="card-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-qrcode"></i></div>
-                        <h3>QR Code Generator</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Generate QR codes for URLs, text, emails, and phone numbers</p>
-                    </a>
-                    <a href="barcode-generator.html" class="card">
-                        <div class="card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-barcode"></i></div>
-                        <h3>Barcode Generator</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Create barcodes in various formats directly in your browser</p>
-                    </a>
-                    <a href="reorder-pdf.html" class="card">
-                        <div class="card-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-arrows-alt-v"></i></div>
-                        <h3>Reorder PDF Pages</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Drag & drop to rearrange PDF pages locally</p>
-                    </a>
-                    <a href="protect-pdf.html" class="card">
-                        <div class="card-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fas fa-lock"></i></div>
-                        <h3>Protect / Unlock PDF</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Add or remove PDF passwords locally</p>
-                    </a>
-                    <a href="audio-merger.html" class="card">
-                        <div class="card-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-object-group"></i></div>
-                        <h3>Audio Merger</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Combine multiple audio files into one locally</p>
-                    </a>
-                    <a href="video-compressor.html" class="card">
-                        <div class="card-icon" style="background: #fffbeb; color: #f59e0b;"><i class="fas fa-compress"></i></div>
-                        <h3>Video Compressor</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Reduce video file size locally in your browser</p>
-                    </a>
-                    <a href="video-speed.html" class="card">
-                        <div class="card-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-tachometer-alt"></i></div>
-                        <h3>Video Speed Changer</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Speed up or slow down videos locally</p>
-                    </a>
-                    <a href="word-counter.html" class="card">
-                        <div class="card-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-spell-check"></i></div>
-                        <h3>Word & Character Counter</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Count words, characters, and reading time</p>
-                    </a>
-                    <a href="lorem-ipsum.html" class="card">
-                        <div class="card-icon" style="background: #faf5ff; color: #8b5cf6;"><i class="fas fa-align-left"></i></div>
-                        <h3>Lorem Ipsum Generator</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">Generate placeholder text instantly</p>
-                    </a>
-            </div>
-        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('search-dock-input');
+                const searchDockWrapper = document.getElementById('search-dock-wrapper');
+                const searchDockBtn = document.getElementById('search-dock-btn');
+                const searchIconSymbol = document.getElementById('search-icon-symbol');
+                const tabButtons = document.querySelectorAll('.dock-tab');
+                const cards = document.querySelectorAll('.dashboard-card');
+                const noResults = document.getElementById('dashboardNoResults');
+
+                let activeCategory = 'all';
+                let searchQuery = '';
+
+                function filterTools() {
+                    let visibleCount = 0;
+
+                    cards.forEach(card => {
+                        const category = card.dataset.category;
+                        const title = card.querySelector('h3').textContent.toLowerCase();
+                        const desc = card.querySelector('p').textContent.toLowerCase();
+                        
+                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
+                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+
+                        if (matchesCategory && matchesSearch) {
+                            card.style.display = 'flex';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    if (visibleCount === 0) {
+                        noResults.style.display = 'block';
+                    } else {
+                        noResults.style.display = 'none';
+                    }
+                }
+
+                // Toggle search expansion
+                function toggleSearch(forceClose = false) {
+                    const isOpening = !searchDockWrapper.classList.contains('search-active') && !forceClose;
+                    
+                    if (isOpening) {
+                        searchDockWrapper.classList.add('search-active');
+                        searchIconSymbol.className = 'fas fa-times';
+                        searchInput.focus();
+                    } else {
+                        searchDockWrapper.classList.remove('search-active');
+                        searchIconSymbol.className = 'fas fa-search';
+                        searchInput.value = '';
+                        searchQuery = '';
+                        filterTools();
+                    }
+                }
+
+                // Toggle search click handler on outer wrapper & button
+                searchDockBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleSearch();
+                });
+                
+                searchDockWrapper.addEventListener('click', function(e) {
+                    if (!searchDockWrapper.classList.contains('search-active')) {
+                        toggleSearch();
+                    }
+                });
+
+                // Prevent click propagation from search input to container
+                searchInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                // Close search when pressing Esc
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && searchDockWrapper.classList.contains('search-active')) {
+                        toggleSearch(true);
+                    }
+                });
+
+                // Search input listener
+                searchInput.addEventListener('input', function(e) {
+                    searchQuery = e.target.value.toLowerCase().trim();
+                    filterTools();
+                });
+
+                // Tab buttons listener
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remove active class from all tabs
+                        tabButtons.forEach(btn => {
+                            btn.classList.remove('active');
+                            btn.setAttribute('aria-selected', 'false');
+                        });
+
+                        // Add active class to clicked tab
+                        this.classList.add('active');
+                        this.setAttribute('aria-selected', 'true');
+                        activeCategory = this.dataset.category;
+
+                        filterTools();
+                    });
+                });
+
+                // Initialize counts for tab badges dynamically
+                function updateBadgeCounts() {
+                    const counts = {
+                        all: 0,
+                        pdf: 0,
+                        image: 0,
+                        video: 0,
+                        audio: 0,
+                        generate: 0
+                    };
+
+                    cards.forEach(card => {
+                        const cat = card.dataset.category;
+                        counts.all++;
+                        if (cat === 'pdf') counts.pdf++;
+                        else if (cat === 'image') counts.image++;
+                        else if (cat === 'video') counts.video++;
+                        else if (cat === 'audio') counts.audio++;
+                        else if (cat === 'generate' || cat === 'utility') counts.generate++;
+                    });
+
+                    document.getElementById('badge-all').textContent = counts.all;
+                    document.getElementById('badge-pdf').textContent = counts.pdf;
+                    document.getElementById('badge-image').textContent = counts.image;
+                    document.getElementById('badge-video').textContent = counts.video;
+                    document.getElementById('badge-audio').textContent = counts.audio;
+                    document.getElementById('badge-generate').textContent = counts.generate;
+                }
+
+                updateBadgeCounts();
+            });
+        </script>
 
         <!-- How It Works -->
         <section style="padding: 100px 8%; background: #fcfcfd;">
@@ -1005,114 +1166,107 @@
                         <div class="testimonial-role">Software Engineer</div>
                     </div>
                 </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-quote">"Converting raw files to SVGs and WebPs is super quick. The fact that it runs locally on my GPU/CPU makes it lightning fast."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-name">David L.</div>
+                        <div class="testimonial-role">Graphic Designer</div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-quote">"I convert large Excel and CSV files offline. Super secure, and no worry about uploading client data to random servers."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-name">Elena R.</div>
+                        <div class="testimonial-role">Data Analyst</div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Why Choose & Comparison -->
-        <section class="split-grid" style="padding: 80px 8%;">
+        <!-- FAQ & Comparison -->
+        <section class="split-grid" style="padding: 80px 8%; align-items: start;">
+            <div id="faq">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 class="section-heading" style="margin-bottom: 0; font-size: 1.8rem;">Frequently Asked Questions</h2>
+                    <a href="#" style="color: #3b82f6; font-weight: 600; font-size: 0.9rem; white-space: nowrap;">View all FAQs <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Are my files safe?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            Yes, absolutely. Unlike other converters, Covertfily processes your files entirely within your web browser. Your data is never uploaded to any server, making it 100% private.
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Do I need an internet connection?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            Only to load the website initially. Once the page is loaded, the conversion logic runs locally on your computer, meaning you could even disconnect from the internet and it would still work.
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
+                            Is Covertfily really free?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            Yes, Covertfily is an open-source project licensed under MIT. It is free to use for everyone, forever, without any hidden costs or subscriptions.
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div>
-                <h2 class="section-heading" style="margin-bottom: 30px;">Why Choose Covertfily?</h2>
-                <ul style="list-style: none;">
-                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
-                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
-                        <span style="font-weight: 500;">Your files never leave your device</span>
-                    </li>
-                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
-                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
-                        <span style="font-weight: 500;">No tracking, no analytics, no data collection</span>
-                    </li>
-                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
-                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
-                        <span style="font-weight: 500;">Open source & community driven</span>
-                    </li>
-                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
-                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
-                        <span style="font-weight: 500;">Works offline - no internet required</span>
-                    </li>
-                    <li style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
-                        <i class="fas fa-check" style="color: #10b981; margin-top: 5px;"></i>
-                        <span style="font-weight: 500;">Fast, lightweight & easy to use</span>
-                    </li>
-                </ul>
-            </div>
-            <div>
-            <div class="comparison-container">
-                <h3 class="comparison-title">Covertfily vs Others</h3>
-                <div class="comparison-table-wrapper">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th>Covertfily</th>
-                                <th>Other Converters</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Files uploaded to server</td>
-                                <td><i class="fas fa-times"></i></td>
-                                <td><i class="fas fa-check"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Open source</td>
-                                <td><i class="fas fa-check"></i></td>
-                                <td><i class="fas fa-times"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Tracking / Analytics</td>
-                                <td><i class="fas fa-times"></i></td>
-                                <td><i class="fas fa-check"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Works offline</td>
-                                <td><i class="fas fa-check"></i></td>
-                                <td><i class="fas fa-times"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Privacy Focused</td>
-                                <td><i class="fas fa-check"></i></td>
-                                <td><i class="fas fa-times"></i></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" style="padding: 100px 8%; background: #fcfcfd;">
-            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto 50px;">
-                <h2 class="section-heading">Frequently Asked Questions</h2>
-                <a href="#" style="color: #3b82f6; font-weight: 600;">View all FAQs <i class="fas fa-arrow-right"></i></a>
-            </div>
-            
-            <div class="accordion">
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
-                        Are my files safe?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="accordion-content">
-                        Yes, absolutely. Unlike other converters, Covertfily processes your files entirely within your web browser. Your data is never uploaded to any server, making it 100% private.
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
-                        Do I need an internet connection?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="accordion-content">
-                        Only to load the website initially. Once the page is loaded, the conversion logic runs locally on your computer, meaning you could even disconnect from the internet and it would still work.
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">
-                        Is Covertfily really free?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="accordion-content">
-                        Yes, Covertfily is an open-source project licensed under MIT. It is free to use for everyone, forever, without any hidden costs or subscriptions.
+                <div class="comparison-container">
+                    <h3 class="comparison-title">Covertfily vs Others</h3>
+                    <div class="comparison-table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Covertfily</th>
+                                    <th>Other Converters</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Files uploaded to server</td>
+                                    <td><i class="fas fa-times"></i></td>
+                                    <td><i class="fas fa-check"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Open source</td>
+                                    <td><i class="fas fa-check"></i></td>
+                                    <td><i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Tracking / Analytics</td>
+                                    <td><i class="fas fa-times"></i></td>
+                                    <td><i class="fas fa-check"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Works offline</td>
+                                    <td><i class="fas fa-check"></i></td>
+                                    <td><i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Privacy Focused</td>
+                                    <td><i class="fas fa-check"></i></td>
+                                    <td><i class="fas fa-times"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1155,50 +1309,50 @@
             </div>
         </section>
     </main>
-
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <div class="logo"><img src="logo.png" alt="Covertfily"></div>
-                <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+        <footer class="mt-16">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo"><img src="logo.png" alt="Covertfily"></div>
+                    <p>100% private, browser-based file conversion. No uploads. No tracking. Open source.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="merge-pdf.html">PDF Tools</a></li>
+                        <li><a href="image-resizer.html">Image Tools</a></li>
+                        <li><a href="video-trimmer.html">Video Tools</a></li>
+                        <li><a href="audio-trimmer.html">Audio Tools</a></li>
+                        <li><a href="qr-code-generator.html">Generators</a></li>
+                        <li><a href="file-hash-checker.html">Utilities</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
+                        <li><a href="documentation.html">Documentation</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Use</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Product</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="merge-pdf.html">PDF Tools</a></li>
-                    <li><a href="image-resizer.html">Image Tools</a></li>
-                    <li><a href="video-trimmer.html">Video Tools</a></li>
-                    <li><a href="audio-trimmer.html">Audio Tools</a></li>
-                    <li><a href="qr-code-generator.html">Generators</a></li>
-                    <li><a href="file-hash-checker.html">Utilities</a></li>
-                </ul>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Covertfily. MIT Licensed.</p>
+                <div class="footer-social">
+                    <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="https://github.com/jagathram-tech/covertfily">GitHub</a></li>
-                    <li><a href="documentation.html">Documentation</a></li>
-                    <li><a href="index.html#faq">FAQ</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Use</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Covertfily. MIT Licensed.</p>
-            <div class="footer-social">
-                <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fas fa-envelope"></i></a>
-            </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="main.js"></script>
     <script>
@@ -1210,3 +1364,21 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

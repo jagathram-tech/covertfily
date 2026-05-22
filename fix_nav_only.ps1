@@ -1,6 +1,6 @@
 Get-ChildItem -Path . -Filter *.html -Recurse -File | ForEach-Object {
     $file = $_.FullName
-    $content = Get-Content $file -Raw
+    $content = Get-Content $file -Raw -Encoding UTF8
     # Ensure UTF-8 meta charset tag (if missing)
     if (-not ($content -match '<meta\s+charset\s*=\s*"?UTF-8"?\s*/?>')) {
         $content = $content -replace '(?i)(<head>\s*)', '${1}<meta charset="UTF-8">`r`n'
