@@ -1023,22 +1023,29 @@
                 let activeCategory = 'all';
                 let searchQuery = '';
 
+                // ⚡ Bolt: Cache DOM elements and text content to prevent layout thrashing and redundant querySelectors on every input event
+                const cachedCards = Array.from(cards).map(card => {
+                    return {
+                        element: card,
+                        category: card.dataset.category,
+                        title: card.querySelector('h3').textContent.toLowerCase(),
+                        desc: card.querySelector('p').textContent.toLowerCase()
+                    };
+                });
+
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
-                        
-                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
-                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+                    // ⚡ Bolt: Iterate over cached JS array instead of querying live DOM
+                    cachedCards.forEach(cardData => {
+                        const matchesCategory = (activeCategory === 'all') || (cardData.category === activeCategory) || (activeCategory === 'generate' && (cardData.category === 'generate' || cardData.category === 'utility'));
+                        const matchesSearch = cardData.title.includes(searchQuery) || cardData.desc.includes(searchQuery);
 
                         if (matchesCategory && matchesSearch) {
-                            card.style.display = 'flex';
+                            cardData.element.style.display = 'flex';
                             visibleCount++;
                         } else {
-                            card.style.display = 'none';
+                            cardData.element.style.display = 'none';
                         }
                     });
 
