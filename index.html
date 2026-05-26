@@ -1023,13 +1023,19 @@
                 let activeCategory = 'all';
                 let searchQuery = '';
 
+                // ⚡ Bolt: Cache DOM elements and text content to prevent redundant layout thrashing during high-frequency searches
+                const cachedCardsData = Array.from(cards).map(card => ({
+                    card: card,
+                    category: card.dataset.category,
+                    title: card.querySelector('h3').textContent.toLowerCase(),
+                    desc: card.querySelector('p').textContent.toLowerCase()
+                }));
+
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
+                    cachedCardsData.forEach(data => {
+                        const { card, category, title, desc } = data;
                         
                         const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
                         const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
