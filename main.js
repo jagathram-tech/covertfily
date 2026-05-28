@@ -1508,19 +1508,32 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // ⚡ Bolt Optimization: Cache static DOM elements and their text content
+      // upfront to avoid expensive querySelectorAll and .textContent reads on every keystroke.
+      // Expected impact: Eliminates layout thrashing and O(N) DOM reads per input event, ensuring 60fps search filtering.
+      const cachedGroups = [];
+      const groups = dropdown.querySelectorAll(".tools-group");
+      groups.forEach((group) => {
+        const links = Array.from(group.querySelectorAll("a")).map((link) => ({
+          element: link,
+          text: link.textContent.toLowerCase(),
+        }));
+        cachedGroups.push({
+          label: group.querySelector(".tools-group-label"),
+          links: links,
+        });
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+        cachedGroups.forEach((group) => {
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          group.links.forEach((linkObj) => {
+            const match = !query || linkObj.text.includes(query);
+            linkObj.element.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (group.label) group.label.style.display = anyVisible ? "block" : "none";
         });
       });
     }
