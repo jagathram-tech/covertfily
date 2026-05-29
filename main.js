@@ -1471,12 +1471,31 @@ function downloadFile(url, filename) {
 
     const caret = document.getElementById("navToolsCaret");
 
+    // Cache the DOM elements to prevent layout thrashing on every input event
+    let cachedGroups = [];
+    let isCached = false;
+
+    function buildCache() {
+      if (isCached) return;
+      const groups = dropdown.querySelectorAll(".tools-group");
+      groups.forEach(group => {
+        const links = Array.from(group.querySelectorAll("a")).map(link => ({
+          element: link,
+          text: link.textContent.toLowerCase()
+        }));
+        const label = group.querySelector(".tools-group-label");
+        cachedGroups.push({ group, links, label });
+      });
+      isCached = true;
+    }
+
     function openDropdown() {
       dropdown.classList.add("active");
       dropdown.style.opacity = "1";
       dropdown.style.visibility = "visible";
       dropdown.style.pointerEvents = "auto";
       if (caret) caret.style.transform = "rotate(180deg)";
+      buildCache(); // Ensure cache is built before user types
     }
 
     function closeDropdown() {
@@ -1510,17 +1529,16 @@ function downloadFile(url, filename) {
     if (search) {
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+        buildCache(); // Fallback in case openDropdown wasn't called (e.g. programmatically focused)
+
+        cachedGroups.forEach((groupData) => {
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          groupData.links.forEach((linkData) => {
+            const match = !query || linkData.text.includes(query);
+            linkData.element.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (groupData.label) groupData.label.style.display = anyVisible ? "block" : "none";
         });
       });
     }

@@ -1,0 +1,3 @@
+## 2024-05-18 - Caching Static DOM Elements for Search Input Event Loop
+**Learning:** In a codebase manipulating DOM manually (no VDOM), repeatedly calling `.querySelectorAll` and `.textContent` inside a frequent event listener (like search input filtering) causes heavy layout thrashing and drops frames, especially on mobile. Caching references and lowercased string values upfront when the container opens bypasses this bottleneck.
+**Action:** When writing or optimizing search filters or lists that toggle element visibility, initialize a cache object storing the DOM element references and their queryable text values on component load or menu open, then only iterate over that cache during the 'input' event.
