@@ -1508,19 +1508,26 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // ⚡ Bolt: Cache DOM elements and text content to prevent layout thrashing on every keystroke
+      const groups = Array.from(dropdown.querySelectorAll(".tools-group")).map(group => {
+        const label = group.querySelector(".tools-group-label");
+        const links = Array.from(group.querySelectorAll("a")).map(link => ({
+          el: link,
+          text: link.textContent.toLowerCase()
+        }));
+        return { label, links };
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
         groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          group.links.forEach((link) => {
+            const match = !query || link.text.includes(query);
+            link.el.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (group.label) group.label.style.display = anyVisible ? "block" : "none";
         });
       });
     }
