@@ -647,19 +647,36 @@
                 'zip':'Archive (ZIP)','docx':'Word Document (DOCX)'
             };
 
+            window._filterCache = window._filterCache || new Map();
             window.filterDropdownItems = function(input, containerId) {
                 const query = input.value.toLowerCase();
                 const container = document.getElementById(containerId);
                 if (!container) return;
+
+                // ⚡ Bolt: Cache DOM queries and text content upfront to avoid redundant reads and layout thrashing on every keystroke
+                if (!window._filterCache.has(containerId)) {
+                    window._filterCache.set(containerId, {
+                        items: Array.from(container.querySelectorAll('.dropdown-item')).map(item => ({
+                            el: item,
+                            text: item.textContent.toLowerCase()
+                        })),
+                        labels: Array.from(container.querySelectorAll('.dropdown-group-label')),
+                        noResults: container.parentElement.querySelector('.no-results')
+                    });
+                }
+
+                const cached = window._filterCache.get(containerId);
                 let visible = 0;
-                container.querySelectorAll('.dropdown-item').forEach(item => {
-                    const match = item.textContent.toLowerCase().includes(query);
-                    item.classList.toggle('hidden', !match);
+
+                cached.items.forEach(itemObj => {
+                    const match = itemObj.text.includes(query);
+                    itemObj.el.classList.toggle('hidden', !match);
                     if (match) visible++;
                 });
-                container.querySelectorAll('.dropdown-group-label').forEach(l => l.style.display = 'block');
-                const noResults = container.parentElement.querySelector('.no-results');
-                if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
+
+                cached.labels.forEach(l => l.style.display = 'block');
+
+                if (cached.noResults) cached.noResults.style.display = visible === 0 ? 'block' : 'none';
             };
 
             window.selectFromFormat = function(val, label) {

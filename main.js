@@ -250,23 +250,35 @@ document.addEventListener("DOMContentLoaded", () => {
   // document.addEventListener('click', ...);
 
   // Setup Search Logic for existing and future searchable dropdowns
+  const dropdownCache = new WeakMap();
+
   document.addEventListener("input", (e) => {
     if (e.target.classList.contains("dropdown-search")) {
       const query = e.target.value.toLowerCase();
       const container = e.target.closest(".custom-dropdown");
-      const items = container.querySelectorAll(".dropdown-item");
-      const noResults = container.querySelector(".no-results");
+
+      // ⚡ Bolt: Cache DOM queries and text content upfront to avoid redundant reads and layout thrashing on every keystroke
+      if (!dropdownCache.has(container)) {
+        dropdownCache.set(container, {
+          items: Array.from(container.querySelectorAll(".dropdown-item")).map(item => ({
+            el: item,
+            text: item.textContent.toLowerCase()
+          })),
+          noResults: container.querySelector(".no-results")
+        });
+      }
+
+      const cached = dropdownCache.get(container);
       let visibleCount = 0;
 
-      items.forEach((item) => {
-        const text = item.textContent.toLowerCase();
-        const matches = text.includes(query);
-        item.classList.toggle("hidden", !matches);
+      cached.items.forEach((itemObj) => {
+        const matches = itemObj.text.includes(query);
+        itemObj.el.classList.toggle("hidden", !matches);
         if (matches) visibleCount++;
       });
 
-      if (noResults)
-        noResults.style.display = visibleCount === 0 ? "block" : "none";
+      if (cached.noResults)
+        cached.noResults.style.display = visibleCount === 0 ? "block" : "none";
     }
   });
 
@@ -1508,19 +1520,27 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // ⚡ Bolt: Cache DOM queries and text content upfront to avoid redundant reads and layout thrashing on every keystroke
+      const cachedGroups = Array.from(dropdown.querySelectorAll(".tools-group")).map(group => {
+        return {
+          label: group.querySelector(".tools-group-label"),
+          links: Array.from(group.querySelectorAll("a")).map(link => ({
+            el: link,
+            text: link.textContent.toLowerCase()
+          }))
+        };
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+        cachedGroups.forEach((group) => {
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          group.links.forEach((linkObj) => {
+            const match = !query || linkObj.text.includes(query);
+            linkObj.el.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (group.label) group.label.style.display = anyVisible ? "block" : "none";
         });
       });
     }
