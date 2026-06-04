@@ -1508,19 +1508,27 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // Cache the DOM nodes and text content to avoid thrashing on every keystroke
+      const groups = Array.from(dropdown.querySelectorAll(".tools-group")).map(group => {
+        return {
+          labelElement: group.querySelector(".tools-group-label"),
+          links: Array.from(group.querySelectorAll("a")).map(link => ({
+            element: link,
+            text: link.textContent.toLowerCase()
+          }))
+        };
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
         groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          group.links.forEach((link) => {
+            const match = !query || link.text.includes(query);
+            link.element.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (group.labelElement) group.labelElement.style.display = anyVisible ? "block" : "none";
         });
       });
     }
