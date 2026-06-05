@@ -1023,22 +1023,31 @@
                 let activeCategory = 'all';
                 let searchQuery = '';
 
+                // Cache tool data to prevent DOM reads during search/filter
+                const cachedTools = Array.from(cards).map(card => ({
+                    element: card,
+                    category: card.dataset.category,
+                    searchableText: (
+                        card.querySelector('h3').textContent + ' ' +
+                        card.querySelector('p').textContent
+                    ).toLowerCase()
+                }));
+
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
+                    cachedTools.forEach(tool => {
+                        const matchesCategory = (activeCategory === 'all') ||
+                                              (tool.category === activeCategory) ||
+                                              (activeCategory === 'generate' && (tool.category === 'generate' || tool.category === 'utility'));
                         
-                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
-                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+                        const matchesSearch = tool.searchableText.includes(searchQuery);
 
                         if (matchesCategory && matchesSearch) {
-                            card.style.display = 'flex';
+                            tool.element.style.display = 'flex';
                             visibleCount++;
                         } else {
-                            card.style.display = 'none';
+                            tool.element.style.display = 'none';
                         }
                     });
 
