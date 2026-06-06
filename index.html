@@ -653,7 +653,10 @@
                 if (!container) return;
                 let visible = 0;
                 container.querySelectorAll('.dropdown-item').forEach(item => {
-                    const match = item.textContent.toLowerCase().includes(query);
+                    if (item._cachedText === undefined) {
+                        item._cachedText = item.textContent.toLowerCase();
+                    }
+                    const match = item._cachedText.includes(query);
                     item.classList.toggle('hidden', !match);
                     if (match) visible++;
                 });
@@ -1023,22 +1026,27 @@
                 let activeCategory = 'all';
                 let searchQuery = '';
 
+                // Optimization: Cache static DOM elements and their text content in JS arrays upfront
+                // to avoid redundant querySelectorAll and .textContent reads during frequent events.
+                const cachedCards = Array.from(cards).map(card => ({
+                    element: card,
+                    category: card.dataset.category,
+                    title: card.querySelector('h3').textContent.toLowerCase(),
+                    desc: card.querySelector('p').textContent.toLowerCase()
+                }));
+
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
-                        
-                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
-                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+                    cachedCards.forEach(cached => {
+                        const matchesCategory = (activeCategory === 'all') || (cached.category === activeCategory) || (activeCategory === 'generate' && (cached.category === 'generate' || cached.category === 'utility'));
+                        const matchesSearch = cached.title.includes(searchQuery) || cached.desc.includes(searchQuery);
 
                         if (matchesCategory && matchesSearch) {
-                            card.style.display = 'flex';
+                            cached.element.style.display = 'flex';
                             visibleCount++;
                         } else {
-                            card.style.display = 'none';
+                            cached.element.style.display = 'none';
                         }
                     });
 
