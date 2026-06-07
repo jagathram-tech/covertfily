@@ -1023,22 +1023,26 @@
                 let activeCategory = 'all';
                 let searchQuery = '';
 
+                // Pre-compute array of card data to prevent redundant DOM .textContent reads
+                const cardsCache = Array.from(cards).map(card => ({
+                    element: card,
+                    category: card.dataset.category,
+                    title: card.querySelector('h3').textContent.toLowerCase(),
+                    desc: card.querySelector('p').textContent.toLowerCase()
+                }));
+
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
-                        
-                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
-                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+                    cardsCache.forEach(data => {
+                        const matchesCategory = (activeCategory === 'all') || (data.category === activeCategory) || (activeCategory === 'generate' && (data.category === 'generate' || data.category === 'utility'));
+                        const matchesSearch = data.title.includes(searchQuery) || data.desc.includes(searchQuery);
 
                         if (matchesCategory && matchesSearch) {
-                            card.style.display = 'flex';
+                            data.element.style.display = 'flex';
                             visibleCount++;
                         } else {
-                            card.style.display = 'none';
+                            data.element.style.display = 'none';
                         }
                     });
 
