@@ -103,19 +103,35 @@ window.updateTargetDropdown = function (sourceFormat) {
     .join("");
 };
 
+window._filterFormatsCache = window._filterFormatsCache || {};
+
 window.filterFormats = function (input, containerId) {
   const query = input.value.toLowerCase();
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const items = container.querySelectorAll(".dropdown-item");
+  if (!window._filterFormatsCache[containerId]) {
+    window._filterFormatsCache[containerId] = Array.from(container.querySelectorAll(".dropdown-item")).map(item => ({
+      el: item,
+      text: item.textContent.toLowerCase()
+    }));
+  }
+
+  const cachedItems = window._filterFormatsCache[containerId];
+  const currentItems = container.querySelectorAll(".dropdown-item");
+  if (cachedItems.length !== currentItems.length || (currentItems.length > 0 && cachedItems.length > 0 && cachedItems[0].el !== currentItems[0])) {
+    window._filterFormatsCache[containerId] = Array.from(currentItems).map(item => ({
+      el: item,
+      text: item.textContent.toLowerCase()
+    }));
+  }
+
   const labels = container.querySelectorAll(".dropdown-group-label");
   let visibleCount = 0;
 
-  items.forEach((item) => {
-    const text = item.textContent.toLowerCase();
-    const matches = text.includes(query);
-    item.style.display = matches ? "block" : "none";
+  window._filterFormatsCache[containerId].forEach((itemData) => {
+    const matches = itemData.text.includes(query);
+    itemData.el.style.display = matches ? "block" : "none";
     if (matches) visibleCount++;
   });
 
@@ -1508,19 +1524,28 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // Cache groups and links upfront
+      const groupsData = Array.from(dropdown.querySelectorAll(".tools-group")).map(group => {
+        return {
+          group: group,
+          label: group.querySelector(".tools-group-label"),
+          links: Array.from(group.querySelectorAll("a")).map(link => ({
+            el: link,
+            text: link.textContent.toLowerCase()
+          }))
+        };
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+        groupsData.forEach((data) => {
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          data.links.forEach((linkData) => {
+            const match = !query || linkData.text.includes(query);
+            linkData.el.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (data.label) data.label.style.display = anyVisible ? "block" : "none";
         });
       });
     }
