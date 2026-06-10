@@ -424,9 +424,9 @@
                 <div class="footer-bottom">
                     <p>&copy; 2026 Covertfily. MIT Licensed.</p>
                     <div class="footer-social">
-                        <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fas fa-envelope"></i></a>
+                        <a href="https://github.com/jagathram-tech/covertfily" aria-label="GitHub Repository"><i class="fab fa-github" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </footer>
@@ -582,8 +582,8 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         card.innerHTML = `
-                            <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
-                            <button class="remove-btn" onclick="window.removeImage(${index})" title="Remove"><i class="fas fa-times"></i></button>
+                            <div class="drag-handle"><i class="fas fa-grip-lines" aria-hidden="true"></i></div>
+                            <button class="remove-btn" onclick="window.removeImage(${index})" title="Remove" aria-label="Remove image"><i class="fas fa-times" aria-hidden="true"></i></button>
                             <img src="${e.target.result}" alt="${file.name}">
                             <div class="file-name" title="${file.name}">${file.name}</div>
                         `;
