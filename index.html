@@ -647,16 +647,31 @@
                 'zip':'Archive (ZIP)','docx':'Word Document (DOCX)'
             };
 
+            const indexDropdownCache = {};
+
             window.filterDropdownItems = function(input, containerId) {
                 const query = input.value.toLowerCase();
                 const container = document.getElementById(containerId);
                 if (!container) return;
                 let visible = 0;
-                container.querySelectorAll('.dropdown-item').forEach(item => {
-                    const match = item.textContent.toLowerCase().includes(query);
-                    item.classList.toggle('hidden', !match);
+
+                const currentItems = container.querySelectorAll('.dropdown-item');
+                let cache = indexDropdownCache[containerId];
+
+                if (!cache || cache.length !== currentItems.length || (currentItems.length > 0 && cache[0].element !== currentItems[0])) {
+                    cache = Array.from(currentItems).map(item => ({
+                        element: item,
+                        text: item.textContent.toLowerCase()
+                    }));
+                    indexDropdownCache[containerId] = cache;
+                }
+
+                cache.forEach(item => {
+                    const match = item.text.includes(query);
+                    item.element.classList.toggle('hidden', !match);
                     if (match) visible++;
                 });
+
                 container.querySelectorAll('.dropdown-group-label').forEach(l => l.style.display = 'block');
                 const noResults = container.parentElement.querySelector('.no-results');
                 if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
@@ -1022,23 +1037,33 @@
 
                 let activeCategory = 'all';
                 let searchQuery = '';
+                let cachedToolCards = null;
 
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
-                        
-                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
-                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+                    // Rebuild cache if necessary (e.g. DOM changed)
+                    if (!cachedToolCards || cachedToolCards.length !== cards.length || (cards.length > 0 && cachedToolCards[0].element !== cards[0])) {
+                        cachedToolCards = Array.from(cards).map(card => {
+                            const title = card.querySelector('h3');
+                            const desc = card.querySelector('p');
+                            return {
+                                element: card,
+                                category: card.dataset.category,
+                                searchableText: ((title ? title.textContent : '') + ' ' + (desc ? desc.textContent : '')).toLowerCase()
+                            };
+                        });
+                    }
+
+                    cachedToolCards.forEach(cachedCard => {
+                        const matchesCategory = (activeCategory === 'all') || (cachedCard.category === activeCategory) || (activeCategory === 'generate' && (cachedCard.category === 'generate' || cachedCard.category === 'utility'));
+                        const matchesSearch = cachedCard.searchableText.includes(searchQuery);
 
                         if (matchesCategory && matchesSearch) {
-                            card.style.display = 'flex';
+                            cachedCard.element.style.display = 'flex';
                             visibleCount++;
                         } else {
-                            card.style.display = 'none';
+                            cachedCard.element.style.display = 'none';
                         }
                     });
 

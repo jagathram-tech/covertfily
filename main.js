@@ -103,19 +103,29 @@ window.updateTargetDropdown = function (sourceFormat) {
     .join("");
 };
 
+const mainDropdownCache = {};
+
 window.filterFormats = function (input, containerId) {
   const query = input.value.toLowerCase();
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const items = container.querySelectorAll(".dropdown-item");
-  const labels = container.querySelectorAll(".dropdown-group-label");
+  const currentItems = container.querySelectorAll(".dropdown-item");
+  let cache = mainDropdownCache[containerId];
+
+  if (!cache || cache.length !== currentItems.length || (currentItems.length > 0 && cache[0].element !== currentItems[0])) {
+      cache = Array.from(currentItems).map(item => ({
+          element: item,
+          text: item.textContent.toLowerCase()
+      }));
+      mainDropdownCache[containerId] = cache;
+  }
+
   let visibleCount = 0;
 
-  items.forEach((item) => {
-    const text = item.textContent.toLowerCase();
-    const matches = text.includes(query);
-    item.style.display = matches ? "block" : "none";
+  cache.forEach((item) => {
+    const matches = item.text.includes(query);
+    item.element.style.display = matches ? "block" : "none";
     if (matches) visibleCount++;
   });
 
