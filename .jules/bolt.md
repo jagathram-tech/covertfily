@@ -1,0 +1,3 @@
+## 2024-05-24 - DOM Querying in Keypress Handlers
+**Learning:** Frequent `.querySelectorAll()` and `.textContent` reads during continuous events (like search box `oninput` handlers) trigger forced synchronous layout and painting checks which leads to jank, especially on lists with many elements.
+**Action:** When filtering static or infrequently-changing long lists (like tool cards or file formats), build an initial cache mapping DOM elements to their search string and loop over the javascript Array instead of querying the DOM directly during the hot path. Remember to invalidate the cache if DOM nodes change.
