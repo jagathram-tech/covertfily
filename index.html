@@ -647,14 +647,24 @@
                 'zip':'Archive (ZIP)','docx':'Word Document (DOCX)'
             };
 
+            window._dropdownCache = {};
             window.filterDropdownItems = function(input, containerId) {
                 const query = input.value.toLowerCase();
                 const container = document.getElementById(containerId);
                 if (!container) return;
+
+                const items = container.querySelectorAll('.dropdown-item');
+                if (!window._dropdownCache[containerId] || window._dropdownCache[containerId].length !== items.length || (items.length > 0 && window._dropdownCache[containerId][0].el !== items[0])) {
+                    window._dropdownCache[containerId] = Array.from(items).map(item => ({
+                        el: item,
+                        text: item.textContent.toLowerCase()
+                    }));
+                }
+
                 let visible = 0;
-                container.querySelectorAll('.dropdown-item').forEach(item => {
-                    const match = item.textContent.toLowerCase().includes(query);
-                    item.classList.toggle('hidden', !match);
+                window._dropdownCache[containerId].forEach(itemData => {
+                    const match = itemData.text.includes(query);
+                    itemData.el.classList.toggle('hidden', !match);
                     if (match) visible++;
                 });
                 container.querySelectorAll('.dropdown-group-label').forEach(l => l.style.display = 'block');

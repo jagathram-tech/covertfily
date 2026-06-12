@@ -1,0 +1,3 @@
+## 2023-10-27 - DOM query caching during frequent input events
+**Learning:** Performing multiple `querySelectorAll` and `.textContent` reads inside high-frequency event handlers like `input` (e.g. for search filtering dropdown lists) causes severe layout thrashing and performance degradation, especially with many items.
+**Action:** When filtering DOM elements, cache the element references and their text content in a local structure (like an array of objects) or map them by their container using a `WeakMap`. Only do the actual filtering (class toggling/display changes) inside the event handler using the cached data. Invalidate the cache if the node list length or reference to the first item changes.

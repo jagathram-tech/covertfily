@@ -103,19 +103,27 @@ window.updateTargetDropdown = function (sourceFormat) {
     .join("");
 };
 
+window._filterFormatsCache = {};
 window.filterFormats = function (input, containerId) {
   const query = input.value.toLowerCase();
   const container = document.getElementById(containerId);
   if (!container) return;
 
   const items = container.querySelectorAll(".dropdown-item");
+
+  if (!window._filterFormatsCache[containerId] || window._filterFormatsCache[containerId].length !== items.length || (items.length > 0 && window._filterFormatsCache[containerId][0].el !== items[0])) {
+    window._filterFormatsCache[containerId] = Array.from(items).map(item => ({
+      el: item,
+      text: item.textContent.toLowerCase()
+    }));
+  }
+
   const labels = container.querySelectorAll(".dropdown-group-label");
   let visibleCount = 0;
 
-  items.forEach((item) => {
-    const text = item.textContent.toLowerCase();
-    const matches = text.includes(query);
-    item.style.display = matches ? "block" : "none";
+  window._filterFormatsCache[containerId].forEach((itemData) => {
+    const matches = itemData.text.includes(query);
+    itemData.el.style.display = matches ? "block" : "none";
     if (matches) visibleCount++;
   });
 
@@ -250,18 +258,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // document.addEventListener('click', ...);
 
   // Setup Search Logic for existing and future searchable dropdowns
+  const globalDropdownSearchCache = new WeakMap();
+
   document.addEventListener("input", (e) => {
     if (e.target.classList.contains("dropdown-search")) {
       const query = e.target.value.toLowerCase();
       const container = e.target.closest(".custom-dropdown");
       const items = container.querySelectorAll(".dropdown-item");
       const noResults = container.querySelector(".no-results");
+
+      let cachedItems = globalDropdownSearchCache.get(container);
+      if (!cachedItems || cachedItems.length !== items.length || (items.length > 0 && cachedItems[0].el !== items[0])) {
+        cachedItems = Array.from(items).map(item => ({
+            el: item,
+            text: item.textContent.toLowerCase()
+        }));
+        globalDropdownSearchCache.set(container, cachedItems);
+      }
+
       let visibleCount = 0;
 
-      items.forEach((item) => {
-        const text = item.textContent.toLowerCase();
-        const matches = text.includes(query);
-        item.classList.toggle("hidden", !matches);
+      cachedItems.forEach((itemData) => {
+        const matches = itemData.text.includes(query);
+        itemData.el.classList.toggle("hidden", !matches);
         if (matches) visibleCount++;
       });
 
@@ -1508,19 +1527,29 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      // Cache groups and their links text content since they are static
+      const cachedGroups = Array.from(dropdown.querySelectorAll(".tools-group")).map(group => {
+        return {
+          groupEl: group,
+          labelEl: group.querySelector(".tools-group-label"),
+          links: Array.from(group.querySelectorAll("a")).map(link => ({
+            el: link,
+            text: link.textContent.toLowerCase()
+          }))
+        };
+      });
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+
+        cachedGroups.forEach((groupData) => {
           let anyVisible = false;
-          links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          groupData.links.forEach((linkData) => {
+            const match = !query || linkData.text.includes(query);
+            linkData.el.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+          if (groupData.labelEl) groupData.labelEl.style.display = anyVisible ? "block" : "none";
         });
       });
     }
