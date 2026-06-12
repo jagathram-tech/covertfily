@@ -215,6 +215,7 @@
         
         
         
+
     <nav class="flex items-center justify-between py-2 w-full relative z-50">
                 <!-- Brand Logo -->
                 <a href="index.html" class="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2 hover:opacity-90 font-sans">
@@ -243,7 +244,7 @@
 
                 <!-- Mobile Navigation Toggle -->
                 <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/50 border border-white/60 text-slate-800 hover:bg-white/80 active:scale-95 transition-all duration-300 shadow-sm backdrop-blur-md" type="button" aria-label="Toggle mobile menu">
-                    <i class="fas fa-bars text-lg"></i>
+                    <i class="fas fa-bars text-lg" aria-hidden="true"></i>
                 </button>
 
                 <!-- Mobile Menu Drawer Backdrop -->
@@ -255,7 +256,7 @@
                     <div class="flex items-center justify-between p-5 border-b border-slate-100">
                         <span class="text-xl font-extrabold tracking-tight text-slate-900 font-sans">covertfily</span>
                         <button id="mobileMenuClose" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all duration-300" type="button" aria-label="Close mobile menu">
-                            <i class="fas fa-times"></i>
+                            <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -472,9 +473,9 @@
                 <div class="footer-bottom">
                     <p>&copy; 2026 Covertfily. MIT Licensed.</p>
                     <div class="footer-social">
-                        <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fas fa-envelope"></i></a>
+                        <a href="https://github.com/jagathram-tech/covertfily" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </footer>
@@ -482,6 +483,7 @@
         
         
         
+
 
     <script>
         // FFmpeg singleton
