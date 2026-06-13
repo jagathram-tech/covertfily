@@ -1,0 +1,3 @@
+## 2024-06-13 - DOM Caching for Static Lists
+**Learning:** Repetitive DOM reads (like `.querySelector()` and `.textContent`) within frequent event listeners (like search inputs or scroll events) cause severe layout thrashing and performance bottlenecks, especially when iterating over multiple elements like list items or cards.
+**Action:** When filtering static or infrequently changing lists, always cache the necessary element data (text, categories, DOM references) into an array or map upfront during initialization. Iterate over the cache instead of the live DOM when handling events. If the list is dynamic, implement a mechanism to invalidate or update the cache when the DOM changes.
