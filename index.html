@@ -1020,25 +1020,29 @@
                 const cards = document.querySelectorAll('.dashboard-card');
                 const noResults = document.getElementById('dashboardNoResults');
 
+                // Cache static card data to prevent redundant DOM reads during search
+                const cardCache = Array.from(cards).map(card => ({
+                    element: card,
+                    category: card.dataset.category,
+                    title: card.querySelector('h3').textContent.toLowerCase(),
+                    desc: card.querySelector('p').textContent.toLowerCase()
+                }));
+
                 let activeCategory = 'all';
                 let searchQuery = '';
 
                 function filterTools() {
                     let visibleCount = 0;
 
-                    cards.forEach(card => {
-                        const category = card.dataset.category;
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
-                        
-                        const matchesCategory = (activeCategory === 'all') || (category === activeCategory) || (activeCategory === 'generate' && (category === 'generate' || category === 'utility'));
-                        const matchesSearch = title.includes(searchQuery) || desc.includes(searchQuery);
+                    cardCache.forEach(cacheItem => {
+                        const matchesCategory = (activeCategory === 'all') || (cacheItem.category === activeCategory) || (activeCategory === 'generate' && (cacheItem.category === 'generate' || cacheItem.category === 'utility'));
+                        const matchesSearch = cacheItem.title.includes(searchQuery) || cacheItem.desc.includes(searchQuery);
 
                         if (matchesCategory && matchesSearch) {
-                            card.style.display = 'flex';
+                            cacheItem.element.style.display = 'flex';
                             visibleCount++;
                         } else {
-                            card.style.display = 'none';
+                            cacheItem.element.style.display = 'none';
                         }
                     });
 
