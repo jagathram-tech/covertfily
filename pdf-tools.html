@@ -172,49 +172,58 @@
                 <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">Convert PDF to images, Word, text, and more — or create PDFs from other formats. Every tool runs locally in your browser with zero uploads.</p>
             </div>
 
-            <section class="flex flex-col gap-4">
+            <div class="relative max-w-xl">
+    <input type="search" id="hubToolsSearch" class="hub-tools-search w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 pr-10 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" placeholder="Search 34 converters and guides…" autocomplete="off" aria-label="Search converters and guides">
+    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true"></i>
+    <button type="button" id="hubToolsSearchClear" class="hub-tools-search-clear absolute right-3 top-1/2 -translate-y-1/2 flex w-7 h-7 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 items-center justify-center transition-colors" aria-label="Clear search" hidden>
+      <i class="fas fa-times text-xs"></i>
+    </button>
+  </div>
+  <p id="hubToolsEmpty" class="hub-tools-empty text-sm text-slate-500" hidden>No tools match your search. Try a format like &quot;png to jpg&quot; or &quot;mp4&quot;.</p>
+
+            <section class="hub-tools-section flex flex-col gap-4">
                 <h2 class="text-xl font-bold text-slate-900">All converters</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-    <a href="bmp-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">BMP to PDF</a>
-    <a href="csv-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to PDF</a>
-    <a href="docx-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to PDF</a>
-    <a href="gif-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">GIF to PDF</a>
-    <a href="heic-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HEIC to PDF</a>
-    <a href="html-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to PDF</a>
-    <a href="jpg-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JPG to PDF</a>
-    <a href="json-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to PDF</a>
-    <a href="md-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to PDF</a>
-    <a href="ods-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to PDF</a>
-    <a href="pdf-to-jpg.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to JPG</a>
-    <a href="pdf-to-md.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to MD</a>
-    <a href="pdf-to-png.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to PNG</a>
-    <a href="pdf-to-txt.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to TXT</a>
-    <a href="pdf-to-webp.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to WEBP</a>
-    <a href="pdf-to-word.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to Word (DOCX)</a>
-    <a href="png-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PNG to PDF</a>
-    <a href="tiff-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TIFF to PDF</a>
-    <a href="txt-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to PDF</a>
-    <a href="webp-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">WEBP to PDF</a>
-    <a href="xls-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to PDF</a>
-    <a href="xlsx-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to PDF</a>
+                <div class="hub-tools-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <a href="bmp-to-pdf.html" data-search="bmp to pdf bmp to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">BMP to PDF</a>
+    <a href="csv-to-pdf.html" data-search="csv to pdf csv to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to PDF</a>
+    <a href="docx-to-pdf.html" data-search="docx to pdf docx to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to PDF</a>
+    <a href="gif-to-pdf.html" data-search="gif to pdf gif to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">GIF to PDF</a>
+    <a href="heic-to-pdf.html" data-search="heic to pdf heic to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HEIC to PDF</a>
+    <a href="html-to-pdf.html" data-search="html to pdf html to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to PDF</a>
+    <a href="jpg-to-pdf.html" data-search="jpg to pdf jpg to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JPG to PDF</a>
+    <a href="json-to-pdf.html" data-search="json to pdf json to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to PDF</a>
+    <a href="md-to-pdf.html" data-search="md to pdf md to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to PDF</a>
+    <a href="ods-to-pdf.html" data-search="ods to pdf ods to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to PDF</a>
+    <a href="pdf-to-jpg.html" data-search="pdf to jpg pdf to jpg" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to JPG</a>
+    <a href="pdf-to-md.html" data-search="pdf to md pdf to md" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to MD</a>
+    <a href="pdf-to-png.html" data-search="pdf to png pdf to png" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to PNG</a>
+    <a href="pdf-to-txt.html" data-search="pdf to txt pdf to txt" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to TXT</a>
+    <a href="pdf-to-webp.html" data-search="pdf to webp pdf to webp" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to WEBP</a>
+    <a href="pdf-to-word.html" data-search="pdf to word (docx) pdf to word" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to Word (DOCX)</a>
+    <a href="png-to-pdf.html" data-search="png to pdf png to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PNG to PDF</a>
+    <a href="tiff-to-pdf.html" data-search="tiff to pdf tiff to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TIFF to PDF</a>
+    <a href="txt-to-pdf.html" data-search="txt to pdf txt to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to PDF</a>
+    <a href="webp-to-pdf.html" data-search="webp to pdf webp to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">WEBP to PDF</a>
+    <a href="xls-to-pdf.html" data-search="xls to pdf xls to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to PDF</a>
+    <a href="xlsx-to-pdf.html" data-search="xlsx to pdf xlsx to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to PDF</a>
 </div>
             </section>
 
-            <section class="flex flex-col gap-4">
+            <section class="hub-tools-section flex flex-col gap-4">
                 <h2 class="text-xl font-bold text-slate-900">Step-by-step guides</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-    <a href="how-to-convert-excel-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Excel To Pdf</a>
-    <a href="how-to-convert-html-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Html To Pdf</a>
-    <a href="how-to-convert-jpg-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Jpg To Pdf</a>
-    <a href="how-to-convert-markdown-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Markdown To Pdf</a>
-    <a href="how-to-convert-pdf-to-excel.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Excel</a>
-    <a href="how-to-convert-pdf-to-jpg.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Jpg</a>
-    <a href="how-to-convert-pdf-to-markdown.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Markdown</a>
-    <a href="how-to-convert-pdf-to-png.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Png</a>
-    <a href="how-to-convert-pdf-to-word.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Word</a>
-    <a href="how-to-convert-ppt-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Ppt To Pdf</a>
-    <a href="how-to-convert-tiff-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Tiff To Pdf</a>
-    <a href="how-to-convert-word-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Word To Pdf</a>
+                <div class="hub-tools-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <a href="how-to-convert-excel-to-pdf.html" data-search="excel to pdf how to convert excel to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Excel To Pdf</a>
+    <a href="how-to-convert-html-to-pdf.html" data-search="html to pdf how to convert html to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Html To Pdf</a>
+    <a href="how-to-convert-jpg-to-pdf.html" data-search="jpg to pdf how to convert jpg to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Jpg To Pdf</a>
+    <a href="how-to-convert-markdown-to-pdf.html" data-search="markdown to pdf how to convert markdown to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Markdown To Pdf</a>
+    <a href="how-to-convert-pdf-to-excel.html" data-search="pdf to excel how to convert pdf to excel" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Excel</a>
+    <a href="how-to-convert-pdf-to-jpg.html" data-search="pdf to jpg how to convert pdf to jpg" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Jpg</a>
+    <a href="how-to-convert-pdf-to-markdown.html" data-search="pdf to markdown how to convert pdf to markdown" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Markdown</a>
+    <a href="how-to-convert-pdf-to-png.html" data-search="pdf to png how to convert pdf to png" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Png</a>
+    <a href="how-to-convert-pdf-to-word.html" data-search="pdf to word how to convert pdf to word" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Pdf To Word</a>
+    <a href="how-to-convert-ppt-to-pdf.html" data-search="ppt to pdf how to convert ppt to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Ppt To Pdf</a>
+    <a href="how-to-convert-tiff-to-pdf.html" data-search="tiff to pdf how to convert tiff to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Tiff To Pdf</a>
+    <a href="how-to-convert-word-to-pdf.html" data-search="word to pdf how to convert word to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Word To Pdf</a>
 </div>
             </section>
 

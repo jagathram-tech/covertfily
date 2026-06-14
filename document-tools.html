@@ -172,58 +172,67 @@
                 <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">Convert Word, Excel, CSV, Markdown, HTML, and JSON files locally. Ideal for sensitive documents that should never be uploaded to the cloud.</p>
             </div>
 
-            <section class="flex flex-col gap-4">
+            <div class="relative max-w-xl">
+    <input type="search" id="hubToolsSearch" class="hub-tools-search w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 pr-10 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" placeholder="Search 43 converters and guides…" autocomplete="off" aria-label="Search converters and guides">
+    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true"></i>
+    <button type="button" id="hubToolsSearchClear" class="hub-tools-search-clear absolute right-3 top-1/2 -translate-y-1/2 flex w-7 h-7 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 items-center justify-center transition-colors" aria-label="Clear search" hidden>
+      <i class="fas fa-times text-xs"></i>
+    </button>
+  </div>
+  <p id="hubToolsEmpty" class="hub-tools-empty text-sm text-slate-500" hidden>No tools match your search. Try a format like &quot;png to jpg&quot; or &quot;mp4&quot;.</p>
+
+            <section class="hub-tools-section flex flex-col gap-4">
                 <h2 class="text-xl font-bold text-slate-900">All converters</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-    <a href="csv-to-json.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to JSON</a>
-    <a href="csv-to-ods.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to ODS</a>
-    <a href="csv-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to PDF</a>
-    <a href="csv-to-xlsx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to XLSX</a>
-    <a href="docx-to-md.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to MD</a>
-    <a href="docx-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to PDF</a>
-    <a href="docx-to-txt.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to TXT</a>
-    <a href="html-to-docx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to DOCX</a>
-    <a href="html-to-md.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to MD</a>
-    <a href="html-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to PDF</a>
-    <a href="html-to-txt.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to TXT</a>
-    <a href="json-to-csv.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to CSV</a>
-    <a href="json-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to PDF</a>
-    <a href="json-to-xlsx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to XLSX</a>
-    <a href="md-to-docx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to DOCX</a>
-    <a href="md-to-html.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to HTML</a>
-    <a href="md-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to PDF</a>
-    <a href="md-to-txt.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to TXT</a>
-    <a href="ods-to-csv.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to CSV</a>
-    <a href="ods-to-json.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to JSON</a>
-    <a href="ods-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to PDF</a>
-    <a href="ods-to-xlsx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to XLSX</a>
-    <a href="pdf-to-md.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to MD</a>
-    <a href="pdf-to-txt.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to TXT</a>
-    <a href="pdf-to-word.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to Word (DOCX)</a>
-    <a href="txt-to-docx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to DOCX</a>
-    <a href="txt-to-html.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to HTML</a>
-    <a href="txt-to-md.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to MD</a>
-    <a href="txt-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to PDF</a>
-    <a href="xls-to-csv.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to CSV</a>
-    <a href="xls-to-json.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to JSON</a>
-    <a href="xls-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to PDF</a>
-    <a href="xls-to-xlsx.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to XLSX</a>
-    <a href="xlsx-to-csv.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to CSV</a>
-    <a href="xlsx-to-json.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to JSON</a>
-    <a href="xlsx-to-ods.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to ODS</a>
-    <a href="xlsx-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to PDF</a>
-    <a href="xml-to-json.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XML to JSON</a>
-    <a href="xml-to-txt.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XML to TXT</a>
-    <a href="zip-to-zip.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ZIP to ZIP</a>
+                <div class="hub-tools-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <a href="csv-to-json.html" data-search="csv to json csv to json" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to JSON</a>
+    <a href="csv-to-ods.html" data-search="csv to ods csv to ods" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to ODS</a>
+    <a href="csv-to-pdf.html" data-search="csv to pdf csv to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to PDF</a>
+    <a href="csv-to-xlsx.html" data-search="csv to xlsx csv to xlsx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">CSV to XLSX</a>
+    <a href="docx-to-md.html" data-search="docx to md docx to md" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to MD</a>
+    <a href="docx-to-pdf.html" data-search="docx to pdf docx to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to PDF</a>
+    <a href="docx-to-txt.html" data-search="docx to txt docx to txt" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">DOCX to TXT</a>
+    <a href="html-to-docx.html" data-search="html to docx html to docx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to DOCX</a>
+    <a href="html-to-md.html" data-search="html to md html to md" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to MD</a>
+    <a href="html-to-pdf.html" data-search="html to pdf html to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to PDF</a>
+    <a href="html-to-txt.html" data-search="html to txt html to txt" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">HTML to TXT</a>
+    <a href="json-to-csv.html" data-search="json to csv json to csv" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to CSV</a>
+    <a href="json-to-pdf.html" data-search="json to pdf json to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to PDF</a>
+    <a href="json-to-xlsx.html" data-search="json to xlsx json to xlsx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">JSON to XLSX</a>
+    <a href="md-to-docx.html" data-search="md to docx md to docx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to DOCX</a>
+    <a href="md-to-html.html" data-search="md to html md to html" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to HTML</a>
+    <a href="md-to-pdf.html" data-search="md to pdf md to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to PDF</a>
+    <a href="md-to-txt.html" data-search="md to txt md to txt" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">MD to TXT</a>
+    <a href="ods-to-csv.html" data-search="ods to csv ods to csv" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to CSV</a>
+    <a href="ods-to-json.html" data-search="ods to json ods to json" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to JSON</a>
+    <a href="ods-to-pdf.html" data-search="ods to pdf ods to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to PDF</a>
+    <a href="ods-to-xlsx.html" data-search="ods to xlsx ods to xlsx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ODS to XLSX</a>
+    <a href="pdf-to-md.html" data-search="pdf to md pdf to md" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to MD</a>
+    <a href="pdf-to-txt.html" data-search="pdf to txt pdf to txt" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to TXT</a>
+    <a href="pdf-to-word.html" data-search="pdf to word (docx) pdf to word" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">PDF to Word (DOCX)</a>
+    <a href="txt-to-docx.html" data-search="txt to docx txt to docx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to DOCX</a>
+    <a href="txt-to-html.html" data-search="txt to html txt to html" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to HTML</a>
+    <a href="txt-to-md.html" data-search="txt to md txt to md" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to MD</a>
+    <a href="txt-to-pdf.html" data-search="txt to pdf txt to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">TXT to PDF</a>
+    <a href="xls-to-csv.html" data-search="xls to csv xls to csv" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to CSV</a>
+    <a href="xls-to-json.html" data-search="xls to json xls to json" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to JSON</a>
+    <a href="xls-to-pdf.html" data-search="xls to pdf xls to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to PDF</a>
+    <a href="xls-to-xlsx.html" data-search="xls to xlsx xls to xlsx" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLS to XLSX</a>
+    <a href="xlsx-to-csv.html" data-search="xlsx to csv xlsx to csv" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to CSV</a>
+    <a href="xlsx-to-json.html" data-search="xlsx to json xlsx to json" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to JSON</a>
+    <a href="xlsx-to-ods.html" data-search="xlsx to ods xlsx to ods" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to ODS</a>
+    <a href="xlsx-to-pdf.html" data-search="xlsx to pdf xlsx to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XLSX to PDF</a>
+    <a href="xml-to-json.html" data-search="xml to json xml to json" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XML to JSON</a>
+    <a href="xml-to-txt.html" data-search="xml to txt xml to txt" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">XML to TXT</a>
+    <a href="zip-to-zip.html" data-search="zip to zip zip to zip" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">ZIP to ZIP</a>
 </div>
             </section>
 
-            <section class="flex flex-col gap-4">
+            <section class="hub-tools-section flex flex-col gap-4">
                 <h2 class="text-xl font-bold text-slate-900">Step-by-step guides</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-    <a href="how-to-convert-csv-to-excel.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Csv To Excel</a>
-    <a href="how-to-convert-html-to-pdf.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Html To Pdf</a>
-    <a href="how-to-convert-json-to-csv.html" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Json To Csv</a>
+                <div class="hub-tools-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <a href="how-to-convert-csv-to-excel.html" data-search="csv to excel how to convert csv to excel" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Csv To Excel</a>
+    <a href="how-to-convert-html-to-pdf.html" data-search="html to pdf how to convert html to pdf" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Html To Pdf</a>
+    <a href="how-to-convert-json-to-csv.html" data-search="json to csv how to convert json to csv" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">Json To Csv</a>
 </div>
             </section>
 

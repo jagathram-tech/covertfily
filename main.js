@@ -1751,6 +1751,52 @@ function downloadFile(url, filename) {
     });
   });
 
+  // Hub tool list search (pdf-tools, image-tools, document-tools, media-tools)
+  (function() {
+    const search = document.getElementById("hubToolsSearch");
+    if (!search) return;
+
+    const clearBtn = document.getElementById("hubToolsSearchClear");
+    const emptyState = document.getElementById("hubToolsEmpty");
+    const sections = document.querySelectorAll(".hub-tools-section");
+
+    function filterHubTools() {
+      const query = search.value.toLowerCase().trim();
+      let totalVisible = 0;
+
+      sections.forEach((section) => {
+        const links = section.querySelectorAll(".hub-tools-grid a");
+        let sectionVisible = 0;
+
+        links.forEach((link) => {
+          const haystack = (link.dataset.search || link.textContent || "").toLowerCase();
+          const match = !query || haystack.includes(query);
+          link.style.display = match ? "" : "none";
+          if (match) sectionVisible++;
+        });
+
+        section.hidden = query.length > 0 && sectionVisible === 0;
+        totalVisible += sectionVisible;
+      });
+
+      if (emptyState) {
+        emptyState.hidden = totalVisible > 0 || !query;
+      }
+      if (clearBtn) {
+        clearBtn.hidden = !query;
+      }
+    }
+
+    search.addEventListener("input", filterHubTools);
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        search.value = "";
+        search.focus();
+        filterHubTools();
+      });
+    }
+  })();
+
   // Nav Tools dropdown toggle & search
   (function() {
     const btn = document.getElementById("navToolsBtn");

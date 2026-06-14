@@ -155,13 +155,29 @@ function getHowTos(matchFn) {
     .sort((a, b) => a.label.localeCompare(b.label));
 }
 
+function hubSearchTerms(item) {
+  const slug = item.href.replace(/\.html$/, "").replace(/-/g, " ");
+  return `${item.label} ${slug}`.toLowerCase();
+}
+
+function renderSearchBar(totalCount) {
+  return `<div class="relative max-w-xl">
+    <input type="search" id="hubToolsSearch" class="hub-tools-search w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 pr-10 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" placeholder="Search ${totalCount} converters and guides…" autocomplete="off" aria-label="Search converters and guides">
+    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true"></i>
+    <button type="button" id="hubToolsSearchClear" class="hub-tools-search-clear absolute right-3 top-1/2 -translate-y-1/2 flex w-7 h-7 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 items-center justify-center transition-colors" aria-label="Clear search" hidden>
+      <i class="fas fa-times text-xs"></i>
+    </button>
+  </div>
+  <p id="hubToolsEmpty" class="hub-tools-empty text-sm text-slate-500" hidden>No tools match your search. Try a format like &quot;png to jpg&quot; or &quot;mp4&quot;.</p>`;
+}
+
 function renderGrid(items) {
   if (items.length === 0) return "<p class=\"text-sm text-slate-500\">No tools in this category yet.</p>";
-  return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+  return `<div class="hub-tools-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 ${items
   .map(
     (item) =>
-      `    <a href="${item.href}" class="cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">${item.label}</a>`,
+      `    <a href="${item.href}" data-search="${hubSearchTerms(item)}" class="hub-tool-link cf-panel px-4 py-3 text-sm font-semibold text-slate-800 hover:text-blue-700 hover:border-blue-200 transition-colors">${item.label}</a>`,
   )
   .join("\n")}
 </div>`;
@@ -198,14 +214,16 @@ ${seoHead}
                 <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">${hub.description}</p>
             </div>
 
-            <section class="flex flex-col gap-4">
+            ${renderSearchBar(converters.length + howTos.length)}
+
+            <section class="hub-tools-section flex flex-col gap-4">
                 <h2 class="text-xl font-bold text-slate-900">All converters</h2>
                 ${renderGrid(converters)}
             </section>
 
             ${
               howTos.length
-                ? `<section class="flex flex-col gap-4">
+                ? `<section class="hub-tools-section flex flex-col gap-4">
                 <h2 class="text-xl font-bold text-slate-900">Step-by-step guides</h2>
                 ${renderGrid(howTos)}
             </section>`

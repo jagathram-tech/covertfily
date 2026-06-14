@@ -143,16 +143,6 @@ function buildConverterSeo(from, to, options = {}) {
     howToFile,
   });
 
-  const breadcrumbHtml = `<nav aria-label="Breadcrumb" class="w-full max-w-3xl mx-auto text-xs text-slate-500 mb-2">
-                    <ol class="flex flex-wrap items-center gap-1.5">
-                        <li><a href="index.html" class="hover:text-blue-600">Home</a></li>
-                        <li aria-hidden="true">/</li>
-                        <li><a href="${category.slug}" class="hover:text-blue-600">${category.name}</a></li>
-                        <li aria-hidden="true">/</li>
-                        <li class="text-slate-700 font-medium">${pair}</li>
-                    </ol>
-                </nav>`;
-
   return {
     pageTitle,
     metaDescription,
@@ -160,7 +150,7 @@ function buildConverterSeo(from, to, options = {}) {
     keywords,
     canonicalUrl,
     jsonLd: JSON.stringify(jsonLd),
-    breadcrumbHtml,
+    breadcrumbHtml: "",
     ogType: "website",
   };
 }
