@@ -1,4 +1,9 @@
 const fs = require("fs");
+const {
+  BASIC_LABELS,
+  buildConverterSeo,
+  renderSeoHeadBlock,
+} = require("./seo-utils");
 
 const BASIC_MAPPING = {
   jpg: ["png", "webp", "bmp", "pdf"],
@@ -36,151 +41,174 @@ const BASIC_MAPPING = {
   zip: ["zip"],
 };
 
-const BASIC_LABELS = {
-  jpg: "JPG Image",
-  png: "PNG Image",
-  webp: "WebP Image",
-  bmp: "BMP Image",
-  gif: "GIF Anim",
-  avif: "AVIF Image",
-  tiff: "TIFF Image",
-  heic: "HEIC/HEIF",
-  pdf: "PDF Document",
-  mp4: "MP4 Video",
-  webm: "WebM Video",
-  mov: "MOV Video",
-  avi: "AVI Video",
-  mkv: "MKV Video",
-  flv: "FLV Video",
-  wmv: "WMV Video",
-  mp3: "MP3 Audio",
-  wav: "WAV Audio",
-  ogg: "OGG Audio",
-  aac: "AAC Audio",
-  m4a: "M4A Audio",
-  flac: "FLAC Audio",
-  xlsx: "Excel (XLSX)",
-  xls: "Excel (XLS)",
-  csv: "CSV Data",
-  json: "JSON Data",
-  ods: "ODS Calc",
-  md: "Markdown (MD)",
-  html: "HTML Page",
-  txt: "Plain Text (TXT)",
-  xml: "XML Data",
-  zip: "Archive (ZIP)",
-  docx: "Word (DOCX)",
-};
+const IMAGE_FORMATS = new Set([
+  "jpg", "png", "webp", "bmp", "gif", "avif", "tiff", "heic",
+]);
+const MEDIA_FORMATS = new Set([
+  "mp4", "webm", "mov", "avi", "mkv", "flv", "wmv",
+  "mp3", "wav", "ogg", "aac", "m4a", "flac",
+]);
 
-const template = fs.readFileSync("png-to-jpg.html", "utf8");
+function loadTemplate() {
+  let html = fs.readFileSync("png-to-jpg.html", "utf8");
+  if (html.includes("__SEO_HEAD_BLOCK__")) return html;
 
-let count = 0;
+  return html
+    .replace(
+      /        <title>[\s\S]*?        <script type="application\/ld\+json">[\s\S]*?<\/script>/,
+      "__SEO_HEAD_BLOCK__",
+    )
+    .replace(
+      /                <nav aria-label="Breadcrumb"[\s\S]*?                <\/nav>\n/,
+      "                __BREADCRUMB_NAV__\n",
+    )
+    .replace(
+      /                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-4">[\s\S]*?                    <\/div>\n                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">How to convert/,
+      "                    __HOW_TO_SECTION__\n                    <h2 class=\"text-xl font-bold text-slate-900 tracking-tight\">How to convert",
+    )
+    .replace(
+      /                    <div class="mt-2 pt-6 border-t border-slate-200">[\s\S]*?                    <\/div>\n                <\/div>\n            <\/main>/,
+      "                    __RELATED_SECTION__\n                </div>\n            </main>",
+    )
+    .replace(/PNG to JPG/g, "PNG to JPG")
+    .replace(/Upload PNG/gi, "Upload PNG")
+    .replace(/Download JPG/gi, "Download JPG")
+    .replace(/'png', 'jpg'/g, "'png', 'jpg'")
+    .replace(/"png", "jpg"/g, '"png", "jpg"');
+}
+
+const template = loadTemplate();
 
 function getIcon(ext) {
-  if (
-    ["jpg", "png", "webp", "bmp", "gif", "avif", "tiff", "heic"].includes(ext)
-  )
-    return "fa-file-image";
+  if (IMAGE_FORMATS.has(ext)) return "fa-file-image";
   if (["mp4", "webm", "mov", "avi", "mkv", "flv", "wmv"].includes(ext))
     return "fa-file-video";
   if (["mp3", "wav", "ogg", "aac", "m4a", "flac"].includes(ext))
     return "fa-file-audio";
-  if (["pdf"].includes(ext)) return "fa-file-pdf";
-  if (["docx"].includes(ext)) return "fa-file-word";
+  if (ext === "pdf") return "fa-file-pdf";
+  if (ext === "docx") return "fa-file-word";
   if (["xlsx", "xls", "csv", "ods"].includes(ext)) return "fa-file-excel";
-  if (["zip"].includes(ext)) return "fa-file-archive";
+  if (ext === "zip") return "fa-file-archive";
   if (["json", "xml", "html"].includes(ext)) return "fa-file-code";
   return "fa-file-alt";
 }
 
+function converterSlug(from, to) {
+  return `${from}-to-${to}.html`;
+}
+
+function howToSlug(from, to) {
+  return `how-to-convert-${from}-to-${to}.html`;
+}
+
+function buildMeta(from, to) {
+  const seo = buildConverterSeo(from, to);
+  const fromUpper = from.toUpperCase();
+  const toUpper = to.toUpperCase();
+  const fromLabel = BASIC_LABELS[from] || fromUpper;
+  const toLabel = BASIC_LABELS[to] || toUpper;
+
+  return {
+    ...seo,
+    fromUpper,
+    toUpper,
+    fromLabel,
+    toLabel,
+    seoHeadBlock: renderSeoHeadBlock(seo),
+    icon: getIcon(from),
+  };
+}
+
+function buildHowToSection(from, to, fromUpper, toUpper) {
+  const howToFile = howToSlug(from, to);
+  if (!fs.existsSync(howToFile)) return "";
+
+  return `<div class="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                        <a href="${howToFile}" class="text-sm font-semibold text-blue-700 hover:text-blue-900 flex items-center gap-2">
+                            <i class="fas fa-book-open"></i>
+                            Step-by-step guide: How to convert ${fromUpper} to ${toUpper}
+                        </a>
+                    </div>`;
+}
+
+function buildRelatedSection(from, to, fromUpper) {
+  const targets = (BASIC_MAPPING[from] || []).filter((t) => t !== to).slice(0, 5);
+  if (targets.length === 0) return "";
+
+  const links = targets
+    .map((t) => {
+      const tUpper = t.toUpperCase();
+      return `<a href="${converterSlug(from, t)}" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors">${fromUpper} to ${tUpper}</a>`;
+    })
+    .join("\n                            ");
+
+  return `<div class="mt-2 pt-6 border-t border-slate-200">
+                        <h3 class="text-sm font-semibold text-slate-800 mb-3">More ${fromUpper} conversions</h3>
+                        <div class="flex flex-wrap gap-2">
+                            ${links}
+                        </div>
+                    </div>`;
+}
+
+function applyPlaceholders(html, meta, from, to) {
+  const { fromUpper, toUpper, fromLabel, toLabel } = meta;
+
+  return html
+    .replace(/__SEO_HEAD_BLOCK__/g, meta.seoHeadBlock)
+    .replace(/__BREADCRUMB_NAV__/g, meta.breadcrumbHtml)
+    .replace(/__HOW_TO_SECTION__/g, buildHowToSection(from, to, fromUpper, toUpper))
+    .replace(/__RELATED_SECTION__/g, buildRelatedSection(from, to, fromUpper))
+    .replace(/Convert PNG to JPG/g, `Convert ${fromUpper} to ${toUpper}`)
+    .replace(/PNG to JPG/g, `${fromUpper} to ${toUpper}`)
+    .replace(/PNG images to JPEG/g, `${fromLabel} to ${toLabel}`)
+    .replace(/PNG images to JPG/g, `${fromLabel} to ${toLabel}`)
+    .replace(/class="fas fa-file-image"/g, `class="fas ${meta.icon}"`)
+    .replace(/Upload PNG/gi, `Upload ${fromUpper}`)
+    .replace(/Download JPG/gi, `Download ${toUpper}`)
+    .replace(/converted\.jpg/gi, `converted.${to}`)
+    .replace(/'png', 'jpg'/g, `'${from}', '${to}'`)
+    .replace(/"png", "jpg"/g, `"${from}", "${to}"`)
+    .replace(
+      /How to convert PNG to JPG/gi,
+      `How to convert ${fromUpper} to ${toUpper}`,
+    )
+    .replace(
+      /convert PNG files to JPG/gi,
+      `convert ${fromUpper} files to ${toUpper}`,
+    )
+    .replace(
+      /Convert PNG files to JPG/gi,
+      `Convert ${fromUpper} files to ${toUpper}`,
+    )
+    .replace(
+      /your PNG files to JPG/gi,
+      `your ${fromUpper} files to ${toUpper}`,
+    )
+    .replace(/PNG To JPG/gi, `${fromUpper} to ${toUpper}`)
+    .replace(/PNG images to JPEG/gi, `${fromLabel} to ${toLabel}`)
+    .replace(/PNG images to JPG/gi, `${fromLabel} to ${toLabel}`);
+}
+
+function fillTemplateForPngToJpg() {
+  const meta = buildMeta("png", "jpg");
+  const filled = applyPlaceholders(template, meta, "png", "jpg");
+  fs.writeFileSync("png-to-jpg.html", filled);
+}
+
+let count = 0;
+
 for (const [from, tos] of Object.entries(BASIC_MAPPING)) {
   for (const to of tos) {
-    if (from === "png" && to === "jpg") continue; // already hand-crafted
-    if (from === "pdf" && to === "docx") continue; // already hand-crafted
+    if (from === "png" && to === "jpg") continue;
+    if (from === "pdf" && to === "docx") continue;
 
-    const fromLabel = BASIC_LABELS[from] || from.toUpperCase();
-    const toLabel = BASIC_LABELS[to] || to.toUpperCase();
-    const icon = getIcon(from);
-
-    let newHtml = template
-      .replace(
-        /Convert PNG to JPG/g,
-        "Convert " + from.toUpperCase() + " to " + to.toUpperCase(),
-      )
-      .replace(/PNG to JPG/g, from.toUpperCase() + " to " + to.toUpperCase())
-      .replace(/PNG images to JPEG/g, fromLabel + " to " + toLabel)
-      .replace(/PNG images to JPG/g, fromLabel + " to " + toLabel)
-      .replace(/class="fas fa-file-image"/g, 'class="fas ' + icon + '"')
-      .replace(/Upload PNG/gi, "Upload " + from.toUpperCase())
-      .replace(/Download JPG/gi, "Download " + to.toUpperCase())
-      .replace(/converted\.jpg/gi, "converted." + to)
-      .replace(/'png', 'jpg'/g, "'" + from + "', '" + to + "'")
-      .replace(/"png", "jpg"/g, '"' + from + '", "' + to + '"')
-      .replace(
-        /How to convert PNG to JPG/gi,
-        "How to convert " + from.toUpperCase() + " to " + to.toUpperCase(),
-      )
-      .replace(
-        /convert PNG files to JPG/gi,
-        "convert " + from.toUpperCase() + " files to " + to.toUpperCase(),
-      )
-      .replace(
-        /Convert PNG files to JPG/gi,
-        "Convert " + from.toUpperCase() + " files to " + to.toUpperCase(),
-      )
-      .replace(
-        /your PNG files to JPG/gi,
-        "your " + from.toUpperCase() + " files to " + to.toUpperCase(),
-      )
-      .replace(/PNG To JPG/gi, from.toUpperCase() + " To " + to.toUpperCase())
-      .replace(/PNG images to JPEG/gi, fromLabel + " to " + toLabel)
-      .replace(/PNG images to JPG/gi, fromLabel + " to " + toLabel)
-      .replace(
-        /<link rel="icon" type="[^"]+" href="favicon\.png">/i,
-        '<link rel="icon" type="image/png" href="favicon.png">',
-      )
-      .replace(/`n/g, "\n");
-
-    fs.writeFileSync(from + "-to-" + to + ".html", newHtml);
+    const meta = buildMeta(from, to);
+    const newHtml = applyPlaceholders(template, meta, from, to);
+    fs.writeFileSync(converterSlug(from, to), newHtml);
     count++;
   }
 }
 
-console.log("Generated " + count + " conversion pages.");
+fillTemplateForPngToJpg();
 
-let indexHtml = fs.readFileSync("index.html", "utf8");
-
-const scriptToAdd =
-  "\\n                function goToDedicatedPage() {\\n" +
-  "                    const fromVal = document.getElementById('formatFromContainer').dataset.value;\\n" +
-  "                    const toVal = document.getElementById('formatToContainer').dataset.value;\\n" +
-  "                    if (!fromVal || !toVal) {\\n" +
-  "                        alert('Please select both From and To formats first.');\\n" +
-  "                        return;\\n" +
-  "                    }\\n" +
-  "                    window.location.href = fromVal + '-to-' + toVal + '.html';\\n" +
-  "                }\\n";
-
-indexHtml = indexHtml.replace(
-  /<div class="dropzone" id="dropzone" onclick="document.getElementById\('fileInput'\).click\(\)">/,
-  '<div class="dropzone" id="dropzone" onclick="goToDedicatedPage()">',
-);
-
-indexHtml = indexHtml.replace(
-  /<input type="file" id="fileInput" hidden multiple onchange="if\(window.handleFiles\) window.handleFiles\(this.files\)">/,
-  "",
-);
-
-if (!indexHtml.includes("function goToDedicatedPage()")) {
-  indexHtml = indexHtml.replace(
-    "function toggleBasic(id) {",
-    scriptToAdd + "                function toggleBasic(id) {",
-  );
-}
-
-indexHtml = indexHtml.replace(
-  /<h2 id="dropzoneTitle">Drop files here<\/h2>\s*<p id="dropzoneSubtitle">Or click to select files from your computer<\/p>/,
-  '<h2 id="dropzoneTitle">Continue to Converter</h2>\\n                <p id="dropzoneSubtitle">Click here to go to the dedicated conversion page</p>',
-);
-
-fs.writeFileSync("index.html", indexHtml);
+console.log(`Generated ${count} conversion pages with full SEO metadata.`);

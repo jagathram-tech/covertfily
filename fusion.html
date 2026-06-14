@@ -3,10 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fusion Tool - Secure & Private Online | Covertfily</title>
-    <meta name="description" content="Use our Fusion tool to process your files securely in your browser. 100% private, no server uploads, and completely free.">
+    <title>Covertfily Fusion Online — Free, Private &amp; No Upload | Covertfily</title>
+    <meta name="description" content="Advanced file fusion and processing tool that runs entirely in your browser. 100% private with no server uploads." />
+    <meta name="keywords" content="covertfily fusion, covertfily fusion online, covertfily fusion free, no upload, private, browser based, client side, covertfily, file fusion, advanced converter" />
+    <meta name="author" content="Covertfily" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://covertfily.com/fusion.html" />
+    <meta property="og:title" content="Covertfily Fusion — Free Private Online Tool" />
+    <meta property="og:description" content="Advanced file fusion and processing tool that runs entirely in your browser. 100% private with no server uploads." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://covertfily.com/fusion.html" />
+    <meta property="og:site_name" content="Covertfily" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://covertfily.com/logo.png" />
+    <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Covertfily Fusion — Free Private Online Tool" />
+    <meta name="twitter:description" content="Advanced file fusion and processing tool that runs entirely in your browser. 100% private with no server uploads." />
+    <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+    <meta name="theme-color" content="#0f172a" />
+    <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/fusion.html#webpage","url":"https://covertfily.com/fusion.html","name":"Covertfily Fusion Online — Free, Private & No Upload | Covertfily","description":"Advanced file fusion and processing tool that runs entirely in your browser. 100% private with no server uploads.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/fusion.html#app","name":"Covertfily Fusion","url":"https://covertfily.com/fusion.html","description":"Advanced file fusion and processing tool that runs entirely in your browser. 100% private with no server uploads.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"Utilities","item":"https://covertfily.com/index.html#tools-dashboard"},{"@type":"ListItem","position":3,"name":"Covertfily Fusion","item":"https://covertfily.com/fusion.html"}]}]</script>
+
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.0.2">
     
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -15,20 +35,20 @@
 
     <style>
         .fusion-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 56.25rem;
+            margin: 2.5rem auto;
+            padding: 0 1.25rem;
         }
 
         .tool-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 2.5rem;
         }
 
         .tool-header h1 {
             font-size: 2.5rem;
             color: var(--text-main);
-            margin-bottom: 10px;
+            margin-bottom: 0.625rem;
             background: linear-gradient(135deg, var(--primary), #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -41,16 +61,16 @@
 
         .fusion-box {
             background: white;
-            border-radius: 20px;
+            border-radius: 1.25rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            padding: 40px;
+            padding: 2.5rem;
             border: 1px solid var(--border-color);
         }
 
         .dropzone {
             border: 2px dashed var(--border-color);
-            border-radius: 15px;
-            padding: 60px 20px;
+            border-radius: 0.9375rem;
+            padding: 3.75rem 1.25rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -65,25 +85,25 @@
         .dropzone i {
             font-size: 3.5rem;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 1.25rem;
         }
 
         .btn-fusion {
             width: 100%;
-            padding: 18px;
+            padding: 1.125rem;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 0.75rem;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 20px;
+            margin-top: 1.25rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 0.75rem;
         }
 
         .btn-fusion:hover {
@@ -99,10 +119,10 @@
         }
 
         .file-info {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 1.25rem;
+            padding: 0.9375rem;
             background: #f8fafc;
-            border-radius: 10px;
+            border-radius: 0.625rem;
             display: none;
             align-items: center;
             justify-content: space-between;
@@ -115,7 +135,7 @@
         .file-details {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 0.75rem;
         }
 
         .file-details i {
@@ -124,14 +144,14 @@
         }
 
         .progress-container {
-            margin-top: 20px;
+            margin-top: 1.25rem;
             display: none;
         }
 
         .progress-bar {
-            height: 8px;
+            height: 0.5rem;
             background: #e2e8f0;
-            border-radius: 4px;
+            border-radius: 0.25rem;
             overflow: hidden;
         }
 
@@ -145,7 +165,7 @@
         .status-text {
             font-size: 0.9rem;
             color: var(--text-muted);
-            margin-top: 8px;
+            margin-top: 0.5rem;
             text-align: center;
         }
     </style>
@@ -163,34 +183,35 @@
         
         
         
-                    <nav class="flex items-center justify-between py-2 w-full relative z-50">
-                <!-- Brand Logo -->
-                <a href="index.html" class="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2 hover:opacity-90 font-sans">
-                    covertfily
+        
+        
+        
+        
+        
+        
+        
+        
+        
+                    <nav class="flex items-center justify-between w-full relative z-50">
+                <a href="index.html" class="cf-brand" aria-label="Covertfily home">
+                    <img src="logo.png" alt="Covertfily" class="cf-logo" />
                 </a>
 
-                <!-- Floating Center Nav Pill -->
-                <div class="hidden lg:flex items-center gap-1 bg-white/40 backdrop-blur-md border border-white/40 rounded-full px-2 py-1.5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_8px_32px_rgba(0,0,0,0.03)]">
-                    <a href="index.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Home</a>
-                    <button class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300 flex items-center gap-1.5" id="navToolsBtn" type="button">
-                        Tools <i class="fas fa-chevron-down text-[10px] opacity-70 transition-transform duration-300" id="navToolsCaret"></i>
+                <div class="cf-nav-center">
+                    <a href="index.html" class="cf-nav-link">Home</a>
+                    <button class="cf-nav-link" id="navToolsBtn" type="button">
+                        Tools <i class="fas fa-chevron-down text-[10px] opacity-60 transition-transform duration-200" id="navToolsCaret"></i>
                     </button>
-                    <a href="blog.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Blog</a>
-                    <a href="documentation.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Docs</a>
+                    <a href="blog.html" class="cf-nav-link">Blog</a>
+                    <a href="documentation.html" class="cf-nav-link">Docs</a>
                 </div>
 
-                <!-- Right CTA Buttons -->
-                <div class="hidden lg:flex items-center gap-2">
-                    <a href="index.html#tools-dashboard" class="bg-white/50 hover:bg-white/80 active:scale-95 border border-white/60 text-slate-800 text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-sm backdrop-blur-md transition-all duration-300 font-sans">
-                        Tools
-                    </a>
-                    <a href="index.html#convert" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-md transition-all duration-300 font-sans">
-                        Convert
-                    </a>
+                <div class="cf-nav-actions">
+                    <a href="index.html#tools-dashboard" class="cf-btn-ghost">Tools</a>
+                    <a href="index.html#convert" class="cf-btn-primary">Convert</a>
                 </div>
 
-                <!-- Mobile Navigation Toggle -->
-                <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/50 border border-white/60 text-slate-800 hover:bg-white/80 active:scale-95 transition-all duration-300 shadow-sm backdrop-blur-md" type="button" aria-label="Toggle mobile menu">
+                <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-slate-800 active:scale-95 transition-all duration-200" type="button" aria-label="Toggle mobile menu">
                     <i class="fas fa-bars text-lg"></i>
                 </button>
 
@@ -201,7 +222,7 @@
                 <div id="mobileMenuDrawer" class="fixed top-0 right-0 h-full w-[280px] bg-white/95 backdrop-blur-[35px] border-l border-white/40 shadow-2xl z-[101] translate-x-full pointer-events-none transition-transform duration-300 lg:hidden flex flex-col">
                     <!-- Drawer Header -->
                     <div class="flex items-center justify-between p-5 border-b border-slate-100">
-                        <span class="text-xl font-extrabold tracking-tight text-slate-900 font-sans">covertfily</span>
+                        <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--drawer" />
                         <button id="mobileMenuClose" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all duration-300" type="button" aria-label="Close mobile menu">
                             <i class="fas fa-times"></i>
                         </button>
@@ -247,7 +268,7 @@
                     <!-- Tools Categories Scroll -->
                     <div class="tools-dropdown-scroll grid grid-cols-2 gap-6 max-h-[360px] overflow-y-auto pr-2" id="navToolsList">
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
                             <div class="flex flex-col gap-2">
                                 <a href="merge-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Merge PDF</a>
                                 <a href="compress-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Compress PDF</a>
@@ -257,7 +278,7 @@
                             </div>
                         </div>
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
                             <div class="flex flex-col gap-2">
                                 <a href="image-resizer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Resizer</a>
                                 <a href="image-rounder.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Rounder</a>
@@ -278,7 +299,7 @@
                             </div>
                         </div>
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
                             <div class="flex flex-col gap-2">
                                 <a href="video-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Trimmer</a>
                                 <a href="video-frame-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Frame Extractor</a>
@@ -289,7 +310,7 @@
                             </div>
                         </div>
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
                             <div class="flex flex-col gap-2">
                                 <a href="qr-code-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">QR Code Generator</a>
                                 <a href="barcode-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Barcode Generator</a>
@@ -423,7 +444,7 @@
                 <div class="footer-grid">
                     <div class="footer-brand">
                         <div class="logo">
-                            <img src="logo.png" alt="Covertfily" />
+                            <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--footer" />
                         </div>
                         <p>
                             100% private, browser-based file conversion. No uploads.
@@ -434,10 +455,12 @@
                         <h4>Product</h4>
                         <ul>
                             <li><a href="index.html">Home</a></li>
+                            <li><a href="pdf-tools.html">PDF Converters</a></li>
+                            <li><a href="image-tools.html">Image Converters</a></li>
+                            <li><a href="document-tools.html">Document Converters</a></li>
+                            <li><a href="media-tools.html">Media Converters</a></li>
                             <li><a href="merge-pdf.html">PDF Tools</a></li>
                             <li><a href="image-resizer.html">Image Tools</a></li>
-                            <li><a href="video-trimmer.html">Video Tools</a></li>
-                            <li><a href="audio-trimmer.html">Audio Tools</a></li>
                             <li><a href="qr-code-generator.html">Generators</a></li>
                             <li><a href="file-hash-checker.html">Utilities</a></li>
                         </ul>
@@ -470,6 +493,15 @@
                 </div>
             </footer>
         </div> <!-- Close .elevra-workspace -->
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         

@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const targetPage = formatFrom + "-to-" + formatTo + ".html";
+    const targetPage = converterPageSlug(formatFrom, formatTo);
     console.log("Redirecting to:", targetPage);
     window.location.href = targetPage;
   };
@@ -359,19 +359,120 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.setConversionProgress = setConversionProgress;
 
+  const SCRIPT_LIBS = {
+    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js",
+    jszip: "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js",
+    pdfjs: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    jspdf: "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    marked: "https://cdn.jsdelivr.net/npm/marked/marked.min.js",
+    turndown: "https://unpkg.com/turndown/dist/turndown.js",
+    mammoth: "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js",
+    utif: "https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.js",
+    heic2any: "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js",
+  };
+
+  const scriptLoadPromises = {};
+
+  async function loadScriptOnce(url) {
+    if (scriptLoadPromises[url]) return scriptLoadPromises[url];
+
+    scriptLoadPromises[url] = new Promise((resolve, reject) => {
+      const existing = document.querySelector(`script[data-dynamic-src="${url}"]`);
+      if (existing) {
+        if (existing.dataset.loaded === "1") return resolve();
+        existing.addEventListener("load", () => resolve());
+        existing.addEventListener("error", () =>
+          reject(new Error(`Failed to load ${url}`)),
+        );
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = url;
+      script.dataset.dynamicSrc = url;
+      script.onload = () => {
+        script.dataset.loaded = "1";
+        resolve();
+      };
+      script.onerror = () => reject(new Error(`Failed to load ${url}`));
+      document.head.appendChild(script);
+    });
+
+    return scriptLoadPromises[url];
+  }
+
+  async function ensureConversionLibs(from, to) {
+    const source = (from || "").toLowerCase();
+    const target = (to || "").toLowerCase();
+    const needs = new Set();
+
+    const spreadsheet = ["xlsx", "xls", "csv", "ods", "json"];
+    const rasterTargets = ["png", "jpg", "jpeg", "webp", "bmp"];
+    const mediaTargets = [
+      "mp4", "webm", "mov", "avi", "mkv", "mp3", "wav", "ogg", "aac", "m4a", "flac",
+    ];
+
+    if (spreadsheet.includes(source) || spreadsheet.includes(target)) needs.add("xlsx");
+    if (source === "pdf" || target === "pdf") {
+      needs.add("pdfjs");
+      needs.add("jspdf");
+    }
+    if (source === "pdf" && rasterTargets.includes(target)) needs.add("jszip");
+    if (source === "pdf" && (target === "docx" || target === "md")) needs.add("jszip");
+    if (source === "docx" || target === "docx") {
+      needs.add("mammoth");
+      needs.add("jszip");
+    }
+    if (["md", "html", "txt"].includes(source) && target === "docx") needs.add("jszip");
+    if (source === "md" && target === "html") needs.add("marked");
+    if (source === "html" && target === "md") needs.add("turndown");
+    if (source === "tiff") needs.add("utif");
+    if (source === "heic") needs.add("heic2any");
+    if (source === "zip" && target === "zip") needs.add("jszip");
+    if (spreadsheet.includes(source) && target === "pdf") {
+      needs.add("xlsx");
+      needs.add("jspdf");
+    }
+    if (mediaTargets.includes(target)) {
+      // FFmpeg loaded separately in convertMedia
+    }
+
+    for (const key of needs) {
+      await loadScriptOnce(SCRIPT_LIBS[key]);
+    }
+
+    if (typeof pdfjsLib !== "undefined") {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+  }
+
+  function converterPageSlug(from, to) {
+    if (from === "pdf" && to === "docx") return "pdf-to-word.html";
+    return `${from}-to-${to}.html`;
+  }
+
   window.processFile = async function (file, from, to) {
     try {
-      setConversionProgress(3, "Preparing conversion...");
       const ext = file.name.split(".").pop().toLowerCase();
       const sourceFormat = (from || ext).toLowerCase().trim();
       const targetFormat = (to || "").toLowerCase().trim();
 
+      setConversionProgress(3, "Preparing conversion...");
+      await ensureConversionLibs(sourceFormat, targetFormat);
+
       console.log("Processing:", sourceFormat, "->", targetFormat);
 
-      // 1. Image Conversions using Canvas API (PNG, JPG, WEBP, BMP)
+      const rasterTargets = ["png", "jpg", "jpeg", "webp", "bmp"];
+      const rasterSources = [
+        "png", "jpg", "jpeg", "webp", "bmp", "gif", "avif", "heic", "tiff",
+      ];
+
+      // 1. Image conversions via Canvas API
       if (
-        ["png", "jpg", "jpeg", "webp", "bmp"].includes(targetFormat) &&
-        (file.type.startsWith("image/") ||
+        rasterTargets.includes(targetFormat) &&
+        (rasterSources.includes(sourceFormat) ||
+          file.type.startsWith("image/") ||
           ["svg", "eps"].includes(sourceFormat) ||
           sourceFormat === "pdf")
       ) {
@@ -383,6 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         if (sourceFormat === "pdf") {
           await convertPDFToImages(file, targetFormat);
+        } else if (sourceFormat === "tiff") {
+          await convertTiffImage(file, targetFormat);
+        } else if (sourceFormat === "heic") {
+          await convertHeicImage(file, targetFormat);
         } else {
           await convertImage(file, targetFormat);
         }
@@ -464,6 +569,17 @@ document.addEventListener("DOMContentLoaded", () => {
         setConversionProgress(100, "Output file ready.");
         return;
       }
+      if (sourceFormat === "pdf" && targetFormat === "md") {
+        setConversionProgress(12, "Extracting PDF text...");
+        const text = await extractPdfText(file);
+        const blob = new Blob([text], { type: "text/markdown" });
+        downloadFile(
+          URL.createObjectURL(blob),
+          file.name.replace(/\.[^/.]+$/, "") + ".md",
+        );
+        setConversionProgress(100, "Output file ready.");
+        return;
+      }
       if (
         sourceFormat === "docx" &&
         (targetFormat === "pdf" ||
@@ -472,6 +588,42 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         setConversionProgress(16, "Reading Word document...");
         await convertDocx(file, targetFormat);
+        setConversionProgress(100, "Output file ready.");
+        return;
+      }
+      if (
+        ["md", "html", "txt"].includes(sourceFormat) &&
+        targetFormat === "docx"
+      ) {
+        setConversionProgress(18, "Building Word document...");
+        let text = await file.text();
+        if (sourceFormat === "html") {
+          const temp = document.createElement("div");
+          temp.innerHTML = text;
+          text = temp.textContent || temp.innerText || "";
+        }
+        await createDocxFromText(text, file.name);
+        setConversionProgress(100, "Output file ready.");
+        return;
+      }
+      if (
+        ["xlsx", "xls", "csv", "ods", "json"].includes(sourceFormat) &&
+        targetFormat === "pdf"
+      ) {
+        setConversionProgress(18, "Building PDF...");
+        await convertSpreadsheetToPdf(file);
+        setConversionProgress(100, "Output file ready.");
+        return;
+      }
+      if (sourceFormat === "xml") {
+        setConversionProgress(18, "Parsing XML...");
+        await convertXml(file, targetFormat);
+        setConversionProgress(100, "Output file ready.");
+        return;
+      }
+      if (sourceFormat === "zip" && targetFormat === "zip") {
+        setConversionProgress(18, "Repackaging archive...");
+        await createZip(file);
         setConversionProgress(100, "Output file ready.");
         return;
       }
@@ -676,6 +828,136 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       reader.readAsDataURL(file);
     });
+  }
+
+  async function convertTiffImage(file, targetFormat) {
+    const buffer = await file.arrayBuffer();
+    if (typeof UTIF === "undefined") {
+      await loadScriptOnce(SCRIPT_LIBS.utif);
+    }
+    const ifds = UTIF.decode(buffer);
+    UTIF.decodeImage(buffer, ifds[0]);
+    const rgba = UTIF.toRGBA8(ifds[0]);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = ifds[0].width;
+    canvas.height = ifds[0].height;
+    const ctx = canvas.getContext("2d");
+    const imgData = ctx.createImageData(canvas.width, canvas.height);
+    imgData.data.set(rgba);
+    ctx.putImageData(imgData, 0, 0);
+
+    let mimeType = "image/png";
+    if (targetFormat === "jpg" || targetFormat === "jpeg") mimeType = "image/jpeg";
+    else if (targetFormat === "webp") mimeType = "image/webp";
+
+    downloadFile(
+      canvas.toDataURL(mimeType, 0.9),
+      file.name.replace(/\.[^/.]+$/, "") + `.${targetFormat}`,
+    );
+  }
+
+  async function convertHeicImage(file, targetFormat) {
+    if (typeof heic2any === "undefined") {
+      await loadScriptOnce(SCRIPT_LIBS.heic2any);
+    }
+
+    const converted = await heic2any({
+      blob: file,
+      toType: "image/jpeg",
+      quality: 0.92,
+    });
+    const jpegBlob = Array.isArray(converted) ? converted[0] : converted;
+    const jpegFile = new File(
+      [jpegBlob],
+      file.name.replace(/\.[^/.]+$/, ".jpg"),
+      { type: "image/jpeg" },
+    );
+    await convertImage(jpegFile, targetFormat);
+  }
+
+  async function extractPdfText(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      fullText +=
+        textContent.items.map((item) => item.str).join(" ") + "\n\n";
+    }
+
+    return fullText;
+  }
+
+  async function convertSpreadsheetToPdf(file) {
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const text = XLSX.utils.sheet_to_csv(sheet);
+    await convertTextToPdf(text, file.name);
+  }
+
+  function xmlNodeToJson(node) {
+    if (node.nodeType === 3) {
+      const text = node.nodeValue.trim();
+      return text || undefined;
+    }
+
+    const obj = {};
+    if (node.attributes && node.attributes.length) {
+      obj["@attributes"] = {};
+      for (const attr of node.attributes) {
+        obj["@attributes"][attr.name] = attr.value;
+      }
+    }
+
+    for (const child of node.childNodes) {
+      if (child.nodeType === 3) {
+        const text = child.nodeValue.trim();
+        if (text) obj["#text"] = (obj["#text"] ? obj["#text"] + " " : "") + text;
+      } else if (child.nodeType === 1) {
+        const name = child.nodeName;
+        const value = xmlNodeToJson(child);
+        if (obj[name] === undefined) obj[name] = value;
+        else if (Array.isArray(obj[name])) obj[name].push(value);
+        else obj[name] = [obj[name], value];
+      }
+    }
+
+    return obj;
+  }
+
+  async function convertXml(file, targetFormat) {
+    const text = await file.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(text, "application/xml");
+    if (xmlDoc.querySelector("parsererror")) {
+      throw new Error("Invalid XML file");
+    }
+
+    if (targetFormat === "json") {
+      const json = JSON.stringify(xmlNodeToJson(xmlDoc.documentElement), null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      downloadFile(
+        URL.createObjectURL(blob),
+        file.name.replace(/\.[^/.]+$/, "") + ".json",
+      );
+      return;
+    }
+
+    if (targetFormat === "txt") {
+      const plain = xmlDoc.documentElement.textContent || "";
+      const blob = new Blob([plain.trim()], { type: "text/plain" });
+      downloadFile(
+        URL.createObjectURL(blob),
+        file.name.replace(/\.[^/.]+$/, "") + ".txt",
+      );
+      return;
+    }
+
+    throw new Error(`XML to ${targetFormat.toUpperCase()} is not supported`);
   }
 
   // Convert Spreadsheets via SheetJS
@@ -968,8 +1250,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (typeof mammoth === "undefined") {
-        alert("Word reading library not loaded. Please refresh and try again.");
-        return;
+        await loadScriptOnce(SCRIPT_LIBS.mammoth);
       }
 
       const arrayBuffer = await file.arrayBuffer();
@@ -1005,9 +1286,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function convertTextToPdf(textContent, originalFileName) {
-    for (let i = 0; i < 20; i++) {
-      if (typeof window.jspdf !== "undefined") break;
-      await new Promise((r) => setTimeout(r, 100));
+    if (typeof window.jspdf === "undefined") {
+      await loadScriptOnce(SCRIPT_LIBS.jspdf);
     }
 
     if (typeof window.jspdf === "undefined") {
@@ -1065,8 +1345,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    doc.save(originalFileName.replace(/\.[^/.]+$/, "") + ".pdf");
-    resetDropzone();
+    const pdfBlob = doc.output("blob");
+    const url = URL.createObjectURL(pdfBlob);
+    const dlBtn = document.getElementById("downloadBtn");
+    if (dlBtn) {
+      downloadFile(url, originalFileName.replace(/\.[^/.]+$/, "") + ".pdf");
+    } else {
+      doc.save(originalFileName.replace(/\.[^/.]+$/, "") + ".pdf");
+      resetDropzone();
+    }
   }
 
   function cleanXmlString(str) {
@@ -1176,10 +1463,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function createDocxFromText(text, originalName) {
-    // Wait for JSZip
-    for (let i = 0; i < 20; i++) {
-      if (typeof JSZip !== "undefined") break;
-      await new Promise((r) => setTimeout(r, 100));
+    if (typeof JSZip === "undefined") {
+      await loadScriptOnce(SCRIPT_LIBS.jszip);
     }
 
     if (typeof JSZip === "undefined") {
@@ -1366,6 +1651,8 @@ ${paragraphs}
     };
   }
 
+  window.mergeToPDF = mergeToPDF;
+
 function downloadFile(url, filename) {
   // Revoke any previously created object URL to avoid memory leaks
   const dlBtn = document.getElementById("downloadBtn");
@@ -1395,6 +1682,8 @@ function downloadFile(url, filename) {
     downloadContainer.style.display = "block";
   }
 }
+
+  window.downloadFile = downloadFile;
 
   function resetDropzone() {
     // Revoke any previously created object URL to free memory
@@ -1513,14 +1802,20 @@ function downloadFile(url, filename) {
         const groups = dropdown.querySelectorAll(".tools-group");
         groups.forEach((group) => {
           const links = group.querySelectorAll("a");
-          const label = group.querySelector(".tools-group-label");
+          const label =
+            group.querySelector(".tools-group-label") ||
+            group.querySelector(":scope > div:first-child");
           let anyVisible = false;
+
           links.forEach((link) => {
-            const match = !query || link.textContent.toLowerCase().includes(query);
+            const match =
+              !query || link.textContent.toLowerCase().includes(query);
             link.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
-          if (label) label.style.display = anyVisible ? "block" : "none";
+
+          group.style.display = anyVisible ? "" : "none";
+          if (label) label.style.display = anyVisible ? "" : "none";
         });
       });
     }

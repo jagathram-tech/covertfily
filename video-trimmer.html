@@ -3,27 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Trimmer Tool - Secure & Private Online | Covertfily</title>
+        <title>Video Trimmer Online — Free, Private &amp; No Upload | Covertfily</title>
+        <meta name="description" content="Trim, cut, and slice video clips entirely in your browser. Free, private video editing — no uploads." />
+        <meta name="keywords" content="video trimmer, video trimmer online, video trimmer free, no upload, private, browser based, client side, covertfily, video trimmer, cut video online, trim mp4" />
+        <meta name="author" content="Covertfily" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <link rel="canonical" href="https://covertfily.com/video-trimmer.html" />
+        <meta property="og:title" content="Video Trimmer — Free Private Online Tool" />
+        <meta property="og:description" content="Trim, cut, and slice video clips entirely in your browser. Free, private video editing — no uploads." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://covertfily.com/video-trimmer.html" />
+        <meta property="og:site_name" content="Covertfily" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:image" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Video Trimmer — Free Private Online Tool" />
+        <meta name="twitter:description" content="Trim, cut, and slice video clips entirely in your browser. Free, private video editing — no uploads." />
+        <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+        <meta name="theme-color" content="#0f172a" />
+        <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/video-trimmer.html#webpage","url":"https://covertfily.com/video-trimmer.html","name":"Video Trimmer Online — Free, Private & No Upload | Covertfily","description":"Trim, cut, and slice video clips entirely in your browser. Free, private video editing — no uploads.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/video-trimmer.html#app","name":"Video Trimmer","url":"https://covertfily.com/video-trimmer.html","description":"Trim, cut, and slice video clips entirely in your browser. Free, private video editing — no uploads.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"Media Tools","item":"https://covertfily.com/media-tools.html"},{"@type":"ListItem","position":3,"name":"Video Trimmer","item":"https://covertfily.com/video-trimmer.html"}]}]</script>
+
     <link rel="icon" type="image/png" href="favicon.png">
-    <meta name="description" content="Trim and cut videos locally in your browser. Extract segments from MP4, MOV, WebM and more — 100% private, no uploads, completely free.">
-    <meta name="keywords" content="video trimmer, cut video, video cutter, trim MP4, local video editor, private video tool">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.0.2">
     
     <style>
-        .tool-container { max-width: 900px; margin: 0 auto; padding: 1.5rem 20px 3rem; }
+        .tool-container { max-width: 56.25rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
         .section-title { text-align: center; margin-bottom: 2.5rem; }
         .section-title i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
         .section-title h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
         .section-title p { color: var(--text-muted); font-size: 1.1rem; }
 
         .dropzone {
-            max-width: 600px; margin: 0 auto 2rem; padding: 3rem 2rem;
-            border: 2px dashed var(--primary); border-radius: 16px;
+            max-width: 37.5rem; margin: 0 auto 2rem; padding: 3rem 2rem;
+            border: 2px dashed var(--primary); border-radius: 1rem;
             background: white; cursor: pointer; transition: all 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
@@ -32,55 +50,55 @@
         .dropzone h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
         .dropzone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
 
-        .editor-panel { display: none; background: white; border-radius: 20px; border: 1px solid var(--border); padding: 2rem; box-shadow: var(--shadow-sm); }
+        .editor-panel { display: none; background: white; border-radius: 1.25rem; border: 1px solid var(--border); padding: 2rem; box-shadow: var(--shadow-sm); }
         .editor-panel.visible { display: block; }
 
         .video-preview {
-            width: 100%; border-radius: 12px; overflow: hidden;
+            width: 100%; border-radius: 0.75rem; overflow: hidden;
             background: #000; margin-bottom: 2rem;
         }
         .video-preview video { width: 100%; display: block; }
 
         .trim-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
-        @media (max-width: 768px) { .trim-controls { grid-template-columns: 1fr; } }
+        @media (max-width: 48rem) { .trim-controls { grid-template-columns: 1fr; } }
 
         .time-input-group { margin-bottom: 1.5rem; }
         .time-input-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
-        .time-input-wrapper { display: flex; align-items: center; gap: 10px; }
+        .time-input-wrapper { display: flex; align-items: center; gap: 0.625rem; }
         .time-input-wrapper input[type="time"] {
-            flex: 1; padding: 12px; border: 1px solid var(--border);
-            border-radius: 8px; font-family: inherit; font-size: 1rem;
+            flex: 1; padding: 0.75rem; border: 1px solid var(--border);
+            border-radius: 0.5rem; font-family: inherit; font-size: 1rem;
         }
-        .time-display { font-weight: 700; color: var(--primary); min-width: 80px; text-align: right; }
+        .time-display { font-weight: 700; color: var(--primary); min-width: 5rem; text-align: right; }
 
         .slider-track {
-            position: relative; height: 6px; background: var(--border);
-            border-radius: 3px; margin: 2rem 0;
+            position: relative; height: 0.375rem; background: var(--border);
+            border-radius: 0.1875rem; margin: 2rem 0;
         }
         .slider-range {
             position: absolute; height: 100%; background: var(--primary);
-            border-radius: 3px;
+            border-radius: 0.1875rem;
         }
         .slider-thumb {
-            position: absolute; width: 20px; height: 20px;
+            position: absolute; width: 1.25rem; height: 1.25rem;
             background: var(--primary); border: 3px solid white;
             border-radius: 50%; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            margin-top: -7px; margin-left: -10px;
+            margin-top: -0.4375rem; margin-left: -0.625rem;
         }
         .slider-thumb:active { cursor: grabbing; }
 
         .btn-trim {
-            width: 100%; padding: 16px; background: var(--primary);
-            color: white; border: none; border-radius: 12px;
+            width: 100%; padding: 1rem; background: var(--primary);
+            color: white; border: none; border-radius: 0.75rem;
             font-weight: 700; font-size: 1.1rem; cursor: pointer;
-            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.625rem;
         }
         .btn-trim:hover { background: var(--primary-hover); transform: translateY(-2px); }
         .btn-trim:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
 
         .progress-container {
-            max-width: 400px; height: 8px; background: var(--bg-alt);
-            border-radius: 10px; margin: 1.5rem auto; overflow: hidden; display: none;
+            max-width: 25rem; height: 0.5rem; background: var(--bg-alt);
+            border-radius: 0.625rem; margin: 1.5rem auto; overflow: hidden; display: none;
         }
         .progress-bar-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
 
@@ -90,7 +108,7 @@
 
         .result-block { text-align: center; padding: 2rem; display: none; }
         .result-block .success-icon {
-            width: 80px; height: 80px; background: #ecfdf5; color: #10b981;
+            width: 5rem; height: 5rem; background: #ecfdf5; color: #10b981;
             border-radius: 50%; font-size: 2.5rem; display: flex; align-items: center; justify-content: center;
             margin: 0 auto 1.5rem;
         }
@@ -99,7 +117,7 @@
 
         .trust-badge {
             margin-top: 2rem; padding: 1rem; background: var(--bg-alt);
-            border-radius: 12px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem;
+            border-radius: 0.75rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem;
         }
         .trust-badge i { color: #10b981; font-size: 1.2rem; }
     </style>
@@ -117,34 +135,35 @@
         
         
         
-    <nav class="flex items-center justify-between py-2 w-full relative z-50">
-                <!-- Brand Logo -->
-                <a href="index.html" class="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2 hover:opacity-90 font-sans">
-                    covertfily
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    <nav class="flex items-center justify-between w-full relative z-50">
+                <a href="index.html" class="cf-brand" aria-label="Covertfily home">
+                    <img src="logo.png" alt="Covertfily" class="cf-logo" />
                 </a>
 
-                <!-- Floating Center Nav Pill -->
-                <div class="hidden lg:flex items-center gap-1 bg-white/40 backdrop-blur-md border border-white/40 rounded-full px-2 py-1.5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_8px_32px_rgba(0,0,0,0.03)]">
-                    <a href="index.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Home</a>
-                    <button class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300 flex items-center gap-1.5" id="navToolsBtn" type="button">
-                        Tools <i class="fas fa-chevron-down text-[10px] opacity-70 transition-transform duration-300" id="navToolsCaret"></i>
+                <div class="cf-nav-center">
+                    <a href="index.html" class="cf-nav-link">Home</a>
+                    <button class="cf-nav-link" id="navToolsBtn" type="button">
+                        Tools <i class="fas fa-chevron-down text-[10px] opacity-60 transition-transform duration-200" id="navToolsCaret"></i>
                     </button>
-                    <a href="blog.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Blog</a>
-                    <a href="documentation.html" class="px-5 py-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 rounded-full transition-all duration-300">Docs</a>
+                    <a href="blog.html" class="cf-nav-link">Blog</a>
+                    <a href="documentation.html" class="cf-nav-link">Docs</a>
                 </div>
 
-                <!-- Right CTA Buttons -->
-                <div class="hidden lg:flex items-center gap-2">
-                    <a href="index.html#tools-dashboard" class="bg-white/50 hover:bg-white/80 active:scale-95 border border-white/60 text-slate-800 text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-sm backdrop-blur-md transition-all duration-300 font-sans">
-                        Tools
-                    </a>
-                    <a href="index.html#convert" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[14px] font-extrabold px-5 py-2.5 rounded-full shadow-md transition-all duration-300 font-sans">
-                        Convert
-                    </a>
+                <div class="cf-nav-actions">
+                    <a href="index.html#tools-dashboard" class="cf-btn-ghost">Tools</a>
+                    <a href="index.html#convert" class="cf-btn-primary">Convert</a>
                 </div>
 
-                <!-- Mobile Navigation Toggle -->
-                <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/50 border border-white/60 text-slate-800 hover:bg-white/80 active:scale-95 transition-all duration-300 shadow-sm backdrop-blur-md" type="button" aria-label="Toggle mobile menu">
+                <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-slate-800 active:scale-95 transition-all duration-200" type="button" aria-label="Toggle mobile menu">
                     <i class="fas fa-bars text-lg"></i>
                 </button>
 
@@ -155,7 +174,7 @@
                 <div id="mobileMenuDrawer" class="fixed top-0 right-0 h-full w-[280px] bg-white/95 backdrop-blur-[35px] border-l border-white/40 shadow-2xl z-[101] translate-x-full pointer-events-none transition-transform duration-300 lg:hidden flex flex-col">
                     <!-- Drawer Header -->
                     <div class="flex items-center justify-between p-5 border-b border-slate-100">
-                        <span class="text-xl font-extrabold tracking-tight text-slate-900 font-sans">covertfily</span>
+                        <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--drawer" />
                         <button id="mobileMenuClose" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all duration-300" type="button" aria-label="Close mobile menu">
                             <i class="fas fa-times"></i>
                         </button>
@@ -201,7 +220,7 @@
                     <!-- Tools Categories Scroll -->
                     <div class="tools-dropdown-scroll grid grid-cols-2 gap-6 max-h-[360px] overflow-y-auto pr-2" id="navToolsList">
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
                             <div class="flex flex-col gap-2">
                                 <a href="merge-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Merge PDF</a>
                                 <a href="compress-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Compress PDF</a>
@@ -211,7 +230,7 @@
                             </div>
                         </div>
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
                             <div class="flex flex-col gap-2">
                                 <a href="image-resizer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Resizer</a>
                                 <a href="image-rounder.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Rounder</a>
@@ -232,7 +251,7 @@
                             </div>
                         </div>
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
                             <div class="flex flex-col gap-2">
                                 <a href="video-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Trimmer</a>
                                 <a href="video-frame-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Frame Extractor</a>
@@ -243,7 +262,7 @@
                             </div>
                         </div>
                         <div class="tools-group">
-                            <div class="text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
                             <div class="flex flex-col gap-2">
                                 <a href="qr-code-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">QR Code Generator</a>
                                 <a href="barcode-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Barcode Generator</a>
@@ -346,7 +365,7 @@
                 <div class="footer-grid">
                     <div class="footer-brand">
                         <div class="logo">
-                            <img src="logo.png" alt="Covertfily" />
+                            <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--footer" />
                         </div>
                         <p>
                             100% private, browser-based file conversion. No uploads.
@@ -357,10 +376,12 @@
                         <h4>Product</h4>
                         <ul>
                             <li><a href="index.html">Home</a></li>
+                            <li><a href="pdf-tools.html">PDF Converters</a></li>
+                            <li><a href="image-tools.html">Image Converters</a></li>
+                            <li><a href="document-tools.html">Document Converters</a></li>
+                            <li><a href="media-tools.html">Media Converters</a></li>
                             <li><a href="merge-pdf.html">PDF Tools</a></li>
                             <li><a href="image-resizer.html">Image Tools</a></li>
-                            <li><a href="video-trimmer.html">Video Tools</a></li>
-                            <li><a href="audio-trimmer.html">Audio Tools</a></li>
                             <li><a href="qr-code-generator.html">Generators</a></li>
                             <li><a href="file-hash-checker.html">Utilities</a></li>
                         </ul>
@@ -393,6 +414,15 @@
                 </div>
             </footer>
         </div> <!-- Close .elevra-workspace -->
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
