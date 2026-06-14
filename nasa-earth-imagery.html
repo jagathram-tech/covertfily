@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NASA Earth Satellite Imagery — Free Browser Tool | Covertfily</title>
+        <meta name="description" content="View and download NASA Landsat satellite imagery for any latitude and longitude. Free browser tool — only NASA API called, downloads processed client-side." />
+        <meta name="keywords" content="nasa earth imagery, satellite imagery, landsat, earth satellite, nasa api, free, browser based, covertfily" />
+        <meta name="author" content="Covertfily" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <link rel="canonical" href="https://covertfily.com/nasa-earth-imagery.html" />
+        <meta property="og:title" content="NASA Earth Satellite Imagery — Free Browser Tool" />
+        <meta property="og:description" content="View and download NASA Landsat satellite imagery for any latitude and longitude. Free browser tool — only NASA API called, downloads processed client-side." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://covertfily.com/nasa-earth-imagery.html" />
+        <meta property="og:site_name" content="Covertfily" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:image" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="NASA Earth Satellite Imagery — Free Browser Tool" />
+        <meta name="twitter:description" content="View and download NASA Landsat satellite imagery for any latitude and longitude. Free browser tool — only NASA API called, downloads processed client-side." />
+        <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+        <meta name="theme-color" content="#0f172a" />
+        <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/nasa-earth-imagery.html#webpage","url":"https://covertfily.com/nasa-earth-imagery.html","name":"NASA Earth Satellite Imagery — Free Browser Tool | Covertfily","description":"View and download NASA Landsat satellite imagery for any latitude and longitude. Free browser tool — only NASA API called, downloads processed client-side.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/nasa-earth-imagery.html#app","name":"NASA Earth Satellite Imagery","url":"https://covertfily.com/nasa-earth-imagery.html","description":"View and download NASA Landsat satellite imagery for any latitude and longitude. Free browser tool — only NASA API called, downloads processed client-side.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"Utilities","item":"https://covertfily.com/index.html#tools-dashboard"},{"@type":"ListItem","position":3,"name":"NASA Earth Satellite Imagery","item":"https://covertfily.com/nasa-earth-imagery.html"}]}]</script>
+
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=2.1.0">
+    <style>
+        .tool-container { max-width: 43.75rem; margin: 0 auto; padding: 1.5rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; margin: 1.5rem 0; }
+        .input-group label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .input-group input[type="text"], .input-group input[type="number"], .input-group input[type="date"], .input-group select {
+            width: 100%; padding: 0.75rem 0.9375rem; border-radius: 0.625rem; border: 1px solid var(--border);
+            font-family: inherit; font-size: 1rem;
+        }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .api-key-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .api-key-hint a { color: var(--primary); text-decoration: none; }
+        .api-key-hint a:hover { text-decoration: underline; }
+        #earthPreview {
+            background: #0f172a; border-radius: 1.25rem; min-height: 18.75rem;
+            display: flex; align-items: center; justify-content: center; margin: 1.5rem 0;
+            padding: 1.25rem; text-align: center; overflow: hidden;
+        }
+        #earthPreview img { max-width: 100%; max-height: 28.125rem; border-radius: 0.5rem; display: block; }
+        #earthPreview .placeholder-text { color: #94a3b8; font-size: 0.95rem; }
+        .nasa-loading, .nasa-error {
+            display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+            color: #94a3b8; font-size: 0.95rem;
+        }
+        .nasa-loading i, .nasa-error i { font-size: 1.5rem; }
+        .nasa-error { color: #f87171; }
+        .nasa-error i { color: #f87171; }
+        .btn-fetch {
+            width: 100%; padding: 0.875rem 1.5rem; background: var(--primary); color: white;
+            border: none; border-radius: 0.625rem; font-weight: 600; font-size: 1rem;
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center;
+            justify-content: center; gap: 0.5rem;
+        }
+        .btn-fetch:hover { opacity: 0.9; }
+        .btn-fetch:disabled { opacity: 0.6; cursor: not-allowed; }
+        .download-toolbar { display: flex; gap: 1rem; justify-content: center; margin: 1.5rem 0; flex-wrap: wrap; }
+        .btn-download {
+            flex: 1; min-width: 7.5rem; max-width: 12.5rem; padding: 0.75rem 1.25rem;
+            background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary);
+            border-radius: 0.625rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn-download:hover { background: var(--primary); color: white; }
+        .trust-badge {
+            display: flex; align-items: center; gap: 0.5rem; justify-content: center;
+            font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem;
+        }
+        #earthDownloadCanvas { display: none; }
+        @media (max-width: 480px) { .input-row { grid-template-columns: 1fr; } }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="elevra-theme">
+        <div class="elevra-workspace w-full flex flex-col gap-16 relative overflow-hidden">
+        
+    <nav class="flex items-center justify-between w-full relative z-50">
+                <a href="index.html" class="cf-brand" aria-label="Covertfily home">
+                    <img src="logo.png" alt="Covertfily" class="cf-logo" />
+                </a>
+
+                <div class="cf-nav-center">
+                    <a href="index.html" class="cf-nav-link">Home</a>
+                    <button class="cf-nav-link" id="navToolsBtn" type="button">
+                        Tools <i class="fas fa-chevron-down text-[10px] opacity-60 transition-transform duration-200" id="navToolsCaret"></i>
+                    </button>
+                    <a href="blog.html" class="cf-nav-link">Blog</a>
+                    <a href="documentation.html" class="cf-nav-link">Docs</a>
+                </div>
+
+                <div class="cf-nav-actions">
+                    <a href="index.html#tools-dashboard" class="cf-btn-ghost">Tools</a>
+                    <a href="index.html#convert" class="cf-btn-primary">Convert</a>
+                </div>
+
+                <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-slate-800 active:scale-95 transition-all duration-200" type="button" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+
+                <!-- Mobile Menu Drawer Backdrop -->
+                <div id="mobileMenuBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+                <!-- Mobile Menu Drawer -->
+                <div id="mobileMenuDrawer" class="fixed top-0 right-0 h-full w-[280px] bg-white/95 backdrop-blur-[35px] border-l border-white/40 shadow-2xl z-[101] translate-x-full pointer-events-none transition-transform duration-300 lg:hidden flex flex-col">
+                    <!-- Drawer Header -->
+                    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                        <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--drawer" />
+                        <button id="mobileMenuClose" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all duration-300" type="button" aria-label="Close mobile menu">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Drawer Content -->
+                    <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                        <!-- Navigation Links -->
+                        <div class="flex flex-col gap-3">
+                            <a href="index.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[15px] font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/50 transition-all duration-300">
+                                <i class="fas fa-home w-5 text-slate-400"></i> Home
+                            </a>
+                            <a href="blog.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[15px] font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/50 transition-all duration-300">
+                                <i class="fas fa-newspaper w-5 text-slate-400"></i> Blog
+                            </a>
+                            <a href="documentation.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[15px] font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/50 transition-all duration-300">
+                                <i class="fas fa-file-alt w-5 text-slate-400"></i> Docs
+                            </a>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- CTAs inside Drawer -->
+                        <div class="flex flex-col gap-2">
+                            <a href="index.html#tools-dashboard" class="flex items-center justify-center bg-white border border-slate-200 text-slate-800 text-[14px] font-extrabold py-3 rounded-xl shadow-sm hover:bg-slate-50 active:scale-98 transition-all duration-300">
+                                Tools Dashboard
+                            </a>
+                            <a href="index.html#convert" class="flex items-center justify-center bg-blue-600 text-white text-[14px] font-extrabold py-3 rounded-xl shadow-md hover:bg-blue-700 active:scale-98 transition-all duration-300">
+                                Convert Files
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Dynamic Glass Tools Dropdown -->
+                <div class="nav-tools-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[640px] max-w-[90vw] z-50 bg-white/75 backdrop-blur-[35px] border border-white/60 rounded-[32px] p-6 shadow-2xl opacity-0 invisible pointer-events-none transition-all duration-300" id="navToolsDropdown">
+                    <!-- Dropdown Search -->
+                    <div class="relative mb-6">
+                        <input type="text" class="w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" id="navToolsDropdownSearch" placeholder="Search 34 offline tools...">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                    <!-- Tools Categories Scroll -->
+                    <div class="tools-dropdown-scroll grid grid-cols-2 gap-6 max-h-[360px] overflow-y-auto pr-2" id="navToolsList">
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="merge-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Merge PDF</a>
+                                <a href="compress-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Compress PDF</a>
+                                <a href="reorder-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Reorder PDF Pages</a>
+                                <a href="protect-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Protect/Unlock PDF</a>
+                                <a href="watermark.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Watermark</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="image-resizer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Resizer</a>
+                                <a href="image-rounder.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Rounder</a>
+                                <a href="image-blur.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Blur</a>
+                                <a href="color-palette-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Color Palette</a>
+                                <a href="eyedropper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EyeDropper</a>
+                                <a href="image-to-base64.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Base64</a>
+                                <a href="exif-reader.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EXIF Reader</a>
+                                <a href="metadata-stripper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Metadata Stripper</a>
+                                <a href="pixel-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Pixel Art</a>
+                                <a href="image-to-json.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to JSON</a>
+                                <a href="brightness-map.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Brightness Map</a>
+                                <a href="stereogram.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Stereogram</a>
+                                <a href="steganography.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Steganography</a>
+                                <a href="collage-maker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Collage Maker</a>
+                                <a href="ocr.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Text (OCR)</a>
+                                <a href="string-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">String Art</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="video-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Trimmer</a>
+                                <a href="video-frame-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Frame Extractor</a>
+                                <a href="video-compressor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Compressor</a>
+                                <a href="video-speed.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Speed</a>
+                                <a href="audio-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Trimmer</a>
+                                <a href="audio-merger.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Merger</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="qr-code-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">QR Code Generator</a>
+                                <a href="barcode-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Barcode Generator</a>
+                                <a href="lorem-ipsum.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Lorem Ipsum</a>
+                                <a href="word-counter.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Word Counter</a>
+                                <a href="file-hash-checker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">File Hash Checker</a>
+                                <a href="nasa-earth-imagery.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">NASA Earth Imagery</a>
+                                <a href="nasa-apod.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">NASA APOD</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+    <main class="tool-container">
+        <div class="section-title" style="text-align:center;">
+            <i class="fas fa-globe-americas" style="color: var(--primary); font-size: 2rem;"></i>
+            <h1>NASA Earth Satellite Imagery</h1>
+            <p style="color: var(--text-muted);">Fetch Landsat satellite photos for any coordinates and date. Imagery is served by NASA; downloads are converted locally in your browser.</p>
+        </div>
+
+        <div class="input-group">
+            <label for="nasaApiKey">NASA API Key</label>
+            <input type="text" id="nasaApiKey" placeholder="DEMO_KEY" autocomplete="off">
+            <p class="api-key-hint">Uses <code>DEMO_KEY</code> by default (30 req/hr). Get your own free key at <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">api.nasa.gov</a>. Saved in your browser only.</p>
+        </div>
+
+        <div class="input-row">
+            <div class="input-group" style="margin-top:0;">
+                <label for="earthLat">Latitude</label>
+                <input type="number" id="earthLat" value="29.67" min="-90" max="90" step="any" placeholder="29.67">
+            </div>
+            <div class="input-group" style="margin-top:0;">
+                <label for="earthLon">Longitude</label>
+                <input type="number" id="earthLon" value="-95.21" min="-180" max="180" step="any" placeholder="-95.21">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="earthDate">Date</label>
+            <input type="date" id="earthDate">
+            <p class="api-key-hint">Landsat imagery may not be available for every date. Try dates at least two weeks in the past.</p>
+        </div>
+
+        <button class="btn-fetch" id="earthFetchBtn" type="button">
+            <i class="fas fa-satellite"></i> Fetch Satellite Imagery
+        </button>
+
+        <div id="earthPreview">
+            <span class="placeholder-text">Enter coordinates and click Fetch to load satellite imagery</span>
+        </div>
+
+        <div class="download-toolbar" id="earthDownloads" hidden>
+            <button class="btn-download" type="button" data-format="jpg"><i class="fas fa-download"></i> Download JPG</button>
+            <button class="btn-download" type="button" data-format="png"><i class="fas fa-download"></i> Download PNG</button>
+            <button class="btn-download" type="button" data-format="webp"><i class="fas fa-download"></i> Download WebP</button>
+        </div>
+
+        <canvas id="earthDownloadCanvas"></canvas>
+
+        <div class="trust-badge" style="margin-top:24px;">
+            <i class="fas fa-shield-alt"></i>
+            <p><strong>Privacy:</strong> Only NASA's public API is called for imagery. Format conversion and downloads happen entirely in your browser — no Covertfily server involved.</p>
+        </div>
+    </main>
+
+    <footer>
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--footer" />
+                        </div>
+                        <p>
+                            100% private, browser-based file conversion. No uploads.
+                            No tracking. Open source.
+                        </p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="pdf-tools.html">PDF Converters</a></li>
+                            <li><a href="image-tools.html">Image Converters</a></li>
+                            <li><a href="document-tools.html">Document Converters</a></li>
+                            <li><a href="media-tools.html">Media Converters</a></li>
+                            <li><a href="merge-pdf.html">PDF Tools</a></li>
+                            <li><a href="image-resizer.html">Image Tools</a></li>
+                            <li><a href="qr-code-generator.html">Generators</a></li>
+                            <li><a href="file-hash-checker.html">Utilities</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/jagathram-tech/covertfily">GitHub</a>
+                            </li>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="index.html#faq">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Use</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Covertfily. MIT Licensed.</p>
+                    <div class="footer-social">
+                        <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </footer>
+        </div> <!-- Close .elevra-workspace -->
+
+    <script src="nasa-utils.js"></script>
+    <script>
+        const earthLat = document.getElementById('earthLat');
+        const earthLon = document.getElementById('earthLon');
+        const earthDate = document.getElementById('earthDate');
+        const earthPreview = document.getElementById('earthPreview');
+        const earthFetchBtn = document.getElementById('earthFetchBtn');
+        const earthDownloads = document.getElementById('earthDownloads');
+        const earthDownloadCanvas = document.getElementById('earthDownloadCanvas');
+
+        let isFetching = false;
+
+        function showPlaceholder(message) {
+            earthPreview.innerHTML = '<span class="placeholder-text">' + message + '</span>';
+        }
+
+        function validateInputs() {
+            const lat = parseFloat(earthLat.value);
+            const lon = parseFloat(earthLon.value);
+            const date = earthDate.value;
+
+            if (isNaN(lat) || lat < -90 || lat > 90) {
+                NasaUtils.showError(earthPreview, 'Latitude must be between -90 and 90.');
+                return null;
+            }
+            if (isNaN(lon) || lon < -180 || lon > 180) {
+                NasaUtils.showError(earthPreview, 'Longitude must be between -180 and 180.');
+                return null;
+            }
+            if (!date) {
+                NasaUtils.showError(earthPreview, 'Please select a date.');
+                return null;
+            }
+            return { lat, lon, date };
+        }
+
+        function drawToHiddenCanvas(img) {
+            earthDownloadCanvas.width = img.naturalWidth;
+            earthDownloadCanvas.height = img.naturalHeight;
+            const ctx = earthDownloadCanvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+        }
+
+        async function fetchEarthImagery() {
+            if (isFetching) return;
+
+            const inputs = validateInputs();
+            if (!inputs) {
+                earthDownloads.hidden = true;
+                return;
+            }
+
+            const apiKey = NasaUtils.getApiKey();
+            NasaUtils.saveApiKey(document.getElementById('nasaApiKey').value);
+
+            isFetching = true;
+            earthFetchBtn.disabled = true;
+            earthDownloads.hidden = true;
+            NasaUtils.setLoading(earthPreview, true, 'Fetching satellite imagery from NASA…');
+
+            try {
+                const blob = await NasaUtils.fetchEarthImagery({
+                    lat: inputs.lat,
+                    lon: inputs.lon,
+                    date: inputs.date,
+                    dim: 0.1,
+                    apiKey,
+                });
+
+                const img = await NasaUtils.blobToImage(blob);
+                drawToHiddenCanvas(img);
+
+                earthPreview.innerHTML = '';
+                const displayImg = document.createElement('img');
+                displayImg.src = earthDownloadCanvas.toDataURL('image/png');
+                displayImg.alt = 'NASA Earth satellite imagery for ' + inputs.lat + ', ' + inputs.lon + ' on ' + inputs.date;
+                earthPreview.appendChild(displayImg);
+
+                earthDownloads.hidden = false;
+            } catch (err) {
+                NasaUtils.showError(earthPreview, err.message || 'Failed to load satellite imagery.');
+                earthDownloads.hidden = true;
+            } finally {
+                isFetching = false;
+                earthFetchBtn.disabled = false;
+            }
+        }
+
+        function downloadEarthImage(format) {
+            if (!earthDownloadCanvas.width || !earthDownloadCanvas.height) return;
+            const date = earthDate.value || 'earth';
+            const lat = parseFloat(earthLat.value).toFixed(2);
+            const lon = parseFloat(earthLon.value).toFixed(2);
+            const ext = format === 'jpg' ? 'jpg' : format;
+            const filename = 'nasa-earth-' + lat + '_' + lon + '-' + date + '.' + ext;
+            NasaUtils.downloadCanvas(earthDownloadCanvas, format, filename);
+        }
+
+        earthFetchBtn.addEventListener('click', fetchEarthImagery);
+
+        earthDownloads.querySelectorAll('.btn-download').forEach((btn) => {
+            btn.addEventListener('click', () => downloadEarthImage(btn.dataset.format));
+        });
+
+        NasaUtils.initApiKeyInput();
+        earthDate.value = NasaUtils.defaultEarthDate();
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

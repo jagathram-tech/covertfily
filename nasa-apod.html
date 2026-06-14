@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NASA APOD Downloader — Astronomy Picture of the Day | Covertfily</title>
+        <meta name="description" content="Download NASA's Astronomy Picture of the Day in JPG, PNG, or WebP. Fetches metadata from NASA API; image conversion runs locally in your browser." />
+        <meta name="keywords" content="nasa apod, astronomy picture of the day, apod downloader, nasa image download, apod jpg png webp, covertfily, nasa api" />
+        <meta name="author" content="Covertfily" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <link rel="canonical" href="https://covertfily.com/nasa-apod.html" />
+        <meta property="og:title" content="NASA APOD Downloader — Astronomy Picture of the Day" />
+        <meta property="og:description" content="Download NASA's Astronomy Picture of the Day in JPG, PNG, or WebP. Fetches metadata from NASA API; image conversion runs locally in your browser." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://covertfily.com/nasa-apod.html" />
+        <meta property="og:site_name" content="Covertfily" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:image" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="NASA APOD Downloader — Astronomy Picture of the Day" />
+        <meta name="twitter:description" content="Download NASA's Astronomy Picture of the Day in JPG, PNG, or WebP. Fetches metadata from NASA API; image conversion runs locally in your browser." />
+        <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+        <meta name="theme-color" content="#0f172a" />
+        <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/nasa-apod.html#webpage","url":"https://covertfily.com/nasa-apod.html","name":"NASA APOD Downloader — Astronomy Picture of the Day | Covertfily","description":"Download NASA's Astronomy Picture of the Day in JPG, PNG, or WebP. Fetches metadata from NASA API; image conversion runs locally in your browser.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/nasa-apod.html#app","name":"NASA APOD Downloader","url":"https://covertfily.com/nasa-apod.html","description":"Download NASA's Astronomy Picture of the Day in JPG, PNG, or WebP. Fetches metadata from NASA API; image conversion runs locally in your browser.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"Utilities","item":"https://covertfily.com/index.html#tools-dashboard"},{"@type":"ListItem","position":3,"name":"NASA APOD Downloader","item":"https://covertfily.com/nasa-apod.html"}]}]</script>
+
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z6LTJ67E2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4Z6LTJ67E2');
+    </script>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=2.1.0">
+    <style>
+        .tool-container { max-width: 50rem; margin: 0 auto; padding: 1.5rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; margin: 1.5rem 0; }
+        .input-group label { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .input-group input[type="text"] {
+            width: 100%; padding: 0.75rem 0.9375rem; border-radius: 0.625rem; border: 1px solid var(--border);
+            font-family: inherit; font-size: 1rem;
+        }
+        .input-hint { font-size: 0.85rem; color: var(--text-muted); }
+        .apod-toolbar {
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+            margin: 1rem 0 1.25rem; flex-wrap: wrap;
+        }
+        #apodDate {
+            font-weight: 600; color: var(--text-muted); font-size: 0.95rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        #apodRefreshBtn {
+            padding: 0.625rem 1.25rem; background: var(--primary); color: white;
+            border: none; border-radius: 0.625rem; font-weight: 600; cursor: pointer;
+            transition: 0.2s; display: flex; align-items: center; gap: 0.5rem;
+        }
+        #apodRefreshBtn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #apodPreview {
+            background: #0f172a; border-radius: 1.25rem; min-height: 18.75rem;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 0 1.25rem; padding: 1.25rem; overflow: hidden;
+        }
+        #apodPreview img {
+            max-width: 100%; max-height: 70vh; height: auto; display: block;
+            border-radius: 0.5rem; object-fit: contain;
+        }
+        .apod-info-panel {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+            padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        #apodTitle {
+            margin: 0 0 0.75rem; font-size: 1.35rem; color: var(--text-main); line-height: 1.35;
+        }
+        #apodDescription {
+            margin: 0; color: var(--text-muted); line-height: 1.65; font-size: 0.98rem;
+        }
+        #apodDownloads {
+            display: none; gap: 1rem; justify-content: center; margin: 1.5rem 0; flex-wrap: wrap;
+        }
+        .btn-download {
+            flex: 1; max-width: 12.5rem; padding: 0.75rem 1.25rem; background: var(--bg-alt); color: var(--primary);
+            border: 1px solid var(--primary); border-radius: 0.625rem; font-weight: 600; cursor: pointer;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn-download:hover { background: var(--primary); color: white; }
+        .btn-download:disabled { opacity: 0.5; cursor: not-allowed; }
+        .trust-badge {
+            display: flex; align-items: center; gap: 0.5rem; justify-content: center;
+            font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: center;
+        }
+        .nasa-loading, .nasa-error, .apod-video-msg {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 0.75rem; text-align: center; padding: 2rem; color: #94a3b8;
+        }
+        .nasa-loading i, .nasa-error i, .apod-video-msg i { font-size: 2rem; }
+        .nasa-error { color: #f87171; }
+        .apod-video-msg a {
+            color: #60a5fa; font-weight: 600; text-decoration: none;
+        }
+        .apod-video-msg a:hover { text-decoration: underline; }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="elevra-theme">
+        <div class="elevra-workspace w-full flex flex-col gap-16 relative overflow-hidden">
+        
+    <nav class="flex items-center justify-between w-full relative z-50">
+                <a href="index.html" class="cf-brand" aria-label="Covertfily home">
+                    <img src="logo.png" alt="Covertfily" class="cf-logo" />
+                </a>
+
+                <div class="cf-nav-center">
+                    <a href="index.html" class="cf-nav-link">Home</a>
+                    <button class="cf-nav-link" id="navToolsBtn" type="button">
+                        Tools <i class="fas fa-chevron-down text-[10px] opacity-60 transition-transform duration-200" id="navToolsCaret"></i>
+                    </button>
+                    <a href="blog.html" class="cf-nav-link">Blog</a>
+                    <a href="documentation.html" class="cf-nav-link">Docs</a>
+                </div>
+
+                <div class="cf-nav-actions">
+                    <a href="index.html#tools-dashboard" class="cf-btn-ghost">Tools</a>
+                    <a href="index.html#convert" class="cf-btn-primary">Convert</a>
+                </div>
+
+                <button id="mobileMenuToggle" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-slate-800 active:scale-95 transition-all duration-200" type="button" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+
+                <!-- Mobile Menu Drawer Backdrop -->
+                <div id="mobileMenuBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+                <!-- Mobile Menu Drawer -->
+                <div id="mobileMenuDrawer" class="fixed top-0 right-0 h-full w-[280px] bg-white/95 backdrop-blur-[35px] border-l border-white/40 shadow-2xl z-[101] translate-x-full pointer-events-none transition-transform duration-300 lg:hidden flex flex-col">
+                    <!-- Drawer Header -->
+                    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                        <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--drawer" />
+                        <button id="mobileMenuClose" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all duration-300" type="button" aria-label="Close mobile menu">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Drawer Content -->
+                    <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                        <!-- Navigation Links -->
+                        <div class="flex flex-col gap-3">
+                            <a href="index.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[15px] font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/50 transition-all duration-300">
+                                <i class="fas fa-home w-5 text-slate-400"></i> Home
+                            </a>
+                            <a href="blog.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[15px] font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/50 transition-all duration-300">
+                                <i class="fas fa-newspaper w-5 text-slate-400"></i> Blog
+                            </a>
+                            <a href="documentation.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[15px] font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/50 transition-all duration-300">
+                                <i class="fas fa-file-alt w-5 text-slate-400"></i> Docs
+                            </a>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- CTAs inside Drawer -->
+                        <div class="flex flex-col gap-2">
+                            <a href="index.html#tools-dashboard" class="flex items-center justify-center bg-white border border-slate-200 text-slate-800 text-[14px] font-extrabold py-3 rounded-xl shadow-sm hover:bg-slate-50 active:scale-98 transition-all duration-300">
+                                Tools Dashboard
+                            </a>
+                            <a href="index.html#convert" class="flex items-center justify-center bg-blue-600 text-white text-[14px] font-extrabold py-3 rounded-xl shadow-md hover:bg-blue-700 active:scale-98 transition-all duration-300">
+                                Convert Files
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Dynamic Glass Tools Dropdown -->
+                <div class="nav-tools-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[640px] max-w-[90vw] z-50 bg-white/75 backdrop-blur-[35px] border border-white/60 rounded-[32px] p-6 shadow-2xl opacity-0 invisible pointer-events-none transition-all duration-300" id="navToolsDropdown">
+                    <!-- Dropdown Search -->
+                    <div class="relative mb-6">
+                        <input type="text" class="w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-3 pl-11 text-[14px] font-semibold text-slate-800 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" id="navToolsDropdownSearch" placeholder="Search 34 offline tools...">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                    <!-- Tools Categories Scroll -->
+                    <div class="tools-dropdown-scroll grid grid-cols-2 gap-6 max-h-[360px] overflow-y-auto pr-2" id="navToolsList">
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">PDF Tools</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="merge-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Merge PDF</a>
+                                <a href="compress-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Compress PDF</a>
+                                <a href="reorder-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Reorder PDF Pages</a>
+                                <a href="protect-pdf.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Protect/Unlock PDF</a>
+                                <a href="watermark.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Watermark</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Image Tools</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="image-resizer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Resizer</a>
+                                <a href="image-rounder.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Rounder</a>
+                                <a href="image-blur.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image Blur</a>
+                                <a href="color-palette-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Color Palette</a>
+                                <a href="eyedropper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EyeDropper</a>
+                                <a href="image-to-base64.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Base64</a>
+                                <a href="exif-reader.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">EXIF Reader</a>
+                                <a href="metadata-stripper.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Metadata Stripper</a>
+                                <a href="pixel-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Pixel Art</a>
+                                <a href="image-to-json.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to JSON</a>
+                                <a href="brightness-map.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Brightness Map</a>
+                                <a href="stereogram.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Stereogram</a>
+                                <a href="steganography.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Steganography</a>
+                                <a href="collage-maker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Collage Maker</a>
+                                <a href="ocr.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Image to Text (OCR)</a>
+                                <a href="string-art.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">String Art</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Video & Audio</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="video-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Trimmer</a>
+                                <a href="video-frame-extractor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Frame Extractor</a>
+                                <a href="video-compressor.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Compressor</a>
+                                <a href="video-speed.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Video Speed</a>
+                                <a href="audio-trimmer.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Trimmer</a>
+                                <a href="audio-merger.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Audio Merger</a>
+                            </div>
+                        </div>
+                        <div class="tools-group">
+                            <div class="tools-group-label text-[12px] font-extrabold text-blue-600 uppercase tracking-widest mb-3">Utilities & Generators</div>
+                            <div class="flex flex-col gap-2">
+                                <a href="qr-code-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">QR Code Generator</a>
+                                <a href="barcode-generator.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Barcode Generator</a>
+                                <a href="lorem-ipsum.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Lorem Ipsum</a>
+                                <a href="word-counter.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">Word Counter</a>
+                                <a href="file-hash-checker.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">File Hash Checker</a>
+                                <a href="nasa-earth-imagery.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">NASA Earth Imagery</a>
+                                <a href="nasa-apod.html" class="text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">NASA APOD Downloader</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+    <main class="tool-container">
+        <div class="section-title" style="text-align:center;">
+            <i class="fas fa-star" style="color: var(--primary); font-size: 2rem;"></i>
+            <h1>NASA APOD Downloader</h1>
+            <p style="color: var(--text-muted);">Fetch today's Astronomy Picture of the Day from NASA and download it as JPG, PNG, or WebP — format conversion runs entirely in your browser.</p>
+        </div>
+
+        <div class="input-group">
+            <label for="nasaApiKey">NASA API Key</label>
+            <input type="text" id="nasaApiKey" value="DEMO_KEY" placeholder="DEMO_KEY" autocomplete="off">
+            <span class="input-hint">Uses <code>DEMO_KEY</code> by default. Get a free key at <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">api.nasa.gov</a>. Saved locally in your browser.</span>
+        </div>
+
+        <div class="apod-toolbar">
+            <span id="apodDate"><i class="fas fa-calendar-alt"></i> Loading…</span>
+            <button type="button" id="apodRefreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+
+        <div id="apodPreview">
+            <div class="nasa-loading"><i class="fas fa-spinner fa-spin"></i><span>Fetching today's APOD…</span></div>
+        </div>
+
+        <div class="apod-info-panel">
+            <h2 id="apodTitle"></h2>
+            <p id="apodDescription"></p>
+        </div>
+
+        <div id="apodDownloads">
+            <button type="button" class="btn-download" data-format="jpg"><i class="fas fa-download"></i> Download JPG</button>
+            <button type="button" class="btn-download" data-format="png"><i class="fas fa-download"></i> Download PNG</button>
+            <button type="button" class="btn-download" data-format="webp"><i class="fas fa-download"></i> Download WebP</button>
+        </div>
+
+        <div class="trust-badge">
+            <i class="fas fa-shield-alt"></i>
+            <p><strong>Privacy:</strong> Only NASA's API is called for metadata and the image URL. Format conversion and downloads happen client-side in your browser.</p>
+        </div>
+    </main>
+
+    <footer>
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <img src="logo.png" alt="Covertfily" class="cf-logo cf-logo--footer" />
+                        </div>
+                        <p>
+                            100% private, browser-based file conversion. No uploads.
+                            No tracking. Open source.
+                        </p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="pdf-tools.html">PDF Converters</a></li>
+                            <li><a href="image-tools.html">Image Converters</a></li>
+                            <li><a href="document-tools.html">Document Converters</a></li>
+                            <li><a href="media-tools.html">Media Converters</a></li>
+                            <li><a href="merge-pdf.html">PDF Tools</a></li>
+                            <li><a href="image-resizer.html">Image Tools</a></li>
+                            <li><a href="qr-code-generator.html">Generators</a></li>
+                            <li><a href="file-hash-checker.html">Utilities</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/jagathram-tech/covertfily">GitHub</a>
+                            </li>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="index.html#faq">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Use</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Covertfily. MIT Licensed.</p>
+                    <div class="footer-social">
+                        <a href="https://github.com/jagathram-tech/covertfily"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </footer>
+        </div> <!-- Close .elevra-workspace -->
+
+    <script src="nasa-utils.js"></script>
+    <script>
+        let currentCanvas = null;
+        let currentApod = null;
+
+        const previewEl = document.getElementById('apodPreview');
+        const titleEl = document.getElementById('apodTitle');
+        const descEl = document.getElementById('apodDescription');
+        const dateEl = document.getElementById('apodDate');
+        const downloadsEl = document.getElementById('apodDownloads');
+        const refreshBtn = document.getElementById('apodRefreshBtn');
+
+        function setDownloadsVisible(visible) {
+            downloadsEl.style.display = visible ? 'flex' : 'none';
+            downloadsEl.querySelectorAll('.btn-download').forEach((btn) => {
+                btn.disabled = !visible;
+            });
+        }
+
+        function clearApodInfo() {
+            titleEl.textContent = '';
+            descEl.textContent = '';
+            dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> Loading…';
+            setDownloadsVisible(false);
+            currentCanvas = null;
+            currentApod = null;
+        }
+
+        function showVideoApod(data) {
+            previewEl.innerHTML =
+                '<div class="apod-video-msg">' +
+                '<i class="fas fa-video"></i>' +
+                '<p>Today\'s APOD is a video — image download is not available.</p>' +
+                '<a href="' + data.url + '" target="_blank" rel="noopener noreferrer">Watch on NASA <i class="fas fa-external-link-alt"></i></a>' +
+                '</div>';
+            setDownloadsVisible(false);
+        }
+
+        async function loadApod() {
+            clearApodInfo();
+            NasaUtils.setLoading(previewEl, true, 'Fetching today\'s APOD…');
+            refreshBtn.disabled = true;
+
+            try {
+                const apiKey = NasaUtils.getApiKey();
+                const data = await NasaUtils.fetchApod({ apiKey });
+                currentApod = data;
+
+                dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> ' + (data.date || 'Unknown date');
+                titleEl.textContent = data.title || '';
+                descEl.textContent = data.explanation || '';
+
+                if (data.media_type === 'video') {
+                    showVideoApod(data);
+                    return;
+                }
+
+                const imgUrl = data.hdurl || data.url;
+                if (!imgUrl) {
+                    NasaUtils.showError(previewEl, 'No image URL returned for today\'s APOD.');
+                    return;
+                }
+
+                previewEl.innerHTML = '';
+                const img = document.createElement('img');
+                img.alt = data.title || 'Astronomy Picture of the Day';
+                img.src = imgUrl;
+                previewEl.appendChild(img);
+
+                const loadedImg = await NasaUtils.urlToImage(imgUrl);
+                currentCanvas = NasaUtils.drawToCanvas(loadedImg);
+                setDownloadsVisible(true);
+            } catch (err) {
+                NasaUtils.showError(previewEl, err.message || 'Failed to load APOD.');
+            } finally {
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function downloadApod(format) {
+            if (!currentCanvas || !currentApod) return;
+            const datePart = currentApod.date || 'apod';
+            const titlePart = (currentApod.title || 'apod')
+                .replace(/[^a-z0-9]+/gi, '-')
+                .replace(/^-|-$/g, '')
+                .toLowerCase()
+                .slice(0, 40) || 'apod';
+            NasaUtils.downloadCanvas(currentCanvas, format, 'apod-' + datePart + '-' + titlePart + '.' + format);
+        }
+
+        downloadsEl.querySelectorAll('.btn-download').forEach((btn) => {
+            btn.addEventListener('click', () => downloadApod(btn.dataset.format));
+        });
+
+        refreshBtn.addEventListener('click', loadApod);
+
+        NasaUtils.initApiKeyInput();
+        document.getElementById('nasaApiKey').addEventListener('change', loadApod);
+
+        loadApod();
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>
