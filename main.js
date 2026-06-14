@@ -1873,18 +1873,17 @@ function downloadFile(url, filename) {
    ============================================================================ */
 
 (function() {
-  // Detect if device is mobile
-  const isMobile = window.innerWidth <= 768 || /mobile|android|iphone|tablet/i.test(navigator.userAgent);
-  
-  // 1. MOBILE NAVIGATION SETUP
-  if (isMobile) {
-    document.addEventListener('DOMContentLoaded', function() {
+  const mobileMq = window.matchMedia('(max-width: 48rem)');
+  let touchLinksBound = false;
+  let accordionsBound = false;
+  let scrollIndicatorsBound = false;
 
-      setupFormatSwapper();
-      setupTouchOptimizations();
-      setupAccordions();
-      setupScrollIndicators();
-    });
+  function runMobileEnhancements() {
+    if (!mobileMq.matches) return;
+    setupFormatSwapper();
+    setupTouchOptimizations();
+    setupAccordions();
+    setupScrollIndicators();
   }
 
   // Initialize mobile navigation drawer
@@ -1930,8 +1929,12 @@ function downloadFile(url, filename) {
     });
   }
 
-  // Run setupMobileNav on DOMContentLoaded (works for both mobile detection and desktop orientation/resizes)
-  document.addEventListener('DOMContentLoaded', setupMobileNav);
+  document.addEventListener('DOMContentLoaded', () => {
+    setupMobileNav();
+    runMobileEnhancements();
+  });
+
+  mobileMq.addEventListener('change', runMobileEnhancements);
 
 
   // 2. FORMAT SWAPPER - Swap from/to on mobile
@@ -1975,40 +1978,57 @@ function downloadFile(url, filename) {
     }
   }
 
+  const TOUCH_SKIP_SELECTOR = [
+    '#mobileMenuToggle',
+    '#mobileMenuClose',
+    '.hub-tools-search-clear',
+    '.format-connector',
+    '.search-inner-icon-btn',
+    '.search-circle-btn',
+    '.menu-toggle',
+    '.dock-tab',
+    '.accordion-header',
+  ].join(', ');
+
+  function shouldSkipTouchTarget(el) {
+    return el.matches(TOUCH_SKIP_SELECTOR);
+  }
+
   // 3. TOUCH OPTIMIZATIONS
   function setupTouchOptimizations() {
-    // Ensure all buttons are at least 44px tap target
     document.querySelectorAll('button, a[role="button"], input[type="submit"]').forEach(btn => {
+      if (shouldSkipTouchTarget(btn)) return;
       const rect = btn.getBoundingClientRect();
       if (rect.width < 44 || rect.height < 44) {
         btn.style.minWidth = '44px';
         btn.style.minHeight = '44px';
-        btn.style.padding = (btn.style.padding || '12px 16px');
       }
     });
 
-    // Smooth scrolling for mobile
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href && href !== '#') {
-          e.preventDefault();
+    if (!touchLinksBound) {
+      touchLinksBound = true;
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (!href || href === '#') return;
           const target = document.querySelector(href);
-          if (target) {
-            const headerHeight = document.querySelector('nav')?.offsetHeight || 0;
-            const targetTop = target.offsetTop - headerHeight;
-            window.scrollTo({
-              top: targetTop,
-              behavior: 'smooth'
-            });
-          }
-        }
+          if (!target) return;
+          e.preventDefault();
+          const headerHeight = document.querySelector('nav')?.offsetHeight || 0;
+          window.scrollTo({
+            top: target.offsetTop - headerHeight,
+            behavior: 'smooth',
+          });
+        });
       });
-    });
+    }
   }
 
   // 4. ACCORDION FUNCTIONALITY
   function setupAccordions() {
+    if (accordionsBound) return;
+    accordionsBound = true;
+
     // FAQ accordion
     document.querySelectorAll('[role="button"].faq-question').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -2044,6 +2064,9 @@ function downloadFile(url, filename) {
 
   // 5. SCROLL INDICATORS FOR CAROUSELS
   function setupScrollIndicators() {
+    if (scrollIndicatorsBound) return;
+    scrollIndicatorsBound = true;
+
     document.querySelectorAll('.testimonials-container').forEach(container => {
       const indicators = container.parentElement?.querySelector('.testimonial-indicators');
       if (!indicators) return;
@@ -2063,7 +2086,7 @@ function downloadFile(url, filename) {
     const cardWidth = cards[0]?.offsetWidth || 0;
     const currentIndex = Math.round(scrollLeft / cardWidth);
 
-    document.querySelectorAll('.indicator').forEach((dot, idx) => {
+    indicators.querySelectorAll('.indicator').forEach((dot, idx) => {
       dot.classList.toggle('active', idx === currentIndex);
     });
   }
@@ -2080,17 +2103,4 @@ function downloadFile(url, filename) {
   // 7. PREVENT 300MS TAP DELAY (already in CSS but reinforced here)
   document.addEventListener('touchstart', function() {}, false);
 
-  // 8. HANDLE VIEWPORT CHANGES
-  let lastWidth = window.innerWidth;
-  window.addEventListener('orientationchange', debounce(function() {
-    if (Math.abs(window.innerWidth - lastWidth) > 100) {
-      lastWidth = window.innerWidth;
-      // Reinitialize if crossing mobile/desktop boundary
-      if ((lastWidth <= 768 && lastWidth > 768) || (lastWidth > 768 && lastWidth <= 768)) {
-        location.reload();
-      }
-    }
-  }, 300));
-
-    // 9. HANDLE VIRTUAL KEYBOARD ON MOBILE
 })();

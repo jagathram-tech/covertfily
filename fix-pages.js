@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const fixes = [
   { from: "<style>>", to: "<style>" },
-  { from: 'href="style.css"', to: 'href="style.css?v=2.0.1"' },
+  { from: 'href="style.css"', to: 'href="style.css?v=2.1.0"' },
 ];
 
 let touched = 0;
