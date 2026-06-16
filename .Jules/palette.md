@@ -1,0 +1,3 @@
+## 2024-05-24 - Screen Reader Compatibility for Icon-Only Links in Covertfily
+**Learning:** Found a specific accessibility pattern where footer social links had FontAwesome `<i>` icon classes, but lacked text descriptors or labels. For a screen reader user, these elements were entirely opaque, and additionally, screen readers might attempt to unnecessarily pronounce the obscure class name of the raw `<i>` tag if not hidden correctly.
+**Action:** Always add descriptive `aria-label` attributes to parent icon-only anchor (`<a>`) or button (`<button>`) tags, and strictly combine them with `aria-hidden="true"` on the nested `<i>` tag to prevent redundant and confusing announcements.
