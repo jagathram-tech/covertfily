@@ -1,0 +1,3 @@
+## 2024-06-18 - Caching Static Nodes in Search Filtering Event Listeners
+**Learning:** Frequent input event handlers (like search dropdown filters) that iterate over static DOM elements using `querySelectorAll` and read `.textContent` can cause severe layout thrashing and high CPU usage in Vanilla JS, leading to UI lag when filtering long lists.
+**Action:** Always map the container element to a cached representation of its children (and their text content) using a `WeakMap`. Only invalidate the cache if the children count changes or DOM nodes are swapped out. This shifts the performance burden from repetitive heavy DOM reads per keystroke to a one-time lightweight object traversal.

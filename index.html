@@ -553,10 +553,29 @@
                 'zip':'Archive (ZIP)','docx':'Word Document (DOCX)'
             };
 
+            // ⚡ Bolt: Cache child nodes structure and text content using WeakMap to prevent
+            // redundant DOM iterations and text extraction during frequent keypresses.
+            const filterDropdownItemsCache = new WeakMap();
+
             window.filterDropdownItems = function(input, containerId) {
                 const query = input.value.toLowerCase().trim();
                 const container = document.getElementById(containerId);
                 if (!container) return;
+
+                let cache = filterDropdownItemsCache.get(container);
+                if (!cache || cache.length !== container.children.length || (cache.length > 0 && cache.children[0].el !== container.children[0])) {
+                    cache = {
+                        length: container.children.length,
+                        children: Array.from(container.children).map(child => ({
+                            el: child,
+                            isGroupLabel: child.classList.contains('dropdown-group-label'),
+                            isPlaceholder: child.classList.contains('dropdown-placeholder'),
+                            isDropdownItem: child.classList.contains('dropdown-item'),
+                            text: child.textContent.toLowerCase()
+                        }))
+                    };
+                    filterDropdownItemsCache.set(container, cache);
+                }
 
                 let visible = 0;
                 let currentLabel = null;
@@ -564,26 +583,26 @@
 
                 function flushGroup() {
                     if (currentLabel) {
-                        currentLabel.classList.toggle('hidden', groupVisible === 0);
+                        currentLabel.el.classList.toggle('hidden', groupVisible === 0);
                     }
                     visible += groupVisible;
                     groupVisible = 0;
                 }
 
-                Array.from(container.children).forEach(child => {
-                    if (child.classList.contains('dropdown-group-label')) {
+                cache.children.forEach(child => {
+                    if (child.isGroupLabel) {
                         flushGroup();
                         currentLabel = child;
                         return;
                     }
-                    if (child.classList.contains('dropdown-placeholder')) {
-                        child.classList.toggle('hidden', query.length > 0);
+                    if (child.isPlaceholder) {
+                        child.el.classList.toggle('hidden', query.length > 0);
                         return;
                     }
-                    if (!child.classList.contains('dropdown-item')) return;
+                    if (!child.isDropdownItem) return;
 
-                    const match = !query || child.textContent.toLowerCase().includes(query);
-                    child.classList.toggle('hidden', !match);
+                    const match = !query || child.text.includes(query);
+                    child.el.classList.toggle('hidden', !match);
                     if (match) groupVisible++;
                 });
 
