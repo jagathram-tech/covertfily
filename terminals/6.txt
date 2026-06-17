@@ -1,0 +1,8 @@
+---
+pid: 5336
+cwd: "C:\Users\itsja\.antigravity\covertfily"
+command: "curl -s -o NUL -w \"%{http_code} %{content_type}\" \"https://api.nasa.gov/planetary/earth/imagery?lon=-95.21&lat=29.67&date=2018-01-01&dim=0.1&api_key=DEMO_KEY\""
+started_at: 2026-06-14T17:34:07.867Z
+running_for_ms: 11790003 
+---
+503 text/plain

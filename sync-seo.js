@@ -55,12 +55,14 @@ const BLOG_POSTS = [
     headline: "Best Free OCR Tools in 2026",
     metaDescription:
       "Discover the top-rated free OCR tools for 2026. Compare accuracy, speed, and privacy to find the best image-to-text solution for your workflow.",
+    datePublished: "2026-06-14",
   },
   {
     file: "blog-local-vs-cloud.html",
     headline: "Why Local File Processing is Safer than Cloud Uploads",
     metaDescription:
       "Learn why client-side file processing keeps your data safer than cloud upload converters. Privacy, speed, and control explained.",
+    datePublished: "2026-06-14",
   },
 ];
 
@@ -166,28 +168,10 @@ function syncHomepage() {
   const file = "index.html";
   if (!fs.existsSync(file)) return;
 
-  const { buildHomepageSeo } = require("./seo-utils");
+  const { buildHomepageSeo, renderSocialMetaTags } = require("./seo-utils");
   const seo = buildHomepageSeo();
 
-  const socialBlock = `    <meta name="keywords" content="${escapeAttr(seo.keywords)}" />
-    <meta name="author" content="${BRAND}" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow" />
-    <link rel="canonical" href="${escapeAttr(seo.canonicalUrl)}" />
-    <meta property="og:title" content="${escapeAttr(seo.ogTitle)}" />
-    <meta property="og:description" content="${escapeAttr(seo.metaDescription)}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="${escapeAttr(seo.canonicalUrl)}" />
-    <meta property="og:site_name" content="${BRAND}" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:image" content="${OG_IMAGE}" />
-    <meta property="og:image:alt" content="${BRAND} — private browser-based file converter" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${escapeAttr(seo.ogTitle)}" />
-    <meta name="twitter:description" content="${escapeAttr(seo.metaDescription)}" />
-    <meta name="twitter:image" content="${OG_IMAGE}" />
-    <meta name="theme-color" content="#0f172a" />
-`;
+  const socialBlock = `${renderSocialMetaTags(seo, "    ")}\n`;
 
   let html = fs.readFileSync(file, "utf8");
 

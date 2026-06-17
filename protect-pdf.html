@@ -17,11 +17,16 @@
         <meta property="og:site_name" content="Covertfily" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:image" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:secure_url" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:width" content="1024" />
+        <meta property="og:image:height" content="261" />
+        <meta property="og:image:type" content="image/png" />
         <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Protect / Unlock PDF — Free Private Online Tool" />
         <meta name="twitter:description" content="Password-protect PDF files or remove passwords in your browser. Free, private PDF encryption with no server uploads." />
         <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+        <meta name="twitter:image:alt" content="Covertfily — private browser-based file converter" />
         <meta name="theme-color" content="#0f172a" />
         <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/protect-pdf.html#webpage","url":"https://covertfily.com/protect-pdf.html","name":"Protect / Unlock PDF Online — Free, Private & No Upload | Covertfily","description":"Password-protect PDF files or remove passwords in your browser. Free, private PDF encryption with no server uploads.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/protect-pdf.html#app","name":"Protect / Unlock PDF","url":"https://covertfily.com/protect-pdf.html","description":"Password-protect PDF files or remove passwords in your browser. Free, private PDF encryption with no server uploads.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"PDF Tools","item":"https://covertfily.com/pdf-tools.html"},{"@type":"ListItem","position":3,"name":"Protect / Unlock PDF","item":"https://covertfily.com/protect-pdf.html"}]}]</script>
 
@@ -734,14 +739,18 @@
             e.preventDefault();
             const file = e.dataTransfer.files[0];
             if (file && file.type === 'application/pdf') {
-                const activeTab = document.querySelector('.tab-content.active').id;
-                if (activeTab === 'protect') {
-                    document.getElementById('protectInput').files = e.dataTransfer.files;
-                    document.getElementById('protectInput').dispatchEvent(new Event('change'));
+                const activeTab = document.querySelector('.tab-content.active');
+                if (!activeTab) return;
+                const input = document.getElementById(activeTab.id === 'protect' ? 'protectInput' : 'unlockInput');
+                if (!input) return;
+                if (window.assignInputFiles) {
+                    window.assignInputFiles(input, e.dataTransfer.files);
                 } else {
-                    document.getElementById('unlockInput').files = e.dataTransfer.files;
-                    document.getElementById('unlockInput').dispatchEvent(new Event('change'));
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
                 }
+                input.dispatchEvent(new Event('change'));
             }
         });
 

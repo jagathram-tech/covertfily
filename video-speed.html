@@ -17,15 +17,20 @@
         <meta property="og:site_name" content="Covertfily" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:image" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:secure_url" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:width" content="1024" />
+        <meta property="og:image:height" content="261" />
+        <meta property="og:image:type" content="image/png" />
         <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Video Speed Changer — Free Private Online Tool" />
         <meta name="twitter:description" content="Adjust video playback speed from 0.25x to 4x locally in your browser. Free, private video encoding." />
         <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+        <meta name="twitter:image:alt" content="Covertfily — private browser-based file converter" />
         <meta name="theme-color" content="#0f172a" />
         <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/video-speed.html#webpage","url":"https://covertfily.com/video-speed.html","name":"Video Speed Changer Online — Free, Private & No Upload | Covertfily","description":"Adjust video playback speed from 0.25x to 4x locally in your browser. Free, private video encoding.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/video-speed.html#app","name":"Video Speed Changer","url":"https://covertfily.com/video-speed.html","description":"Adjust video playback speed from 0.25x to 4x locally in your browser. Free, private video encoding.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"Media Tools","item":"https://covertfily.com/media-tools.html"},{"@type":"ListItem","position":3,"name":"Video Speed Changer","item":"https://covertfily.com/video-speed.html"}]}]</script>
 
-    <link rel="icon" type="image/png" href="favicon.png">
+        <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
@@ -586,6 +591,21 @@
             videoPlayer.pause();
         }
 
+        function buildAtempoFilter(speed) {
+            const filters = [];
+            let remaining = speed;
+            while (remaining > 2.0) {
+                filters.push('atempo=2.0');
+                remaining /= 2.0;
+            }
+            while (remaining < 0.5) {
+                filters.push('atempo=0.5');
+                remaining /= 0.5;
+            }
+            filters.push(`atempo=${remaining}`);
+            return filters.join(',');
+        }
+
         async function downloadSpeedVideo() {
             if (!videoFile || currentSpeed === 1) {
                 alert('Please select a speed different from 1x');
@@ -609,16 +629,19 @@
                 ];
 
                 if (keep) {
-                    args.push('-filter:a', `atempo=${currentSpeed}`);
+                    args.push('-filter:a', buildAtempoFilter(currentSpeed));
+                    args.push('-c:a', 'aac');
+                } else {
+                    args.push('-an');
                 }
 
                 args.push('-c:v', 'libx264', '-preset', 'medium', 'output.mp4');
 
-                ff.setProgress(({ ratio }) => {
-                    progressFill.style.width = (ratio * 100) + '%';
+                ff.on('progress', ({ progress }) => {
+                    progressFill.style.width = Math.round(progress * 100) + '%';
                 });
 
-                await ff.run(...args);
+                await ff.exec(args);
 
                 const data = await ff.readFile('output.mp4');
                 const blob = new Blob([data.buffer], { type: 'video/mp4' });
@@ -646,7 +669,13 @@
             e.preventDefault();
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('video/')) {
-                videoInput.files = e.dataTransfer.files;
+                if (window.assignInputFiles) {
+                    window.assignInputFiles(videoInput, e.dataTransfer.files);
+                } else {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    videoInput.files = dt.files;
+                }
                 videoInput.dispatchEvent(new Event('change'));
             }
         });

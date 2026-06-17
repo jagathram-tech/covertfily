@@ -11,6 +11,7 @@ const BASIC_MAPPING = {
   webp: ["jpg", "png", "bmp", "pdf"],
   bmp: ["jpg", "png", "webp", "pdf"],
   gif: ["jpg", "png", "webp", "pdf"],
+  svg: ["png", "jpg", "pdf"],
   avif: ["jpg", "png", "webp"],
   tiff: ["jpg", "png", "pdf"],
   heic: ["jpg", "png", "pdf"],
@@ -42,7 +43,7 @@ const BASIC_MAPPING = {
 };
 
 const IMAGE_FORMATS = new Set([
-  "jpg", "png", "webp", "bmp", "gif", "avif", "tiff", "heic",
+  "jpg", "png", "webp", "bmp", "gif", "svg", "avif", "tiff", "heic",
 ]);
 const MEDIA_FORMATS = new Set([
   "mp4", "webm", "mov", "avi", "mkv", "flv", "wmv",
@@ -94,6 +95,7 @@ function getIcon(ext) {
 }
 
 function converterSlug(from, to) {
+  if (from === "pdf" && to === "docx") return "pdf-to-word.html";
   return `${from}-to-${to}.html`;
 }
 

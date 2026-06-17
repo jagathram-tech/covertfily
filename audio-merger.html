@@ -17,15 +17,20 @@
         <meta property="og:site_name" content="Covertfily" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:image" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:secure_url" content="https://covertfily.com/logo.png" />
+        <meta property="og:image:width" content="1024" />
+        <meta property="og:image:height" content="261" />
+        <meta property="og:image:type" content="image/png" />
         <meta property="og:image:alt" content="Covertfily — private browser-based file converter" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Audio Merger — Free Private Online Tool" />
         <meta name="twitter:description" content="Merge multiple audio files into one track in your browser. Free, private — no server uploads." />
         <meta name="twitter:image" content="https://covertfily.com/logo.png" />
+        <meta name="twitter:image:alt" content="Covertfily — private browser-based file converter" />
         <meta name="theme-color" content="#0f172a" />
         <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","@id":"https://covertfily.com/audio-merger.html#webpage","url":"https://covertfily.com/audio-merger.html","name":"Audio Merger Online — Free, Private & No Upload | Covertfily","description":"Merge multiple audio files into one track in your browser. Free, private — no server uploads.","isPartOf":{"@id":"https://covertfily.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@type":"ImageObject","url":"https://covertfily.com/logo.png"}},{"@context":"https://schema.org","@type":"WebApplication","@id":"https://covertfily.com/audio-merger.html#app","name":"Audio Merger","url":"https://covertfily.com/audio-merger.html","description":"Merge multiple audio files into one track in your browser. Free, private — no server uploads.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@id":"https://covertfily.com/#organization"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://covertfily.com/"},{"@type":"ListItem","position":2,"name":"Media Tools","item":"https://covertfily.com/media-tools.html"},{"@type":"ListItem","position":3,"name":"Audio Merger","item":"https://covertfily.com/audio-merger.html"}]}]</script>
 
-    <link rel="icon" type="image/png" href="favicon.png">
+        <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
@@ -733,8 +738,15 @@
                 ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/flac'].includes(f.type)
             );
             if (files.length) {
-                document.getElementById('audioInput').files = e.dataTransfer.files;
-                document.getElementById('audioInput').dispatchEvent(new Event('change'));
+                const audioInput = document.getElementById('audioInput');
+                if (window.assignInputFiles) {
+                    window.assignInputFiles(audioInput, files);
+                } else {
+                    const dt = new DataTransfer();
+                    files.forEach((f) => dt.items.add(f));
+                    audioInput.files = dt.files;
+                }
+                audioInput.dispatchEvent(new Event('change'));
             }
         });
 

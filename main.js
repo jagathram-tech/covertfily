@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         navLinks &&
         !navLinks.contains(e.target) &&
-        !menuToggle.contains(e.target)
+        (!menuToggle || !menuToggle.contains(e.target))
       ) {
         document.body.classList.remove("nav-active");
       }
@@ -254,6 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains("dropdown-search")) {
       const query = e.target.value.toLowerCase();
       const container = e.target.closest(".custom-dropdown");
+      if (!container) return;
       const items = container.querySelectorAll(".dropdown-item");
       const noResults = container.querySelector(".no-results");
       let visibleCount = 0;
@@ -629,7 +630,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       alert(
-        `Format ${to.toUpperCase()} is not completely mapped in this demo yet.`,
+        `Format ${(targetFormat || "unknown").toUpperCase()} is not completely mapped in this demo yet.`,
       );
     } catch (error) {
       console.error(error);
@@ -642,6 +643,63 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------------------------------------------------------------- */
   /* Conversion Logic implementations */
   /* ---------------------------------------------------------------------- */
+
+  function canvasToBmpDataUrl(canvas) {
+    const ctx = canvas.getContext("2d");
+    const { width, height } = canvas;
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const rowSize = Math.floor((24 * width + 31) / 32) * 4;
+    const pixelDataSize = rowSize * height;
+    const fileSize = 54 + pixelDataSize;
+    const buffer = new ArrayBuffer(fileSize);
+    const view = new DataView(buffer);
+
+    view.setUint8(0, 0x42);
+    view.setUint8(1, 0x4d);
+    view.setUint32(2, fileSize, true);
+    view.setUint32(10, 54, true);
+    view.setUint32(14, 40, true);
+    view.setInt32(18, width, true);
+    view.setInt32(22, height, true);
+    view.setUint16(26, 1, true);
+    view.setUint16(28, 24, true);
+    view.setUint32(34, pixelDataSize, true);
+
+    let offset = 54;
+    for (let y = height - 1; y >= 0; y--) {
+      for (let x = 0; x < width; x++) {
+        const i = (y * width + x) * 4;
+        view.setUint8(offset++, imageData.data[i + 2]);
+        view.setUint8(offset++, imageData.data[i + 1]);
+        view.setUint8(offset++, imageData.data[i]);
+      }
+      const padding = rowSize - width * 3;
+      for (let p = 0; p < padding; p++) view.setUint8(offset++, 0);
+    }
+
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return `data:image/bmp;base64,${btoa(binary)}`;
+  }
+
+  function canvasToOutputUrl(canvas, targetFormat, quality = 0.9) {
+    if (targetFormat === "bmp") return canvasToBmpDataUrl(canvas);
+    let mimeType = "image/png";
+    if (targetFormat === "jpg" || targetFormat === "jpeg")
+      mimeType = "image/jpeg";
+    else if (targetFormat === "webp") mimeType = "image/webp";
+    return canvas.toDataURL(mimeType, quality);
+  }
+
+  window.assignInputFiles = function (input, files) {
+    if (!input || !files) return;
+    const dt = new DataTransfer();
+    for (const file of files) dt.items.add(file);
+    input.files = dt.files;
+  };
 
   // Convert Images via Canvas
   function convertImage(file, targetFormat) {
@@ -662,12 +720,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           ctx.drawImage(img, 0, 0);
 
-          let mimeType = "image/png";
-          if (targetFormat === "jpg" || targetFormat === "jpeg")
-            mimeType = "image/jpeg";
-          else if (targetFormat === "webp") mimeType = "image/webp";
-
-          const dataUrl = canvas.toDataURL(mimeType, 0.9);
+          const dataUrl = canvasToOutputUrl(canvas, targetFormat, 0.9);
           downloadFile(
             dataUrl,
             file.name.replace(/\.[^/.]+$/, "") + `.${targetFormat}`,
@@ -847,12 +900,8 @@ document.addEventListener("DOMContentLoaded", () => {
     imgData.data.set(rgba);
     ctx.putImageData(imgData, 0, 0);
 
-    let mimeType = "image/png";
-    if (targetFormat === "jpg" || targetFormat === "jpeg") mimeType = "image/jpeg";
-    else if (targetFormat === "webp") mimeType = "image/webp";
-
     downloadFile(
-      canvas.toDataURL(mimeType, 0.9),
+      canvasToOutputUrl(canvas, targetFormat, 0.9),
       file.name.replace(/\.[^/.]+$/, "") + `.${targetFormat}`,
     );
   }
@@ -1101,12 +1150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-      let mimeType = "image/png";
-      if (targetFormat === "jpg" || targetFormat === "jpeg")
-        mimeType = "image/jpeg";
-      else if (targetFormat === "webp") mimeType = "image/webp";
-
-      const dataUrl = canvas.toDataURL(mimeType);
+      const dataUrl = canvasToOutputUrl(canvas, targetFormat);
       const base64Data = dataUrl.split(",")[1];
       zip.file(`page-${i}.${targetFormat}`, base64Data, { base64: true });
     }
@@ -1680,6 +1724,15 @@ function downloadFile(url, filename) {
   const downloadContainer = document.getElementById("downloadContainer");
   if (downloadContainer) {
     downloadContainer.style.display = "block";
+  }
+
+  if (!dlBtn && !downloadContainer) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 }
 

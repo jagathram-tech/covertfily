@@ -2,7 +2,21 @@ const fs = require("fs");
 
 const SITE = "https://covertfily.com";
 const BRAND = "Covertfily";
+
+// Social-share image. To get correctly-sized link previews on Twitter/X,
+// Facebook, LinkedIn, Slack, etc., replace this with a dedicated 1200x630 PNG
+// (e.g. og-image.png) and update OG_IMAGE_WIDTH/HEIGHT to match. The declared
+// dimensions MUST match the real file or crawlers may reject the image.
 const OG_IMAGE = `${SITE}/logo.png`;
+const OG_IMAGE_WIDTH = 1024;
+const OG_IMAGE_HEIGHT = 261;
+const OG_IMAGE_TYPE = "image/png";
+
+// Bump this when site content meaningfully changes. Used for schema.org
+// dateModified so search engines see fresh-content signals without every
+// regenerate churning the date in git.
+const SITE_MODIFIED = "2026-06-17";
+const SITE_PUBLISHED = "2025-05-07";
 
 const BASIC_LABELS = {
   jpg: "JPG/JPEG Image",
@@ -10,6 +24,7 @@ const BASIC_LABELS = {
   webp: "WebP Image",
   bmp: "BMP Image",
   gif: "GIF Image",
+  svg: "SVG Image",
   avif: "AVIF Image",
   tiff: "TIFF Image",
   heic: "HEIC/HEIF Image",
@@ -51,7 +66,7 @@ const FORMAT_ALIASES = {
 };
 
 const IMAGE_FORMATS = new Set([
-  "jpg", "png", "webp", "bmp", "gif", "avif", "tiff", "heic",
+  "jpg", "png", "webp", "bmp", "gif", "svg", "avif", "tiff", "heic",
 ]);
 const MEDIA_FORMATS = new Set([
   "mp4", "webm", "mov", "avi", "mkv", "flv", "wmv",
@@ -336,11 +351,18 @@ const TOOL_CATEGORIES = {
   utility: { name: "Utilities", slug: "index.html#tools-dashboard" },
 };
 
-function renderSeoHeadBlock(seo, indentSpaces = 8) {
-  const p = " ".repeat(indentSpaces);
-  return `${p}<title>${escapeAttr(seo.pageTitle)}</title>
-${p}<meta name="description" content="${escapeAttr(seo.metaDescription)}" />
-${p}<meta name="keywords" content="${escapeAttr(seo.keywords)}" />
+function renderSocialMetaTags(seo, p) {
+  const ogImage = seo.ogImage || OG_IMAGE;
+  const ogAlt = seo.ogImageAlt || `${BRAND} — private browser-based file converter`;
+  // Only emit dimensions when using the default image, whose size we know.
+  // Declaring wrong dimensions for a custom image makes crawlers reject it.
+  const dims = seo.ogImage
+    ? ""
+    : `\n${p}<meta property="og:image:width" content="${OG_IMAGE_WIDTH}" />` +
+      `\n${p}<meta property="og:image:height" content="${OG_IMAGE_HEIGHT}" />` +
+      `\n${p}<meta property="og:image:type" content="${OG_IMAGE_TYPE}" />`;
+
+  return `${p}<meta name="keywords" content="${escapeAttr(seo.keywords)}" />
 ${p}<meta name="author" content="${BRAND}" />
 ${p}<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 ${p}<meta name="googlebot" content="index, follow" />
@@ -351,13 +373,22 @@ ${p}<meta property="og:type" content="${escapeAttr(seo.ogType)}" />
 ${p}<meta property="og:url" content="${escapeAttr(seo.canonicalUrl)}" />
 ${p}<meta property="og:site_name" content="${BRAND}" />
 ${p}<meta property="og:locale" content="en_US" />
-${p}<meta property="og:image" content="${OG_IMAGE}" />
-${p}<meta property="og:image:alt" content="${BRAND} — private browser-based file converter" />
+${p}<meta property="og:image" content="${escapeAttr(ogImage)}" />
+${p}<meta property="og:image:secure_url" content="${escapeAttr(ogImage)}" />${dims}
+${p}<meta property="og:image:alt" content="${escapeAttr(ogAlt)}" />
 ${p}<meta name="twitter:card" content="summary_large_image" />
 ${p}<meta name="twitter:title" content="${escapeAttr(seo.ogTitle)}" />
 ${p}<meta name="twitter:description" content="${escapeAttr(seo.metaDescription)}" />
-${p}<meta name="twitter:image" content="${OG_IMAGE}" />
-${p}<meta name="theme-color" content="#0f172a" />
+${p}<meta name="twitter:image" content="${escapeAttr(ogImage)}" />
+${p}<meta name="twitter:image:alt" content="${escapeAttr(ogAlt)}" />
+${p}<meta name="theme-color" content="#0f172a" />`;
+}
+
+function renderSeoHeadBlock(seo, indentSpaces = 8) {
+  const p = " ".repeat(indentSpaces);
+  return `${p}<title>${escapeAttr(seo.pageTitle)}</title>
+${p}<meta name="description" content="${escapeAttr(seo.metaDescription)}" />
+${renderSocialMetaTags(seo, p)}
 ${p}<script type="application/ld+json">${seo.jsonLd}</script>`;
 }
 
@@ -454,6 +485,8 @@ function buildHowToJsonLd({ slug, headline, metaDescription, canonicalUrl, relat
       image: OG_IMAGE,
       author: { "@id": `${SITE}/#organization` },
       publisher: { "@id": `${SITE}/#organization` },
+      datePublished: SITE_PUBLISHED,
+      dateModified: SITE_MODIFIED,
       isAccessibleForFree: true,
       inLanguage: "en-US",
     },
@@ -678,7 +711,7 @@ function buildBlogIndexSeo() {
   });
 }
 
-function buildBlogPostSeo({ file, headline, metaDescription }) {
+function buildBlogPostSeo({ file, headline, metaDescription, datePublished, dateModified }) {
   const canonicalUrl = `${SITE}/${file}`;
   const pageTitle = `${headline} | ${BRAND} Blog`;
   const keywords = [
@@ -714,6 +747,8 @@ function buildBlogPostSeo({ file, headline, metaDescription }) {
       image: OG_IMAGE,
       author: { "@id": `${SITE}/#organization` },
       publisher: { "@id": `${SITE}/#organization` },
+      datePublished: datePublished || SITE_PUBLISHED,
+      dateModified: dateModified || datePublished || SITE_MODIFIED,
       isAccessibleForFree: true,
       inLanguage: "en-US",
     },
@@ -806,6 +841,8 @@ function buildDocumentationSeo() {
       url: canonicalUrl,
       author: { "@id": `${SITE}/#organization` },
       publisher: { "@id": `${SITE}/#organization` },
+      datePublished: SITE_PUBLISHED,
+      dateModified: SITE_MODIFIED,
       inLanguage: "en-US",
       isAccessibleForFree: true,
     },
@@ -833,7 +870,9 @@ function escapeAttr(value) {
   return String(value)
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;");
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function buildHubSeo(hub, converters) {
@@ -1015,4 +1054,7 @@ module.exports = {
   buildKeywordList,
   sitemapMetaFor,
   escapeAttr,
+  renderSocialMetaTags,
+  SITE_MODIFIED,
+  SITE_PUBLISHED,
 };
