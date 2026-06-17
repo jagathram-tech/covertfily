@@ -103,19 +103,35 @@ window.updateTargetDropdown = function (sourceFormat) {
     .join("");
 };
 
+// ⚡ Bolt: Cache DOM elements and their text content using a WeakMap to prevent
+// redundant querySelectorAll and textContent reads during frequent search inputs.
+// Invalidate cache if the number of items changes to ensure accuracy.
+const filterFormatsCache = new WeakMap();
+
 window.filterFormats = function (input, containerId) {
   const query = input.value.toLowerCase();
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const items = container.querySelectorAll(".dropdown-item");
   const labels = container.querySelectorAll(".dropdown-group-label");
+  let cache = filterFormatsCache.get(container);
+  const currentItemsNodeList = container.querySelectorAll(".dropdown-item");
+
+  if (!cache || cache.items.length !== currentItemsNodeList.length || (cache.items.length > 0 && cache.items[0].el !== currentItemsNodeList[0])) {
+    cache = {
+      items: Array.from(currentItemsNodeList).map((item) => ({
+        el: item,
+        text: item.textContent.toLowerCase(),
+      }))
+    };
+    filterFormatsCache.set(container, cache);
+  }
+
   let visibleCount = 0;
 
-  items.forEach((item) => {
-    const text = item.textContent.toLowerCase();
-    const matches = text.includes(query);
-    item.style.display = matches ? "block" : "none";
+  cache.items.forEach((itemObj) => {
+    const matches = itemObj.text.includes(query);
+    itemObj.el.style.display = matches ? "block" : "none";
     if (matches) visibleCount++;
   });
 
@@ -250,18 +266,35 @@ document.addEventListener("DOMContentLoaded", () => {
   // document.addEventListener('click', ...);
 
   // Setup Search Logic for existing and future searchable dropdowns
+  // ⚡ Bolt: Cache DOM elements and text content using WeakMap to prevent
+  // redundant reads on every keystroke during global input event listener execution.
+  const globalDropdownSearchCache = new WeakMap();
+
   document.addEventListener("input", (e) => {
     if (e.target.classList.contains("dropdown-search")) {
       const query = e.target.value.toLowerCase();
       const container = e.target.closest(".custom-dropdown");
-      const items = container.querySelectorAll(".dropdown-item");
+      if (!container) return;
+
+      let cache = globalDropdownSearchCache.get(container);
+      const currentItemsNodeList = container.querySelectorAll(".dropdown-item");
+
+      if (!cache || cache.items.length !== currentItemsNodeList.length || (cache.items.length > 0 && cache.items[0].el !== currentItemsNodeList[0])) {
+        cache = {
+          items: Array.from(currentItemsNodeList).map((item) => ({
+            el: item,
+            text: item.textContent.toLowerCase(),
+          }))
+        };
+        globalDropdownSearchCache.set(container, cache);
+      }
+
       const noResults = container.querySelector(".no-results");
       let visibleCount = 0;
 
-      items.forEach((item) => {
-        const text = item.textContent.toLowerCase();
-        const matches = text.includes(query);
-        item.classList.toggle("hidden", !matches);
+      cache.items.forEach((itemObj) => {
+        const matches = itemObj.text.includes(query);
+        itemObj.el.classList.toggle("hidden", !matches);
         if (matches) visibleCount++;
       });
 
