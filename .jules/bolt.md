@@ -1,0 +1,3 @@
+## 2024-06-18 - Caching Static DOM Elements to Avoid Excessive DOM Reads
+**Learning:** Frequent events (e.g., `input` for search filtering) can cause high CPU usage and sluggishness if they repeatedly call `querySelectorAll` and `.textContent` on large lists. While `.textContent` doesn't cause layout thrashing directly, excessive DOM tree reads and string allocations on every keystroke are expensive.
+**Action:** Use a `WeakMap` cache (keyed by the container element) to store references to DOM elements and their pre-computed text content. Invalidate the cache by checking `cache.length !== currentItems.length` or `cache[0].el !== currentItems[0]` to handle dynamic re-renders while keeping the frequent search logic fast.
