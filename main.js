@@ -250,18 +250,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // document.addEventListener('click', ...);
 
   // Setup Search Logic for existing and future searchable dropdowns
+  const dropdownCache = new WeakMap();
+
   document.addEventListener("input", (e) => {
     if (e.target.classList.contains("dropdown-search")) {
       const query = e.target.value.toLowerCase();
       const container = e.target.closest(".custom-dropdown");
-      const items = container.querySelectorAll(".dropdown-item");
+
+      let cache = dropdownCache.get(container);
+      const currentItems = container.querySelectorAll(".dropdown-item");
+
+      if (!cache || cache.length !== currentItems.length || (cache.length > 0 && cache[0].el !== currentItems[0])) {
+        cache = Array.from(currentItems).map(item => ({
+          el: item,
+          text: item.textContent.toLowerCase()
+        }));
+        dropdownCache.set(container, cache);
+      }
+
       const noResults = container.querySelector(".no-results");
       let visibleCount = 0;
 
-      items.forEach((item) => {
-        const text = item.textContent.toLowerCase();
+      cache.forEach(({ el, text }) => {
         const matches = text.includes(query);
-        item.classList.toggle("hidden", !matches);
+        el.classList.toggle("hidden", !matches);
         if (matches) visibleCount++;
       });
 
@@ -1760,18 +1772,24 @@ function downloadFile(url, filename) {
     const emptyState = document.getElementById("hubToolsEmpty");
     const sections = document.querySelectorAll(".hub-tools-section");
 
+    const cachedSections = Array.from(sections).map((section) => ({
+      section,
+      links: Array.from(section.querySelectorAll(".hub-tools-grid a")).map((link) => ({
+        el: link,
+        text: (link.dataset.search || link.textContent || "").toLowerCase()
+      }))
+    }));
+
     function filterHubTools() {
       const query = search.value.toLowerCase().trim();
       let totalVisible = 0;
 
-      sections.forEach((section) => {
-        const links = section.querySelectorAll(".hub-tools-grid a");
+      cachedSections.forEach(({ section, links }) => {
         let sectionVisible = 0;
 
-        links.forEach((link) => {
-          const haystack = (link.dataset.search || link.textContent || "").toLowerCase();
-          const match = !query || haystack.includes(query);
-          link.style.display = match ? "" : "none";
+        links.forEach(({ el, text }) => {
+          const match = !query || text.includes(query);
+          el.style.display = match ? "" : "none";
           if (match) sectionVisible++;
         });
 
@@ -1843,20 +1861,23 @@ function downloadFile(url, filename) {
     });
 
     if (search) {
+      const cachedGroups = Array.from(dropdown.querySelectorAll(".tools-group")).map((group) => ({
+        group,
+        label: group.querySelector(".tools-group-label") || group.querySelector(":scope > div:first-child"),
+        links: Array.from(group.querySelectorAll("a")).map((link) => ({
+          el: link,
+          text: link.textContent.toLowerCase()
+        }))
+      }));
+
       search.addEventListener("input", function() {
         const query = this.value.toLowerCase().trim();
-        const groups = dropdown.querySelectorAll(".tools-group");
-        groups.forEach((group) => {
-          const links = group.querySelectorAll("a");
-          const label =
-            group.querySelector(".tools-group-label") ||
-            group.querySelector(":scope > div:first-child");
+        cachedGroups.forEach(({ group, label, links }) => {
           let anyVisible = false;
 
-          links.forEach((link) => {
-            const match =
-              !query || link.textContent.toLowerCase().includes(query);
-            link.style.display = match ? "block" : "none";
+          links.forEach(({ el, text }) => {
+            const match = !query || text.includes(query);
+            el.style.display = match ? "block" : "none";
             if (match) anyVisible = true;
           });
 
