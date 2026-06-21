@@ -553,10 +553,31 @@
                 'zip':'Archive (ZIP)','docx':'Word Document (DOCX)'
             };
 
+            const dropdownItemsCache = new Map();
+
             window.filterDropdownItems = function(input, containerId) {
                 const query = input.value.toLowerCase().trim();
                 const container = document.getElementById(containerId);
                 if (!container) return;
+
+                let cache = dropdownItemsCache.get(containerId);
+                const currentChildren = Array.from(container.children);
+
+                if (!cache || cache.length !== currentChildren.length || (cache.length > 0 && cache[0].el !== currentChildren[0])) {
+                    cache = currentChildren.map(el => {
+                        const isLabel = el.classList.contains('dropdown-group-label');
+                        const isPlaceholder = el.classList.contains('dropdown-placeholder');
+                        const isItem = el.classList.contains('dropdown-item');
+                        return {
+                            el,
+                            isLabel,
+                            isPlaceholder,
+                            isItem,
+                            text: isItem ? el.textContent.toLowerCase() : ''
+                        };
+                    });
+                    dropdownItemsCache.set(containerId, cache);
+                }
 
                 let visible = 0;
                 let currentLabel = null;
@@ -570,20 +591,20 @@
                     groupVisible = 0;
                 }
 
-                Array.from(container.children).forEach(child => {
-                    if (child.classList.contains('dropdown-group-label')) {
+                cache.forEach(({ el, isLabel, isPlaceholder, isItem, text }) => {
+                    if (isLabel) {
                         flushGroup();
-                        currentLabel = child;
+                        currentLabel = el;
                         return;
                     }
-                    if (child.classList.contains('dropdown-placeholder')) {
-                        child.classList.toggle('hidden', query.length > 0);
+                    if (isPlaceholder) {
+                        el.classList.toggle('hidden', query.length > 0);
                         return;
                     }
-                    if (!child.classList.contains('dropdown-item')) return;
+                    if (!isItem) return;
 
-                    const match = !query || child.textContent.toLowerCase().includes(query);
-                    child.classList.toggle('hidden', !match);
+                    const match = !query || text.includes(query);
+                    el.classList.toggle('hidden', !match);
                     if (match) groupVisible++;
                 });
 

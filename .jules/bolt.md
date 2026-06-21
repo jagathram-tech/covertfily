@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimized Search Filter Caching
+**Learning:** Repetitive DOM queries (`querySelectorAll` and `.textContent`) within a fast-firing `input` event listener cause excessive read thrashing, especially when querying across many similar static lists (like tool dropdowns and format selectors). The existing implementation ran `querySelectorAll` and re-read all element text contents every single keystroke.
+**Action:** Implemented caching for dropdown lists using `WeakMap` or local scope Maps, caching the element references and their lowercased text contents. Reused these cached references to toggle classes and styles instead of re-querying the DOM. This significantly reduces the overhead on the main thread during fast keystrokes in search inputs.
