@@ -266,7 +266,7 @@
                         </p>
                     </div>
 
-                    <div class="dropzone w-full p-10 md:p-12 flex flex-col items-center justify-center gap-4 cursor-pointer group transition-all duration-200" id="dropzone">
+                    <div class="dropzone w-full p-10 md:p-12 flex flex-col items-center justify-center gap-4 cursor-pointer group transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none" id="dropzone" role="button" tabindex="0">
                         <div class="w-16 h-16 bg-blue-600 text-white rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-105" id="dropzoneIcon">
                             <i class="fas fa-cloud-upload-alt text-2xl"></i>
                         </div>
@@ -484,6 +484,13 @@
                     return;
                 }
                 fileInput.click();
+            });
+
+            dropzone.addEventListener("keydown", function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    fileInput.click();
+                }
             });
 
             // Handle drag and drop
