@@ -1,8 +1,0 @@
----
-pid: 20164
-cwd: "C:\Users\itsja\.antigravity\covertfily"
-command: "cd \"C:\\Users\\itsja\\.antigravity\\covertfily\" && npx --yes serve ."
-started_at: 2026-06-14T06:06:50.282Z
-running_for_ms: 2234996  
----
- INFO  Accepting connections at http://localhost:61929

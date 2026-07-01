@@ -1,7 +1,0 @@
----
-pid: 7420
-cwd: "C:\Users\itsja\.antigravity\covertfily"
-command: "npx --yes serve@14.2.4 . -l 3000"
-started_at: 2026-06-14T05:16:42.181Z
-running_for_ms: 375007   
----

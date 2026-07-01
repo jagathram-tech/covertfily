@@ -2,5 +2,15 @@
 .bob/
 .kilo/
 
+# Agent / IDE artifacts (not part of the site)
+mcps/
+terminals/
+
+# Local scratch HTML
+.html
+f.html
+tes.html
+test.html
+
 # Temporary scripts
 update_navbar.ps1
