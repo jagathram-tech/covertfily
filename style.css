@@ -1485,6 +1485,10 @@ a:visited {
 
 /* Mobile */
 
+body.elevra-theme .hero {
+    padding: 2rem 1.25rem 4rem;
+}
+
 .hero {
     padding: 7.5rem 1.25rem 6.25rem;
 }
@@ -1541,6 +1545,10 @@ a:visited {
 }
 
 @media (min-width: 48.0625rem) {
+    body.elevra-theme .hero {
+        padding: 3rem 0 5rem;
+    }
+
     .hero {
         padding: 10rem 10% 7.5rem;
     }
@@ -1553,18 +1561,18 @@ a:visited {
 }
 
 @media (min-width: 48.0625rem) {
-    body {
+    body:not(.elevra-theme) {
         padding-top: 5rem;
     }
-    .hero {
+    body:not(.elevra-theme) .hero {
         padding-top: 7.5rem !important;
     }
 }
 
-
 body.elevra-theme {
     background: var(--bg-alt);
     min-height: 100vh;
+    padding-top: 0;
 }
 
 .elevra-workspace {
@@ -1575,6 +1583,7 @@ body.elevra-theme {
     display: flex;
     flex-direction: column;
     gap: 4rem;
+    overflow: visible !important;
 }
 
 @media (min-width: 48rem) {
@@ -1583,7 +1592,7 @@ body.elevra-theme {
     }
 }
 
-/* nav sticks on scroll */
+/* sticky nav — must stay inside a non-overflow-hidden parent */
 body.elevra-theme nav {
     position: sticky;
     top: 0;
@@ -1591,9 +1600,10 @@ body.elevra-theme nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     padding: 0.875rem 1.25rem;
     margin: 0 -1.25rem 1rem;
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.97);
     border-bottom: 1px solid var(--border);
 }
 
@@ -2588,8 +2598,8 @@ nav a.text-3xl {
         display: inline-block;
     }
     
-    /* Navigation */
-    nav {
+    /* Navigation (legacy pages without elevra-theme) */
+    body:not(.elevra-theme) nav {
         height: 5rem;
         background: #ffffff;
         border-bottom: 1px solid #eef0f6;
@@ -4553,14 +4563,14 @@ nav a.text-3xl {
 /* Nav: align with Tailwind lg (1024px) */
 @media (max-width: 64rem) {
     body.elevra-theme nav {
-        position: sticky !important;
-        top: 0 !important;
-        padding-top: max(0.75rem, env(safe-area-inset-top)) !important;
-        padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0)) !important;
-        padding-left: max(1rem, env(safe-area-inset-left)) !important;
-        padding-right: max(1rem, env(safe-area-inset-right)) !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        position: sticky;
+        top: 0;
+        padding-top: max(0.75rem, env(safe-area-inset-top));
+        padding-bottom: 0.75rem;
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+        margin-left: -1.25rem;
+        margin-right: -1.25rem;
     }
 
     .cf-brand {
