@@ -430,8 +430,8 @@
                 <div class="option-group">
                     <div class="option-label">Output Format</div>
                     <div class="format-selector">
-                        <div class="format-option active" onclick="selectFormat('mp3')">MP3</div>
-                        <div class="format-option" onclick="selectFormat('wav')">WAV</div>
+                        <div class="format-option active" onclick="selectFormat('mp3', this)">MP3</div>
+                        <div class="format-option" onclick="selectFormat('wav', this)">WAV</div>
                     </div>
                 </div>
             </div>
@@ -520,6 +520,16 @@
     <script>
         let audioFiles = [];
         let selectedFormat = 'mp3';
+        let sortableInstance = null;
+        let ffmpeg = null;
+        let ffmpegLoaded = false;
+
+        const AUDIO_EXTENSIONS = ['mp3', 'wav', 'ogg', 'flac', 'm4a', 'aac', 'webm'];
+
+        function isAudioFile(file) {
+            const ext = (file.name.split('.').pop() || '').toLowerCase();
+            return AUDIO_EXTENSIONS.includes(ext) || (file.type && file.type.startsWith('audio/'));
+        }
 
         function formatFileSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
@@ -546,10 +556,19 @@
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
-        document.getElementById('audioInput').addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
-            
-            for (const file of files) {
+        async function addAudioFiles(files) {
+            const valid = files.filter(isAudioFile);
+            if (!valid.length) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = 'Please upload MP3, WAV, OGG, or FLAC audio files.';
+                errorDiv.classList.add('error');
+                return;
+            }
+
+            document.getElementById('errorMessage').classList.remove('error');
+            document.getElementById('errorMessage').textContent = '';
+
+            for (const file of valid) {
                 const duration = await getAudioDuration(file);
                 audioFiles.push({
                     file,
@@ -560,18 +579,23 @@
             }
 
             renderFiles();
+        }
+
+        document.getElementById('audioInput').addEventListener('change', async (e) => {
+            await addAudioFiles(Array.from(e.target.files));
+            e.target.value = '';
         });
 
         document.getElementById('silenceGap').addEventListener('input', (e) => {
             document.getElementById('silenceLabel').textContent = e.target.value + 's';
         });
 
-        function selectFormat(format) {
+        function selectFormat(format, el) {
             selectedFormat = format;
-            document.querySelectorAll('.format-option').forEach(el => {
-                el.classList.remove('active');
+            document.querySelectorAll('.format-option').forEach((node) => {
+                node.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (el) el.classList.add('active');
         }
 
         function renderFiles() {
@@ -595,10 +619,11 @@
 
             document.getElementById('filesList').classList.toggle('active', audioFiles.length > 0);
             document.getElementById('optionsSection').classList.toggle('active', audioFiles.length > 0);
-            document.getElementById('actionButtons').style.display = audioFiles.length > 0 ? 'flex' : 'none';
+            document.getElementById('actionButtons').style.display = audioFiles.length >= 2 ? 'flex' : 'none';
 
             if (audioFiles.length > 0) {
-                Sortable.create(document.getElementById('filesContainer'), {
+                if (sortableInstance) sortableInstance.destroy();
+                sortableInstance = Sortable.create(document.getElementById('filesContainer'), {
                     animation: 150,
                     ghostClass: 'sortable-ghost',
                     onEnd: (evt) => {
@@ -606,6 +631,9 @@
                         audioFiles.splice(evt.newIndex, 0, moved);
                     }
                 });
+            } else if (sortableInstance) {
+                sortableInstance.destroy();
+                sortableInstance = null;
             }
         }
 
@@ -614,49 +642,139 @@
             renderFiles();
         }
 
+        async function loadFFmpeg() {
+            if (ffmpegLoaded) return ffmpeg;
+            if (!window.FFmpeg) {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+            const { FFmpeg } = window.FFmpeg;
+            ffmpeg = new FFmpeg();
+            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
+            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
+            await ffmpeg.load({ coreURL, wasmURL });
+            ffmpegLoaded = true;
+            return ffmpeg;
+        }
+
+        async function encodeWavToMp3(wavBlob) {
+            const ff = await loadFFmpeg();
+            const { fetchFile } = window.FFmpegUtil;
+            await ff.writeFile('merged.wav', await fetchFile(wavBlob));
+            await ff.exec(['-i', 'merged.wav', '-codec:a', 'libmp3lame', '-q:a', '2', 'merged.mp3']);
+            const data = await ff.readFile('merged.mp3');
+            return new Blob([data.buffer], { type: 'audio/mpeg' });
+        }
+
         async function mergeAudio() {
-            if (audioFiles.length === 0) return;
+            if (audioFiles.length < 2) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = 'Add at least 2 audio files to merge.';
+                errorDiv.classList.add('error');
+                return;
+            }
+
+            const progressContainer = document.getElementById('progressContainer');
+            const progressLabel = progressContainer.querySelector('.progress-label');
+            const progressFill = document.getElementById('progressFill');
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = '';
+            errorDiv.classList.remove('error');
 
             try {
-                const progressContainer = document.getElementById('progressContainer');
                 progressContainer.classList.add('active');
+                progressLabel.textContent = 'Decoding audio files...';
+                progressFill.style.width = '5%';
 
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const silenceGap = parseFloat(document.getElementById('silenceGap').value);
-                let totalDuration = 0;
-
-                // Calculate total duration
-                for (const audio of audioFiles) {
-                    totalDuration += audio.duration + silenceGap;
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
                 }
 
-                const offlineContext = new OfflineAudioContext(2, audioContext.sampleRate * totalDuration, audioContext.sampleRate);
-                let currentTime = 0;
+                const silenceGap = parseFloat(document.getElementById('silenceGap').value) || 0;
+                const decodedBuffers = [];
 
-                // Decode and mix all audio files
                 for (let i = 0; i < audioFiles.length; i++) {
-                    const audio = audioFiles[i];
-                    const arrayBuffer = await audio.file.arrayBuffer();
-                    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-                    
+                    const arrayBuffer = await audioFiles[i].file.arrayBuffer();
+                    const copy = arrayBuffer.slice(0);
+                    const audioBuffer = await audioContext.decodeAudioData(copy);
+                    decodedBuffers.push(audioBuffer);
+                    progressFill.style.width = (10 + ((i + 1) / audioFiles.length) * 35) + '%';
+                }
+
+                const sampleRate = decodedBuffers[0].sampleRate;
+                const numberOfChannels = Math.max(
+                    ...decodedBuffers.map((buffer) => buffer.numberOfChannels),
+                    1,
+                );
+
+                let totalDuration = 0;
+                decodedBuffers.forEach((buffer, index) => {
+                    totalDuration += buffer.duration;
+                    if (index < decodedBuffers.length - 1) {
+                        totalDuration += silenceGap;
+                    }
+                });
+
+                const totalFrames = Math.ceil(totalDuration * sampleRate);
+                if (!totalFrames || !Number.isFinite(totalFrames)) {
+                    throw new Error('Could not determine audio duration from the uploaded files.');
+                }
+
+                progressLabel.textContent = 'Merging audio files...';
+                const offlineContext = new OfflineAudioContext(
+                    numberOfChannels,
+                    totalFrames,
+                    sampleRate,
+                );
+
+                let currentTime = 0;
+                for (let i = 0; i < decodedBuffers.length; i++) {
                     const source = offlineContext.createBufferSource();
-                    source.buffer = audioBuffer;
+                    source.buffer = decodedBuffers[i];
                     source.connect(offlineContext.destination);
                     source.start(currentTime);
-                    
-                    currentTime += audio.duration + silenceGap;
-                    document.getElementById('progressFill').style.width = ((i + 1) / audioFiles.length * 100) + '%';
+                    currentTime += decodedBuffers[i].duration;
+                    if (i < decodedBuffers.length - 1) {
+                        currentTime += silenceGap;
+                    }
+                    progressFill.style.width = (45 + ((i + 1) / decodedBuffers.length) * 40) + '%';
                 }
 
                 const mergedAudioBuffer = await offlineContext.startRendering();
-                
-                // Convert to WAV or MP3
-                const blob = audioBufferToWav(mergedAudioBuffer);
-                downloadFile(blob, `merged.${selectedFormat}`);
+                progressFill.style.width = '90%';
 
+                let blob;
+                let filename;
+                const wavBlob = audioBufferToWav(mergedAudioBuffer);
+
+                if (selectedFormat === 'mp3') {
+                    progressLabel.textContent = 'Encoding MP3...';
+                    blob = await encodeWavToMp3(wavBlob);
+                    filename = 'merged.mp3';
+                } else {
+                    blob = wavBlob;
+                    filename = 'merged.wav';
+                }
+
+                triggerDownload(blob, filename);
+                progressFill.style.width = '100%';
                 progressContainer.classList.remove('active');
             } catch (err) {
-                const errorDiv = document.getElementById('errorMessage');
+                console.error('Audio merge error:', err);
+                progressContainer.classList.remove('active');
                 errorDiv.textContent = 'Error merging audio: ' + err.message;
                 errorDiv.classList.add('error');
             }
@@ -718,35 +836,37 @@
             return new Blob([buffer], { type: 'audio/wav' });
         }
 
-        function downloadFile(blob, filename) {
+        function triggerDownload(blob, filename) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
+            document.body.appendChild(a);
             a.click();
-            URL.revokeObjectURL(url);
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
-        // Drag & drop
-        document.addEventListener('dragover', (e) => {
+        const uploadSection = document.querySelector('.upload-section');
+
+        uploadSection.addEventListener('dragover', (e) => {
             e.preventDefault();
+            uploadSection.style.borderColor = 'var(--primary)';
+            uploadSection.style.background = 'var(--primary-light)';
         });
 
-        document.addEventListener('drop', (e) => {
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.borderColor = '';
+            uploadSection.style.background = '';
+        });
+
+        uploadSection.addEventListener('drop', async (e) => {
             e.preventDefault();
-            const files = Array.from(e.dataTransfer.files).filter(f => 
-                ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/flac'].includes(f.type)
-            );
+            uploadSection.style.borderColor = '';
+            uploadSection.style.background = '';
+            const files = Array.from(e.dataTransfer.files).filter(isAudioFile);
             if (files.length) {
-                const audioInput = document.getElementById('audioInput');
-                if (window.assignInputFiles) {
-                    window.assignInputFiles(audioInput, files);
-                } else {
-                    const dt = new DataTransfer();
-                    files.forEach((f) => dt.items.add(f));
-                    audioInput.files = dt.files;
-                }
-                audioInput.dispatchEvent(new Event('change'));
+                await addAudioFiles(files);
             }
         });
 

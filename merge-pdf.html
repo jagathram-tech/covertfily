@@ -70,24 +70,70 @@
         }
         
         .file-item {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); gap: 0.75rem;
-            min-height: auto; height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border);
+            gap: 0.75rem;
         }
         .file-item:last-child { border-bottom: none; }
-        
+
         .file-info {
-            display: flex; align-items: flex-start; gap: 0.75rem;
-            min-width: 0; flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex: 1;
         }
-        .file-info .file-name { 
-            flex: 1; overflow: visible; text-overflow: unset; white-space: normal; word-break: break-all;
+
+        .file-icon-pdf {
+            width: 2.25rem;
+            height: 2.25rem;
+            background: #fef2f2;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            flex-shrink: 0;
+            font-size: 1rem;
         }
-        .file-info small { flex-shrink: 0; }
-        .file-info i { flex-shrink: 0; }
-        
+
+        .file-details {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.35;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.125rem;
+            white-space: nowrap;
+        }
+
         .btn-remove {
-            color: #ef4444; cursor: pointer; padding: 0.3125rem; flex-shrink: 0; align-self: flex-start;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 0.375rem;
+            flex-shrink: 0;
+            border: none;
+            background: transparent;
+            border-radius: 0.375rem;
+            line-height: 1;
+        }
+        .btn-remove:hover {
+            background: #fef2f2;
         }
         
         .merge-actions {
@@ -114,19 +160,10 @@
         }
 
         .file-item {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--border);
-            gap: 0.75rem;
             transition: all 0.15s ease;
             background: white;
             cursor: default;
-            min-height: auto;
-            height: auto;
         }
-        .file-item:last-child { border-bottom: none; }
         .file-item.dragging {
             opacity: 0.45;
             background: #f1f5f9;
@@ -149,7 +186,6 @@
             border-radius: 0.25rem;
             transition: color 0.15s, background 0.15s;
             flex-shrink: 0;
-            align-self: flex-start;
         }
         .drag-handle:hover {
             color: var(--primary);
@@ -172,7 +208,6 @@
             font-weight: 700;
             flex-shrink: 0;
             margin-right: 0.375rem;
-            align-self: flex-start;
         }
     </style>
     <!-- Schema.org JSON-LD Structured Data -->
@@ -426,6 +461,37 @@
         
         let filesToMerge = [];
 
+        function escapeHtml(value) {
+            return value
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        function smartFileName(name, maxLength = 56) {
+            if (name.length <= maxLength) return name;
+
+            const lastDot = name.lastIndexOf('.');
+            const ext = lastDot > 0 ? name.slice(lastDot) : '';
+            const base = lastDot > 0 ? name.slice(0, lastDot) : name;
+            const budget = maxLength - ext.length - 3;
+
+            if (budget <= 8) {
+                return name.slice(0, maxLength - 3) + '...';
+            }
+
+            const head = Math.ceil(budget * 0.55);
+            const tail = budget - head;
+            return base.slice(0, head) + '...' + base.slice(-tail) + ext;
+        }
+
         dropzone.onclick = () => fileInput.click();
 
         fileInput.onchange = (e) => {
@@ -468,18 +534,27 @@
                 ? '<div class="reorder-hint"><i class="fas fa-arrows-alt-v" style="margin-right:6px;"></i>Drag to reorder</div>'
                 : '';
 
-            fileList.innerHTML = hint + filesToMerge.map((file, index) => `
+            fileList.innerHTML = hint + filesToMerge.map((file, index) => {
+                const displayName = smartFileName(file.name);
+                const safeName = escapeHtml(file.name);
+                const safeDisplay = escapeHtml(displayName);
+
+                return `
                 <div class="file-item" draggable="true" data-index="${index}">
-                    <div class="file-info" style="flex:1; min-width:0;">
+                    <div class="file-info">
                         <span class="drag-handle" title="Drag to reorder"><i class="fas fa-grip-lines"></i></span>
                         <span class="order-badge">${index + 1}</span>
-                        <i class="fas fa-file-pdf" style="color: #ef4444; flex-shrink:0; align-self:flex-start;"></i>
-                        <span class="file-name" style="flex:1; overflow:visible; text-overflow:unset; white-space:normal; word-break:break-all;">${file.name}</span>
-                        <small style="color: var(--text-muted); flex-shrink:0; align-self:flex-start;">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+                        <div class="file-icon-pdf" aria-hidden="true"><i class="fas fa-file-pdf"></i></div>
+                        <div class="file-details">
+                            <div class="file-name" title="${safeName}">${safeDisplay}</div>
+                            <div class="file-meta">${formatFileSize(file.size)}</div>
+                        </div>
                     </div>
-                    <i class="fas fa-times btn-remove" onclick="removeFile(${index})"></i>
-                </div>
-            `).join('');
+                    <button type="button" class="btn-remove" onclick="removeFile(${index})" aria-label="Remove ${safeName}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>`;
+            }).join('');
 
             attachDragHandlers();
         }
