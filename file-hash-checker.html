@@ -587,7 +587,7 @@
                         <div class="hash-row">
                             <span class="hash-label">MD5</span>
                             <div class="hash-value" id="md5Hash"></div>
-                            <button class="btn-icon" onclick="copyHash('md5Hash')">
+                            <button class="btn-icon" onclick="copyHash('md5Hash', event)">
                                 <i class="far fa-copy"></i> Copy
                             </button>
                         </div>
@@ -595,7 +595,7 @@
                         <div class="hash-row">
                             <span class="hash-label">SHA-1</span>
                             <div class="hash-value" id="sha1Hash"></div>
-                            <button class="btn-icon" onclick="copyHash('sha1Hash')">
+                            <button class="btn-icon" onclick="copyHash('sha1Hash', event)">
                                 <i class="far fa-copy"></i> Copy
                             </button>
                         </div>
@@ -603,7 +603,7 @@
                         <div class="hash-row">
                             <span class="hash-label">SHA-256</span>
                             <div class="hash-value" id="sha256Hash"></div>
-                            <button class="btn-icon" onclick="copyHash('sha256Hash')">
+                            <button class="btn-icon" onclick="copyHash('sha256Hash', event)">
                                 <i class="far fa-copy"></i> Copy
                             </button>
                         </div>
@@ -611,7 +611,7 @@
                         <div class="hash-row">
                             <span class="hash-label">SHA-512</span>
                             <div class="hash-value" id="sha512Hash"></div>
-                            <button class="btn-icon" onclick="copyHash('sha512Hash')">
+                            <button class="btn-icon" onclick="copyHash('sha512Hash', event)">
                                 <i class="far fa-copy"></i> Copy
                             </button>
                         </div>
@@ -980,10 +980,10 @@
                 resultSection.style.display = 'block';
             }
 
-            function copyHash(elementId) {
+            function copyHash(elementId, evt) {
                 const hashText = document.getElementById(elementId).textContent;
                 navigator.clipboard.writeText(hashText).then(() => {
-                    const btn = event.target.closest('.btn-icon');
+                    const btn = (evt || window.event)?.target?.closest('.btn-icon');
                     const originalHtml = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
                     btn.style.background = 'var(--success)';
@@ -1061,13 +1061,6 @@
                 return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
             }
 
-            // Tools search (same as other pages)
-            document.querySelector('.tool-search').addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                document.querySelectorAll('.tool-list a').forEach(a => {
-                    a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-                });
-            });
         </script>
         <script src="main.js"></script>
     </body>

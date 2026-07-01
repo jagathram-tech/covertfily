@@ -615,20 +615,6 @@
 
         textInput.addEventListener('input', updateStats);
         updateStats();
-
-        // Mobile nav
-        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-            document.body.classList.toggle('nav-active');
-        });
-
-        document.querySelectorAll('.tool-search').forEach(search => {
-            search.addEventListener('input', function(e) {
-                const query = this.value.toLowerCase();
-                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
-                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
-                });
-            });
-        });
     </script>
     <script src="main.js"></script>
 </body>

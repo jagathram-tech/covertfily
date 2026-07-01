@@ -681,8 +681,16 @@
         };
         fileInput.onchange = (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); };
 
+        function isImageFile(file) {
+            return (file.type && file.type.startsWith('image/')) ||
+                /\.(jpg|jpeg|png|webp|bmp|gif|svg|avif|tiff|heic)$/i.test(file.name || '');
+        }
+
         function loadFile(file) {
-            if (!file.type.startsWith('image/')) return;
+            if (!isImageFile(file)) {
+                alert('Please upload an image file.');
+                return;
+            }
             originalFilename = file.name.replace(/\.[^/.]+$/, '');
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -830,12 +838,6 @@
         };
 
         // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Nav search Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
-        document.querySelector('.tool-search').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
-            document.querySelectorAll('.tool-list a').forEach(a => {
-                a.style.display = a.textContent.toLowerCase().includes(q) ? 'block' : 'none';
-            });
-        });
     </script>
     <script src="main.js"></script>
 </body>

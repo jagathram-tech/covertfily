@@ -453,7 +453,9 @@
 
     <script>
         let pdfDoc = null;
+        let sourcePdfBytes = null;
         let pages = [];
+        let sortableInstance = null;
         const pdfjsLib = window.pdfjsLib;
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -469,6 +471,7 @@
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
+                sourcePdfBytes = arrayBuffer.slice(0);
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                 pdfDoc = pdf;
                 pages = Array.from({ length: pdf.numPages }, (_, i) => i + 1);
@@ -479,20 +482,24 @@
 
                 await renderPages();
                 document.getElementById('spinner').classList.remove('active');
-
-                Sortable.create(document.getElementById('pagesGrid'), {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    onEnd: (evt) => {
-                        const moved = pages.splice(evt.oldIndex, 1)[0];
-                        pages.splice(evt.newIndex, 0, moved);
-                        updatePageNumbers();
-                    }
-                });
+                initSortable();
             } catch (err) {
                 showStatus(`Error loading PDF: ${err.message}`, true);
             }
         });
+
+        function initSortable() {
+            if (sortableInstance) sortableInstance.destroy();
+            sortableInstance = Sortable.create(document.getElementById('pagesGrid'), {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: (evt) => {
+                    const moved = pages.splice(evt.oldIndex, 1)[0];
+                    pages.splice(evt.newIndex, 0, moved);
+                    updatePageNumbers();
+                }
+            });
+        }
 
         async function renderPages() {
             const grid = document.getElementById('pagesGrid');
@@ -545,30 +552,35 @@
             });
         }
 
-        function movePageToFront(index) {
+        async function movePageToFront(index) {
             const moved = pages.splice(index, 1)[0];
             pages.unshift(moved);
-            renderPages();
+            await renderPages();
+            initSortable();
         }
 
-        function movePageToEnd(index) {
+        async function movePageToEnd(index) {
             const moved = pages.splice(index, 1)[0];
             pages.push(moved);
-            renderPages();
+            await renderPages();
+            initSortable();
         }
 
-        function deletePage(index) {
+        async function deletePage(index) {
             pages.splice(index, 1);
-            renderPages();
+            await renderPages();
+            initSortable();
             showStatus('Page deleted');
         }
 
-        async function downloadReorderedPDF() {
-            if (!pdfDoc || pages.length === 0) return;
+        window.downloadReorderedPDF = async function downloadReorderedPDF() {
+            if (!pdfDoc || !sourcePdfBytes || pages.length === 0) return;
 
             try {
+                const srcDoc = await PDFLib.PDFDocument.load(sourcePdfBytes);
+                const pageIndices = pages.map(pageNum => pageNum - 1);
                 const newPdf = await PDFLib.PDFDocument.create();
-                const copiedPages = await newPdf.copyPages(pdfDoc, pages);
+                const copiedPages = await newPdf.copyPages(srcDoc, pageIndices);
                 copiedPages.forEach(page => newPdf.addPage(page));
 
                 const pdfBytes = await newPdf.save();
@@ -584,7 +596,7 @@
             } catch (err) {
                 showStatus(`Error downloading PDF: ${err.message}`, true);
             }
-        }
+        };
 
         document.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -595,7 +607,7 @@
         document.addEventListener('drop', (e) => {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
-            if (file && file.type === 'application/pdf') {
+            if (file && (window.isPdfFile ? window.isPdfFile(file) : (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)))) {
                 const pdfInput = document.getElementById('pdfInput');
                 if (window.assignInputFiles) {
                     window.assignInputFiles(pdfInput, e.dataTransfer.files);

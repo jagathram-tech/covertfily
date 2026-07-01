@@ -510,11 +510,20 @@
         dropzone.ondrop = (e) => {
             e.preventDefault();
             dropzone.style.borderColor = 'var(--primary)';
-            addFiles(Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf'));
+            addFiles(Array.from(e.dataTransfer.files));
         };
 
+        function isPdfFile(file) {
+            return file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+        }
+
         function addFiles(newFiles) {
-            filesToMerge = [...filesToMerge, ...newFiles];
+            const pdfFiles = newFiles.filter(isPdfFile);
+            if (pdfFiles.length === 0) {
+                alert('Please add PDF files only.');
+                return;
+            }
+            filesToMerge = [...filesToMerge, ...pdfFiles];
             renderFileList();
         }
 

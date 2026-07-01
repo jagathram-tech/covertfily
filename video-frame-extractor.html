@@ -107,7 +107,7 @@
 
         .frames-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;
-            margin-top: 2rem; display: none;
+            margin-top: 2rem;
         }
         .frame-card {
             background: white; border: 1px solid var(--border); border-radius: 0.75rem;
@@ -480,16 +480,24 @@
         let extractedFrames = [];
         let currentMode = 'single';
 
+        function isVideoFile(file) {
+            return window.isVideoFile ? window.isVideoFile(file) : (file.type && file.type.startsWith('video/'));
+        }
+
         // File upload handling
         dropzone.onclick = () => fileInput.click();
         fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
 
         dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary-hover)'; dropzone.style.background = 'var(--bg-alt)'; };
         dropzone.ondragleave = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; };
-        dropzone.ondrop = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('video/')) handleFileSelect(f); };
+        dropzone.ondrop = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; const f = e.dataTransfer.files[0]; if (f && isVideoFile(f)) handleFileSelect(f); };
 
         function handleFileSelect(file) {
             if (!file) return;
+            if (!isVideoFile(file)) {
+                alert('Please upload a valid video file (MP4, MOV, WebM, AVI, MKV).');
+                return;
+            }
             videoFile = file;
             const url = URL.createObjectURL(file);
             videoPlayer.src = url;
@@ -571,12 +579,21 @@
 
         function downloadFrame(index, fmt) {
             const frame = extractedFrames[index];
-            const mime = fmt === 'png' ? 'image/png' : 'image/jpeg';
-            const dataUrl = frame.dataUrl.replace('image/jpeg', mime);
-            const a = document.createElement('a');
-            a.href = dataUrl;
-            a.download = `frame_${frame.time.replace(/:/g,'-')}.${fmt}`;
-            a.click();
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const mime = fmt === 'png' ? 'image/png' : 'image/jpeg';
+                const dataUrl = canvas.toDataURL(mime, fmt === 'png' ? undefined : 0.95);
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = `frame_${frame.time.replace(/:/g,'-')}.${fmt}`;
+                a.click();
+            };
+            img.src = frame.dataUrl;
         }
 
         async function extractFrames() {

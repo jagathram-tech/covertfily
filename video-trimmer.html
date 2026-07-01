@@ -437,32 +437,8 @@
     <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 
     <script>
-        // FFmpeg singleton
-        let ffmpeg = null;
-        let ffmpegLoaded = false;
-
-        async function loadFFmpeg() {
-            if (ffmpegLoaded) return ffmpeg;
-            if (!window.FFmpeg) {
-                await new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-                });
-                await new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
-                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-                });
-            }
-            const { FFmpeg } = window.FFmpeg;
-            ffmpeg = new FFmpeg();
-            ffmpeg.on('log', ({ message }) => console.log(message));
-            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
-            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
-            await ffmpeg.load({ coreURL, wasmURL });
-            ffmpegLoaded = true;
-            return ffmpeg;
+        function isVideoFile(file) {
+            return window.isVideoFile ? window.isVideoFile(file) : (file.type && file.type.startsWith('video/'));
         }
 
         // DOM Elements
@@ -499,10 +475,14 @@
 
         dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary-hover)'; dropzone.style.background = 'var(--bg-alt)'; };
         dropzone.ondragleave = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; };
-        dropzone.ondrop = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('video/')) handleFileSelect(f); };
+        dropzone.ondrop = (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; dropzone.style.background = 'white'; const f = e.dataTransfer.files[0]; if (f && isVideoFile(f)) handleFileSelect(f); };
 
         function handleFileSelect(file) {
             if (!file) return;
+            if (!isVideoFile(file)) {
+                alert('Please upload a valid video file (MP4, MOV, WebM, AVI, MKV).');
+                return;
+            }
             videoFile = file;
             const url = URL.createObjectURL(file);
             videoPlayer.src = url;
@@ -603,7 +583,7 @@
             progressText.textContent = 'Loading FFmpeg...';
 
             try {
-                const ff = await loadFFmpeg();
+                const ff = await window.loadFFmpeg();
                 const { fetchFile } = window.FFmpegUtil;
 
                 progressText.textContent = 'Writing file to memory...';

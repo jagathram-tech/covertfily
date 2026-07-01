@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Barcode Generator Online — Free, Private &amp; No Upload | Covertfily</title>
         <meta name="description" content="Create barcodes locally in your browser. Free, private barcode maker — no uploads." />
-        <meta name="keywords" content="barcode generator, barcode generator online, barcode generator free, no upload, private, browser based, client side, covertfily, barcode generator, create barcode" />
+        <meta name="keywords" content="barcode generator, barcode generator online, barcode generator free, no upload, private, browser based, client-side, covertfily, barcode generator, create barcode" />
         <meta name="author" content="Covertfily" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow" />
@@ -241,7 +241,7 @@
             <div class="settings-panel">
                 <div class="setting-group">
                     <label class="setting-label">Format</label>
-                    <select id="formatSelect" class="text-input">
+                    <select id="formatSelect" class="text-input" onchange="updateBarcode()">
                         <option value="CODE128">Code128</option>
                         <option value="EAN13">EAN-13</option>
                         <option value="EAN8">EAN-8</option>
@@ -276,7 +276,7 @@
                 </div>
                 <div class="setting-group">
                     <label class="setting-label">Show Text</label>
-                    <input type="checkbox" id="showText" checked oninput="updateBarcode()">
+                    <input type="checkbox" id="showText" checked onchange="updateBarcode()">
                 </div>
                 <div class="toolbar">
                     <button class="btn-main download-output-btn" onclick="downloadPNG()"><i class="fas fa-download"></i> Download PNG</button>
@@ -284,7 +284,7 @@
                 </div>
                 <div class="trust-badge">
                     <i class="fas fa-shield-alt"></i>
-                    <p><strong>Privacy Guaranteed:</strong> No data leaves your device. All generation is clientâ€‘side.</p>
+                    <p><strong>Privacy Guaranteed:</strong> No data leaves your device. All generation is client-side.</p>
                 </div>
             </div>
         </div>
@@ -386,7 +386,7 @@
             if (!value) {
                 // No value: optionally show placeholder text on canvas
                 ctx.font = '16px sans-serif';
-                ctx.fillStyle = 'var(--text-muted)';
+                ctx.fillStyle = '#64748b';
                 ctx.textAlign = 'center';
                 ctx.fillText('Enter a value', canvas.width / 2 || 150, canvas.height / 2 || 75);
                 return;
@@ -397,7 +397,7 @@
                 background: bgColor.value,
                 width: parseInt(widthInput.value) || 2,
                 height: parseInt(heightInput.value) || 100,
-                fontOptions: {fontSize: parseInt(fontSizeInput.value) || 20},
+                fontSize: parseInt(fontSizeInput.value) || 20,
                 displayValue: showText.checked,
             };
             // Render to canvas
@@ -407,6 +407,7 @@
         }
 
         function downloadPNG() {
+            if (!valueInput.value.trim()) return;
             const url = canvas.toDataURL('image/png');
             const link = document.createElement('a');
             link.download = 'barcode.png';
@@ -415,6 +416,7 @@
         }
 
         function downloadSVG() {
+            if (!valueInput.value.trim()) return;
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svgEl);
             const blob = new Blob([svgString], {type: 'image/svg+xml'});
@@ -427,7 +429,8 @@
         }
 
         // Initialize empty preview
-</script>
+        updateBarcode();
+    </script>
     <script src="main.js"></script>
 </body>
 </html>

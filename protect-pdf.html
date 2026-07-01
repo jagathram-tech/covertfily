@@ -362,10 +362,10 @@
             </div>
 
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('protect')">
+                <button class="tab active" onclick="switchTab('protect', this)">
                     <i class="fas fa-lock-open" style="margin-right: 8px;"></i>Protect PDF
                 </button>
-                <button class="tab" onclick="switchTab('unlock')">
+                <button class="tab" onclick="switchTab('unlock', this)">
                     <i class="fas fa-lock-open" style="margin-right: 8px;"></i>Unlock PDF
                 </button>
             </div>
@@ -544,10 +544,11 @@
             return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
         }
 
-        function switchTab(tabName) {
+        function switchTab(tabName, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.closest('.tab').classList.add('active');
+            const tabEl = el || (window.event && window.event.target && window.event.target.closest('.tab'));
+            if (tabEl) tabEl.classList.add('active');
             document.getElementById(tabName).classList.add('active');
         }
 
@@ -634,62 +635,6 @@
             }
         }
 
-                // Get permission flags from checkboxes
-                const allowPrint = document.getElementById('allowPrint').checked;
-                const allowCopy = document.getElementById('allowCopy').checked;
-                const allowEdit = document.getElementById('allowEdit').checked;
-
-                // pdf-lib supports encryption through PDF encryption dictionaries
-                // We'll use standard PDF encryption (AES-128 for owner, RC4 for compatibility)
-                // Set permissions using bit flags (PDF 1.7 spec)
-                // Permissions bits (from PDF spec):
-                // -1 (all), or combination: 
-                // 4 = print, 8 = modify, 16 = copy, 32 = add notes, etc.
-                let permissions = 0;
-                if (allowPrint) permissions |= 4;      // PRINT
-                if (allowCopy) permissions |= 16;     // COPY
-                if (allowEdit) permissions |= 8;      // MODIFY
-
-                // Set encryption using the PDF document save with options
-                // pdf-lib uses the standard PDF encryption mechanism
-                const pdfBytes = await pdfDoc.save({
-                    useObjectStreams: false,
-                    addDefaultPage: false,
-                    // Encrypt: owner password + user password + permissions
-                    // pdf-lib will apply standard PDF encryption
-                    encrypt: {
-                        ownerPassword: ownerPassword,
-                        userPassword: userPassword,
-                        permissions: {
-                            printing: allowPrint ? 'highResolution' : 'none',
-                            copying: allowCopy ? 'enabled' : 'none',
-                            modifying: allowEdit ? 'enabled' : 'none',
-                            fillingForms: allowEdit ? 'enabled' : 'none',
-                            accessibility: 'enabled',
-                            assembling: 'enabled',
-                            highQualityPrinting: allowPrint ? 'enabled' : 'none'
-                        }
-                    }
-                });
-
-                // Create blob and download
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = protectFile.name.replace('.pdf', '_protected.pdf');
-                a.click();
-                URL.revokeObjectURL(url);
-
-                showStatus('PDF protected and downloaded successfully! Your file is encrypted with AES-128 encryption.');
-            } catch (err) {
-                console.error('Protect error:', err);
-                showStatus(`Error protecting PDF: ${err.message}`, true);
-            } finally {
-                document.getElementById('protectSpinner').classList.remove('active');
-            }
-        }
-
         async function unlockPDF() {
             if (!unlockFile) return;
             
@@ -704,16 +649,10 @@
                 }
 
                 const arrayBuffer = await unlockFile.arrayBuffer();
-                
-                // Try to load with password using PDF.js
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, password }).promise;
-                
-                // Create new PDF without encryption
-                const newPdf = await PDFLib.PDFDocument.create();
-                const copiedPages = await newPdf.copyPages(pdf, Array.from({length: pdf.numPages}, (_, i) => i));
-                copiedPages.forEach(page => newPdf.addPage(page));
 
-                const pdfBytes = await newPdf.save();
+                // Load decrypted content with pdf-lib, then save without encryption
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer, { password });
+                const pdfBytes = await pdfDoc.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -738,7 +677,7 @@
         document.addEventListener('drop', (e) => {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
-            if (file && file.type === 'application/pdf') {
+            if (file && (window.isPdfFile ? window.isPdfFile(file) : (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)))) {
                 const activeTab = document.querySelector('.tab-content.active');
                 if (!activeTab) return;
                 const input = document.getElementById(activeTab.id === 'protect' ? 'protectInput' : 'unlockInput');

@@ -411,13 +411,13 @@
                     <div class="option-group">
                         <div class="option-label">Type</div>
                         <div class="type-buttons">
-                            <button class="type-btn active" onclick="setType('words')">
+                            <button class="type-btn active" onclick="setType('words', this)">
                                 <i class="fas fa-heading" style="margin-right: 6px;"></i>Words
                             </button>
-                            <button class="type-btn" onclick="setType('sentences')">
+                            <button class="type-btn" onclick="setType('sentences', this)">
                                 <i class="fas fa-align-left" style="margin-right: 6px;"></i>Sentences
                             </button>
-                            <button class="type-btn" onclick="setType('paragraphs')">
+                            <button class="type-btn" onclick="setType('paragraphs', this)">
                                 <i class="fas fa-align-justify" style="margin-right: 6px;"></i>Paragraphs
                             </button>
                         </div>
@@ -556,10 +556,10 @@
 
         let type = 'words';
 
-        function setType(t) {
+        function setType(t, btn) {
             type = t;
-            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.type-btn').classList.add('active');
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            (btn || event?.target)?.closest('.type-btn')?.classList.add('active');
         }
 
         function getRandomWord() {
@@ -683,20 +683,6 @@
 
         // Generate initial text
         generateText();
-
-        // Mobile nav
-        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
-            document.body.classList.toggle('nav-active');
-        });
-
-        document.querySelectorAll('.tool-search').forEach(search => {
-            search.addEventListener('input', function(e) {
-                const query = this.value.toLowerCase();
-                this.closest('.dropdown-content').querySelectorAll('.tool-list a').forEach(link => {
-                    link.style.display = link.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
-                });
-            });
-        });
     </script>
     <script src="main.js"></script>
 </body>

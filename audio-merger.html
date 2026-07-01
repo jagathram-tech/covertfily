@@ -521,12 +521,11 @@
         let audioFiles = [];
         let selectedFormat = 'mp3';
         let sortableInstance = null;
-        let ffmpeg = null;
-        let ffmpegLoaded = false;
 
         const AUDIO_EXTENSIONS = ['mp3', 'wav', 'ogg', 'flac', 'm4a', 'aac', 'webm'];
 
         function isAudioFile(file) {
+            if (window.isAudioFile) return window.isAudioFile(file);
             const ext = (file.name.split('.').pop() || '').toLowerCase();
             return AUDIO_EXTENSIONS.includes(ext) || (file.type && file.type.startsWith('audio/'));
         }
@@ -642,35 +641,8 @@
             renderFiles();
         }
 
-        async function loadFFmpeg() {
-            if (ffmpegLoaded) return ffmpeg;
-            if (!window.FFmpeg) {
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-            }
-            const { FFmpeg } = window.FFmpeg;
-            ffmpeg = new FFmpeg();
-            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
-            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
-            await ffmpeg.load({ coreURL, wasmURL });
-            ffmpegLoaded = true;
-            return ffmpeg;
-        }
-
         async function encodeWavToMp3(wavBlob) {
-            const ff = await loadFFmpeg();
+            const ff = await window.loadFFmpeg();
             const { fetchFile } = window.FFmpegUtil;
             await ff.writeFile('merged.wav', await fetchFile(wavBlob));
             await ff.exec(['-i', 'merged.wav', '-codec:a', 'libmp3lame', '-q:a', '2', 'merged.mp3']);

@@ -498,12 +498,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 2. Spreadsheet Conversions using SheetJS (XLSX, CSV, JSON, ODS, XLS)
       if (
-        ["xlsx", "xls", "csv", "ods", "json"].includes(to) &&
+        ["xlsx", "xls", "csv", "ods", "json"].includes(targetFormat) &&
         (["xlsx", "xls", "csv", "ods", "json"].includes(sourceFormat) ||
           file.name.match(/\.(xlsx|xls|csv|ods|json)$/i))
       ) {
         setConversionProgress(18, "Reading spreadsheet data...");
-        await convertSpreadsheet(file, to);
+        await convertSpreadsheet(file, targetFormat);
         setConversionProgress(100, "Output file ready.");
         return;
       }
@@ -543,8 +543,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 6. PDF Conversions
       if (
-        to === "pdf" &&
+        targetFormat === "pdf" &&
         (file.type.startsWith("image/") ||
+          rasterSources.includes(sourceFormat) ||
           ["md", "html", "txt"].includes(sourceFormat))
       ) {
         setConversionProgress(16, "Building PDF...");
@@ -552,9 +553,12 @@ document.addEventListener("DOMContentLoaded", () => {
         setConversionProgress(100, "Output file ready.");
         return;
       }
-      if (sourceFormat === "pdf" && ["jpg", "png", "webp"].includes(to)) {
+      if (
+        sourceFormat === "pdf" &&
+        ["jpg", "png", "webp"].includes(targetFormat)
+      ) {
         setConversionProgress(14, "Loading PDF pages...");
-        await convertPDFToImages(file, to);
+        await convertPDFToImages(file, targetFormat);
         setConversionProgress(100, "Output file ready.");
         return;
       }
@@ -699,6 +703,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const dt = new DataTransfer();
     for (const file of files) dt.items.add(file);
     input.files = dt.files;
+  };
+
+  /** Windows often leaves file.type empty for drag-dropped files; fall back to extension. */
+  window.isPdfFile = function (file) {
+    if (!file) return false;
+    return (
+      file.type === "application/pdf" || /\.pdf$/i.test(file.name || "")
+    );
+  };
+
+  window.isImageFile = function (file) {
+    if (!file) return false;
+    return (
+      (file.type && file.type.startsWith("image/")) ||
+      /\.(jpg|jpeg|png|webp|bmp|gif|svg|avif|tiff|heic)$/i.test(
+        file.name || "",
+      )
+    );
+  };
+
+  window.isVideoFile = function (file) {
+    if (!file) return false;
+    return (
+      (file.type && file.type.startsWith("video/")) ||
+      /\.(mp4|webm|mov|avi|mkv|flv|wmv|m4v|mpeg|mpg|3gp)$/i.test(
+        file.name || "",
+      )
+    );
+  };
+
+  window.isAudioFile = function (file) {
+    if (!file) return false;
+    return (
+      (file.type && file.type.startsWith("audio/")) ||
+      /\.(mp3|wav|ogg|flac|m4a|aac|webm|opus|wma)$/i.test(file.name || "")
+    );
   };
 
   // Convert Images via Canvas
@@ -1063,6 +1103,70 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadFile(url, file.name.replace(/\.[^/.]+$/, "") + `.${targetFormat}`);
   }
 
+  const RASTER_IMAGE_SOURCES = [
+    "png", "jpg", "jpeg", "webp", "bmp", "gif", "svg", "avif", "tiff", "heic", "heif",
+  ];
+
+  function isRasterImageForPdf(file, sourceFormat) {
+    const ext = file.name.split(".").pop().toLowerCase();
+    const extMap = { jpeg: "jpg", tif: "tiff", heif: "heic" };
+    const normalizedExt = extMap[ext] || ext;
+    const fmt = (sourceFormat || normalizedExt || "").toLowerCase();
+    return (
+      file.type.startsWith("image/") ||
+      RASTER_IMAGE_SOURCES.includes(fmt) ||
+      RASTER_IMAGE_SOURCES.includes(normalizedExt)
+    );
+  }
+
+  async function rasterImageToDataUrl(file, sourceFormat) {
+    const ext = file.name.split(".").pop().toLowerCase();
+    const fmt = (sourceFormat || ext).toLowerCase();
+
+    if (fmt === "tiff" || ext === "tif" || ext === "tiff") {
+      const buffer = await file.arrayBuffer();
+      if (typeof UTIF === "undefined") {
+        await loadScriptOnce(SCRIPT_LIBS.utif);
+      }
+      const ifds = UTIF.decode(buffer);
+      UTIF.decodeImage(buffer, ifds[0]);
+      const rgba = UTIF.toRGBA8(ifds[0]);
+      const canvas = document.createElement("canvas");
+      canvas.width = ifds[0].width;
+      canvas.height = ifds[0].height;
+      const ctx = canvas.getContext("2d");
+      const imgData = ctx.createImageData(canvas.width, canvas.height);
+      imgData.data.set(rgba);
+      ctx.putImageData(imgData, 0, 0);
+      return canvas.toDataURL("image/jpeg", 0.92);
+    }
+
+    if (fmt === "heic" || fmt === "heif" || ext === "heic" || ext === "heif") {
+      if (typeof heic2any === "undefined") {
+        await loadScriptOnce(SCRIPT_LIBS.heic2any);
+      }
+      const converted = await heic2any({
+        blob: file,
+        toType: "image/jpeg",
+        quality: 0.92,
+      });
+      const jpegBlob = Array.isArray(converted) ? converted[0] : converted;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => reject(new Error("Failed to read converted HEIC image"));
+        reader.readAsDataURL(jpegBlob);
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => reject(new Error("Failed to read image file"));
+      reader.readAsDataURL(file);
+    });
+  }
+
   // Merge multiple files into a single PDF via jsPDF
   async function mergeToPDF(files, sourceFormat) {
     if (typeof window.jspdf === "undefined") {
@@ -1075,25 +1179,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      const fileSourceFormat =
+        sourceFormat || file.name.split(".").pop().toLowerCase();
 
-      // Skip invalid files for PDF merger in this simple demo
       if (
-        !file.type.startsWith("image/") &&
-        !["md", "html", "txt", "pdf"].includes(sourceFormat)
+        !isRasterImageForPdf(file, fileSourceFormat) &&
+        !["md", "html", "txt", "pdf"].includes(fileSourceFormat)
       )
         continue;
 
       if (addedPages > 0) doc.addPage();
 
-      if (file.type.startsWith("image/")) {
-        const dataUrl = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.readAsDataURL(file);
-        });
+      if (isRasterImageForPdf(file, fileSourceFormat)) {
+        const dataUrl = await rasterImageToDataUrl(file, fileSourceFormat);
         const img = new Image();
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
           img.onload = resolve;
+          img.onerror = () =>
+            reject(new Error(`Failed to load image: ${file.name}`));
           img.src = dataUrl;
         });
 
@@ -1108,7 +1211,8 @@ document.addEventListener("DOMContentLoaded", () => {
           width = height * ratio;
         }
 
-        doc.addImage(dataUrl, "JPEG", 10, 10, width, height);
+        const imageFormat = dataUrl.startsWith("data:image/png") ? "PNG" : "JPEG";
+        doc.addImage(dataUrl, imageFormat, 10, 10, width, height);
         addedPages++;
       } else if (file.type === "application/pdf") {
         // PDF merging is complex locally without heavy libs, we notify in this demo
@@ -1121,13 +1225,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    if (addedPages === 0) {
+      throw new Error(
+        "No supported files could be added to the PDF. Check that your images are in a supported format.",
+      );
+    }
+
     const outputName =
       files.length > 1
         ? "merged_document.pdf"
         : files[0].name.replace(/\.[^/.]+$/, "") + ".pdf";
     const pdfBlob = doc.output("blob");
-    const url = URL.createObjectURL(pdfBlob);
-    downloadFile(url, outputName);
+    downloadFile(pdfBlob, outputName);
   }
 
   // Convert PDF to Images via PDF.js
@@ -1221,6 +1330,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return ffmpeg;
   }
+
+  window.loadFFmpeg = loadFFmpeg;
 
   // Convert Video & Audio using actual FFmpeg.wasm Engine
   async function convertMedia(file, targetFormat) {
@@ -1697,7 +1808,17 @@ ${paragraphs}
 
   window.mergeToPDF = mergeToPDF;
 
-function downloadFile(url, filename) {
+function downloadFile(urlOrBlob, filename) {
+  let url = urlOrBlob;
+  let revokeAfterUse = false;
+  if (
+    urlOrBlob instanceof Blob ||
+    (urlOrBlob && typeof urlOrBlob === "object" && typeof urlOrBlob.size === "number")
+  ) {
+    url = URL.createObjectURL(urlOrBlob);
+    revokeAfterUse = true;
+  }
+
   // Revoke any previously created object URL to avoid memory leaks
   const dlBtn = document.getElementById("downloadBtn");
   if (dlBtn) {
@@ -1733,6 +1854,9 @@ function downloadFile(url, filename) {
     document.body.appendChild(a);
     a.click();
     a.remove();
+    if (revokeAfterUse) {
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
   }
 }
 
@@ -1770,7 +1894,9 @@ function downloadFile(url, filename) {
           "Or click to select files from your computer";
 
       const dlContainer = document.getElementById("downloadContainer");
-      if (dlContainer) dlContainer.remove();
+      if (dlContainer) dlContainer.style.display = "none";
+      const resultArea = document.getElementById("resultArea");
+      if (resultArea) resultArea.style.display = "none";
     }
   }
 

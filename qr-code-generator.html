@@ -271,7 +271,7 @@
 
         <div class="input-group">
             <label for="ecLevelSelect">Error Correction Level</label>
-            <select id="ecLevelSelect" oninput="updateQRCode()">
+            <select id="ecLevelSelect" onchange="updateQRCode()">
                 <option value="L">Low (L) – 7% restoration</option>
                 <option value="M" selected>Medium (M) – 15% restoration</option>
                 <option value="Q">Quartile (Q) – 25% restoration</option>
@@ -478,14 +478,6 @@
 
         // Initialize
         switchQRTab('url');
-
-        // Tool search (same as other pages)
-        document.querySelector('.tool-search').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
-            document.querySelectorAll('.tool-list a').forEach(a => {
-                a.style.display = a.textContent.toLowerCase().includes(q) ? 'block' : 'none';
-            });
-        });
     </script>
     <script src="main.js"></script>
 </body>

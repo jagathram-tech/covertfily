@@ -457,7 +457,8 @@
         });
 
         async function handleFile(file) {
-            if (file.type !== 'application/pdf') {
+            const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+            if (!isPdf) {
                 alert('Please select a valid PDF file.');
                 return;
             }

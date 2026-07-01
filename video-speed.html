@@ -428,9 +428,12 @@
                         </div>
                     </div>
 
-                    <button class="btn-main active" id="downloadBtn" onclick="downloadSpeedVideo()">
+                    <button class="btn-main active" id="applySpeedBtn" onclick="downloadSpeedVideo()">
                         <i class="fas fa-download" style="margin-right: 8px;"></i> Apply Speed & Download
                     </button>
+                    <a id="downloadBtn" class="btn-main" style="display:none; text-align:center; text-decoration:none;" href="#" download>
+                        <i class="fas fa-download" style="margin-right: 8px;"></i> Download Speed-Adjusted Video
+                    </a>
                 </div>
 
                 <div class="sidebar">
@@ -520,32 +523,19 @@
         
 
     <script>
-        // FFmpeg singleton
-        let ffmpeg = null;
-        let ffmpegLoaded = false;
+        function isVideoFile(file) {
+            return window.isVideoFile ? window.isVideoFile(file) : (file.type && file.type.startsWith('video/'));
+        }
 
-        async function loadFFmpeg() {
-            if (ffmpegLoaded) return ffmpeg;
-            if (!window.FFmpeg) {
-                await new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-                });
-                await new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
-                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-                });
-            }
-            const { FFmpeg } = window.FFmpeg;
-            ffmpeg = new FFmpeg();
-            ffmpeg.on('log', ({ message }) => console.log(message));
-            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
-            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
-            await ffmpeg.load({ coreURL, wasmURL });
-            ffmpegLoaded = true;
-            return ffmpeg;
+        function triggerDownload(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
         // DOM Elements
@@ -555,7 +545,6 @@
         const keepAudio = document.getElementById('keepAudio');
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
-        const loadingText = document.getElementById('loadingText');
 
         let videoFile = null;
         let currentSpeed = 1;
@@ -563,6 +552,11 @@
         videoInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
+            if (!isVideoFile(file)) {
+                alert('Please upload a valid video file (MP4, MOV, WebM).');
+                e.target.value = '';
+                return;
+            }
 
             videoFile = file;
             const url = URL.createObjectURL(file);
@@ -612,10 +606,14 @@
                 return;
             }
 
+            const applyBtn = document.getElementById('applySpeedBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+
             try {
-                const ff = await loadFFmpeg();
+                const ff = await window.loadFFmpeg();
                 progressContainer.classList.add('active');
-                document.getElementById('downloadBtn').disabled = true;
+                applyBtn.disabled = true;
+                downloadBtn.style.display = 'none';
 
                 const { fetchFile } = window.FFmpegUtil;
                 await ff.writeFile('input', await fetchFile(videoFile));
@@ -645,19 +643,23 @@
 
                 const data = await ff.readFile('output.mp4');
                 const blob = new Blob([data.buffer], { type: 'video/mp4' });
-                const url = URL.createObjectURL(blob);
+                const outputName = videoFile.name.replace(/\.[^/.]+$/, `_${currentSpeed}x.mp4`);
 
-                const dlBtn = document.getElementById('downloadBtn');
-                dlBtn.href = url;
-                dlBtn.download = videoFile.name.replace(/\.[^/.]+$/, `_${currentSpeed}x.mp4`);
+                triggerDownload(blob, outputName);
+
+                const url = URL.createObjectURL(blob);
+                downloadBtn.href = url;
+                downloadBtn.download = outputName;
+                downloadBtn.style.display = 'block';
+                downloadBtn.classList.add('active');
 
                 progressContainer.classList.remove('active');
-                dlBtn.disabled = false;
+                applyBtn.disabled = false;
             } catch (error) {
                 console.error('FFmpeg Conversion Error:', error);
                 alert('Conversion failed: ' + error.message);
                 progressContainer.classList.remove('active');
-                document.getElementById('downloadBtn').disabled = false;
+                applyBtn.disabled = false;
             }
         }
 
@@ -668,7 +670,7 @@
         document.addEventListener('drop', (e) => {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('video/')) {
+            if (file && isVideoFile(file)) {
                 if (window.assignInputFiles) {
                     window.assignInputFiles(videoInput, e.dataTransfer.files);
                 } else {

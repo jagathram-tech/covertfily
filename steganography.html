@@ -300,7 +300,7 @@
                     <h3 style="margin-bottom: 15px;"><i class="fas fa-envelope-open-text" style="color: var(--primary);"></i> Revealed Message</h3>
                     <textarea class="secret-textarea" id="decodeText" placeholder="The hidden message will appear here..." readonly style="background: #f1f5f9; cursor: text; height: 200px; overflow-y: auto;"></textarea>
                     <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-                        <button onclick="copyToClipboard()" style="background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <button onclick="copyToClipboard(this)" style="background: var(--bg-alt); color: var(--primary); border: 1px solid var(--primary); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-copy"></i> Copy Text
                         </button>
                     </div>
@@ -630,25 +630,19 @@
             }, 50);
         }
 
-        function copyToClipboard() {
+        function copyToClipboard(btn) {
             const text = document.getElementById('decodeText');
             if(!text.value) return;
             text.select();
             document.execCommand('copy');
             
-            const btn = event.currentTarget;
+            if (!btn) return;
             const originalHtml = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
             setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
         }
 
-        // Tools search
-        document.querySelector('.tool-search').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.tool-list a').forEach(a => {
-                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        });
+
     </script>
     <script src="main.js"></script>
 </body>

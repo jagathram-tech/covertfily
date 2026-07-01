@@ -506,13 +506,7 @@
             dropzone.style.display = 'flex';
         }
 
-        // Tools search
-        document.querySelector('.tool-search').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.tool-list a').forEach(a => {
-                a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        });
+
     </script>
     <script src="main.js"></script>
 </body>

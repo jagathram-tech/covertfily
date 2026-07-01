@@ -455,7 +455,7 @@
 
                 <!-- Actions -->
                 <div class="actions">
-                    <button id="downloadBtn" class="btn-strip">
+                    <button id="toolDownloadBtn" class="btn-strip">
                         <i class="fas fa-download"></i> Download Clean File
                     </button>
                     <button onclick="resetTool()" class="btn-strip" style="background: #64748b;">
@@ -566,7 +566,7 @@
         const summaryBox = document.getElementById('summaryBox');
         const removedCountEl = document.getElementById('removedCount');
         const remainingCountEl = document.getElementById('remainingCount');
-        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadBtn = document.getElementById('toolDownloadBtn');
 
         // Initial texts (for reset)
         const initialIcon = dropzoneIcon.innerHTML;
@@ -934,17 +934,6 @@
             summaryBox.classList.remove('visible');
             downloadBtn.onclick = null;
             downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Clean File';
-        }
-
-        // Tools search
-        const toolsSearch = document.querySelector('.tool-search');
-        if (toolsSearch) {
-            toolsSearch.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                document.querySelectorAll('.tool-list a').forEach(a => {
-                    a.style.display = a.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-                });
-            });
         }
 
         // Auto-strip on file load? Let user click

@@ -607,11 +607,14 @@
             }
         });
 
+        function isAudioFile(file) {
+            return window.isAudioFile ? window.isAudioFile(file) : (file.type && file.type.startsWith('audio/'));
+        }
+
         async function handleFile(file) {
             if (!file) return;
 
-            const validTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/flac', 'audio/mp4', 'audio/x-m4a', 'audio/webm'];
-            if (!validTypes.includes(file.type) && !file.type.startsWith('audio/')) {
+            if (!isAudioFile(file)) {
                 alert('Please upload a valid audio file: MP3, WAV, OGG, FLAC');
                 return;
             }
@@ -623,6 +626,9 @@
             try {
                 // Initialize audio context
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
                 const arrayBuffer = await file.arrayBuffer();
                 audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 

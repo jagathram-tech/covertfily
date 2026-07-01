@@ -517,9 +517,12 @@
             </div>
 
             <div class="action-buttons" id="actionButtons">
-                <button class="btn-main active" onclick="compressVideo()">
-                    <i class="fas fa-download" style="margin-right: 8px;"></i> Compress & Download
+                <button class="btn-main active" id="compressBtn" onclick="compressVideo()">
+                    <i class="fas fa-compress" style="margin-right: 8px;"></i> Compress & Download
                 </button>
+                <a id="downloadBtn" class="btn-main" style="display:none; text-align:center; text-decoration:none; align-items:center; justify-content:center;" href="#" download>
+                    <i class="fas fa-download" style="margin-right: 8px;"></i> Download Compressed Video
+                </a>
             </div>
         </div>
     </main>
@@ -591,32 +594,19 @@
         
 
     <script>
-        // FFmpeg singleton
-        let ffmpeg = null;
-        let ffmpegLoaded = false;
+        function isVideoFile(file) {
+            return window.isVideoFile ? window.isVideoFile(file) : (file.type && file.type.startsWith('video/'));
+        }
 
-        async function loadFFmpeg() {
-            if (ffmpegLoaded) return ffmpeg;
-            if (!window.FFmpeg) {
-                await new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-                });
-                await new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
-                    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
-                });
-            }
-            const { FFmpeg } = window.FFmpeg;
-            ffmpeg = new FFmpeg();
-            ffmpeg.on('log', ({ message }) => console.log(message));
-            const coreURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
-            const wasmURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
-            await ffmpeg.load({ coreURL, wasmURL });
-            ffmpegLoaded = true;
-            return ffmpeg;
+        function triggerDownload(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
         // DOM Elements
@@ -658,6 +648,11 @@
         videoInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
+            if (!isVideoFile(file)) {
+                alert('Please upload a valid video file (MP4, MOV, WebM, AVI, MKV).');
+                e.target.value = '';
+                return;
+            }
 
             videoFile = file;
             fileName.textContent = file.name;
@@ -699,10 +694,14 @@
         async function compressVideo() {
             if (!videoFile) return;
 
+            const compressBtn = document.getElementById('compressBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+
             try {
-                const ff = await loadFFmpeg();
+                const ff = await window.loadFFmpeg();
                 progressContainer.classList.add('active');
-                actionButtons.style.display = 'none';
+                compressBtn.disabled = true;
+                downloadBtn.style.display = 'none';
 
                 const { fetchFile } = window.FFmpegUtil;
                 await ff.writeFile('input', await fetchFile(videoFile));
@@ -745,18 +744,22 @@
                 spaceSaved.textContent = `${formatFileSize(saved)} (${percent}%)`;
                 sizeComparison.classList.add('active');
 
+                const outputName = videoFile.name.replace(/\.[^/.]+$/, '_compressed.mp4');
+                triggerDownload(blob, outputName);
+
                 const url = URL.createObjectURL(blob);
-                const dlBtn = document.getElementById('downloadBtn');
-                dlBtn.href = url;
-                dlBtn.download = videoFile.name.replace(/\.[^/.]+$/, '_compressed.mp4');
-                dlBtn.style.display = 'inline-flex';
+                downloadBtn.href = url;
+                downloadBtn.download = outputName;
+                downloadBtn.style.display = 'flex';
+                downloadBtn.classList.add('active');
 
                 progressContainer.classList.remove('active');
+                compressBtn.disabled = false;
             } catch (err) {
                 console.error('FFmpeg Compression Error:', err);
                 alert('Compression failed: ' + err.message);
                 progressContainer.classList.remove('active');
-                actionButtons.style.display = 'block';
+                compressBtn.disabled = false;
             }
         }
 
@@ -767,7 +770,7 @@
         document.addEventListener('drop', (e) => {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('video/')) {
+            if (file && isVideoFile(file)) {
                 if (window.assignInputFiles) {
                     window.assignInputFiles(videoInput, e.dataTransfer.files);
                 } else {

@@ -435,25 +435,31 @@
         let originalImage = null;
         let originalPdf = null;
         let watermarkImgData = null;
+        let previewPdfPage = 1;
+
+        function isPdfFile(file) {
+            return file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+        }
 
         inputSource.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            if (file.type === 'application/pdf') {
+            originalImage = null;
+            originalPdf = null;
+            watermarkImgData = null;
+
+            if (isPdfFile(file)) {
                 const arrayBuffer = await file.arrayBuffer();
                 originalPdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-                renderPdfPage(1);
+                previewPdfPage = 1;
+                await refreshPreview();
             } else {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     originalImage = new Image();
                     originalImage.onload = () => {
-                        canvas.width = originalImage.width;
-                        canvas.height = originalImage.height;
-                        draw();
-                        previewArea.innerHTML = '';
-                        previewArea.appendChild(canvas);
+                        refreshPreview();
                     };
                     originalImage.src = event.target.result;
                 };
@@ -467,38 +473,29 @@
             const reader = new FileReader();
             reader.onload = (event) => {
                 watermarkImgData = new Image();
-                watermarkImgData.onload = draw;
+                watermarkImgData.onload = () => refreshPreview();
                 watermarkImgData.src = event.target.result;
             };
             reader.readAsDataURL(file);
         });
 
         [watermarkText, opacityInput, fontSizeInput, rotationInput].forEach(el => {
-            el.addEventListener('input', draw);
+            el.addEventListener('input', () => refreshPreview());
         });
 
-        async function renderPdfPage(pageNum) {
+        async function renderPdfBase(pageNum) {
             const page = await originalPdf.getPage(pageNum);
             const viewport = page.getViewport({scale: 2});
             canvas.width = viewport.width;
             canvas.height = viewport.height;
-            
-            const renderContext = {
+            await page.render({
                 canvasContext: ctx,
                 viewport: viewport
-            };
-            await page.render(renderContext).promise;
-            draw();
-            previewArea.innerHTML = '';
-            previewArea.appendChild(canvas);
+            }).promise;
         }
 
-        function draw() {
+        function applyWatermark() {
             if (!originalImage && !originalPdf) return;
-
-            if (originalImage) {
-                ctx.drawImage(originalImage, 0, 0);
-            }
 
             ctx.save();
             ctx.globalAlpha = opacityInput.value;
@@ -518,6 +515,23 @@
             ctx.restore();
         }
 
+        async function refreshPreview() {
+            if (!originalImage && !originalPdf) return;
+
+            if (originalImage) {
+                canvas.width = originalImage.width;
+                canvas.height = originalImage.height;
+                ctx.drawImage(originalImage, 0, 0);
+                applyWatermark();
+            } else if (originalPdf) {
+                await renderPdfBase(previewPdfPage);
+                applyWatermark();
+            }
+
+            previewArea.innerHTML = '';
+            previewArea.appendChild(canvas);
+        }
+
         downloadBtn.addEventListener('click', async () => {
             if (originalPdf) {
                 const { jsPDF } = window.jspdf;
@@ -528,7 +542,8 @@
                 });
 
                 for (let i = 1; i <= originalPdf.numPages; i++) {
-                    await renderPdfPage(i);
+                    await renderPdfBase(i);
+                    applyWatermark();
                     const imgData = canvas.toDataURL('image/jpeg', 0.8);
                     if (i > 1) doc.addPage([canvas.width, canvas.height], canvas.width > canvas.height ? 'l' : 'p');
                     doc.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
